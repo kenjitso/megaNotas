@@ -1,0 +1,60 @@
+div.darkmode,
+div.darkmode > div,
+.darkmode-modal .modal-content {
+    background-color: #222222;
+    color: #d1d1d1;
+}
+
+.darkmode .bottombar,
+.darkmode .sidebar {
+    background-color: #252526;
+}
+
+.darkmode .clickable,
+.darkmode .clickable:focus,
+.darkmode .bottombar a,
+.darkmode .bottombar a:focus,
+.darkmode .sidebar a,
+.darkmode .sidebar a:focus {
+    color: #d1d1d1;
+}
+
+.darkmode .clickable.active,
+.darkmode .bottombar a.active,
+.darkmode .sidebar a.active {
+    background-color: #363636;
+}
+
+.darkmode .clickable:hover,
+.darkmode .bottombar a:hover,
+.darkmode .sidebar a:hover {
+    background-color: #424242;
+}
+
+.darkmode .nav-pills > li > button {
+    color: #d1d1d1;
+}
+
+.darkmode .nav-pills > li > button:hover {
+    background-color: #363636;
+}
+
+.darkmode .menu-mercado,
+.darkmode-modal input,
+.darkmode-modal select,
+.darkmode-modal .form-control,
+.darkmode input,
+.darkmode select,
+.darkmode .form-control {
+    background-color: #222222;
+    color: #d1d1d1;
+}
+
+.darkmode .clickable,
+.darkmode a {
+    color: #d1d1d1;
+}
+
+.darkmode .card {
+    background-color: #383838;
+}
