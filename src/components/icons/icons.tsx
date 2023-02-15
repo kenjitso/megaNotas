@@ -1,5 +1,5 @@
 import { BsHouseDoor } from "react-icons/bs";
-import { TbBuildingWarehouse } from "react-icons/Tb";
+import { TbBuildingWarehouse } from "react-icons/tb";
 import { BsBoxSeam } from "react-icons/bs";
 import { BsCart4 } from "react-icons/bs";
 import { BsClockHistory } from "react-icons/bs";
