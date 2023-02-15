@@ -1,3 +1,4 @@
+
 import { paginationComponent } from "@/components/pagination/PaginationComponent";
 import { DataFetcher, IProduct } from "@/datas/data_utils";
 import { useEffect, useState } from "react";
