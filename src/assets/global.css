@@ -7,7 +7,7 @@
 .menuCss {
     min-height: 100vh;
     min-width: 290px;
-    background-color: rgb(202, 202, 202);
+    background-color: rgb(218, 218, 218);
     position: absolute;
 }
 
@@ -28,8 +28,8 @@
 
 .buttonNav:hover {
     background-color: #bbbbbb;
-    border-end-end-radius: 8px;
-    border-start-end-radius: 8px;
+    border-end-end-radius: 15px;
+    border-start-end-radius: 15px;
 }
 
 .textNav {
@@ -46,6 +46,7 @@ a {
 }
 
 .iconNav {
+    margin-left: 10px;
     margin-top: 10px;
     max-width: 55px;
     align-items: center;

@@ -1,0 +1,28 @@
+td {
+    height: 50px;
+    vertical-align: middle;
+}
+
+a {
+    background-color:   rgb(218, 218, 218) !important;
+
+}
+
+a:hover {
+    background-color: #bbbbbb !important;
+}
+
+
+
+
+.pagination .page-item.active .page-link {
+    background-color: #32beff;
+    border: none;
+    cursor: pointer;
+}
+
+.pagination .page-item:not(.active) .page-link {
+    border: none;
+    box-shadow: none;
+    cursor: pointer;
+}

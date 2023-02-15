@@ -1,8 +1,7 @@
 import { Col, Row } from "react-bootstrap";
+import { menuProduto } from "../MenuProduto";
 
-
-
-export function Produto() {
+export function CadastroProduto() {
 
     interface IProdutos {
         id: string;
@@ -21,16 +20,31 @@ export function Produto() {
 
     return (
         <Row>
-            <Col className='body'>
+            <Col className='body text-center'>
                 <Row>
-                    <Col xs className="text-center">
-                        <h1>Produto Notas 15/02/2023</h1>
+                    <Col>
+                        <h1>Cadastra Produto 15/02/2023</h1>
+
                     </Col>
                 </Row>
+                <Row className="menuProduto border">
+                    {menuProduto()}
+                </Row>
 
+                <Row className="menuProduto border">
+                    {cadastroProduto()}
+                </Row>
             </Col>
         </Row>
 
     );
+
+}
+
+
+function cadastroProduto() {
+
+
+    return (<></>);
 
 }

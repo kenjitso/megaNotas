@@ -1,5 +1,5 @@
 import { Rotas } from "@/components/routes/rotas";
-import { Col, Nav, Navbar, Row, Stack } from "react-bootstrap";
+import { Col, Container, Nav, Navbar, Row, Stack } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Image from "react-bootstrap/Image";
 import reactLogo from "@/assets/megaNotas.svg";
@@ -12,10 +12,10 @@ interface props {
 
 
 export function MenuMega({ children }: props) {
-
-
+   
 
     return (
+        <Container  fluid>
         <Rotas>
             <Navbar className="menuCss top-0 start-0 ">
                 <Stack gap={5}>
@@ -41,7 +41,7 @@ export function MenuMega({ children }: props) {
                             </Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Link to="/produto">
+                            <Link to="/listaProduto">
                                 <Row className="buttonNav"><Col className="iconNav "><Icons tipo="produto" /> </Col>  <Col className="textNav ">Produto</Col></Row>
                             </Link>
                         </Nav.Item>
@@ -55,5 +55,6 @@ export function MenuMega({ children }: props) {
             </Navbar >
             {children}
         </Rotas >
+        </Container>
     );
 }
