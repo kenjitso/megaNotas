@@ -8,7 +8,7 @@ interface CustomPaginationButtonProps {
     active?: boolean;
 }
 
-export function paginationComponent(list: IProduct[] | null, pageSize: number) {
+export function PaginationComponent(list: IProduct[] | null, pageSize: number) {
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
 

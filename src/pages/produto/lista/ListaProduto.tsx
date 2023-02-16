@@ -1,5 +1,5 @@
 
-import { paginationComponent } from "@/components/pagination/PaginationComponent";
+import { PaginationComponent } from "../../../components/pagination/paginationComponent";
 import { DataFetcher, IProduct } from "@/datas/data_utils";
 import { useEffect, useState } from "react";
 import { Button, Col, Row, Table } from "react-bootstrap";
@@ -40,7 +40,7 @@ export function ListaProduto() {
                     {tableProduto(listProduto(), 4, 8)}
                 </Row>
                 <Row>
-                    {paginationComponent(listProduto(), 4)}
+                    {PaginationComponent(listProduto(), 4)}
                 </Row>
 
 
