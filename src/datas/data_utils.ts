@@ -1,63 +1,53 @@
+export interface oi{
 
-export interface IResult {
-    success: boolean;
-    message: string;
-
-}
-export interface IUpdateResult<T> {
-    success: boolean;
-    message: string;
-    item?: T;
-    itens?: T[];
-
-}
-export interface IResponse {
-    success: boolean;
-    message: string;
+    a:string;
 }
 
-export interface ILoginData {
-
-    email: string;
-    password: string;
-}
-
-export interface IClient {
-
-    id?: number;
-    nome: string;
-    sobrenome: string;
-    email: string;
-    password: string;
-}
-
+/*
 export interface IProduct {
     id?: number;
     nome: string;
-    preco: string;
-    descricao: string;
-    categoria: string;
+    preco_ml_classic: string;
+    preco_ml_premium: string;
+    frete: string;
+    comissao_classic: string;
+    comissao_premium: string;
+    url_catalogo_classic: string;
+    url_catalogo_premium: string;
 }
 
-export interface IService {
-    id?: number;
+export interface ILoja {
+    id: string;
     nome: string;
-    preco: string;
-    descricao: string;
-    categoria: string;
-    horas: string;
+    cotacao: string;
+    freteiro: string[];
+    url_cotacao: string;
+    url_catalogo: string;
 }
+
+
+export interface IFreteiro {
+    id: string;
+    nome: string;
+    fixo: number;
+    percentual: number;
+    prioridade: number;
+    valor_min: string;
+    valor_max: number;
+    global: boolean;
+}
+
 
 export interface IProductList {
     products: IProduct[];
 }
 
-export interface IClientList {
-    clients: IClient[];
+export interface IFreteiroList {
+    freteiros: IFreteiro[];
 }
 
-export interface IServiceList {
-    service: IService[];
+export interface ILojaList {
+    lojas: ILoja[];
 }
 
 export interface IDataList<T> {
@@ -67,7 +57,7 @@ export interface IDataList<T> {
 
 
 
-type dataProps = IClient | IProduct | IService | ILoginData;
+type dataProps = | IProduct | ILoja | IFreteiro;
 
 
 export class DataFetcher<T extends dataProps> {
@@ -82,7 +72,6 @@ export class DataFetcher<T extends dataProps> {
 
     //USA SOMENTE GET e DELETE NAO USA BODY RETORNA UMA LISTA
     public async getList(): Promise<T[]> {
-
         let options: RequestInit = {
             method: this.method,
             headers: {
@@ -90,12 +79,11 @@ export class DataFetcher<T extends dataProps> {
             },
         };
         let response = await fetch(this.url, options);
-        let responseData: IUpdateResult<T> = await response.json();
+        let responseData = await response.json();
+        const items = responseData ?? []; // define um array vazio caso a resposta seja undefined
 
-        if (!responseData.success) throw new Error(responseData.message);
-        if (!responseData.itens) throw new Error("ITENS NAO ESTA DEFINIDO!");
-        return responseData.itens;
-    };
+        return items;
+    }
 
 
     //USA PUT POST e PATCH NORMALMENTE USA PUT,POST,PATCH, USA GET E DELETE NÃO RETORNA LISTA
@@ -115,10 +103,10 @@ export class DataFetcher<T extends dataProps> {
         }
 
         let response = await fetch(this.url, options);
-        let responseData: IUpdateResult<T> = await response.json();
-        if (!responseData.success) throw new Error(responseData.message);
-        if (!responseData.item) throw new Error("ITEM NAO ESTA DEFINIDO!");
+        let responseData = await response.json();
+        //  if (!responseData.success) throw new Error(responseData.message);
+        //if (!responseData.item) throw new Error("ITEM NAO ESTA DEFINIDO!");
 
         return responseData.item;
     }
-}
+}*/

@@ -10,7 +10,7 @@ export function Home() {
             <Col className='body'>
                 <Row>
                     <Col xs className="text-center">
-                        <h1>Mega Notas 15/02/2023</h1>
+                        <h1>Mega Preço 15/02/2023</h1>
                     </Col>
                 </Row>
 

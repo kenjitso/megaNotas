@@ -1,22 +1,28 @@
 .body {
-    min-height: 100vh;
-    margin-left: 290px;
-
+    height: 100%;
+  width: 100%;
 }
 
 .menuCss {
-    min-height: 100vh;
+    height: 100vh;
+    width: 290px;
     min-width: 290px;
+    max-width: 290px;
     background-color: rgb(218, 218, 218);
-    position: absolute;
+  
+}
+
+.tablesCss{
+    cursor: pointer;
+
 }
 
 
 .logoEmprise {
     user-select: none;
+    cursor: pointer;
     max-width: 150px;
     position: center;
-    cursor: pointer;
     background-color: rgb(202, 202, 202);
     border-radius: 100px;
 }
@@ -147,42 +153,4 @@ html {
     color: black;
 }
 
-.sidebar .logo {
-    width: 220px;
-    height: 124px;
-}
 
-/**
- * Apenas PC
- */
-@media only screen and (min-width: 768px) {
-    .bottombar {
-        display: none;
-    }
-
-    .main-container-sidebar-full {
-        padding-bottom: 0;
-    }
-
-    .main-container-sidebar-full {
-        padding-left: 240px;
-    }
-
-    .main-container-sidebar-rectracted {
-        padding-left: 64px;
-    }
-}
-
-/**
- * Apenas Smartphones
- */
-@media only screen and (max-width: 768px) {
-    .sidebar {
-        display: none;
-    }
-
-    .main-container {
-        padding-left: 0;
-        padding-bottom: 56px;
-    }
-}

@@ -1,15 +1,29 @@
 import { BsHouseDoor } from "react-icons/bs";
-import { TbBuildingWarehouse } from "react-icons/tb";
+import { IoStorefrontOutline } from "react-icons/io5";
 import { BsBoxSeam } from "react-icons/bs";
 import { BsCart4 } from "react-icons/bs";
 import { BsClockHistory } from "react-icons/bs";
+import { BsFillCaretUpFill } from "react-icons/bs";
+import { BsFillCaretDownFill } from "react-icons/bs";
 
 
 interface props {
-    tipo: "nota" | "loja" | "casa" | "caixa" | "produto" | "historico"
+    tipo: "nota" | "loja" | "casa" | "caixa" | "produto" | "historico" | "up" | "down"
 }
 
 export function Icons({ tipo }: props) {
+
+    if (tipo === "up") {
+        return (
+            <BsFillCaretUpFill size={12} />
+        );
+    }
+
+    if (tipo === "down") {
+        return (
+            <BsFillCaretDownFill size={12} />
+        );
+    }
 
     if (tipo === "casa") {
         return (
@@ -19,7 +33,7 @@ export function Icons({ tipo }: props) {
 
     if (tipo === "loja") {
         return (
-            <TbBuildingWarehouse size={32} />
+            <IoStorefrontOutline size={32} />
         );
     }
 

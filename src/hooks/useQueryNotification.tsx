@@ -23,7 +23,9 @@ interface Props<T> {
         fetchComplete?: string,
         // Status de erro
         fetchError?: string
-    }
+
+    };
+    staleTime?: number; // adicionar a propriedade staleTime
 }
 
 export default function useQueryNotification<T>({
