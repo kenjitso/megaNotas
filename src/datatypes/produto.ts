@@ -1,4 +1,11 @@
 
+export interface IProdutoLoja {
+    codigo: string,
+    idloja: string,
+    preco: number,
+    ultima_atualizacao: string
+}
+
 export interface IProduto {
     id: string;
     nome: string;
@@ -9,7 +16,7 @@ export interface IProduto {
     frete: number;
     preco_ml_premium: number;
     preco_ml_classic: number;
-    lojas: { codigo: string, idloja: string, preco: number, ultima_atualizacao: string }[]
+    lojas: IProdutoLoja[]
 }
 
 
@@ -24,7 +31,7 @@ export class Produto implements IProduto {
     frete: number
     preco_ml_premium: number
     preco_ml_classic: number
-    lojas: { codigo: string; idloja: string; preco: number; ultima_atualizacao: string }[]
+    lojas: IProdutoLoja[]
 
     public constructor() {
         this.id = "";
@@ -45,19 +52,7 @@ export class Produto implements IProduto {
             },];
     }
 
-    public static async create(produto: Produto) {
-        let options: RequestInit = {
-            method: "POST",
-            headers: {
-                "Content-type": "application/json"
-            },
-            body: JSON.stringify(produto)
-        };
-        let response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtos`, options);
-        let responseData = await response.json();
 
-        return responseData as Produto;
-    }
 
     public static async get(id: string) {
 
@@ -71,18 +66,26 @@ export class Produto implements IProduto {
         let responseData = await response.json();
         let produto = new Produto();
         produto.id = responseData.id;
-        produto.nome = responseData.nome;
-        produto.url_catalogo_premium = responseData.url_catalogo_premium;
-        produto.url_catalogo_classic = responseData.url_catalogo_classic;
-        produto.comissao_premium = responseData.comissao_premium;
-        produto.comissao_classic = responseData.comissao_classic;
-        produto.frete = responseData.frete;
-        produto.preco_ml_premium = responseData.preco_ml_premium;
-        produto.preco_ml_classic = responseData.preco_ml_classic;
-        produto.lojas = responseData.lojas;
-        return produto;
+        return new Produto;
 
     }
+
+    public static async create(produto: Produto) {
+        console.log("Produto:");
+        console.log(produto);
+        let options: RequestInit = {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify(produto)
+        };
+        let response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtos`, options);
+        let responseData = await response.json();
+        console.log(responseData);
+        return responseData;
+    }
+
 
     public static async update(produto: Produto) {
         let options: RequestInit = {
@@ -94,9 +97,7 @@ export class Produto implements IProduto {
         };
         let response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtos/${produto.id}`, options);
         let responseData = await response.json();
-
-
-        return responseData as Produto;
+        return responseData;
     }
 
     public static async delete(id: string): Promise<void> {

@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { PaginationComponent } from "../../../datas/PaginationComponent";
-import { Menu } from "@/datas/Menu";
+import { Menu } from "@/pages/Menu";
 import { ILoja, Loja } from "@/datatypes/loja";
 
 
@@ -31,7 +31,7 @@ export function ListaLoja() {
     };
 
 
-    const { isLoading, data, isError } = useQuery(["lojas"], async () => {
+    const { isLoading, data, isError, refetch } = useQuery(["lojas"], async () => {
         const delay = new Promise(res => setTimeout(res, 3000));
         await delay;
         const loja = await Loja.search();
@@ -40,6 +40,15 @@ export function ListaLoja() {
     });
 
     const [listFiltred, setListFiltred] = useState<Loja[] | null>(data ?? []);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+
+    const handleListRefresh = async () => {
+        setIsRefreshing(true);
+        await refetch();
+        setIsRefreshing(false);
+        setCurrentPage(1);
+    };
+
 
     const listFiltered = (filtered: Loja[]) => {
 
@@ -61,25 +70,30 @@ export function ListaLoja() {
                         links={[{ label: "Lista de Lojas", url: "/lojas" },
                         { label: "Cadastrar Loja", url: "/lojas/novo" }
                         ]}
-                        showSearch={true}
                         listSearch={data ?? []}
                         onListSearch={listFiltered}
+                        onListRefresh={handleListRefresh}
+                        showSearch={true}
                     />
                 </Row>
                 <Row >
-                    {!isLoading && <Tableloja
-                        listLoja={listFiltred ?? []}
-                        pageSize={pageSize}
-                        currentPage={currentPage}
-                    />} {isLoading && <FragmentLoading />}
+                    {!isLoading && !isRefreshing && (
+                        <Tableloja
+                            listLoja={listFiltred ?? []}
+                            pageSize={pageSize}
+                            currentPage={currentPage}
+                        />)}
+                    {isLoading && <FragmentLoading />}
                 </Row>
                 <Row>
-                    {!isLoading && <PaginationComponent<ILoja>
+                    {(isLoading || isRefreshing) && <FragmentLoading />}
+                    {!isLoading && !isRefreshing && (<PaginationComponent<ILoja>
                         items={listFiltred ?? []}
                         pageSize={pageSize}
                         onPageChange={handlePageChange}
                         currentPage={currentPage}
-                    />} {isLoading}
+                    />)}
+                    {isLoading}
 
                 </Row>
             </Col>
@@ -108,7 +122,7 @@ function Tableloja({ listLoja, currentPage, pageSize }: IProps) {
             setSortOrder(sortOrder === "asc" ? "desc" : "asc");
         } else {
             setSortOrder("asc");
-            setSortBy(newSortBy);
+            setSortBy(newSortBy as keyof ILoja);
         }
     };
 
@@ -116,20 +130,23 @@ function Tableloja({ listLoja, currentPage, pageSize }: IProps) {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
+
     const sortedList = listLoja
         ? [...listLoja].sort((a, b) => {
-            let valueA = a[sortBy];
-            let valueB = b[sortBy];
-            if (sortBy === "nome") {
-                valueA = capitalizeFirstLetter(a[sortBy] as string);
-                valueB = capitalizeFirstLetter(b[sortBy] as string);
-            } else if (sortBy === "url_cotacao") {
-                valueA = capitalizeFirstLetter(a[sortBy] as string);
-                valueB = capitalizeFirstLetter(b[sortBy] as string);
-            } else if (sortBy === "url_catalogo") {
+            let valueA: string | number = a[sortBy].toString();
+            let valueB: string | number = b[sortBy].toString();
+
+            if (sortBy === "id") {
+                valueA = parseInt(a[sortBy] as string);
+                valueB = parseInt(b[sortBy] as string);
+            } else if (sortBy === "cotacao") {
+                valueA = parseFloat(a[sortBy] as unknown as string);
+                valueB = parseFloat(b[sortBy] as unknown as string);
+            } else {
                 valueA = capitalizeFirstLetter(a[sortBy] as string);
                 valueB = capitalizeFirstLetter(b[sortBy] as string);
             }
+
             if (sortOrder === "asc") {
                 return valueA > valueB ? 1 : -1;
             } else {
@@ -178,7 +195,7 @@ function Tableloja({ listLoja, currentPage, pageSize }: IProps) {
                     </th>
                     <th>
                         <div className="th100">
-                            <span>URL Cotação:</span>
+                            <span>URL Catálogo:</span>
                             <span onClick={() => handleSort("url_catalogo")} className="headTablesArrows">
                                 {sortBy === "url_catalogo" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
@@ -189,14 +206,15 @@ function Tableloja({ listLoja, currentPage, pageSize }: IProps) {
             <tbody>
                 {listLoja
                     ? sortedList
-                        .slice((currentPage - 1) * pageSize, currentPage * pageSize)
+                        .slice(
+                            (currentPage - 1) * pageSize, currentPage * pageSize)
                         .concat(
                             Array.from(
                                 { length: pageSize - (listLoja.length - (currentPage - 1) * pageSize) },
                                 (_, i) => ({
-                                    id: "",
+                                    id: 0,
                                     nome: "",
-                                    cotacao: "",
+                                    cotacao: 0,
                                     url_cotacao: "",
                                     url_catalogo: "",
                                 })

@@ -6,21 +6,23 @@ interface Props {
   style?: CSSProperties;
   value: string;
   onValueChange: (value: string) => void;
+  maxLength?: number;
 }
 
-const InputTexto: React.ForwardRefRenderFunction<HTMLInputElement, Props> = ({ 
+const InputTextoEsp: React.ForwardRefRenderFunction<HTMLInputElement, Props> = ({ 
     autoFocus = false, 
     className = "", 
     style = {}, 
     value, 
-    onValueChange 
+    onValueChange,
+    maxLength = 60, // valor padrão de 12 caracteres
 },
   ref
 ) => {
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value.replace(/[^a-zA-ZáéíóúàèìòùâêîôûÁÉÍÓÚÃÕãõ ]/g, ""); // remove caracteres não alfabéticos
-    onValueChange(newValue);
-  };
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = event.target.value.replace(/[^a-zA-Z\-_.\/<>,'" ]/g, "");
+        onValueChange(newValue);
+    };
 
   return (
     <input
@@ -30,10 +32,10 @@ const InputTexto: React.ForwardRefRenderFunction<HTMLInputElement, Props> = ({
       className={className}
       style={style}
       value={value}
+      maxLength={maxLength}
       onChange={handleChange}
-      pattern="[a-zA-Z]*" // permite apenas letras
     />
   );
 };
 
-export default React.forwardRef(InputTexto);
+export default React.forwardRef(InputTextoEsp);

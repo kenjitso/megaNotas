@@ -1,15 +1,12 @@
-
-
 import { useEffect, useState } from "react";
 import { Col, Row, Table } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
-import { Menu } from "@/datas/Menu";
+import { Menu } from "@/pages/Menu";
 import { PaginationComponent } from "@/datas/PaginationComponent";
 import { IProduto, Produto } from "@/datatypes/produto";
 import "@/assets/style.css"
-
 
 export function ListaProduto() {
     const location = useLocation();
@@ -34,7 +31,7 @@ export function ListaProduto() {
         navigate(`?page=${page}`);
     };
 
-    const { isLoading, data, isError } = useQuery(["produtos"], async () => {
+    const { isLoading, data, isError, refetch } = useQuery(["produtos"], async () => {
         const delay = new Promise(res => setTimeout(res, 3000));
         await delay;
         const produtos = await Produto.search();
@@ -43,11 +40,17 @@ export function ListaProduto() {
 
     });
 
-
     const [listFiltred, setListFiltred] = useState<Produto[] | null>(data ?? []);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+
+    const handleListRefresh = async () => {
+        setIsRefreshing(true);
+        await refetch();
+        setIsRefreshing(false);
+        setCurrentPage(1);
+    };
 
     const listFiltered = (filtered: Produto[]) => {
-
         setListFiltred(filtered);
     }
 
@@ -60,30 +63,33 @@ export function ListaProduto() {
                         <h1>Produto Lista Notas 15/02/2023</h1>
                     </Col>
                 </Row>
-                <Row >
+                <Row>
                     <Menu
                         links={[
                             { label: "Lista de Produtos", url: "/produtos" },
                             { label: "Cadastrar Produto", url: "/produtos/novo" },
-
                         ]}
                         listSearch={data ?? []}
                         onListSearch={listFiltered}
+                        onListRefresh={handleListRefresh}
                         showSearch={true}
                     />
-
-                    {!isLoading && <TableProduto
-                        listProduto={listFiltred ?? []}
-                        pageSize={pageSize}
-                        currentPage={currentPage}
-                    />} {isLoading && <FragmentLoading />}
-
-                    {!isLoading && <PaginationComponent
-                        items={listFiltred ?? []}
-                        pageSize={pageSize}
-                        onPageChange={handlePageChange}
-                        currentPage={currentPage}
-                    />} {isLoading}
+                    {!isLoading && !isRefreshing && (
+                        <TableProduto
+                            listProduto={listFiltred ?? []}
+                            pageSize={pageSize}
+                            currentPage={currentPage}
+                        />
+                    )}
+                    {(isLoading || isRefreshing) && <FragmentLoading />}
+                    {!isLoading && !isRefreshing && (
+                        <PaginationComponent
+                            items={listFiltred ?? []}
+                            pageSize={pageSize}
+                            onPageChange={handlePageChange}
+                            currentPage={currentPage}
+                        />
+                    )}
                 </Row>
             </Col>
         </Row>
@@ -116,8 +122,13 @@ function TableProduto({ listProduto, currentPage, pageSize }: IProps) {
 
     const sortedList = listProduto
         ? [...listProduto].sort((a, b) => {
-            let valueA = a[sortBy];
-            let valueB = b[sortBy];
+            let valueA: string | number = a[sortBy].toString();
+            let valueB: string | number = b[sortBy].toString();
+          
+            if (sortBy === "id") {
+                valueA = parseInt(a[sortBy] as string);
+                valueB = parseInt(b[sortBy] as string);
+            } else
             if (sortBy === "nome") {
                 valueA = capitalizeFirstLetter(a[sortBy] as string);
                 valueB = capitalizeFirstLetter(b[sortBy] as string);
@@ -136,10 +147,6 @@ function TableProduto({ listProduto, currentPage, pageSize }: IProps) {
             }
         })
         : [];
-
-
-
-
 
     return (
         <Table striped bordered hover >
@@ -233,7 +240,7 @@ function TableProduto({ listProduto, currentPage, pageSize }: IProps) {
                             Array.from(
                                 { length: pageSize - (listProduto.length - (currentPage - 1) * pageSize) },
                                 (_, i) => ({
-                                    id: "",
+                                    id: 0,
                                     nome: "",
                                     preco_ml_classic: "",
                                     preco_ml_premium: "",

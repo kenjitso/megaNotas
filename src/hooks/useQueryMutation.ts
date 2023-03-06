@@ -59,7 +59,11 @@ export default function useQueryMutation<T>(initialState: T, {
     const { state, set, update } = useClass<T>(initialState);
     const query = useQuery(queryKey, () => {
         // Caso haja toasts, cria as mensagens.
+        
+        console.log("??");
+
         if (toasts?.fetching) toast.loading(toasts.fetching, { toastId: idToast });
+
         return queryFn();
     }, {
         onSuccess: (data) => {

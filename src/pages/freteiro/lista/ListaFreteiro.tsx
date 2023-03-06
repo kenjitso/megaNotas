@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { PaginationComponent } from "@/datas/PaginationComponent";
-import { Menu } from "@/datas/Menu";
+import { Menu } from "@/pages/Menu";
 import { Freteiro, IFreteiro } from "@/datatypes/freteiro";
 
 
@@ -31,7 +31,7 @@ export function ListaFreteiro() {
     };
 
 
-    const { isLoading, data, isError } = useQuery(["freteiro"], async () => {
+    const { isLoading, data, isError, refetch } = useQuery(["freteiro"], async () => {
         const delay = new Promise(res => setTimeout(res, 3000));
         await delay;
         const freteiro = await Freteiro.search();
@@ -39,10 +39,17 @@ export function ListaFreteiro() {
         return freteiro;
     });
 
-    const [listFiltred, setListFiltred] = useState<Freteiro[] | null>(data??[]);
+    const [listFiltred, setListFiltred] = useState<Freteiro[] | null>(data ?? []);
+    const [isRefreshing, setIsRefreshing] = useState(false);
+
+    const handleListRefresh = async () => {
+        setIsRefreshing(true);
+        await refetch();
+        setIsRefreshing(false);
+        setCurrentPage(1);
+    };
 
     const listFiltered = (filtered: Freteiro[]) => {
-
         setListFiltred(filtered);
     }
 
@@ -61,23 +68,27 @@ export function ListaFreteiro() {
                         ]}
                         showSearch={true}
                         listSearch={data ?? []}
+                        onListRefresh={handleListRefresh}
                         onListSearch={listFiltered}
                     />
 
 
-                    {!isLoading && <TableFreteiro
-                        listFreteiro={listFiltred ?? []}
-                        pageSize={pageSize}
-                        currentPage={currentPage}
-                    />} {isLoading && <FragmentLoading />}
-
-
-                    {!isLoading && <PaginationComponent<IFreteiro>
-                        items={listFiltred ?? []}
-                        pageSize={pageSize}
-                        onPageChange={handlePageChange}
-                        currentPage={currentPage}
-                    />} {isLoading}
+                    {!isLoading && !isRefreshing && (
+                        <TableFreteiro
+                            listFreteiro={listFiltred ?? []}
+                            pageSize={pageSize}
+                            currentPage={currentPage}
+                        />
+                    )}
+                    {(isLoading || isRefreshing) && <FragmentLoading />}
+                    {!isLoading && !isRefreshing && (
+                        <PaginationComponent<IFreteiro>
+                            items={listFiltred ?? []}
+                            pageSize={pageSize}
+                            onPageChange={handlePageChange}
+                            currentPage={currentPage}
+                        />
+                    )} {isLoading}
 
                 </Row>
             </Col>
@@ -220,8 +231,7 @@ function TableFreteiro({ listFreteiro, currentPage, pageSize }: IProps) {
                                     valor_max: 0,
                                     global: false,
                                 })
-                            )
-                                .map((freteiro, index) => ({ ...freteiro, id: index + listFreteiro.length + 1 }))
+                            ).map((freteiro, index) => ({ ...freteiro, id: index + listFreteiro.length + 1 }))
                         )
                         .map((freteiro, index) => (
                             <tr className="tablesCss" key={index} onClick={() => navigate(`/freteiros/${freteiro.id}`)}>

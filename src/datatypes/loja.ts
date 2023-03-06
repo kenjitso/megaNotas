@@ -44,41 +44,31 @@ export class Loja implements ILoja {
 
     }
 
-    public static async search(): Promise<Loja[]> {
-        try {
-            let options: RequestInit = {
-                method: "GET",
-                headers: {
-                    "Content-type": "application/json"
-                },
-            };
+ 
 
-            let response = await fetch(
-                `https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas`,
-                options
-            );
 
-            let responseData = await response.json();
-            let lojas: Loja[] = [];
-
-            for (let data of responseData) {
-                let loja = new Loja();
-                loja.id = data.id;
-                loja.nome = data.nome;
-                loja.cotacao = data.cotacao;
-                loja.freteiro = data.freteiro;
-                loja.url_cotacao = data.url_cotacao;
-                loja.url_catalogo = data.url_catalogo;
-
-                lojas.push(loja);
-            }
-
-            return lojas;
-        } catch (error) {
-            console.log(error);
-            return [];
+    public static async search() {
+        let options: RequestInit = {
+          method: "GET",
+          headers: {
+            "Content-type": "application/json"
+          }
+        };
+        let response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas`, options);
+        let responseData: any[] = await response.json();
+        let lojas: Loja[] = [];
+        for (let data of responseData) {
+          let loja = new Loja();
+          loja.id = data.id;
+          loja.nome = data.nome;
+          loja.cotacao = data.cotacao;
+          loja.freteiro = data.freteiro;
+          loja.url_catalogo = data.url_catalogo;
+          loja.url_cotacao = data.url_cotacao;
+          lojas.push(loja);
         }
-    }
+        return lojas;
+      }
 
     public static async create(loja: Loja) {
         let options: RequestInit = {
@@ -90,10 +80,13 @@ export class Loja implements ILoja {
         };
         let response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas`, options);
         let responseData = await response.json();
+        console.log(responseData);
         return responseData;
     }
 
     public static async update(loja: Loja) {
+
+        console.log(loja);
         let options: RequestInit = {
             method: "PATCH",
             headers: {
@@ -102,9 +95,12 @@ export class Loja implements ILoja {
             body: JSON.stringify(loja)
         };
         let response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas/${loja.id}`, options);
+        console.log(response);
         let responseData = await response.json();
-
+        console.log(responseData);
         return responseData;
     }
+
+ 
 }
 

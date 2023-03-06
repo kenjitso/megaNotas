@@ -38,8 +38,7 @@ export class Freteiro implements IFreteiro {
         "Content-type": "application/json"
       },
     };
-
-    let response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas/${id}`, options);
+    let response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/freteiro/${id}`, options);
     let responseData = await response.json();
     let freteiro = new Freteiro();
     freteiro.id = responseData.id;
@@ -49,12 +48,14 @@ export class Freteiro implements IFreteiro {
 
 
   public static async create(freteiro: Freteiro) {
+    console.log(freteiro);
     let options: RequestInit = {
       method: "POST",
       headers: {
         "Content-type": "application/json"
       },
       body: JSON.stringify(freteiro)
+
     };
     let response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/freteiro`, options);
     let responseData = await response.json();
@@ -65,6 +66,7 @@ export class Freteiro implements IFreteiro {
 
 
   public static async update(freteiro: Freteiro) {
+    console.log(freteiro);
     let options: RequestInit = {
       method: "PATCH",
       headers: {
@@ -73,10 +75,11 @@ export class Freteiro implements IFreteiro {
       body: JSON.stringify(freteiro)
     };
     let response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/freteiro/${freteiro.id}`, options);
+    console.log(response);
     let responseData = await response.json();
     console.log(responseData);
     return responseData;
-    
+
   }
 
 

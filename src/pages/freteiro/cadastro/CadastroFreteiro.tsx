@@ -1,15 +1,34 @@
 import { useEffect, useState } from 'react';
 import { Col, Row, Form, Button, Toast } from 'react-bootstrap';
-import { Menu } from '@/datas/Menu';
+import { Menu } from '@/pages/Menu';
 import { Freteiro, IFreteiro } from '@/datatypes/freteiro';
 import { useParams } from 'react-router-dom';
 import useQueryNotification from '@/hooks/useQueryNotification';
 import useQueryMutation from '@/hooks/useQueryMutation';
 import InputNumero from '@/components/inputs/InputNumero';
 import InputTexto from '@/components/inputs/InputTexto';
+import InputTextoEsp from '@/components/inputs/InputTextoEsp';
 
 
 export function CadastroFreteiro() {
+
+
+
+    const { id } = useParams<{ id: string }>();
+
+    const freteiroMutator = useQueryMutation(new Freteiro(), {
+        queryKey: ["Freteiros", id ?? ""],
+        queryFn: async () => await Freteiro.get(id ?? ""),
+        saveFn: async (data) => {
+            if (id) {
+                data.id = id;
+                console.log(data);
+                return await Freteiro.update(data);
+            }
+            return await Freteiro.create(data);
+        },
+        invalidateKeys: [["Freteiros"]]
+    });
 
     const camposLimpos = {
         id: "",
@@ -23,39 +42,8 @@ export function CadastroFreteiro() {
     };
 
 
-    const { id } = useParams<{ id: string }>();
-
-    const freteiroMutator = useQueryMutation(new Freteiro(), {
-        queryKey: ["Freteiros", id ?? ""],
-        queryFn: async () => await Freteiro.get(id ?? ""),
-        saveFn: async (data) => {
-            if (id) {
-
-                data.id = id;
-                console.log(data);
-                return await Freteiro.update(data);
-            }
-            return await Freteiro.create(data);
-        },
-        invalidateKeys: [["Freteiros"]]
-    });
-
-
-    const [freteiroEncontrado, setFreteiroEncontrado] = useState<Freteiro | null>(null);
-
     const [freteiro, setFreteiro] = useState<IFreteiro>(camposLimpos);
 
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-
-        const { name, value } = event.target;
-
-        if (name === "fixo" || name === "percentual" || name === "prioridade" || name === "valor_min" || name === "valor_max") {
-            const parsedValue = isNaN(parseFloat(value)) ? 0 : parseFloat(value);
-            setFreteiro((prevFreteiro) => ({ ...prevFreteiro, [name]: parsedValue }));
-        } else {
-            setFreteiro((prevFreteiro) => ({ ...prevFreteiro, [name]: value }));
-        }
-    };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -66,13 +54,7 @@ export function CadastroFreteiro() {
         setFreteiro(camposLimpos);
     };
 
-    const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, checked } = event.target;
-        setFreteiro((prevState) => ({
-            ...prevState,
-            [name]: checked,
-        }));
-    };
+
 
     const handleDelete = () => {
         if (id) {
@@ -85,12 +67,6 @@ export function CadastroFreteiro() {
                 });
         }
     };
-
-    const freteirosQuery = useQueryNotification({
-        queryKey: ["Freteiro"],
-        queryFn: async () => await Freteiro.search(),
-        queryEnabled: true,
-    });
 
 
 
@@ -119,12 +95,15 @@ export function CadastroFreteiro() {
                             <Form.Group controlId="formNome" className="mb-3">
                                 <Form.Label><b>Nome:</b></Form.Label>
                                 <Form.Control
-                                    as={InputTexto}
+                                    as={InputTextoEsp}
                                     type="text"
                                     title="Por favor, insira apenas caracteres não numéricos"
                                     value={freteiroMutator.state.nome}
                                     onValueChange={(texto: string) => freteiroMutator.update("nome", texto)}
-                                    placeholder="Insira o nome do freteiro" />
+                                    placeholder="Insira o nome do freteiro"
+                                    maxLength={60}
+                                />
+
                             </Form.Group>
                             <Form.Group controlId="formFixo" className="mb-3">
                                 <Form.Label><b>Valor fixo:</b></Form.Label>
@@ -132,7 +111,6 @@ export function CadastroFreteiro() {
                                     as={InputNumero}
                                     type="number"
                                     decimals={2}
-
                                     value={freteiroMutator.state.fixo}
                                     onValueChange={(numero: number) => freteiroMutator.update("fixo", numero)}
                                     placeholder="Insira o valor fixo" />

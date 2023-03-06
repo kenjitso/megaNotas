@@ -1,6 +1,7 @@
 import FragmentLoading from '@/components/fragments/FragmentLoading';
 import InputNumero from '@/components/inputs/InputNumero';
-import { Menu } from '@/datas/Menu';
+import InputTextoEsp from '@/components/inputs/InputTextoEsp';
+import { Menu } from '@/pages/Menu';
 import { Freteiro, IFreteiro } from '@/datatypes/freteiro';
 import { ILoja, Loja } from '@/datatypes/loja';
 import useQueryMutation from '@/hooks/useQueryMutation';
@@ -28,6 +29,7 @@ export function CadastroLoja() {
         queryFn: async () => await Loja.get(id ?? ""),
         saveFn: async (data) => {
             if (id) {
+                data.id = id;
                 return await Loja.update(data);
             }
             return await Loja.create(data);
@@ -38,8 +40,8 @@ export function CadastroLoja() {
     const freteiroQuery = useQueryNotification({
         queryKey: ["Freteiros"],
         queryFn: async () => await Freteiro.search(),
-        onQuerySuccess: (data)=> {
-            lojaMutator.update("freteiro",data.map(item=>item.id))
+        onQuerySuccess: (data) => {
+            lojaMutator.update("freteiro", data.map(item => item.id))
         }
     });
 
@@ -75,15 +77,13 @@ export function CadastroLoja() {
                                 <Form.Group controlId="formNome" className="mb-3">
                                     <Form.Label>Nome</Form.Label>
                                     <Form.Control
-                                    
+                                        as={InputTextoEsp}
                                         type="text"
-                                        pattern="[A-Za-zÀ-ú\s]+"
                                         title="Por favor, insira apenas caracteres não numéricos"
-                                        name="nome"
                                         value={lojaMutator.state.nome}
-                                        onChange={(event) => lojaMutator.update("nome", event.target.value)}
+                                        onValueChange={(texto: string) => lojaMutator.update("nome", texto)}
                                         placeholder="Insira o nome da loja"
-                                        required
+                                        maxLength={60}
                                     />
                                 </Form.Group>
                                 <Form.Group
@@ -105,27 +105,27 @@ export function CadastroLoja() {
                                     className="mb-3">
                                     <Form.Label>Url Cotação: </Form.Label>
                                     <Form.Control
+                                        as={InputTextoEsp}
                                         type="text"
-                                        name="url_cotacao"
                                         value={lojaMutator.state.url_cotacao}
-                                        onChange={(event) => lojaMutator.update("url_cotacao", event.target.value)}
-                                        placeholder="Insira a URL cotação" />
+                                        onValueChange={(texto: string) => lojaMutator.update("url_cotacao", texto)}
+                                        placeholder="Insira a URL cotação" 
+                                        maxLength={120}/>
                                 </Form.Group>
                                 <Form.Group
                                     controlId="formUrlCatalogo"
                                     className="mb-3">
                                     <Form.Label>Url Catalogo</Form.Label>
                                     <Form.Control
+                                        as={InputTextoEsp}
                                         type="text"
-                                        name="url_catalogo"
                                         value={lojaMutator.state.url_catalogo}
-                                        onChange={(event) => lojaMutator.update("url_catalogo", event.target.value)}
-                                        placeholder="Insira a URL catálogo" />
+                                        onValueChange={(texto: string) => lojaMutator.update("url_catalogo", texto)}
+                                        placeholder="Insira a URL catálogo" 
+                                        maxLength={120}/>
                                 </Form.Group>
-
                             </Col>
                             <Row >
-
                                 {!freteiroQuery.isLoading &&
                                     <TableFreteiroLoja
                                         listFreteiro={freteiroQuery.data ?? []}
@@ -134,9 +134,7 @@ export function CadastroLoja() {
                                     />
                                 }
                                 {freteiroQuery.isLoading && <FragmentLoading />}
-
                             </Row>
-
                         </Row>
                         <center>
                             <Row>

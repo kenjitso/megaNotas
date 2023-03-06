@@ -1,4 +1,5 @@
 import { IFreteiro } from "@/datatypes/freteiro";
+import { useState } from "react";
 import { Table } from "react-bootstrap";
 
 interface IProps {
@@ -8,17 +9,17 @@ interface IProps {
 }
 
 export function TableFreteiroLoja({ listFreteiro, selectedFreteiros, onUpdateFreteiro }: IProps) {
-
-    const setFreteiro = new Set(selectedFreteiros);
+    const [selectedIds, setSelectedIds] = useState(new Set(selectedFreteiros));
 
     const handleFreteiroSelect = (freteiro: IFreteiro) => {
-        if (setFreteiro.delete(freteiro.id)) {
-            onUpdateFreteiro([...setFreteiro.values()]);
-            return;
+        const newSelectedIds = new Set(selectedIds);
+        if (newSelectedIds.has(freteiro.id)) {
+            newSelectedIds.delete(freteiro.id);
+        } else {
+            newSelectedIds.add(freteiro.id);
         }
-
-        setFreteiro.add(freteiro.id);
-        onUpdateFreteiro([...setFreteiro.values()]);
+        setSelectedIds(newSelectedIds);
+        onUpdateFreteiro([...newSelectedIds]);
     };
 
     return (
@@ -39,7 +40,7 @@ export function TableFreteiroLoja({ listFreteiro, selectedFreteiros, onUpdateFre
             <tbody>
                 {listFreteiro && listFreteiro.map(freteiro => (
                     <tr key={freteiro.id}>
-                        <td><input type="checkbox" onChange={() => handleFreteiroSelect(freteiro)} checked={setFreteiro.has(freteiro.id)} /></td>
+                        <td><input type="checkbox" onChange={() => handleFreteiroSelect(freteiro)} checked={selectedIds.has(freteiro.id)} /></td>
                         <td><b>{freteiro.id}</b></td>
                         <td><b className="th250">{freteiro.nome}</b></td>
                         <td><b>{freteiro.fixo}</b></td>

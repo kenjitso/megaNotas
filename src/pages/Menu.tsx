@@ -6,10 +6,11 @@ interface IMenuProps<T extends { nome: string }> {
   links: { label: string, url: string }[];
   showSearch: boolean;
   onListSearch?: (filtered: T[]) => void;
+  onListRefresh?: () => void;
   listSearch?: T[];
 }
 
-export function Menu<T extends { nome: string; }>({ links, showSearch, onListSearch, listSearch }: IMenuProps<T>) {
+export function Menu<T extends { nome: string; }>({ links, showSearch, onListRefresh, onListSearch, listSearch }: IMenuProps<T>) {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeButton, setActiveButton] = useState("");
@@ -27,6 +28,13 @@ export function Menu<T extends { nome: string; }>({ links, showSearch, onListSea
     }
   }, [location, links]);
 
+  const handleRefreshClick = () => {
+ 
+    if (onListRefresh) {
+      onListRefresh();
+    }
+  };
+
   const handleSearch = () => {
     const filteredList = listSearch?.filter(item =>
       item.nome.toLowerCase().includes(searchTerm.toLowerCase())
@@ -39,11 +47,7 @@ export function Menu<T extends { nome: string; }>({ links, showSearch, onListSea
     }
   };
 
-  const handleAtualizarList = () => {
-    setSearchList(listSearch ?? []);
-    setSearchTerm("");
-    setCurrentPage(1);
-  };
+
 
   const filteredList = searchList;
 
@@ -81,7 +85,7 @@ export function Menu<T extends { nome: string; }>({ links, showSearch, onListSea
               <Button className={`me-3`} variant="secondary" onClick={handleSearch}>
                 Pesquisar
               </Button>
-              <Button className={`me-3`} variant="secondary" onClick={handleAtualizarList}>
+              <Button className={`me-3`} variant="secondary" onClick={handleRefreshClick}>
                 Atualizar
               </Button>
             </div>
