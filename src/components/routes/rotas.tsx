@@ -13,7 +13,7 @@ export function Rotas() {
   return (
     <MenuMega>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<ListaLoja />} />
 
         <Route path="/freteiro" element={<ListaFreteiro />} />
         <Route path="/freteiros/:id" element={<CadastroFreteiro />} />
