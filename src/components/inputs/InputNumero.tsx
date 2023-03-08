@@ -9,7 +9,7 @@ interface Props {
     onValueChange?: (value: number) => void;
     style?: CSSProperties;
     value: number;
-    }
+}
 
 /**
  * Componente do tipo input que gerencia formatação númerica
@@ -42,16 +42,18 @@ const InputNumero = React.forwardRef<HTMLInputElement, Props>(({
             nextValue = parseInt(max.toString(), 10);
         }
         onValueChange?.(nextValue);
+
     };
 
     let endValue: number;
     if (!Number.isFinite(value) || Number.isNaN(value)) {
         endValue = 0;
     } else {
-        endValue = value;
+        const valueWithDot = value.toString().replace(",", ".");
+        endValue = parseFloat(valueWithDot);
     }
 
-  
+
     const valueDisplay = (endValue / Math.pow(10, decimals)).toLocaleString("pt-BR", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).replace(".", ",");
 
 
@@ -63,7 +65,7 @@ const InputNumero = React.forwardRef<HTMLInputElement, Props>(({
             inputMode="numeric"
             onChange={onChange}
             style={style}
-                        value={valueDisplay}
+            value={valueDisplay}
         />
     );
 });

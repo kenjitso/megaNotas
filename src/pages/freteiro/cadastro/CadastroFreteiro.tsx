@@ -1,18 +1,14 @@
-import { useEffect, useState } from 'react';
-import { Col, Row, Form, Button, Toast } from 'react-bootstrap';
+import { Col, Row, Form, Button } from 'react-bootstrap';
 import { Menu } from '@/pages/Menu';
-import { Freteiro, IFreteiro } from '@/datatypes/freteiro';
+import { Freteiro } from '@/datatypes/freteiro';
 import { useParams } from 'react-router-dom';
-import useQueryNotification from '@/hooks/useQueryNotification';
 import useQueryMutation from '@/hooks/useQueryMutation';
 import InputNumero from '@/components/inputs/InputNumero';
-import InputTexto from '@/components/inputs/InputTexto';
 import InputTextoEsp from '@/components/inputs/InputTextoEsp';
+import { toast } from 'react-toastify';
 
 
 export function CadastroFreteiro() {
-
-
 
     const { id } = useParams<{ id: string }>();
 
@@ -20,41 +16,37 @@ export function CadastroFreteiro() {
         queryKey: ["Freteiros", id ?? ""],
         queryFn: async () => await Freteiro.get(id ?? ""),
         saveFn: async (data) => {
-            if (id) {
-                data.id = id;
-                console.log(data);
-                return await Freteiro.update(data);
+            try {
+                let response = null;
+                if (id) {
+                    data.id = id;
+                    response = await Freteiro.update(data);
+                } else {
+                    response = await Freteiro.create(data);
+                }
+                if (response && response.id) {
+                    toast.success("Freteiro alterado com sucesso!");
+                } else {
+                    toast.success("Freteiro salvo com sucesso!");
+                }
+                return response;
+            } catch (error) {
+                toast.error("Ocorreu um erro ao salvar a freteiro");
+                throw error;
             }
-            return await Freteiro.create(data);
         },
         invalidateKeys: [["Freteiros"]]
     });
 
-    const camposLimpos = {
-        id: "",
-        nome: "",
-        fixo: 0,
-        percentual: 0,
-        prioridade: 0,
-        valor_min: 0,
-        valor_max: 0,
-        global: false,
-    };
+    const handleSave = () => {
+        if (!freteiroMutator.state.nome) {
+            toast.info("Por favor, preencha o nome do Freteiro!")
+            return;
+        }
 
-
-    const [freteiro, setFreteiro] = useState<IFreteiro>(camposLimpos);
-
-
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
         freteiroMutator.save();
+      
     };
-
-    const handleReset = () => {
-        setFreteiro(camposLimpos);
-    };
-
-
 
     const handleDelete = () => {
         if (id) {
@@ -74,8 +66,8 @@ export function CadastroFreteiro() {
         <Row>
             <Col className="body text-center">
                 <Row>
-                    <Col>
-                        <h1>{id ? "Atualizar Freteiro 15/02/2023" : "Cadastra Produto 15/02/2023"}</h1>
+                    <Col className="styleTitle">
+                        <h1 style={{ whiteSpace: 'nowrap' }}>{id ? "Atualizar Freteiro 15/02/2023" : "Cadastra Freteiro 15/02/2023"}</h1>
                     </Col>
                 </Row>
                 <Row className="menuFreteiro border">
@@ -91,7 +83,7 @@ export function CadastroFreteiro() {
 
                 <Row className="menuFreteiro border">
                     <Col>
-                        <Form onSubmit={handleSubmit} className="text-start">
+                        <Form className="text-start">
                             <Form.Group controlId="formNome" className="mb-3">
                                 <Form.Label><b>Nome:</b></Form.Label>
                                 <Form.Control
@@ -173,20 +165,8 @@ export function CadastroFreteiro() {
                             <center>
                                 <Row>
                                     <Col>
-                                        <Button variant="secondary" type="submit">
+                                        <Button variant="secondary" onClick={handleSave}>
                                             {id ? "Atualizar Freteiro" : "Cadastrar Freteiro"}
-                                        </Button>
-                                    </Col>
-                                    <Col>
-                                        {id ?
-                                            <Button variant="secondary" onClick={handleDelete}>
-                                                Deletar Freteiro
-                                            </Button>
-                                            : ""}
-                                    </Col>
-                                    <Col>
-                                        <Button variant="secondary" onClick={handleReset}>
-                                            Limpar Formulário
                                         </Button>
                                     </Col>
                                 </Row>

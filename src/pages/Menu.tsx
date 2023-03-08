@@ -6,18 +6,16 @@ interface IMenuProps<T extends { nome: string }> {
   links: { label: string, url: string }[];
   showSearch: boolean;
   onListSearch?: (filtered: T[]) => void;
-  onListRefresh?: () => void;
   listSearch?: T[];
 }
 
-export function Menu<T extends { nome: string; }>({ links, showSearch, onListRefresh, onListSearch, listSearch }: IMenuProps<T>) {
+export function Menu<T extends { nome: string; }>({ links, showSearch, onListSearch, listSearch }: IMenuProps<T>) {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeButton, setActiveButton] = useState("");
   const [selectedButton, setSelectedButton] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchList, setSearchList] = useState<T[]>(listSearch ?? []);
-  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const currentPathname = location.pathname;
@@ -28,19 +26,12 @@ export function Menu<T extends { nome: string; }>({ links, showSearch, onListRef
     }
   }, [location, links]);
 
-  const handleRefreshClick = () => {
- 
-    if (onListRefresh) {
-      onListRefresh();
-    }
-  };
 
   const handleSearch = () => {
     const filteredList = listSearch?.filter(item =>
       item.nome.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setSearchList(filteredList ?? []);
-    setCurrentPage(1);
 
     if (onListSearch) {
       onListSearch(filteredList ?? []);
@@ -58,14 +49,15 @@ export function Menu<T extends { nome: string; }>({ links, showSearch, onListRef
   };
 
   return (
-    <React.Fragment>
-      <Col className=" py-3 ">
+    <React.Fragment >
+      <Col className=" py-3">
         <div className="d-flex justify-content-start align-items-center">
           <div className="d-flex">
             {links.map((link, index) => {
               const active = selectedButton === index || activeButton === link.label;
               return (
                 <Button
+                  style={{ whiteSpace: 'nowrap' }}
                   variant="secondary"
                   key={index}
                   className={`me-3`}
@@ -80,13 +72,22 @@ export function Menu<T extends { nome: string; }>({ links, showSearch, onListRef
           {showSearch && (
             <div className="d-flex">
               <InputGroup className="me-3">
-                <FormControl style={{ width: "400px" }} type="text" placeholder="Pesquisar" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                <FormControl
+                  style={{ width: "400px" }}
+                  type="text"
+                  placeholder="Pesquisar"
+                  value={searchTerm}
+                  maxLength={120}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") {
+                      handleSearch();
+                    }
+                  }}
+                />
               </InputGroup>
               <Button className={`me-3`} variant="secondary" onClick={handleSearch}>
                 Pesquisar
-              </Button>
-              <Button className={`me-3`} variant="secondary" onClick={handleRefreshClick}>
-                Atualizar
               </Button>
             </div>
           )}

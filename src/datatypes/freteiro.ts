@@ -48,6 +48,7 @@ export class Freteiro implements IFreteiro {
 
 
   public static async create(freteiro: Freteiro) {
+
     console.log(freteiro);
     let options: RequestInit = {
       method: "POST",

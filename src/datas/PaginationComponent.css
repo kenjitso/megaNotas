@@ -3,17 +3,13 @@ td {
     vertical-align: middle;
 }
 
-a {
-    background-color:   rgb(218, 218, 218) !important;
-
+.pagination .page-link {
+    background-color: rgb(218, 218, 218);
 }
 
-a:hover {
-    background-color: #bbbbbb !important;
+.pagination .page-link:hover {
+    background-color: #bbbbbb;
 }
-
-
-
 
 .pagination .page-item.active .page-link {
     background-color: #32beff;

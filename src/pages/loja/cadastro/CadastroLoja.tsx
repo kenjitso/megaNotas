@@ -2,25 +2,17 @@ import FragmentLoading from '@/components/fragments/FragmentLoading';
 import InputNumero from '@/components/inputs/InputNumero';
 import InputTextoEsp from '@/components/inputs/InputTextoEsp';
 import { Menu } from '@/pages/Menu';
-import { Freteiro, IFreteiro } from '@/datatypes/freteiro';
-import { ILoja, Loja } from '@/datatypes/loja';
+import { Freteiro} from '@/datatypes/freteiro';
+import { Loja } from '@/datatypes/loja';
 import useQueryMutation from '@/hooks/useQueryMutation';
 import useQueryNotification from '@/hooks/useQueryNotification';
-import { Col, Row, Form, Button, Table } from 'react-bootstrap';
+import { Col, Row, Form, Button } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import { TableFreteiroLoja } from './TableFreteiroLoja';
+import { toast } from 'react-toastify';
 
 
 export function CadastroLoja() {
-
-    const camposLimpos = {
-        id: "",
-        nome: "",
-        cotacao: 0,
-        freteiro: [],
-        url_cotacao: "",
-        url_catalogo: "",
-    }
 
     const { id } = useParams<{ id: string }>();
 
@@ -28,11 +20,24 @@ export function CadastroLoja() {
         queryKey: ["Lojas", id ?? ""],
         queryFn: async () => await Loja.get(id ?? ""),
         saveFn: async (data) => {
-            if (id) {
-                data.id = id;
-                return await Loja.update(data);
+            try {
+                let response = null;
+                if (id) {
+                    data.id = id;
+                    response = await Loja.update(data);
+                } else {
+                    response = await Loja.create(data);
+                }
+                if (response && response.id) {
+                    toast.success("Loja alterada com sucesso!");
+                } else {
+                    toast.success("Loja salva com sucesso!");
+                }
+                return response;
+            } catch (error) {
+                toast.error("Ocorreu um erro ao salvar a loja");
+                throw error;
             }
-            return await Loja.create(data);
         },
         invalidateKeys: [["Lojas"]]
     });
@@ -45,21 +50,22 @@ export function CadastroLoja() {
         }
     });
 
-
-
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const handleSave = () => {
+        if (!lojaMutator.state.nome) {
+            toast.info("Por favor, preencha o nome da Loja!");
+            return;
+        }
         lojaMutator.save();
+
+
     };
-
-
 
     return (
         <Row>
             <Col className="body text-center">
                 <Row>
-                    <Col>
-                        <h1>{id ? "Atualizar Loja 15/02/2023" : "Cadastro Loja 15/02/2023"}</h1>
+                    <Col className="styleTitle">
+                        <h1 style={{ whiteSpace: 'nowrap' }}>{id ? "Atualizar Loja 15/02/2023" : "Cadastro Loja 15/02/2023"}</h1>
                     </Col>
                 </Row>
                 <Row>
@@ -67,11 +73,11 @@ export function CadastroLoja() {
                         links={[{ label: "Lista de Lojas", url: "/lojas" },
                         { label: "Cadastrar Loja", url: "/lojas/novo" }
                         ]}
-                        showSearch={true}
+                        showSearch={false}
                     />
                 </Row>
                 <Row className="menuloja border">
-                    <Form onSubmit={handleSubmit}>
+                    <Form>
                         <Row>
                             <Col>
                                 <Form.Group controlId="formNome" className="mb-3">
@@ -109,8 +115,8 @@ export function CadastroLoja() {
                                         type="text"
                                         value={lojaMutator.state.url_cotacao}
                                         onValueChange={(texto: string) => lojaMutator.update("url_cotacao", texto)}
-                                        placeholder="Insira a URL cotação" 
-                                        maxLength={120}/>
+                                        placeholder="Insira a URL cotação"
+                                        maxLength={120} />
                                 </Form.Group>
                                 <Form.Group
                                     controlId="formUrlCatalogo"
@@ -121,31 +127,28 @@ export function CadastroLoja() {
                                         type="text"
                                         value={lojaMutator.state.url_catalogo}
                                         onValueChange={(texto: string) => lojaMutator.update("url_catalogo", texto)}
-                                        placeholder="Insira a URL catálogo" 
-                                        maxLength={120}/>
+                                        placeholder="Insira a URL catálogo"
+                                        maxLength={120} />
                                 </Form.Group>
                             </Col>
-                            <Row >
-                                {!freteiroQuery.isLoading &&
-                                    <TableFreteiroLoja
-                                        listFreteiro={freteiroQuery.data ?? []}
-                                        onUpdateFreteiro={(freteiros: string[]) => lojaMutator.update("freteiro", freteiros)}
-                                        selectedFreteiros={lojaMutator.state.freteiro}
-                                    />
-                                }
-                                {freteiroQuery.isLoading && <FragmentLoading />}
-                            </Row>
+                            <center>
+                                <Row >
+                                    {!freteiroQuery.isLoading &&
+                                        <TableFreteiroLoja
+                                            listFreteiro={freteiroQuery.data ?? []}
+                                            onUpdateFreteiro={(freteiros: string[]) => lojaMutator.update("freteiro", freteiros)}
+                                            selectedFreteiros={lojaMutator.state.freteiro}
+                                        />
+                                    }
+                                    {freteiroQuery.isLoading && <FragmentLoading />}
+                                </Row>
+                            </center>
                         </Row>
                         <center>
                             <Row>
                                 <Col>
-                                    <Button variant="secondary" type="submit">
+                                    <Button variant="secondary" onClick={handleSave}>
                                         {id ? "Atualizar Loja" : "Cadastrar Loja"}
-                                    </Button>
-                                </Col>
-                                <Col>
-                                    <Button variant="secondary">
-                                        Limpar Formulario
                                     </Button>
                                 </Col>
                             </Row>

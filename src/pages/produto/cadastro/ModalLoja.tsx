@@ -1,9 +1,10 @@
 import InputNumero from "@/components/inputs/InputNumero";
-import { ILoja, Loja } from "@/datatypes/loja";
+import { Loja } from "@/datatypes/loja";
 import { IProdutoLoja } from "@/datatypes/produto";
 import useQueryNotification from "@/hooks/useQueryNotification";
 import React, { useState } from "react";
-import { Button, Modal, Form, Row, Col, Table } from "react-bootstrap";
+import { Button, Modal, Form, Row, Table } from "react-bootstrap";
+import { toast } from "react-toastify";
 
 interface IProps {
   lojas: IProdutoLoja[];
@@ -28,6 +29,24 @@ export function ModalLoja({ lojas, onUpdate, show, onHide }: IProps) {
 
 
   const handleSalvarLoja = () => {
+    const codigosVazios = internal.filter((item) => !item.codigo);
+    const lojasVazias = internal.filter((item) => !item.idloja);
+    const precoVazios = internal.filter((item) => !item.preco);
+
+    if (codigosVazios.length > 0) {
+      toast.info("Preencha o campo Codigo!");
+      return;
+    }
+    if (lojasVazias.length > 0) {
+      toast.info("Selecione a Loja!");
+      return;
+    }
+    if (precoVazios.length > 0) {
+      toast.info("Preencha o campo Preço!");
+      return;
+    }
+
+
     onUpdate(internal);
     onHide();
   };
@@ -86,7 +105,8 @@ export function ModalLoja({ lojas, onUpdate, show, onHide }: IProps) {
                         type="text"
                         name="codigo"
                         value={item.codigo}
-                        onChange={(event) => handleCodigoChange(event.target.value, index)} />
+                        onChange={(event) => handleCodigoChange(event.target.value, index)}
+                        required />
                     </td>
                     <td>
                       <Form.Select

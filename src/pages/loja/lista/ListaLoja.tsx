@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
-import { Button, Col, Row, Table } from "react-bootstrap";
+import { Col, Row, Table } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { PaginationComponent } from "../../../datas/PaginationComponent";
 import { Menu } from "@/pages/Menu";
 import { ILoja, Loja } from "@/datatypes/loja";
-
-
+import { abreviaLink } from "@/components/AbreviaLink";
 
 export function ListaLoja() {
     const location = useLocation();
@@ -31,7 +30,7 @@ export function ListaLoja() {
     };
 
 
-    const { isLoading, data, isError, refetch } = useQuery(["lojas"], async () => {
+    const { isLoading, data} = useQuery(["Lojas"], async () => {
         const delay = new Promise(res => setTimeout(res, 3000));
         await delay;
         const loja = await Loja.search();
@@ -40,15 +39,6 @@ export function ListaLoja() {
     });
 
     const [listFiltred, setListFiltred] = useState<Loja[] | null>(data ?? []);
-    const [isRefreshing, setIsRefreshing] = useState(false);
-
-    const handleListRefresh = async () => {
-        setIsRefreshing(true);
-        await refetch();
-        setIsRefreshing(false);
-        setCurrentPage(1);
-    };
-
 
     const listFiltered = (filtered: Loja[]) => {
 
@@ -60,8 +50,8 @@ export function ListaLoja() {
         <Row>
             <Col className='body text-center'>
                 <Row>
-                    <Col>
-                        <h1>loja Lista Notas 15/02/2023</h1>
+                    <Col className="styleTitle">
+                        <h1 style={{ whiteSpace: 'nowrap' }}>loja Lista Notas 15/02/2023</h1>
 
                     </Col>
                 </Row>
@@ -72,12 +62,11 @@ export function ListaLoja() {
                         ]}
                         listSearch={data ?? []}
                         onListSearch={listFiltered}
-                        onListRefresh={handleListRefresh}
                         showSearch={true}
                     />
                 </Row>
                 <Row >
-                    {!isLoading && !isRefreshing && (
+                    {!isLoading && (
                         <Tableloja
                             listLoja={listFiltred ?? []}
                             pageSize={pageSize}
@@ -86,8 +75,7 @@ export function ListaLoja() {
                     {isLoading && <FragmentLoading />}
                 </Row>
                 <Row>
-                    {(isLoading || isRefreshing) && <FragmentLoading />}
-                    {!isLoading && !isRefreshing && (<PaginationComponent<ILoja>
+                    {!isLoading && (<PaginationComponent<ILoja>
                         items={listFiltred ?? []}
                         pageSize={pageSize}
                         onPageChange={handlePageChange}
@@ -102,7 +90,6 @@ export function ListaLoja() {
 
 }
 
-
 interface IProps {
     currentPage: number;
     listLoja: ILoja[] | null;
@@ -113,7 +100,7 @@ interface IProps {
 function Tableloja({ listLoja, currentPage, pageSize }: IProps) {
 
     const navigate = useNavigate();
-    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
     const [sortBy, setSortBy] = useState<keyof ILoja>("id");
 
 
@@ -147,7 +134,7 @@ function Tableloja({ listLoja, currentPage, pageSize }: IProps) {
                 valueB = capitalizeFirstLetter(b[sortBy] as string);
             }
 
-            if (sortOrder === "asc") {
+            if (sortOrder === "desc") {
                 return valueA > valueB ? 1 : -1;
             } else {
                 return valueB > valueA ? 1 : -1;
@@ -156,12 +143,16 @@ function Tableloja({ listLoja, currentPage, pageSize }: IProps) {
         : [];
 
 
-
     return (
         <Table striped bordered hover>
             <thead>
                 <tr>
-                    <th>
+                    <th >
+                        <div className="th100">
+                            <span>Editar:</span>
+                        </div>
+                    </th>
+                    <th >
                         <div className="th100">
                             <span>ID:</span>
                             <span onClick={() => handleSort("id")} className="headTablesArrows">
@@ -170,7 +161,7 @@ function Tableloja({ listLoja, currentPage, pageSize }: IProps) {
                         </div>
                     </th>
                     <th>
-                        <div className="th100">
+                        <div className="th250">
                             <span>Nome:</span>
                             <span onClick={() => handleSort("nome")} className="headTablesArrows">
                                 {sortBy === "nome" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
@@ -186,7 +177,7 @@ function Tableloja({ listLoja, currentPage, pageSize }: IProps) {
                         </div>
                     </th>
                     <th>
-                        <div className="th100">
+                        <div className="th250">
                             <span>URL Cotação:</span>
                             <span onClick={() => handleSort("url_cotacao")} className="headTablesArrows">
                                 {sortBy === "url_cotacao" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
@@ -194,7 +185,7 @@ function Tableloja({ listLoja, currentPage, pageSize }: IProps) {
                         </div>
                     </th>
                     <th>
-                        <div className="th100">
+                        <div className="th250">
                             <span>URL Catálogo:</span>
                             <span onClick={() => handleSort("url_catalogo")} className="headTablesArrows">
                                 {sortBy === "url_catalogo" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
@@ -221,12 +212,23 @@ function Tableloja({ listLoja, currentPage, pageSize }: IProps) {
                             ) as unknown as ILoja[]
                         )
                         .map((loja, index) => (
-                            <tr className="tablesCss" key={index} onClick={() => navigate(`/lojas/${loja.id}`)}>
+                            <tr className="tablesCss" key={index}>
+                                <td>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            Number(loja.id) !== 0 && navigate(`/lojas/${loja.id}`);
+                                        }}
+                                        className="btn btn-primary"
+                                    >
+                                        Editar
+                                    </button>
+                                </td>
                                 <td><b>{loja.id}</b></td>
                                 <td><b className="th250">{loja.nome}</b></td>
-                                <td className="tdValue"><b>R$: {loja.cotacao.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
-                                <td><b>{loja.url_cotacao}</b></td>
-                                <td><b>{loja.url_catalogo}</b></td>
+                                <td className="tdValue"><b>R$: {(loja.cotacao / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
+                                <td><a href={loja.url_cotacao} target="_blank">{abreviaLink(loja.url_cotacao,40)}</a></td>
+                                <td><a href={loja.url_catalogo} target="_blank">{abreviaLink(loja.url_catalogo,40)}</a></td>
                             </tr>
                         ))
                     : null}

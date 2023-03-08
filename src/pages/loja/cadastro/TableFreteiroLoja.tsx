@@ -43,11 +43,11 @@ export function TableFreteiroLoja({ listFreteiro, selectedFreteiros, onUpdateFre
                         <td><input type="checkbox" onChange={() => handleFreteiroSelect(freteiro)} checked={selectedIds.has(freteiro.id)} /></td>
                         <td><b>{freteiro.id}</b></td>
                         <td><b className="th250">{freteiro.nome}</b></td>
-                        <td><b>{freteiro.fixo}</b></td>
-                        <td><b>{freteiro.percentual}%</b></td>
+                        <td className="tdValue"><b>R$: {(freteiro.fixo/100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
+                        <td className="tdValue"><b>{freteiro.percentual}%</b></td>
                         <td><b>{freteiro.prioridade}</b></td>
-                        <td className="tdValue"><b>R$: {freteiro.valor_min.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
-                        <td className="tdValue"><b>R$: {freteiro.valor_max.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
+                        <td className="tdValue"><b>R$: {(freteiro.valor_min/100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
+                        <td className="tdValue"><b>R$: {(freteiro.valor_max/100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
                         <td><b>{freteiro.global === true ? "Sim" : freteiro.global === false ? "Não" : ""}</b></td>
                     </tr>
                 ))}

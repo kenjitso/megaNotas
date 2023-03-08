@@ -7,22 +7,26 @@ interface Props {
   value: string;
   onValueChange: (value: string) => void;
   maxLength?: number;
+  minLength?: number;
+  placeholder?: string;
 }
 
-const InputTextoEsp: React.ForwardRefRenderFunction<HTMLInputElement, Props> = ({ 
-    autoFocus = false, 
-    className = "", 
-    style = {}, 
-    value, 
-    onValueChange,
-    maxLength = 60, // valor padrão de 12 caracteres
+const InputTextoEsp: React.ForwardRefRenderFunction<HTMLInputElement, Props> = ({
+  autoFocus = false,
+  className = "",
+  style = {},
+  value,
+  onValueChange,
+  maxLength = 60, // valor padrão de 60 caracteres
+  minLength = 0, // valor padrao de 5 caracteres
+  placeholder = "Insira o texto aqui", // valor padrao
 },
   ref
 ) => {
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newValue = event.target.value.replace(/[^a-zA-Z\-_.\/<>,'" ]/g, "");
-        onValueChange(newValue);
-    };
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value.replace(/[^a-zA-Z0-9\-_.\/<>,'" ]/g, "");
+    onValueChange(event.target.value);
+  };
 
   return (
     <input
@@ -33,7 +37,9 @@ const InputTextoEsp: React.ForwardRefRenderFunction<HTMLInputElement, Props> = (
       style={style}
       value={value}
       maxLength={maxLength}
+      minLength={minLength}
       onChange={handleChange}
+      placeholder={placeholder}
     />
   );
 };

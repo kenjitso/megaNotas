@@ -31,23 +31,13 @@ export function ListaFreteiro() {
     };
 
 
-    const { isLoading, data, isError, refetch } = useQuery(["freteiro"], async () => {
-        const delay = new Promise(res => setTimeout(res, 3000));
-        await delay;
+    const { isLoading, data, isError } = useQuery(["Freteiros"], async () => {
         const freteiro = await Freteiro.search();
         setListFiltred(freteiro);
         return freteiro;
     });
 
     const [listFiltred, setListFiltred] = useState<Freteiro[] | null>(data ?? []);
-    const [isRefreshing, setIsRefreshing] = useState(false);
-
-    const handleListRefresh = async () => {
-        setIsRefreshing(true);
-        await refetch();
-        setIsRefreshing(false);
-        setCurrentPage(1);
-    };
 
     const listFiltered = (filtered: Freteiro[]) => {
         setListFiltred(filtered);
@@ -57,8 +47,8 @@ export function ListaFreteiro() {
         <Row>
             <Col className='body text-center'>
                 <Row>
-                    <Col>
-                        <h1>Freteiro Lista Notas 15/02/2023</h1>
+                    <Col  className="styleTitle">
+                        <h1 style={{ whiteSpace: 'nowrap' }}>Freteiro Lista Notas 15/02/2023</h1>
                     </Col>
                 </Row>
                 <Row>
@@ -68,20 +58,19 @@ export function ListaFreteiro() {
                         ]}
                         showSearch={true}
                         listSearch={data ?? []}
-                        onListRefresh={handleListRefresh}
                         onListSearch={listFiltered}
                     />
 
 
-                    {!isLoading && !isRefreshing && (
+                    {!isLoading && (
                         <TableFreteiro
                             listFreteiro={listFiltred ?? []}
                             pageSize={pageSize}
                             currentPage={currentPage}
                         />
                     )}
-                    {(isLoading || isRefreshing) && <FragmentLoading />}
-                    {!isLoading && !isRefreshing && (
+                    {isLoading && <FragmentLoading />}
+                    {!isLoading && (
                         <PaginationComponent<IFreteiro>
                             items={listFiltred ?? []}
                             pageSize={pageSize}
@@ -105,7 +94,7 @@ interface IProps {
 }
 
 function TableFreteiro({ listFreteiro, currentPage, pageSize }: IProps) {
-    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
     const [sortBy, setSortBy] = useState<keyof IFreteiro>("id");
     const navigate = useNavigate();
 
@@ -125,17 +114,23 @@ function TableFreteiro({ listFreteiro, currentPage, pageSize }: IProps) {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
-    const parsedList = listFreteiro?.map((freteiro) => ({
-        ...freteiro,
-        id: parseInt(freteiro.id)
-    }));
+    const sortedList = listFreteiro
+        ? [...listFreteiro].sort((a, b) => {
+            let valueA: string | number = a[sortBy].toString();
+            let valueB: string | number = b[sortBy].toString();
 
-    const sortedList = parsedList
-        ? [...parsedList].sort((a, b) => {
-            const valueA = sortBy === "nome" ? capitalizeFirstLetter(a[sortBy] as string) : a[sortBy];
-            const valueB = sortBy === "nome" ? capitalizeFirstLetter(b[sortBy] as string) : b[sortBy];
+            if (sortBy === "id") {
+                valueA = parseInt(a[sortBy] as string);
+                valueB = parseInt(b[sortBy] as string);
+            } else if (sortBy === "fixo" || sortBy === "percentual" || sortBy === "prioridade" || sortBy === "valor_min" || sortBy === "valor_max") {
+                valueA = parseFloat(a[sortBy] as unknown as string);
+                valueB = parseFloat(b[sortBy] as unknown as string);
+            } else {
+                valueA = capitalizeFirstLetter(a[sortBy] as string);
+                valueB = capitalizeFirstLetter(b[sortBy] as string);
+            }
 
-            if (sortOrder === "asc") {
+            if (sortOrder === "desc") {
                 return valueA > valueB ? 1 : -1;
             } else {
                 return valueB > valueA ? 1 : -1;
@@ -144,10 +139,16 @@ function TableFreteiro({ listFreteiro, currentPage, pageSize }: IProps) {
         : [];
 
 
+
     return (
         <Table striped bordered hover>
             <thead>
                 <tr>
+                <th >
+                        <div className="th100">
+                            <span>Editar:</span>
+                        </div>
+                    </th>
                     <th>
                         <div className="th100">
                             <span>ID:</span>
@@ -231,17 +232,28 @@ function TableFreteiro({ listFreteiro, currentPage, pageSize }: IProps) {
                                     valor_max: 0,
                                     global: false,
                                 })
-                            ).map((freteiro, index) => ({ ...freteiro, id: index + listFreteiro.length + 1 }))
+                            ) as unknown as IFreteiro[]
                         )
                         .map((freteiro, index) => (
-                            <tr className="tablesCss" key={index} onClick={() => navigate(`/freteiros/${freteiro.id}`)}>
+                            <tr className="tablesCss" key={index}>
+                                    <td>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            Number(freteiro.id) !== 0 && navigate(`/freteiros/${freteiro.id}`);
+                                        }}
+                                        className="btn btn-primary"
+                                    >
+                                        Editar
+                                    </button>
+                                </td>
                                 <td><b>{freteiro.id}</b></td>
                                 <td><b className="th250">{freteiro.nome}</b></td>
-                                <td className="tdValue"><b>R$: {freteiro.fixo.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
+                                <td className="tdValue"><b>R$: {(freteiro.fixo / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
                                 <td className="tdValue"><b>{freteiro.percentual}%</b></td>
                                 <td><b>{freteiro.prioridade}</b></td>
-                                <td className="tdValue"><b>R$: {freteiro.valor_min.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
-                                <td className="tdValue"><b>R$: {freteiro.valor_max.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
+                                <td className="tdValue"><b>R$: {(freteiro.valor_min / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
+                                <td className="tdValue"><b>R$: {(freteiro.valor_max / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
                                 <td><b>{freteiro.global === true ? "Sim" : freteiro.global === false ? "Não" : ""}</b></td>
                             </tr>
                         ))

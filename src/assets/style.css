@@ -5,29 +5,34 @@
   cursor: pointer;
 }
 
-  
+
   .th100 {
     min-width: 100px;
     display: flex;
     justify-content: space-between;
+    white-Space: nowrap;
   }
 
   .th150 {
     min-width: 150px;
     display: flex;
     justify-content: space-between;
+    white-Space: nowrap;
   }
 
   .th200 {
     min-width: 200px;
     display: flex;
     justify-content: space-between;
+    white-Space: nowrap;
   }
 
   .th250 {
     min-width: 250px;
     display: flex;
     justify-content: space-between;
+    white-Space: nowrap;
+
   }
 
 

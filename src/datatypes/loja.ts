@@ -44,9 +44,6 @@ export class Loja implements ILoja {
 
     }
 
- 
-
-
     public static async search() {
         let options: RequestInit = {
           method: "GET",
@@ -80,7 +77,6 @@ export class Loja implements ILoja {
         };
         let response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas`, options);
         let responseData = await response.json();
-        console.log(responseData);
         return responseData;
     }
 
@@ -95,9 +91,7 @@ export class Loja implements ILoja {
             body: JSON.stringify(loja)
         };
         let response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas/${loja.id}`, options);
-        console.log(response);
         let responseData = await response.json();
-        console.log(responseData);
         return responseData;
     }
 

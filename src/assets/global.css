@@ -1,7 +1,11 @@
 .body {
     height: 100%;
-  width: 100%;
+    width: 100%;
 }
+
+.svg-hover:hover {
+    fill: blue;
+  }
 
 .menuCss {
     height: 100vh;
@@ -9,14 +13,19 @@
     min-width: 290px;
     max-width: 290px;
     background-color: rgb(218, 218, 218);
-  
+    z-index: 9999;
+    position: fixed;
 }
 
-.tablesCss{
-    cursor: pointer;
-
+.styleTitle{
+background-color: #32beff;
+width: 100%;
+max-Width:100%
 }
 
+.tablesCss {
+   
+}
 
 .logoEmprise {
     user-select: none;
@@ -47,9 +56,16 @@
     font-weight: bold;
 }
 
+.table-link{
+background-color: none !important;
+
+}
+
+
 a {
     text-decoration: none;
-}
+  }
+
 
 .iconNav {
     margin-left: 10px;
@@ -62,9 +78,6 @@ a {
     cursor: pointer;
     height: 100px;
 }
-
-
-
 
 html {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', Verdana, sans-serif;
@@ -152,5 +165,3 @@ html {
     background-color: #e7e7e7;
     color: black;
 }
-
-

@@ -1,7 +1,7 @@
 import { Col, Container, Nav, Navbar, Row, Stack } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Image from "react-bootstrap/Image";
-import reactLogo from "@/assets/megaNotas.svg";
+import reactLogo from "@/assets/ratata.svg";
 import { Icons } from "@/components/icons/icons";
 
 interface props {
@@ -10,8 +10,8 @@ interface props {
 
 export function MenuMega({ children }: props) {
   return (
-    <Container fluid>
-      <Row style={{ flexWrap: "nowrap" }}>
+    <Container fluid >
+      <Row style={{ flexWrap: "nowrap"  }}>
         <Col className="menuCss top-0 start-0">
           <Navbar>
             <Stack gap={5}>
@@ -21,16 +21,6 @@ export function MenuMega({ children }: props) {
                 </Col>
               </Nav.Item>
               <div className="">
-                <Nav.Item>
-                  <Link to="/">
-                    <Row className="buttonNav">
-                      <Col className="iconNav ">
-                        <Icons tipo="casa" />
-                      </Col>
-                      <Col className="textNav ">Mega Preço</Col>
-                    </Row>
-                  </Link>
-                </Nav.Item>
                 <Nav.Item>
                   <Link to="/lojas">
                     <Row className="buttonNav">
@@ -65,7 +55,7 @@ export function MenuMega({ children }: props) {
             </Stack>
           </Navbar>
         </Col>
-        <Col>
+        <Col style={{ marginLeft: "290px" }} >
           {children}
         </Col>
       </Row>

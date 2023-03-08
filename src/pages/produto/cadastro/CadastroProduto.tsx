@@ -1,19 +1,18 @@
-import { Col, Row, Table } from "react-bootstrap";
+import { Col, Row} from "react-bootstrap";
 import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Menu } from "@/pages/Menu";
 import { useParams } from "react-router-dom";
-import { IProduto, Produto } from "@/datatypes/produto";
+import { Produto } from "@/datatypes/produto";
 import { ModalLoja } from "./ModalLoja";
 import useQueryMutation from "@/hooks/useQueryMutation";
-import React from "react";
 import InputNumero from "@/components/inputs/InputNumero";
 import InputTextoEsp from "@/components/inputs/InputTextoEsp";
+import { toast } from "react-toastify";
 
 export function CadastroProduto() {
 
     const { id } = useParams<{ id: string }>();
-
 
     const [showModal, setShowModal] = useState(false);
 
@@ -21,52 +20,49 @@ export function CadastroProduto() {
         queryKey: ["Produtos", id ?? ""],
         queryFn: async () => await Produto.get(id ?? ""),
         saveFn: async (data) => {
-            if (id) {
-                data.id = id;
-                return await Produto.update(data);
+            try {
+                let response = null;
+                if (id) {
+                    data.id = id;
+                    response = await Produto.update(data);
+                } else {
+                    response = await Produto.create(data);
+                }
+                if (response && response.id) {
+                    toast.success("Produto alterado com sucesso!");
+                } else {
+                    toast.success("Produto salvo com sucesso!");
+                }
+                return response;
+            } catch (error) {
+                toast.error("Ocorreu um erro ao salvar a produto");
+                throw error;
             }
-            return await Produto.create(data);
         },
         invalidateKeys: [["Produtos"]]
     });
 
-    const camposLimpos = {
-        id: "",
-        nome: "",
-        url_catalogo_premium: "",
-        url_catalogo_classic: "",
-        comissao_premium: 0,
-        comissao_classic: 0,
-        frete: 0,
-        preco_ml_premium: 0,
-        preco_ml_classic: 0,
-        lojas: [
-            {
-                codigo: "",
-                idloja: "",
-                preco: 0,
-                ultima_atualizacao: "",
-            },
-        ],
-    };
-
-    const [produto, setProduto] = useState<IProduto>(camposLimpos);
-
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const handleSave = () => {
+        if (!produtoMutator.state.nome) {
+            toast.info("Por favor, preencha o nome do Produto!");
+            return;
+        }
+        const hasEmptyFields = produtoMutator.state.lojas.some(
+            (loja) => !loja.codigo || !loja.idloja || !loja.preco
+        );
+        if (hasEmptyFields) {
+            toast.info("Preencha todos os campos da lista de Lojas!");
+            return;
+        }
         produtoMutator.save();
-    };
-
-    const handleReset = () => {
-        setProduto(camposLimpos);
     };
 
     return (
         <Row>
             <Col className="body text-center">
                 <Row>
-                    <Col>
-                        <h1> {id ? "Atualizar Produto 15/02/2023" : "Cadastra Produto 15/02/2023"}</h1>
+                    <Col className="styleTitle">
+                        <h1 style={{ whiteSpace: 'nowrap' }}> {id ? "Atualizar Produto 15/02/2023" : "Cadastra Produto 15/02/2023"}</h1>
                     </Col>
                 </Row>
                 <Row className="menuProduto">
@@ -79,7 +75,7 @@ export function CadastroProduto() {
                     />
                 </Row>
                 <Row className="menuProduto border">
-                    <Form onSubmit={handleSubmit} className="text-start">
+                    <Form className="text-start">
                         <Row>
                             <Row><h1 className="text-center">Produto</h1></Row>
                             <Col>
@@ -91,10 +87,11 @@ export function CadastroProduto() {
                                         title="Por favor, insira apenas caracteres não numéricos"
                                         value={produtoMutator.state.nome}
                                         onValueChange={(texto: string) => produtoMutator.update("nome", texto)}
-                                        placeholder="Insira o nome do produto" 
+                                        placeholder="Insira o nome do produto"
                                         maxLength={60}
-                              
-                                        />
+                                        minLength={5}
+
+                                    />
                                 </Form.Group>
                                 <Form.Group controlId="formPrecoMlPremium" className="mb-3">
                                     <Form.Label><b>Preço Mercado Livre Premium:</b></Form.Label>
@@ -184,13 +181,8 @@ export function CadastroProduto() {
                         <center>
                             <Row>
                                 <Col>
-                                    <Button variant="secondary" type="submit">
+                                    <Button variant="secondary" onClick={handleSave}>
                                         {id ? "Atualizar Produto" : "Cadastrar Produto"}
-                                    </Button>
-                                </Col>
-                                <Col>
-                                    <Button variant="secondary" onClick={handleReset}>
-                                        Limpar Formulario
                                     </Button>
                                 </Col>
                             </Row>
