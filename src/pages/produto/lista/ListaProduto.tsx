@@ -8,6 +8,7 @@ import { PaginationComponent } from "@/datas/PaginationComponent";
 import { IProduto, Produto } from "@/datatypes/produto";
 import "@/assets/style.css"
 import { abreviaLink } from "@/components/AbreviaLink";
+import { Icons } from "@/components/icons/icons";
 
 export function ListaProduto() {
     const location = useLocation();
@@ -50,12 +51,7 @@ export function ListaProduto() {
     return (
 
         <Row>
-            <Col className='body text-center'>
-                <Row>
-                    <Col className="styleTitle">
-                        <h1 style={{ whiteSpace: 'nowrap' }}>Produto Lista Notas 15/02/2023</h1>
-                    </Col>
-                </Row>
+            <Col>
                 <Row>
                     <Menu
                         links={[
@@ -65,6 +61,7 @@ export function ListaProduto() {
                         listSearch={data ?? []}
                         onListSearch={listFiltered}
                         showSearch={true}
+                        showCadAtu={false}                
                     />
                 </Row><Row>
                     {!isLoading && (
@@ -152,30 +149,25 @@ function TableProduto({ listProduto, currentPage, pageSize }: IProps) {
         <Table striped bordered hover >
             <thead>
                 <tr>
-                    <th >
-                        <div className="th100">
-                            <span>Editar:</span>
-                        </div>
-                    </th>
-                    <th >
-                        <div className="th100">
+                    <th className="th70">
+                        <div className="thArrow">
                             <span>ID:</span>
                             <span onClick={() => handleSort("id")} className="headTablesArrows">
                                 {sortBy === "id" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
                         </div>
                     </th>
-                    <th >
-                        <div className="th250">
+                    <th className="th200">
+                        <div className="thArrow">
                             <span>Nome:</span>
                             <span onClick={() => handleSort("nome")} className="headTablesArrows">
                                 {sortBy === "nome" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
                         </div>
                     </th>
-                    <th>
-                        <div className="th150">
-                            <span>Preço ML Classico:</span>
+                    <th className="th170">
+                        <div className="thArrow">
+                            <span>Preço Classico:</span>
                             <span onClick={() => handleSort("preco_ml_classic")} className="headTablesArrows">
                                 {sortBy === "preco_ml_classic" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
@@ -183,57 +175,36 @@ function TableProduto({ listProduto, currentPage, pageSize }: IProps) {
                     </th>
 
 
-                    <th>
-                        <div className="th150">
-                            <span>Preço ML Premium:</span>
+                    <th className="th170">
+                        <div className="thArrow">
+                            <span>Preço Premium:</span>
                             <span onClick={() => handleSort("preco_ml_premium")} className="headTablesArrows">
                                 {sortBy === "preco_ml_premium" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
                         </div>
                     </th>
 
-                    <th>
-                        <div className="th150">
-                            <span>Frete:</span>
-                            <span onClick={() => handleSort("frete")} className="headTablesArrows">
-                                {sortBy === "frete" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
-                            </span>
-                        </div>
-                    </th>
 
-                    <th>
-                        <div className="th100">
-                            <span>Comissão Classico:</span>
+
+                    <th className="th130">
+                        <div className="thArrow">
+                            <span>% Classico:</span>
                             <span onClick={() => handleSort("comissao_classic")} className="headTablesArrows">
                                 {sortBy === "comissao_classic" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
                         </div>
                     </th>
-                    <th>
-                        <div className="th100">
-                            <span>Comissão Premium:</span>
+                    <th className="th130">
+                        <div className="thArrow">
+                            <span>% Premium:</span>
                             <span onClick={() => handleSort("comissao_premium")} className="headTablesArrows">
                                 {sortBy === "comissao_premium" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
                         </div>
                     </th>
-
-                    <th>
-                        <div className="th250">
-                            <span >URL Catálogo Clássico:</span>
-                            <span onClick={() => handleSort("url_catalogo_classic")} className="headTablesArrows">
-                                {sortBy === "url_catalogo_classic" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
-                            </span>
-                        </div>
+                    <th className="th40">
                     </th>
-
-                    <th>
-                        <div className="th150">
-                            <span> URL Catálogo Premium:</span>
-                            <span onClick={() => handleSort("url_catalogo_premium")} className="headTablesArrows">
-                                {sortBy === "url_catalogo_premium" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
-                            </span>
-                        </div>
+                    <th className="th40">
                     </th>
                 </tr>
             </thead>
@@ -249,36 +220,35 @@ function TableProduto({ listProduto, currentPage, pageSize }: IProps) {
                                     nome: "",
                                     preco_ml_classic: "",
                                     preco_ml_premium: "",
-                                    frete: "",
                                     comissao_classic: "",
                                     comissao_premium: "",
-                                    url_catalogo_classic: "",
-                                    url_catalogo_premium: "",
                                 })
                             ) as unknown as IProduto[]
                         )
                         .map((produtos, index) => (
                             <tr className="tablesCss" key={index}>
-                                <td>
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            Number(produtos.id) !== 0 && navigate(`/produtos/${produtos.id}`);
-                                        }}
-                                        className="btn btn-primary"
-                                    >
-                                        Editar
-                                    </button>
-                                </td>
                                 <td><b>{produtos.id}</b></td>
                                 <td><b className="th250">{produtos.nome}</b></td>
                                 <td className="tdValue"><b>R$: {(produtos.preco_ml_classic / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
                                 <td className="tdValue"><b>R$: {(produtos.preco_ml_premium / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
-                                <td className="tdValue"><b>R$: {(produtos.frete / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
                                 <td className="tdValue"><b>{produtos.comissao_classic}%</b></td>
                                 <td className="tdValue"><b>{produtos.comissao_premium}%</b></td>
-                                <td><a href={produtos.url_catalogo_classic} target="_blank">{abreviaLink(produtos.url_catalogo_classic,30)}</a></td>
-                                <td><a href={produtos.url_catalogo_premium} target="_blank">{abreviaLink(produtos.url_catalogo_premium,30)}</a></td>
+                                <td onClick={(e) => {
+                                    e.stopPropagation();
+                                    Number(produtos.id) !== 0 && navigate(`/produtos/${produtos.id}`);
+                                }}
+                                    role="button"
+                                    aria-label="Desativar Loja">
+                                    <Icons tipo="edit" />
+                                </td>
+                                <td onClick={(e) => {
+                                    e.stopPropagation();
+                                    Number(produtos.id) !== 0 && navigate(`/produtos/${produtos.id}`);
+                                }}
+                                    role="button"
+                                    aria-label="Desativar Produto">
+                                    <Icons tipo="trash" />
+                                </td>
                             </tr>
                         ))
                     : null}

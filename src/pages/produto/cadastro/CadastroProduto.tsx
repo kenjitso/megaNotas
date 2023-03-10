@@ -2,7 +2,7 @@ import { Col, Row} from "react-bootstrap";
 import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Menu } from "@/pages/Menu";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Produto } from "@/datatypes/produto";
 import { ModalLoja } from "./ModalLoja";
 import useQueryMutation from "@/hooks/useQueryMutation";
@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 export function CadastroProduto() {
 
     const { id } = useParams<{ id: string }>();
-
+    const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
 
     const produtoMutator = useQueryMutation(new Produto(), {
@@ -60,11 +60,6 @@ export function CadastroProduto() {
     return (
         <Row>
             <Col className="body text-center">
-                <Row>
-                    <Col className="styleTitle">
-                        <h1 style={{ whiteSpace: 'nowrap' }}> {id ? "Atualizar Produto 15/02/2023" : "Cadastra Produto 15/02/2023"}</h1>
-                    </Col>
-                </Row>
                 <Row className="menuProduto">
                     <Menu
                         links={[
@@ -72,6 +67,11 @@ export function CadastroProduto() {
                             { label: "Cadastrar Produto", url: "/produtos/novo" }
                         ]}
                         showSearch={false}
+                        showCadAtu={true}
+                        onHandleSave={handleSave}
+                        buttonStats={id ? "Atualiza" : "Cadastra"}  
+                        onHandleToList={()=>{navigate("/produtos")}}                    
+                        
                     />
                 </Row>
                 <Row className="menuProduto border">

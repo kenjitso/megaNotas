@@ -11,7 +11,6 @@ interface IProps {
   onUpdate: (lojas: IProdutoLoja[]) => void;
   show: boolean;
   onHide: () => void;
-
 }
 
 export function ModalLoja({ lojas, onUpdate, show, onHide }: IProps) {
@@ -26,7 +25,6 @@ export function ModalLoja({ lojas, onUpdate, show, onHide }: IProps) {
     queryKey: ["Lojas"],
     queryFn: async () => await Loja.search(),
   });
-
 
   const handleSalvarLoja = () => {
     const codigosVazios = internal.filter((item) => !item.codigo);
@@ -46,13 +44,20 @@ export function ModalLoja({ lojas, onUpdate, show, onHide }: IProps) {
       return;
     }
 
-
     onUpdate(internal);
     onHide();
   };
 
   const handleAddItem = () => {
-    setInternal([...internal, { codigo: "", idloja: "", preco: 0, ultima_atualizacao: new Date().toISOString() }]);
+    setInternal([
+      ...internal,
+      {
+        codigo: "",
+        idloja: "",
+        preco: 0,
+        ultima_atualizacao: new Date().toISOString(),
+      },
+    ]);
   };
 
   const handleRemoveItem = (index: number) => {
@@ -75,6 +80,7 @@ export function ModalLoja({ lojas, onUpdate, show, onHide }: IProps) {
     novosItens[index].idloja = idloja;
     setInternal(novosItens);
   };
+
   const handlePrecoChange = (preco: number, index: number) => {
     const novosItens = [...internal];
     novosItens[index].preco = preco;
@@ -83,72 +89,76 @@ export function ModalLoja({ lojas, onUpdate, show, onHide }: IProps) {
 
   return (
     <React.Fragment>
-      <Modal size="lg" show={show} onHide={onHide}>
-        <Modal.Header closeButton>
-          <Modal.Title>Loja</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Row>
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Codigo</th>
-                  <th>Produto</th>
-                  <th>Preço</th>
-                </tr>
-              </thead>
-              <tbody>
-                {internal.map((item, index) => (
-                  <tr key={index}>
-                    <td>
-                      <Form.Control
-                        type="text"
-                        name="codigo"
-                        value={item.codigo}
-                        onChange={(event) => handleCodigoChange(event.target.value, index)}
-                        required />
-                    </td>
-                    <td>
-                      <Form.Select
-                        value={internal[index].idloja || ""}
-                        onChange={(event) => handleLojaChange(event.target.value, index)}>
-                        <option
-                          value="">Selecione</option>
-                        {lojasQuery.data?.map((loja) => (
-                          <option value={loja.nome} key={loja.id}>{loja.nome}</option>
-                        ))}
-                      </Form.Select>
-                    </td>
-                    <td>
-                      <Form.Control
-                        as={InputNumero}
-                        type="number"
-                        value={item.preco}
-                        onValueChange={(valor: number) => handlePrecoChange(valor, index)} />
-                    </td>
-                    <td>
-                      <Button variant="danger" onClick={() => handleRemoveItem(index)}>
-                        Remover
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </Row>
-          <Button variant="success" onClick={handleAddItem}>
-            Adicionar
-          </Button>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={onHide}>
-            Fechar
-          </Button>
-          <Button variant="primary" onClick={handleSalvarLoja}>
-            Salvar
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </React.Fragment>
-  );
+        <Modal size="lg" show={show} onHide={onHide} centered>
+    <Modal.Header closeButton>
+      <Modal.Title>Loja</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+      <Row>
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>Codigo</th>
+              <th>Produto</th>
+              <th>Preço</th>
+            </tr>
+          </thead>
+          <tbody>
+            {internal.map((item, index) => (
+              <tr key={index}>
+                <td>
+                  <Form.Control
+                    type="text"
+                    name="codigo"
+                    value={item.codigo}
+                    onChange={(event) => handleCodigoChange(event.target.value, index)}
+                    required
+                  />
+                </td>
+                <td>
+                  <Form.Select
+                    value={internal[index].idloja || ""}
+                    onChange={(event) => handleLojaChange(event.target.value, index)}
+                  >
+                    <option value="">Selecione</option>
+                    {lojasQuery.data?.map((loja) => (
+                      <option value={loja.nome} key={loja.id}>
+                        {loja.nome}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </td>
+                <td>
+                  <Form.Control
+                    as={InputNumero}
+                    type="number"
+                    value={item.preco}
+                    onValueChange={(valor: number) => handlePrecoChange(valor, index)}
+                  />
+                </td>
+                <td>
+                  <Button variant="danger" onClick={() => handleRemoveItem(index)}>
+                    Remover
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </Row>
+      <Button variant="success" onClick={handleAddItem}>
+        Adicionar
+      </Button>
+    </Modal.Body>
+    <Modal.Footer>
+      <Button variant="secondary" onClick={onHide}>
+        Fechar
+      </Button>
+      <Button variant="primary" onClick={handleSalvarLoja}>
+        Salvar
+      </Button>
+    </Modal.Footer>
+  </Modal>
+</React.Fragment>
+);
 }

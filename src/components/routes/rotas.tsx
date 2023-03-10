@@ -1,14 +1,12 @@
 import { CadastroFreteiro } from "@/pages/freteiro/cadastro/CadastroFreteiro";
 import { ListaFreteiro } from "@/pages/freteiro/lista/ListaFreteiro";
-import { Home } from "@/pages/home/Home";
 import { CadastroLoja } from "@/pages/loja/cadastro/CadastroLoja";
 import { ListaLoja } from "@/pages/loja/lista/ListaLoja";
 import { MenuMega } from "@/pages/MenuMega";
 import { PaginaNaoEncontrada } from "@/pages/notFoundPage/notFoundPage";
 import { CadastroProduto } from "@/pages/produto/cadastro/CadastroProduto";
 import { ListaProduto } from "@/pages/produto/lista/ListaProduto";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import { Routes, Route } from "react-router-dom";
 
 export function Rotas() {
   return (

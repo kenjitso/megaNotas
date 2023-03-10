@@ -7,9 +7,13 @@ interface IMenuProps<T extends { nome: string }> {
   showSearch: boolean;
   onListSearch?: (filtered: T[]) => void;
   listSearch?: T[];
+  showCadAtu: boolean;
+  onHandleSave?: () => void;
+  onHandleToList?: () => void;
+  buttonStats?: string;
 }
 
-export function Menu<T extends { nome: string; }>({ links, showSearch, onListSearch, listSearch }: IMenuProps<T>) {
+export function Menu<T extends { nome: string; }>({ links, showSearch, onListSearch, listSearch, showCadAtu, onHandleSave, buttonStats,onHandleToList }: IMenuProps<T>) {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeButton, setActiveButton] = useState("");
@@ -27,6 +31,8 @@ export function Menu<T extends { nome: string; }>({ links, showSearch, onListSea
   }, [location, links]);
 
 
+
+
   const handleSearch = () => {
     const filteredList = listSearch?.filter(item =>
       item.nome.toLowerCase().includes(searchTerm.toLowerCase())
@@ -37,10 +43,6 @@ export function Menu<T extends { nome: string; }>({ links, showSearch, onListSea
       onListSearch(filteredList ?? []);
     }
   };
-
-
-
-  const filteredList = searchList;
 
   const handleButtonClick = (url: string, label: string, index: number) => {
     setActiveButton(label);
@@ -90,7 +92,20 @@ export function Menu<T extends { nome: string; }>({ links, showSearch, onListSea
                 Pesquisar
               </Button>
             </div>
+
           )}
+
+          {showCadAtu && (
+            <div style={{ marginLeft: "auto" }}>
+              <Button className={`me-3`} variant="secondary" onClick={onHandleSave}>
+                {buttonStats}
+              </Button>
+              <Button variant="secondary" onClick={onHandleToList}>
+                Cancelar
+              </Button>
+            </div>
+          )}
+
         </div>
       </Col>
     </React.Fragment>

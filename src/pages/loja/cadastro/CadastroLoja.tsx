@@ -2,12 +2,12 @@ import FragmentLoading from '@/components/fragments/FragmentLoading';
 import InputNumero from '@/components/inputs/InputNumero';
 import InputTextoEsp from '@/components/inputs/InputTextoEsp';
 import { Menu } from '@/pages/Menu';
-import { Freteiro} from '@/datatypes/freteiro';
+import { Freteiro } from '@/datatypes/freteiro';
 import { Loja } from '@/datatypes/loja';
 import useQueryMutation from '@/hooks/useQueryMutation';
 import useQueryNotification from '@/hooks/useQueryNotification';
 import { Col, Row, Form, Button } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { TableFreteiroLoja } from './TableFreteiroLoja';
 import { toast } from 'react-toastify';
 
@@ -15,7 +15,7 @@ import { toast } from 'react-toastify';
 export function CadastroLoja() {
 
     const { id } = useParams<{ id: string }>();
-
+    const navigate = useNavigate();
     const lojaMutator = useQueryMutation(new Loja(), {
         queryKey: ["Lojas", id ?? ""],
         queryFn: async () => await Loja.get(id ?? ""),
@@ -64,16 +64,15 @@ export function CadastroLoja() {
         <Row>
             <Col className="body text-center">
                 <Row>
-                    <Col className="styleTitle">
-                        <h1 style={{ whiteSpace: 'nowrap' }}>{id ? "Atualizar Loja 15/02/2023" : "Cadastro Loja 15/02/2023"}</h1>
-                    </Col>
-                </Row>
-                <Row>
                     <Menu
                         links={[{ label: "Lista de Lojas", url: "/lojas" },
                         { label: "Cadastrar Loja", url: "/lojas/novo" }
                         ]}
                         showSearch={false}
+                        showCadAtu={true}
+                        onHandleSave={handleSave}
+                        buttonStats={id ? "Atualiza" : "Cadastra"}
+                        onHandleToList={() => { navigate("/lojas") }}
                     />
                 </Row>
                 <Row className="menuloja border">
@@ -131,18 +130,25 @@ export function CadastroLoja() {
                                         maxLength={120} />
                                 </Form.Group>
                             </Col>
-                            <center>
-                                <Row >
-                                    {!freteiroQuery.isLoading &&
-                                        <TableFreteiroLoja
-                                            listFreteiro={freteiroQuery.data ?? []}
-                                            onUpdateFreteiro={(freteiros: string[]) => lojaMutator.update("freteiro", freteiros)}
-                                            selectedFreteiros={lojaMutator.state.freteiro}
-                                        />
-                                    }
-                                    {freteiroQuery.isLoading && <FragmentLoading />}
-                                </Row>
-                            </center>
+
+                            <Row>
+                                <Col>
+                                    <h1 style={{ whiteSpace: 'nowrap' }}>{id ? "Freteiro Atualizar loja 15/02/2023" : "Freteiro Cadastro Loja 15/02/2023"}</h1>
+                                </Col>
+
+                                <center>
+                                    <Row >
+                                        {!freteiroQuery.isLoading &&
+                                            <TableFreteiroLoja
+                                                listFreteiro={freteiroQuery.data ?? []}
+                                                onUpdateFreteiro={(freteiros: string[]) => lojaMutator.update("freteiro", freteiros)}
+                                                selectedFreteiros={lojaMutator.state.freteiro}
+                                            />
+                                        }
+                                        {freteiroQuery.isLoading && <FragmentLoading />}
+                                    </Row>
+                                </center>
+                            </Row>
                         </Row>
                         <center>
                             <Row>

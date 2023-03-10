@@ -6,6 +6,7 @@ import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { PaginationComponent } from "@/datas/PaginationComponent";
 import { Menu } from "@/pages/Menu";
 import { Freteiro, IFreteiro } from "@/datatypes/freteiro";
+import { Icons } from "@/components/icons/icons";
 
 
 export function ListaFreteiro() {
@@ -45,12 +46,7 @@ export function ListaFreteiro() {
 
     return (
         <Row>
-            <Col className='body text-center'>
-                <Row>
-                    <Col  className="styleTitle">
-                        <h1 style={{ whiteSpace: 'nowrap' }}>Freteiro Lista Notas 15/02/2023</h1>
-                    </Col>
-                </Row>
+            <Col>
                 <Row>
                     <Menu
                         links={[{ label: "Lista de Freteiros", url: "/freteiro" },
@@ -59,6 +55,7 @@ export function ListaFreteiro() {
                         showSearch={true}
                         listSearch={data ?? []}
                         onListSearch={listFiltered}
+                        showCadAtu={false}          
                     />
 
 
@@ -138,80 +135,53 @@ function TableFreteiro({ listFreteiro, currentPage, pageSize }: IProps) {
         })
         : [];
 
-
-
     return (
         <Table striped bordered hover>
             <thead>
                 <tr>
-                <th >
-                        <div className="th100">
-                            <span>Editar:</span>
-                        </div>
-                    </th>
-                    <th>
-                        <div className="th100">
+                    <th className="th70" >
+                        <div className="thArrow">
                             <span>ID:</span>
                             <span onClick={() => handleSort("id")} className="headTablesArrows">
                                 {sortBy === "id" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
                         </div>
                     </th>
-                    <th>
-                        <div className="th250">
+                    <th className="th200">
+                        <div className="thArrow">
                             <span>Nome:</span>
                             <span onClick={() => handleSort("nome")} className="headTablesArrows">
                                 {sortBy === "nome" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
                         </div>
                     </th>
-                    <th>
-                        <div className="th150">
+                    <th className="th110">
+                        <div className="thArrow">
                             <span>Fixo:</span>
                             <span onClick={() => handleSort("fixo")} className="headTablesArrows">
                                 {sortBy === "fixo" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
                         </div>
                     </th>
-                    <th>
-                        <div className="th150">
-                            <span>Percentual:</span>
+                    <th className="th70">
+                        <div className="thArrow">
+                            <span>%:</span>
                             <span onClick={() => handleSort("percentual")} className="headTablesArrows">
                                 {sortBy === "percentual" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
                         </div>
                     </th>
-                    <th>
-                        <div className="th150">
+                    <th className="th70">
+                        <div className="thArrow">
                             <span>Prioridade:</span>
                             <span onClick={() => handleSort("prioridade")} className="headTablesArrows">
                                 {sortBy === "prioridade" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
                         </div>
                     </th>
-                    <th>
-                        <div className="th150">
-                            <span>Valor Minimo:</span>
-                            <span onClick={() => handleSort("valor_min")} className="headTablesArrows">
-                                {sortBy === "valor_min" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
-                            </span>
-                        </div>
+                    <th className="th40">
                     </th>
-                    <th>
-                        <div className="th150">
-                            <span>Valor Maximo:</span>
-                            <span onClick={() => handleSort("valor_max")} className="headTablesArrows">
-                                {sortBy === "valor_max" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
-                            </span>
-                        </div>
-                    </th>
-                    <th>
-                        <div className="th150">
-                            <span>Global:</span>
-                            <span onClick={() => handleSort("global")} className="headTablesArrows">
-                                {sortBy === "global" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
-                            </span>
-                        </div>
+                    <th className="th40">
                     </th>
                 </tr>
             </thead>
@@ -228,33 +198,33 @@ function TableFreteiro({ listFreteiro, currentPage, pageSize }: IProps) {
                                     fixo: 0,
                                     percentual: 0,
                                     prioridade: 0,
-                                    valor_min: 0,
-                                    valor_max: 0,
-                                    global: false,
                                 })
                             ) as unknown as IFreteiro[]
                         )
                         .map((freteiro, index) => (
                             <tr className="tablesCss" key={index}>
-                                    <td>
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            Number(freteiro.id) !== 0 && navigate(`/freteiros/${freteiro.id}`);
-                                        }}
-                                        className="btn btn-primary"
-                                    >
-                                        Editar
-                                    </button>
-                                </td>
+
                                 <td><b>{freteiro.id}</b></td>
                                 <td><b className="th250">{freteiro.nome}</b></td>
                                 <td className="tdValue"><b>R$: {(freteiro.fixo / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
                                 <td className="tdValue"><b>{freteiro.percentual}%</b></td>
-                                <td><b>{freteiro.prioridade}</b></td>
-                                <td className="tdValue"><b>R$: {(freteiro.valor_min / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
-                                <td className="tdValue"><b>R$: {(freteiro.valor_max / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
-                                <td><b>{freteiro.global === true ? "Sim" : freteiro.global === false ? "Não" : ""}</b></td>
+                                <td className="tdValue"><b>{freteiro.prioridade}</b></td>
+                              <td onClick={(e) => {
+                                    e.stopPropagation();
+                                    Number(freteiro.id) !== 0 && navigate(`/freteiros/${freteiro.id}`);
+                                }}
+                                    role="button"
+                                    aria-label="Desativar Freteiro">
+                                    <Icons tipo="edit" />
+                                </td>
+                                <td onClick={(e) => {
+                                    e.stopPropagation();
+                                    Number(freteiro.id) !== 0 && navigate(`/freteiros/${freteiro.id}`);
+                                }}
+                                    role="button"
+                                    aria-label="Desativar Freteiro">
+                                    <Icons tipo="trash" />
+                                </td>
                             </tr>
                         ))
                     : null}

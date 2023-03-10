@@ -1,7 +1,7 @@
 import { Col, Row, Form, Button } from 'react-bootstrap';
 import { Menu } from '@/pages/Menu';
 import { Freteiro } from '@/datatypes/freteiro';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import useQueryMutation from '@/hooks/useQueryMutation';
 import InputNumero from '@/components/inputs/InputNumero';
 import InputTextoEsp from '@/components/inputs/InputTextoEsp';
@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 export function CadastroFreteiro() {
 
     const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
 
     const freteiroMutator = useQueryMutation(new Freteiro(), {
         queryKey: ["Freteiros", id ?? ""],
@@ -43,40 +44,25 @@ export function CadastroFreteiro() {
             toast.info("Por favor, preencha o nome do Freteiro!")
             return;
         }
-
         freteiroMutator.save();
-      
     };
-
-    const handleDelete = () => {
-        if (id) {
-            Freteiro.delete(id)
-                .then((response) => {
-                    console.log(response);
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-        }
-    };
-
 
 
     return (
         <Row>
             <Col className="body text-center">
-                <Row>
-                    <Col className="styleTitle">
-                        <h1 style={{ whiteSpace: 'nowrap' }}>{id ? "Atualizar Freteiro 15/02/2023" : "Cadastra Freteiro 15/02/2023"}</h1>
-                    </Col>
-                </Row>
                 <Row className="menuFreteiro border">
                     <Menu
                         links={[
                             { label: "Lista de Freteiros", url: "/freteiro" },
                             { label: "Cadastrar Freteiro", url: "/freteiro/novo" }
+
                         ]}
                         showSearch={false}
+                        showCadAtu={true}
+                        onHandleSave={handleSave}
+                        buttonStats={id ? "Atualiza" : "Cadastra"}
+                        onHandleToList={() => { navigate("/freteiro") }}
                     />
                 </Row>
 
@@ -162,20 +148,10 @@ export function CadastroFreteiro() {
                                     }
                                 />
                             </Form.Group>
-                            <center>
-                                <Row>
-                                    <Col>
-                                        <Button variant="secondary" onClick={handleSave}>
-                                            {id ? "Atualizar Freteiro" : "Cadastrar Freteiro"}
-                                        </Button>
-                                    </Col>
-                                </Row>
-                            </center>
                         </Form>
                     </Col>
                 </Row>
             </Col>
         </Row>
-
     );
 }

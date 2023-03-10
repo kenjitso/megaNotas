@@ -5,13 +5,29 @@ import { BsCart4 } from "react-icons/bs";
 import { BsClockHistory } from "react-icons/bs";
 import { BsFillCaretUpFill } from "react-icons/bs";
 import { BsFillCaretDownFill } from "react-icons/bs";
+import { VscEdit } from "react-icons/vsc";
+import { BsTrash } from "react-icons/bs";
+
 
 
 interface props {
-    tipo: "nota" | "loja" | "casa" | "caixa" | "produto" | "historico" | "up" | "down"
+    tipo: "nota" | "loja" | "casa" | "caixa" | "produto" | "historico" | "up" | "down" | "edit" | "trash"
 }
 
 export function Icons({ tipo }: props) {
+
+    if (tipo === "trash") {
+        return (
+            <BsTrash size={20} />
+        );
+    }
+
+    if (tipo === "edit") {
+        return (
+            <VscEdit size={20} />
+        );
+    }
+
 
     if (tipo === "up") {
         return (

@@ -7,15 +7,6 @@
     fill: blue;
   }
 
-.menuCss {
-    height: 100vh;
-    width: 290px;
-    min-width: 290px;
-    max-width: 290px;
-    background-color: rgb(218, 218, 218);
-    z-index: 9999;
-    position: fixed;
-}
 
 .styleTitle{
 background-color: #32beff;
@@ -56,14 +47,11 @@ max-width:100%
 
 .table-link{
 background-color: none !important;
-
 }
-
 
 a {
     text-decoration: none;
   }
-
 
 .iconNav {
     margin-left: 10px;

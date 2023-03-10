@@ -6,7 +6,8 @@ import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { PaginationComponent } from "../../../datas/PaginationComponent";
 import { Menu } from "@/pages/Menu";
 import { ILoja, Loja } from "@/datatypes/loja";
-import { abreviaLink } from "@/components/AbreviaLink";
+import { Icons } from "@/components/icons/icons";
+import React from "react";
 
 export function ListaLoja() {
     const location = useLocation();
@@ -30,7 +31,7 @@ export function ListaLoja() {
     };
 
 
-    const { isLoading, data} = useQuery(["Lojas"], async () => {
+    const { isLoading, data } = useQuery(["Lojas"], async () => {
         const delay = new Promise(res => setTimeout(res, 3000));
         await delay;
         const loja = await Loja.search();
@@ -46,15 +47,8 @@ export function ListaLoja() {
     }
 
     return (
-
-        <Row>
-            <Col className='body text-center'>
-                <Row>
-                    <Col className="styleTitle">
-                        <h1 style={{ whiteSpace: 'nowrap' }}>loja Lista Notas 15/02/2023</h1>
-
-                    </Col>
-                </Row>
+        <React.Fragment>
+            <Col>
                 <Row>
                     <Menu
                         links={[{ label: "Lista de Lojas", url: "/lojas" },
@@ -63,6 +57,8 @@ export function ListaLoja() {
                         listSearch={data ?? []}
                         onListSearch={listFiltered}
                         showSearch={true}
+                        showCadAtu={false}                
+                        
                     />
                 </Row>
                 <Row >
@@ -85,16 +81,14 @@ export function ListaLoja() {
 
                 </Row>
             </Col>
-        </Row>
+        </React.Fragment>
     );
-
 }
 
 interface IProps {
     currentPage: number;
     listLoja: ILoja[] | null;
     pageSize: number;
-
 }
 
 function Tableloja({ listLoja, currentPage, pageSize }: IProps) {
@@ -116,6 +110,7 @@ function Tableloja({ listLoja, currentPage, pageSize }: IProps) {
     function capitalizeFirstLetter(str: string) {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
+
 
 
     const sortedList = listLoja
@@ -147,50 +142,34 @@ function Tableloja({ listLoja, currentPage, pageSize }: IProps) {
         <Table striped bordered hover>
             <thead>
                 <tr>
-                    <th >
-                        <div className="th100">
-                            <span>Editar:</span>
-                        </div>
-                    </th>
-                    <th >
-                        <div className="th100">
+                    <th className="th70">
+                        <div className="thArrow">
                             <span>ID:</span>
                             <span onClick={() => handleSort("id")} className="headTablesArrows">
                                 {sortBy === "id" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
+
                             </span>
                         </div>
                     </th>
-                    <th>
-                        <div className="th250">
+                    <th className="th200">
+                        <div className="thArrow">
                             <span>Nome:</span>
                             <span onClick={() => handleSort("nome")} className="headTablesArrows">
                                 {sortBy === "nome" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
                         </div>
                     </th>
-                    <th>
-                        <div className="th100">
+                    <th className="th110">
+                        <div className="thArrow">
                             <span>Cotação:</span>
                             <span onClick={() => handleSort("cotacao")} className="headTablesArrows">
                                 {sortBy === "cotacao" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
                         </div>
                     </th>
-                    <th>
-                        <div className="th250">
-                            <span>URL Cotação:</span>
-                            <span onClick={() => handleSort("url_cotacao")} className="headTablesArrows">
-                                {sortBy === "url_cotacao" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
-                            </span>
-                        </div>
+                    <th className="th40">
                     </th>
-                    <th>
-                        <div className="th250">
-                            <span>URL Catálogo:</span>
-                            <span onClick={() => handleSort("url_catalogo")} className="headTablesArrows">
-                                {sortBy === "url_catalogo" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
-                            </span>
-                        </div>
+                    <th className="th40">
                     </th>
                 </tr>
             </thead>
@@ -206,29 +185,30 @@ function Tableloja({ listLoja, currentPage, pageSize }: IProps) {
                                     id: 0,
                                     nome: "",
                                     cotacao: 0,
-                                    url_cotacao: "",
-                                    url_catalogo: "",
                                 })
                             ) as unknown as ILoja[]
                         )
                         .map((loja, index) => (
                             <tr className="tablesCss" key={index}>
-                                <td>
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            Number(loja.id) !== 0 && navigate(`/lojas/${loja.id}`);
-                                        }}
-                                        className="btn btn-primary"
-                                    >
-                                        Editar
-                                    </button>
-                                </td>
                                 <td><b>{loja.id}</b></td>
                                 <td><b className="th250">{loja.nome}</b></td>
                                 <td className="tdValue"><b>R$: {(loja.cotacao / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
-                                <td><a href={loja.url_cotacao} target="_blank">{abreviaLink(loja.url_cotacao,40)}</a></td>
-                                <td><a href={loja.url_catalogo} target="_blank">{abreviaLink(loja.url_catalogo,40)}</a></td>
+                                <td onClick={(e) => {
+                                    e.stopPropagation();
+                                    Number(loja.id) !== 0 && navigate(`/lojas/${loja.id}`);
+                                }}
+                                    role="button"
+                                    aria-label="Desativar Loja">
+                                    <Icons tipo="edit" />
+                                </td>
+                                <td onClick={(e) => {
+                                    e.stopPropagation();
+                                    Number(loja.id) !== 0 && navigate(`/lojas/${loja.id}`);
+                                }}
+                                    role="button"
+                                    aria-label="Desativar Loja">
+                                    <Icons tipo="trash" />
+                                </td>
                             </tr>
                         ))
                     : null}

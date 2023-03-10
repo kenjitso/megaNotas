@@ -32,23 +32,17 @@ export function TableFreteiroLoja({ listFreteiro, selectedFreteiros, onUpdateFre
                     <th scope="col">Fixo:</th>
                     <th scope="col">Percentual:</th>
                     <th scope="col">Prioridade:</th>
-                    <th scope="col">Valor Minimo:</th>
-                    <th scope="col">Valor Maximo:</th>
-                    <th scope="col">Global:</th>
                 </tr>
             </thead>
             <tbody>
                 {listFreteiro && listFreteiro.map(freteiro => (
-                    <tr key={freteiro.id}>
-                        <td><input type="checkbox" onChange={() => handleFreteiroSelect(freteiro)} checked={selectedIds.has(freteiro.id)} /></td>
+                    <tr key={freteiro.id} onClick={() => handleFreteiroSelect(freteiro)} style={{ cursor: 'pointer' }}>
+                        <td><input type="checkbox" checked={selectedIds.has(freteiro.id)} /></td>
                         <td><b>{freteiro.id}</b></td>
                         <td><b className="th250">{freteiro.nome}</b></td>
-                        <td className="tdValue"><b>R$: {(freteiro.fixo/100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
+                        <td className="tdValue"><b>R$: {(freteiro.fixo / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
                         <td className="tdValue"><b>{freteiro.percentual}%</b></td>
                         <td><b>{freteiro.prioridade}</b></td>
-                        <td className="tdValue"><b>R$: {(freteiro.valor_min/100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
-                        <td className="tdValue"><b>R$: {(freteiro.valor_max/100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
-                        <td><b>{freteiro.global === true ? "Sim" : freteiro.global === false ? "Não" : ""}</b></td>
                     </tr>
                 ))}
             </tbody>

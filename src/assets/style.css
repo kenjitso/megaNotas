@@ -5,34 +5,49 @@
   cursor: pointer;
 }
 
+ .th40 {
+  width: 40px;
+  overflow-wrap: break-word;
+  }
 
-  .th100 {
-    min-width: 100px;
+  .th70 {
+    width: 70px;
+    overflow-wrap: break-word;
+    }
+
+    .th110 {
+      width: 110px;
+      overflow-wrap: break-word;
+    }
+
+  .thArrow {
     display: flex;
     justify-content: space-between;
-    white-space: nowrap;
+  }
+
+  .th130 {
+    width: 130px;
+    overflow-wrap: break-word;
   }
 
   .th150 {
-    min-width: 150px;
-    display: flex;
-    justify-content: space-between;
-    white-space: nowrap;
+    width: 150px;
+    overflow-wrap: break-word;
+  }
+
+  .th170 {
+    width: 170px;
+    overflow-wrap: break-word;
   }
 
   .th200 {
     min-width: 200px;
-    display: flex;
-    justify-content: space-between;
-    white-space: nowrap;
+    overflow-wrap: break-word;
   }
 
   .th250 {
     min-width: 250px;
-    display: flex;
-    justify-content: space-between;
-    white-space: nowrap;
-
+    overflow-wrap: break-word;
   }
 
 
