@@ -55,8 +55,8 @@ export function ListaProduto() {
                 <Row>
                     <Menu
                         links={[
-                            { label: "Lista de Produtos", url: "/produtos" },
-                            { label: "Cadastrar Produto", url: "/produtos/novo" },
+                            { label: "Lista de produtos", url: "/produtos" },
+                            { label: "Cadastrar produto", url: "/produtos/novo" },
                         ]}
                         listSearch={data ?? []}
                         onListSearch={listFiltered}

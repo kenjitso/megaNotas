@@ -51,8 +51,8 @@ export function ListaLoja() {
             <Col>
                 <Row>
                     <Menu
-                        links={[{ label: "Lista de Lojas", url: "/lojas" },
-                        { label: "Cadastrar Loja", url: "/lojas/novo" }
+                        links={[{ label: "Lista de lojas", url: "/lojas" },
+                        { label: "Cadastrar loja", url: "/lojas/novo" }
                         ]}
                         listSearch={data ?? []}
                         onListSearch={listFiltered}

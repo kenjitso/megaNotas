@@ -65,8 +65,8 @@ export function CadastroLoja() {
             <Col className="body text-center">
                 <Row>
                     <Menu
-                        links={[{ label: "Lista de Lojas", url: "/lojas" },
-                        { label: "Cadastrar Loja", url: "/lojas/novo" }
+                        links={[{ label: "Lista de lojas", url: "/lojas" },
+                        { label: "Cadastrar loja", url: "/lojas/novo" }
                         ]}
                         showSearch={false}
                         showCadAtu={true}
@@ -76,7 +76,9 @@ export function CadastroLoja() {
                     />
                 </Row>
                 <Row className="menuloja border">
+                
                     <Form>
+                 
                         <Row>
                             <Col>
                                 <Form.Group controlId="formNome" className="mb-3">
@@ -131,13 +133,14 @@ export function CadastroLoja() {
                                 </Form.Group>
                             </Col>
 
-                            <Row>
-                                <Col>
+                          
+                               
                                     <h1 style={{ whiteSpace: 'nowrap' }}>{id ? "Freteiro Atualizar loja 15/02/2023" : "Freteiro Cadastro Loja 15/02/2023"}</h1>
-                                </Col>
+                              
 
-                                <center>
-                                    <Row >
+                               
+                                   
+                                        <center>
                                         {!freteiroQuery.isLoading &&
                                             <TableFreteiroLoja
                                                 listFreteiro={freteiroQuery.data ?? []}
@@ -146,10 +149,13 @@ export function CadastroLoja() {
                                             />
                                         }
                                         {freteiroQuery.isLoading && <FragmentLoading />}
-                                    </Row>
-                                </center>
-                            </Row>
+                                        </center>
+                                  
+                               
+                           
+                         
                         </Row>
+                        
                         <center>
                             <Row>
                                 <Col>

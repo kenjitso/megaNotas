@@ -63,8 +63,8 @@ export function CadastroProduto() {
                 <Row className="menuProduto">
                     <Menu
                         links={[
-                            { label: "Lista de Produtos", url: "/produtos" },
-                            { label: "Cadastrar Produto", url: "/produtos/novo" }
+                            { label: "Lista de produtos", url: "/produtos" },
+                            { label: "Cadastrar produto", url: "/produtos/novo" }
                         ]}
                         showSearch={false}
                         showCadAtu={true}

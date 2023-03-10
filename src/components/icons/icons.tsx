@@ -7,14 +7,22 @@ import { BsFillCaretUpFill } from "react-icons/bs";
 import { BsFillCaretDownFill } from "react-icons/bs";
 import { VscEdit } from "react-icons/vsc";
 import { BsTrash } from "react-icons/bs";
+import { BsSearch } from "react-icons/bs";
 
 
 
 interface props {
-    tipo: "nota" | "loja" | "casa" | "caixa" | "produto" | "historico" | "up" | "down" | "edit" | "trash"
+    tipo: "nota" | "loja" | "casa" | "caixa" | "produto" | "historico" | "up" | "down" | "edit" | "trash" | "search"
 }
 
 export function Icons({ tipo }: props) {
+
+
+    if (tipo === "search") {
+        return (
+            <BsSearch size={13} />
+        );
+    }
 
     if (tipo === "trash") {
         return (

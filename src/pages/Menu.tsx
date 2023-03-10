@@ -1,3 +1,4 @@
+import { Icons } from "@/components/icons/icons";
 import React, { useState, useEffect } from "react";
 import { Col, InputGroup, FormControl, Button } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -13,7 +14,7 @@ interface IMenuProps<T extends { nome: string }> {
   buttonStats?: string;
 }
 
-export function Menu<T extends { nome: string; }>({ links, showSearch, onListSearch, listSearch, showCadAtu, onHandleSave, buttonStats,onHandleToList }: IMenuProps<T>) {
+export function Menu<T extends { nome: string; }>({ links, showSearch, onListSearch, listSearch, showCadAtu, onHandleSave, buttonStats, onHandleToList }: IMenuProps<T>) {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeButton, setActiveButton] = useState("");
@@ -59,8 +60,8 @@ export function Menu<T extends { nome: string; }>({ links, showSearch, onListSea
               const active = selectedButton === index || activeButton === link.label;
               return (
                 <Button
-                  style={{ whiteSpace: 'nowrap' }}
-                  variant="secondary"
+                  style={{ whiteSpace: 'nowrap', borderRadius: '30px' }}
+                  variant="success"
                   key={index}
                   className={`me-3`}
                   active={active}
@@ -88,8 +89,13 @@ export function Menu<T extends { nome: string; }>({ links, showSearch, onListSea
                   }}
                 />
               </InputGroup>
-              <Button className={`me-3`} variant="secondary" onClick={handleSearch}>
-                Pesquisar
+              <Button
+                className="me-3 d-flex align-items-center justify-content-center"
+                variant="success"
+                onClick={handleSearch}
+                style={{ borderRadius: '20px', width: '220px' }}
+              >
+                <Icons tipo="search" /><span className="ms-2">Buscar produto</span>
               </Button>
             </div>
 
@@ -97,10 +103,10 @@ export function Menu<T extends { nome: string; }>({ links, showSearch, onListSea
 
           {showCadAtu && (
             <div style={{ marginLeft: "auto" }}>
-              <Button className={`me-3`} variant="secondary" onClick={onHandleSave}>
+              <Button className={`me-3`} variant="success" onClick={onHandleSave} style={{ borderRadius: '30px' }}>
                 {buttonStats}
               </Button>
-              <Button variant="secondary" onClick={onHandleToList}>
+              <Button variant="success" onClick={onHandleToList} style={{ borderRadius: '30px' }}>
                 Cancelar
               </Button>
             </div>

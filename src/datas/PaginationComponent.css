@@ -4,21 +4,33 @@ td {
 }
 
 .pagination .page-link {
-    background-color: rgb(218, 218, 218);
+    background-color: #198754;
+    color: white;
 }
 
 .pagination .page-link:hover {
-    background-color: #bbbbbb;
+    background-color: #146c43;
+    color: white;
 }
 
+  
+
 .pagination .page-item.active .page-link {
-    background-color: #32beff;
+    background-color: #146c43;
     border: none;
     cursor: pointer;
+
+    
 }
+
+
 
 .pagination .page-item:not(.active) .page-link {
     border: none;
     box-shadow: none;
     cursor: pointer;
+color: #fff;
+    --bs-pagination-focus-bg: #146c43;
+
+ 
 }
