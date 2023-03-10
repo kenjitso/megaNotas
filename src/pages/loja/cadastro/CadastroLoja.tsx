@@ -16,9 +16,17 @@ export function CadastroLoja() {
 
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+
+
     const lojaMutator = useQueryMutation(new Loja(), {
         queryKey: ["Lojas", id ?? ""],
-        queryFn: async () => await Loja.get(id ?? ""),
+         
+        queryFn: async () => {
+            console.log('Buscando dados...');
+            const data = await Loja.get(id ?? "");
+            console.log('Dados encontrados:', data);
+            return data;
+          },
         saveFn: async (data) => {
             try {
                 let response = null;
@@ -42,6 +50,7 @@ export function CadastroLoja() {
         invalidateKeys: [["Lojas"]]
     });
 
+    
     const freteiroQuery = useQueryNotification({
         queryKey: ["Freteiros"],
         queryFn: async () => await Freteiro.search(),
@@ -75,10 +84,10 @@ export function CadastroLoja() {
                         onHandleToList={() => { navigate("/lojas") }}
                     />
                 </Row>
-                <Row className="menuloja border">
-                
+                <Row className="menuloja">
+
                     <Form>
-                 
+
                         <Row>
                             <Col>
                                 <Form.Group controlId="formNome" className="mb-3">
@@ -132,39 +141,18 @@ export function CadastroLoja() {
                                         maxLength={120} />
                                 </Form.Group>
                             </Col>
-
-                          
-                               
-                                    <h1 style={{ whiteSpace: 'nowrap' }}>{id ? "Freteiro Atualizar loja 15/02/2023" : "Freteiro Cadastro Loja 15/02/2023"}</h1>
-                              
-
-                               
-                                   
-                                        <center>
-                                        {!freteiroQuery.isLoading &&
-                                            <TableFreteiroLoja
-                                                listFreteiro={freteiroQuery.data ?? []}
-                                                onUpdateFreteiro={(freteiros: string[]) => lojaMutator.update("freteiro", freteiros)}
-                                                selectedFreteiros={lojaMutator.state.freteiro}
-                                            />
-                                        }
-                                        {freteiroQuery.isLoading && <FragmentLoading />}
-                                        </center>
-                                  
-                               
-                           
-                         
+                            <center>
+                                <h1 style={{ whiteSpace: 'nowrap' }}>{id ? "Freteiro Atualizar loja 15/02/2023" : "Freteiro Cadastro Loja 15/02/2023"}</h1>
+                                {!freteiroQuery.isLoading &&
+                                    <TableFreteiroLoja
+                                        listFreteiro={freteiroQuery.data ?? []}
+                                        onUpdateFreteiro={(freteiros: string[]) => lojaMutator.update("freteiro", freteiros)}
+                                        selectedFreteiros={lojaMutator.state.freteiro}
+                                    />
+                                }
+                                {freteiroQuery.isLoading && <FragmentLoading />}
+                            </center>
                         </Row>
-                        
-                        <center>
-                            <Row>
-                                <Col>
-                                    <Button variant="secondary" onClick={handleSave}>
-                                        {id ? "Atualizar Loja" : "Cadastrar Loja"}
-                                    </Button>
-                                </Col>
-                            </Row>
-                        </center>
                     </Form >
                 </Row>
             </Col>

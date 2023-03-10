@@ -40,9 +40,7 @@ export class Freteiro implements IFreteiro {
     };
     let response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/freteiro/${id}`, options);
     let responseData = await response.json();
-    let freteiro = new Freteiro();
-    freteiro.id = responseData.id;
-    return new Freteiro();
+    return responseData;
   }
 
 

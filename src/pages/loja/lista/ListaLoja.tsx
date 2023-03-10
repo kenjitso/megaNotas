@@ -144,7 +144,7 @@ function Tableloja({ listLoja, currentPage, pageSize }: IProps) {
                 <tr>
                     <th className="th70">
                         <div className="thArrow">
-                            <span>ID:</span>
+                            <span>ID</span>
                             <span onClick={() => handleSort("id")} className="headTablesArrows">
                                 {sortBy === "id" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
 
@@ -153,7 +153,7 @@ function Tableloja({ listLoja, currentPage, pageSize }: IProps) {
                     </th>
                     <th className="th200">
                         <div className="thArrow">
-                            <span>Nome:</span>
+                            <span>Nome</span>
                             <span onClick={() => handleSort("nome")} className="headTablesArrows">
                                 {sortBy === "nome" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
@@ -161,7 +161,7 @@ function Tableloja({ listLoja, currentPage, pageSize }: IProps) {
                     </th>
                     <th className="th110">
                         <div className="thArrow">
-                            <span>Cotação:</span>
+                            <span>Cotação</span>
                             <span onClick={() => handleSort("cotacao")} className="headTablesArrows">
                                 {sortBy === "cotacao" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
@@ -190,9 +190,9 @@ function Tableloja({ listLoja, currentPage, pageSize }: IProps) {
                         )
                         .map((loja, index) => (
                             <tr className="tablesCss" key={index}>
-                                <td><b>{loja.id}</b></td>
-                                <td><b className="th250">{loja.nome}</b></td>
-                                <td className="tdValue"><b>R$: {(loja.cotacao / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
+                                <td>{loja.id}</td>
+                                <td>{loja.nome}</td>
+                                <td className="tdValue">R$: {(loja.cotacao / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                                 <td onClick={(e) => {
                                     e.stopPropagation();
                                     Number(loja.id) !== 0 && navigate(`/lojas/${loja.id}`);

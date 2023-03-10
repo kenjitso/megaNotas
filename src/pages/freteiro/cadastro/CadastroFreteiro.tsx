@@ -51,7 +51,7 @@ export function CadastroFreteiro() {
     return (
         <Row>
             <Col className="body text-center">
-                <Row className="menuFreteiro border">
+                <Row className="menuFreteiro">
                     <Menu
                         links={[
                             { label: "Lista de freteiros", url: "/freteiro" },

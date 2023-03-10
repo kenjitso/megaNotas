@@ -151,7 +151,7 @@ function TableProduto({ listProduto, currentPage, pageSize }: IProps) {
                 <tr>
                     <th className="th70">
                         <div className="thArrow">
-                            <span>ID:</span>
+                            <span>ID</span>
                             <span onClick={() => handleSort("id")} className="headTablesArrows">
                                 {sortBy === "id" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
@@ -159,7 +159,7 @@ function TableProduto({ listProduto, currentPage, pageSize }: IProps) {
                     </th>
                     <th className="th200">
                         <div className="thArrow">
-                            <span>Nome:</span>
+                            <span>Nome</span>
                             <span onClick={() => handleSort("nome")} className="headTablesArrows">
                                 {sortBy === "nome" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
@@ -167,7 +167,7 @@ function TableProduto({ listProduto, currentPage, pageSize }: IProps) {
                     </th>
                     <th className="th170">
                         <div className="thArrow">
-                            <span>Preço Classico:</span>
+                            <span>Preço Classico</span>
                             <span onClick={() => handleSort("preco_ml_classic")} className="headTablesArrows">
                                 {sortBy === "preco_ml_classic" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
@@ -177,7 +177,7 @@ function TableProduto({ listProduto, currentPage, pageSize }: IProps) {
 
                     <th className="th170">
                         <div className="thArrow">
-                            <span>Preço Premium:</span>
+                            <span>Preço Premium</span>
                             <span onClick={() => handleSort("preco_ml_premium")} className="headTablesArrows">
                                 {sortBy === "preco_ml_premium" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
@@ -188,7 +188,7 @@ function TableProduto({ listProduto, currentPage, pageSize }: IProps) {
 
                     <th className="th130">
                         <div className="thArrow">
-                            <span>% Classico:</span>
+                            <span>% Classico</span>
                             <span onClick={() => handleSort("comissao_classic")} className="headTablesArrows">
                                 {sortBy === "comissao_classic" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
@@ -196,7 +196,7 @@ function TableProduto({ listProduto, currentPage, pageSize }: IProps) {
                     </th>
                     <th className="th130">
                         <div className="thArrow">
-                            <span>% Premium:</span>
+                            <span>% Premium</span>
                             <span onClick={() => handleSort("comissao_premium")} className="headTablesArrows">
                                 {sortBy === "comissao_premium" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
@@ -227,12 +227,12 @@ function TableProduto({ listProduto, currentPage, pageSize }: IProps) {
                         )
                         .map((produtos, index) => (
                             <tr className="tablesCss" key={index}>
-                                <td><b>{produtos.id}</b></td>
-                                <td><b className="th250">{produtos.nome}</b></td>
-                                <td className="tdValue"><b>R$: {(produtos.preco_ml_classic / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
-                                <td className="tdValue"><b>R$: {(produtos.preco_ml_premium / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
-                                <td className="tdValue"><b>{produtos.comissao_classic}%</b></td>
-                                <td className="tdValue"><b>{produtos.comissao_premium}%</b></td>
+                                <td>{produtos.id}</td>
+                                <td>{produtos.nome}</td>
+                                <td className="tdValue">R$: {(produtos.preco_ml_classic / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                                <td className="tdValue">R$: {(produtos.preco_ml_premium / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                                <td className="tdValue">{produtos.comissao_classic}%</td>
+                                <td className="tdValue">{produtos.comissao_premium}%</td>
                                 <td onClick={(e) => {
                                     e.stopPropagation();
                                     Number(produtos.id) !== 0 && navigate(`/produtos/${produtos.id}`);

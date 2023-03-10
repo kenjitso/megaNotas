@@ -143,7 +143,7 @@ function TableFreteiro({ listFreteiro, currentPage, pageSize }: IProps) {
                 <tr>
                     <th className="th70" >
                         <div className="thArrow">
-                            <span>ID:</span>
+                            <span>ID</span>
                             <span onClick={() => handleSort("id")} className="headTablesArrows">
                                 {sortBy === "id" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
@@ -151,7 +151,7 @@ function TableFreteiro({ listFreteiro, currentPage, pageSize }: IProps) {
                     </th>
                     <th className="th200">
                         <div className="thArrow">
-                            <span>Nome:</span>
+                            <span>Nome</span>
                             <span onClick={() => handleSort("nome")} className="headTablesArrows">
                                 {sortBy === "nome" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
@@ -159,7 +159,7 @@ function TableFreteiro({ listFreteiro, currentPage, pageSize }: IProps) {
                     </th>
                     <th className="th110">
                         <div className="thArrow">
-                            <span>Fixo:</span>
+                            <span>Fixo</span>
                             <span onClick={() => handleSort("fixo")} className="headTablesArrows">
                                 {sortBy === "fixo" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
@@ -167,7 +167,7 @@ function TableFreteiro({ listFreteiro, currentPage, pageSize }: IProps) {
                     </th>
                     <th className="th70">
                         <div className="thArrow">
-                            <span>%:</span>
+                            <span>%</span>
                             <span onClick={() => handleSort("percentual")} className="headTablesArrows">
                                 {sortBy === "percentual" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
@@ -175,7 +175,7 @@ function TableFreteiro({ listFreteiro, currentPage, pageSize }: IProps) {
                     </th>
                     <th className="th70">
                         <div className="thArrow">
-                            <span>Prioridade:</span>
+                            <span>Prioridade</span>
                             <span onClick={() => handleSort("prioridade")} className="headTablesArrows">
                                 {sortBy === "prioridade" ? (sortOrder === "asc" ? "▲" : "▼") : "▼"}
                             </span>
@@ -206,11 +206,11 @@ function TableFreteiro({ listFreteiro, currentPage, pageSize }: IProps) {
                         .map((freteiro, index) => (
                             <tr className="tablesCss" key={index}>
 
-                                <td><b>{freteiro.id}</b></td>
-                                <td><b className="th250">{freteiro.nome}</b></td>
-                                <td className="tdValue"><b>R$: {(freteiro.fixo / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
-                                <td className="tdValue"><b>{freteiro.percentual}%</b></td>
-                                <td className="tdValue"><b>{freteiro.prioridade}</b></td>
+                                <td>{freteiro.id}</td>
+                                <td>{freteiro.nome}</td>
+                                <td className="tdValue">R$: {(freteiro.fixo / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                                <td className="tdValue">{freteiro.percentual}%</td>
+                                <td className="tdValue">{freteiro.prioridade}</td>
                               <td onClick={(e) => {
                                     e.stopPropagation();
                                     Number(freteiro.id) !== 0 && navigate(`/freteiros/${freteiro.id}`);

@@ -38,9 +38,7 @@ export class Loja implements ILoja {
         };
         let response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas/${id}`, options);
         let responseData = await response.json();
-        let loja = new Loja();
-        loja.id = responseData.id;
-        return new Loja();
+        return responseData
 
     }
 

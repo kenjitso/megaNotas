@@ -64,9 +64,7 @@ export class Produto implements IProduto {
         };
         let response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtos/${id}`, options);
         let responseData = await response.json();
-        let produto = new Produto();
-        produto.id = responseData.id;
-        return new Produto;
+        return responseData;
 
     }
 

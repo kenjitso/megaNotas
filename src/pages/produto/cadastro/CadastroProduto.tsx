@@ -47,13 +47,13 @@ export function CadastroProduto() {
             toast.info("Por favor, preencha o nome do Produto!");
             return;
         }
-        const hasEmptyFields = produtoMutator.state.lojas.some(
-            (loja) => !loja.codigo || !loja.idloja || !loja.preco
-        );
-        if (hasEmptyFields) {
-            toast.info("Preencha todos os campos da lista de Lojas!");
-            return;
-        }
+    //    const hasEmptyFields = produtoMutator.state.lojas.some(
+ //           (loja) => !loja.codigo || !loja.idloja || !loja.preco
+  //      );
+ //       if (hasEmptyFields) {
+    //        toast.info("Preencha todos os campos da lista de Lojas!");
+   //         return;
+   //     }
         produtoMutator.save();
     };
 
@@ -74,7 +74,7 @@ export function CadastroProduto() {
                         
                     />
                 </Row>
-                <Row className="menuProduto border">
+                <Row className="menuProduto">
                     <Form className="text-start">
                         <Row>
                             <Row><h1 className="text-center">Produto</h1></Row>
@@ -178,15 +178,6 @@ export function CadastroProduto() {
 
                             <Button variant="secondary" onClick={() => setShowModal(true)}>Adicionar Loja</Button>
                         </Row>
-                        <center>
-                            <Row>
-                                <Col>
-                                    <Button variant="secondary" onClick={handleSave}>
-                                        {id ? "Atualizar Produto" : "Cadastrar Produto"}
-                                    </Button>
-                                </Col>
-                            </Row>
-                        </center>
                     </Form >
                 </Row>
             </Col>
