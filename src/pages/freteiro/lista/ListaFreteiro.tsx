@@ -33,6 +33,8 @@ export function ListaFreteiro() {
 
 
     const { isLoading, data, isError } = useQuery(["Freteiros"], async () => {
+          //  const delay = new Promise(res => setTimeout(res, 1000));
+      //  await delay;
         const freteiro = await Freteiro.search();
         setListFiltred(freteiro);
         return freteiro;

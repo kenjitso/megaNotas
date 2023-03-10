@@ -34,8 +34,8 @@ export function ListaProduto() {
     };
 
     const { isLoading, data, isError } = useQuery(["Produtos"], async () => {
-        const delay = new Promise(res => setTimeout(res, 3000));
-        await delay;
+      //  const delay = new Promise(res => setTimeout(res, 1000));
+      //  await delay;
         const produtos = await Produto.search();
         setListFiltred(produtos);
         return produtos;

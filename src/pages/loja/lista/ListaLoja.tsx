@@ -32,8 +32,8 @@ export function ListaLoja() {
 
 
     const { isLoading, data } = useQuery(["Lojas"], async () => {
-        const delay = new Promise(res => setTimeout(res, 3000));
-        await delay;
+   //     const delay = new Promise(res => setTimeout(res, 1000));
+//await delay;
         const loja = await Loja.search();
         setListFiltred(loja);
         return loja;
