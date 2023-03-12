@@ -231,10 +231,13 @@ function TableProduto({ listProduto, currentPage, pageSize }: IProps) {
                                 <td>{produtos.id}</td>
                                 <td onClick={() => {
                                     if (produtos.url_catalogo_premium) {
+                                        window.open(produtos.url_catalogo_premium, '_blank');
                                         toast.success('Produto com URL de catálogo premium!');
                                     } else if (produtos.url_catalogo_classic) {
+                                        
                                         toast.success('Produto classic!');
                                     } else {
+
                                         toast.info('Produto sem URL de catálogo premium e sem classic.');
                                     }
                                 }}>

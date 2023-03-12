@@ -17,7 +17,7 @@ const InputTextoEsp: React.ForwardRefRenderFunction<HTMLInputElement, Props> = (
   style = {},
   value,
   onValueChange,
-  maxLength = 60, // valor padrão de 60 caracteres
+  maxLength = 1000, // valor padrão de 60 caracteres
   minLength = 0, // valor padrao de 5 caracteres
   placeholder = "Insira o texto aqui", // valor padrao
 },
