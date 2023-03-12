@@ -13,24 +13,6 @@
     max-width: 100%
 }
 
-.nav-link {
-    color: black;
-    color: var(--bs-nav-link-active-color);
-    border-color: var(--bs-nav-link-active-border-color);
-  }
-
-  .nav {
-    color: black;
-    color: var(--bs-nav-link-active-color);
-    border-color: var(--bs-nav-link-active-border-color);
-  }
-
-.nav-link.active {
-    color: black;
-    color: var(--bs-nav-link-active-color);
-    border-color: var(--bs-nav-link-active-border-color);
-  }
-
 
 
 .logoEmprise {
