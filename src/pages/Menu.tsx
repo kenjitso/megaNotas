@@ -101,16 +101,16 @@ export function Menu<T extends { nome: string; }>({ links, showSearch, onListSea
 
           )}
 
-          {showCadAtu && (
-            <div style={{ marginLeft: "auto" }}>
-              <Button className={`me-3`} variant="success" onClick={onHandleSave} style={{ borderRadius: '30px' }}>
-                {buttonStats}
-              </Button>
-              <Button variant="success" onClick={onHandleToList} style={{ borderRadius: '30px' }}>
-                Cancelar
-              </Button>
-            </div>
-          )}
+{showCadAtu && (
+  <div className="d-flex justify-content-between" style={{ marginLeft: "auto" }}>
+    <Button className={`me-3`} variant="success" onClick={onHandleSave} style={{ borderRadius: '30px' }}>
+      {buttonStats}
+    </Button>
+    <Button variant="success" onClick={onHandleToList} style={{ borderRadius: '30px' }}>
+      Cancelar
+    </Button>
+  </div>
+)}
 
         </div>
       </Col>

@@ -32,12 +32,13 @@ export function ListaLoja() {
 
 
     const { isLoading, data } = useQuery(["Lojas"], async () => {
-   //     const delay = new Promise(res => setTimeout(res, 1000));
-//await delay;
+        //     const delay = new Promise(res => setTimeout(res, 1000));
+        //await delay;
         const loja = await Loja.search();
         setListFiltred(loja);
         return loja;
     });
+
 
     const [listFiltred, setListFiltred] = useState<Loja[] | null>(data ?? []);
 
@@ -57,8 +58,7 @@ export function ListaLoja() {
                         listSearch={data ?? []}
                         onListSearch={listFiltered}
                         showSearch={true}
-                        showCadAtu={false}                
-                        
+                        showCadAtu={false}
                     />
                 </Row>
                 <Row >
@@ -139,7 +139,7 @@ function Tableloja({ listLoja, currentPage, pageSize }: IProps) {
 
 
     return (
-        <Table striped bordered hover>
+        <Table bordered hover>
             <thead>
                 <tr>
                     <th className="th70">
@@ -189,12 +189,12 @@ function Tableloja({ listLoja, currentPage, pageSize }: IProps) {
                             ) as unknown as ILoja[]
                         )
                         .map((loja, index) => (
-                            <tr className="tablesCss" key={index}>
+                            <tr key={index} style={{ cursor: 'pointer' }}>
                                 <td>{loja.id}</td>
                                 <td>{loja.nome}</td>
                                 <td className="tdValue">R$: {(loja.cotacao / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                                 <td onClick={(e) => {
-                                    e.stopPropagation();
+
                                     Number(loja.id) !== 0 && navigate(`/lojas/${loja.id}`);
                                 }}
                                     role="button"
@@ -202,7 +202,7 @@ function Tableloja({ listLoja, currentPage, pageSize }: IProps) {
                                     <Icons tipo="edit" />
                                 </td>
                                 <td onClick={(e) => {
-                                    e.stopPropagation();
+
                                     Number(loja.id) !== 0 && navigate(`/lojas/${loja.id}`);
                                 }}
                                     role="button"

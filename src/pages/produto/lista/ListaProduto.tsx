@@ -9,6 +9,7 @@ import { IProduto, Produto } from "@/datatypes/produto";
 import "@/assets/style.css"
 import { abreviaLink } from "@/components/AbreviaLink";
 import { Icons } from "@/components/icons/icons";
+import { toast } from "react-toastify";
 
 export function ListaProduto() {
     const location = useLocation();
@@ -34,8 +35,8 @@ export function ListaProduto() {
     };
 
     const { isLoading, data, isError } = useQuery(["Produtos"], async () => {
-      //  const delay = new Promise(res => setTimeout(res, 1000));
-      //  await delay;
+        //  const delay = new Promise(res => setTimeout(res, 1000));
+        //  await delay;
         const produtos = await Produto.search();
         setListFiltred(produtos);
         return produtos;
@@ -61,7 +62,7 @@ export function ListaProduto() {
                         listSearch={data ?? []}
                         onListSearch={listFiltered}
                         showSearch={true}
-                        showCadAtu={false}                
+                        showCadAtu={false}
                     />
                 </Row><Row>
                     {!isLoading && (
@@ -146,7 +147,7 @@ function TableProduto({ listProduto, currentPage, pageSize }: IProps) {
         : [];
 
     return (
-        <Table striped bordered hover >
+        <Table bordered hover >
             <thead>
                 <tr>
                     <th className="th70">
@@ -226,9 +227,21 @@ function TableProduto({ listProduto, currentPage, pageSize }: IProps) {
                             ) as unknown as IProduto[]
                         )
                         .map((produtos, index) => (
-                            <tr className="tablesCss" key={index}>
+                            <tr key={index} style={{ cursor: 'pointer' }}>
                                 <td>{produtos.id}</td>
-                                <td>{produtos.nome}</td>
+                                <td onClick={() => {
+                                    if (produtos.url_catalogo_premium) {
+                                        toast.success('Produto com URL de catálogo premium!');
+                                    } else if (produtos.url_catalogo_classic) {
+                                        toast.success('Produto classic!');
+                                    } else {
+                                        toast.info('Produto sem URL de catálogo premium e sem classic.');
+                                    }
+                                }}>
+                                    {produtos.nome}
+
+                                </td>
+
                                 <td className="tdValue">R$: {(produtos.preco_ml_classic / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                                 <td className="tdValue">R$: {(produtos.preco_ml_premium / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                                 <td className="tdValue">{produtos.comissao_classic}%</td>

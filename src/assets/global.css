@@ -5,14 +5,31 @@
 
 .svg-hover:hover {
     fill: blue;
+}
+
+.styleTitle {
+    background-color: #32beff;
+    width: 100%;
+    max-width: 100%
+}
+
+.nav-link {
+    color: black;
+    color: var(--bs-nav-link-active-color);
+    border-color: var(--bs-nav-link-active-border-color);
   }
 
+  .nav {
+    color: black;
+    color: var(--bs-nav-link-active-color);
+    border-color: var(--bs-nav-link-active-border-color);
+  }
 
-.styleTitle{
-background-color: #32beff;
-width: 100%;
-max-width:100%
-}
+.nav-link.active {
+    color: black;
+    color: var(--bs-nav-link-active-color);
+    border-color: var(--bs-nav-link-active-border-color);
+  }
 
 
 
@@ -45,13 +62,15 @@ max-width:100%
     font-weight: bold;
 }
 
-.table-link{
-background-color: none !important;
+
+
+.table-link {
+    background-color: none !important;
 }
 
 a {
     text-decoration: none;
-  }
+}
 
 .iconNav {
     margin-left: 10px;

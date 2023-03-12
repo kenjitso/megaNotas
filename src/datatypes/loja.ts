@@ -1,3 +1,5 @@
+
+
 export interface ILoja {
     id: string;
     nome: string;
@@ -38,32 +40,34 @@ export class Loja implements ILoja {
         };
         let response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas/${id}`, options);
         let responseData = await response.json();
-        return responseData
+        let loja = new Loja();
+        loja = responseData;
+        return loja;
 
     }
 
     public static async search() {
         let options: RequestInit = {
-          method: "GET",
-          headers: {
-            "Content-type": "application/json"
-          }
+            method: "GET",
+            headers: {
+                "Content-type": "application/json"
+            }
         };
         let response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas`, options);
         let responseData: any[] = await response.json();
         let lojas: Loja[] = [];
         for (let data of responseData) {
-          let loja = new Loja();
-          loja.id = data.id;
-          loja.nome = data.nome;
-          loja.cotacao = data.cotacao;
-          loja.freteiro = data.freteiro;
-          loja.url_catalogo = data.url_catalogo;
-          loja.url_cotacao = data.url_cotacao;
-          lojas.push(loja);
+            let loja = new Loja();
+            loja.id = data.id;
+            loja.nome = data.nome;
+            loja.cotacao = data.cotacao;
+            loja.freteiro = data.freteiro;
+            loja.url_catalogo = data.url_catalogo;
+            loja.url_cotacao = data.url_cotacao;
+            lojas.push(loja);
         }
         return lojas;
-      }
+    }
 
     public static async create(loja: Loja) {
         let options: RequestInit = {
@@ -93,6 +97,6 @@ export class Loja implements ILoja {
         return responseData;
     }
 
- 
+
 }
 

@@ -87,6 +87,8 @@ export function ModalLoja({ lojas, onUpdate, show, onHide }: IProps) {
     setInternal(novosItens);
   };
 
+  
+
   return (
     <React.Fragment>
         <Modal size="lg" show={show} onHide={onHide} centered>
@@ -95,7 +97,7 @@ export function ModalLoja({ lojas, onUpdate, show, onHide }: IProps) {
     </Modal.Header>
     <Modal.Body>
       <Row>
-        <Table striped bordered hover>
+        <Table bordered hover>
           <thead>
             <tr>
               <th>Codigo</th>
@@ -110,7 +112,7 @@ export function ModalLoja({ lojas, onUpdate, show, onHide }: IProps) {
                   <Form.Control
                     type="text"
                     name="codigo"
-                    value={item.codigo}
+                    value={item.codigo ? item.codigo:''}
                     onChange={(event) => handleCodigoChange(event.target.value, index)}
                     required
                   />
@@ -132,7 +134,7 @@ export function ModalLoja({ lojas, onUpdate, show, onHide }: IProps) {
                   <Form.Control
                     as={InputNumero}
                     type="number"
-                    value={item.preco}
+                    value={item.preco ? item.preco:''}
                     onValueChange={(valor: number) => handlePrecoChange(valor, index)}
                   />
                 </td>

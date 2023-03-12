@@ -64,13 +64,15 @@ export class Produto implements IProduto {
         };
         let response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtos/${id}`, options);
         let responseData = await response.json();
-        return responseData;
+        let produto = new Produto();
+        produto = responseData;
+        console.log(produto);
+        return produto;
 
     }
 
     public static async create(produto: Produto) {
-        console.log("Produto:");
-        console.log(produto);
+    
         let options: RequestInit = {
             method: "POST",
             headers: {

@@ -138,7 +138,7 @@ function TableFreteiro({ listFreteiro, currentPage, pageSize }: IProps) {
         : [];
 
     return (
-        <Table striped bordered hover>
+        <Table bordered hover>
             <thead>
                 <tr>
                     <th className="th70" >
@@ -204,7 +204,7 @@ function TableFreteiro({ listFreteiro, currentPage, pageSize }: IProps) {
                             ) as unknown as IFreteiro[]
                         )
                         .map((freteiro, index) => (
-                            <tr className="tablesCss" key={index}>
+                            <tr key={index} style={{ cursor: 'pointer' }}>
 
                                 <td>{freteiro.id}</td>
                                 <td>{freteiro.nome}</td>

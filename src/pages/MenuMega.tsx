@@ -6,12 +6,13 @@ interface props {
 }
 
 export function MenuMega({ children }: props) {
+  
   return (
-    <Container fluid style={{ padding: "50px" }}>
+    <Container fluid style={{ padding: "50px" }} >
       <Col>
         <Nav fill variant="tabs" defaultActiveKey="/loja">
           <Nav.Item>
-            <NavLink as={Link} to="/lojas">
+            <NavLink as={Link} to="/lojas" >
               <Col>Loja</Col>
             </NavLink>
           </Nav.Item>

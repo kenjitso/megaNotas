@@ -40,9 +40,10 @@ export class Freteiro implements IFreteiro {
     };
     let response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/freteiro/${id}`, options);
     let responseData = await response.json();
-    return responseData;
+    let freteiro = new Freteiro();
+    freteiro = responseData;
+    return freteiro;
   }
-
 
 
   public static async create(freteiro: Freteiro) {
@@ -76,12 +77,9 @@ export class Freteiro implements IFreteiro {
     let response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/freteiro/${freteiro.id}`, options);
     console.log(response);
     let responseData = await response.json();
-    console.log(responseData);
     return responseData;
 
   }
-
-
 
   public static async delete(id: string) {
     let options: RequestInit = {
