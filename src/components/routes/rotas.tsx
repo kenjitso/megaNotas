@@ -1,34 +1,30 @@
-import { CadastroFreteiro } from "@/pages/freteiro/cadastro/CadastroFreteiro";
-import { ListaFreteiro } from "@/pages/freteiro/lista/ListaFreteiro";
-import { CadastroLoja } from "@/pages/loja/cadastro/CadastroLoja";
-import { ListaLoja } from "@/pages/loja/lista/ListaLoja";
-import { MenuMega } from "@/pages/MenuMega";
+
+import { PageHome } from "@/pages/home/PageHome";
 import { PaginaNaoEncontrada } from "@/pages/notFoundPage/notFoundPage";
-import { CadastroProduto } from "@/pages/produto/cadastro/CadastroProduto";
-import { ListaProduto } from "@/pages/produto/lista/ListaProduto";
 import { Routes, Route } from "react-router-dom";
+import PageUsuario from "@/pages/usuario/PageUsuario";
+import { PageFreteiro } from "@/pages/freteiro/PageFreteiro";
+import { PageLoja } from "@/pages/loja/PageLoja";
+import { PageCatalogo } from "@/pages/catalogo/PageCatalogo";
+import { PageProdutoLoja } from "@/pages/loja/ProdutoLoja/PageProdutoLoja";
+
+
 
 export function Rotas() {
   return (
-    <MenuMega>
-      <Routes>
-        <Route path="/" element={<ListaLoja />} />
-
-        <Route path="/freteiro" element={<ListaFreteiro />} />
-        <Route path="/freteiros/:id" element={<CadastroFreteiro />} />
-        <Route path="/freteiro/novo" element={<CadastroFreteiro />} />
-
-        <Route path="/lojas" element={<ListaLoja />} />
-        <Route path="/lojas/:id" element={<CadastroLoja />} />
-        <Route path="/lojas/novo" element={<CadastroLoja />} />
-
-        <Route path="/produtos" element={<ListaProduto />} />
-        <Route path="/produtos/:id" element={<CadastroProduto />} />
-        <Route path="/produtos/novo" element={<CadastroProduto />} />
-
+    <Routes>
+      <Route path="/" element={<PageUsuario />} >
+        <Route path="/" element={<PageHome />} />
+        <Route path="/:page" element={<PageHome />} />
+        <Route path="/freteiro" element={<PageFreteiro />} />
+        <Route path="/freteiros/:page" element={<PageFreteiro />} />
+        <Route path="/lojas" element={<PageLoja />} />
+        <Route path="/lojas/:lojaId" element={<PageProdutoLoja />} />
+        <Route path="/lojas/:lojaId/produtos/:page" element={<PageProdutoLoja />} />
+        <Route path="/catalogos" element={<PageCatalogo />} />
+        <Route path="/catalogos/:page" element={<PageCatalogo />} />
         <Route path="*" element={<PaginaNaoEncontrada />} />
-
-      </Routes>
-    </MenuMega>
+      </Route>
+    </Routes>
   );
 }

@@ -24,8 +24,8 @@ const InputTextoEsp: React.ForwardRefRenderFunction<HTMLInputElement, Props> = (
   ref
 ) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value.replace(/[^a-zA-Z0-9\-_.\/<>,'" ]/g, "");
-    onValueChange(event.target.value);
+    const newValue = event.target.value.replace(/[^a-zA-Z0-9\-_.\/<>,'"=&?: ]/g, "");
+    onValueChange(newValue);
   };
 
   return (

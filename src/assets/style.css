@@ -1,57 +1,60 @@
 
-
-.headTablesArrows{
-  user-select: none;
-  cursor: pointer;
+.thArrow {
+  display: flex;
+  justify-content: space-between;
 }
+
+.tdValue {
+  text-align: right;
+}
+
 
  .th40 {
   width: 40px;
   overflow-wrap: break-word;
+  cursor: pointer;
   }
 
   .th70 {
     width: 70px;
     overflow-wrap: break-word;
-    }
+    cursor: pointer;  
+  }
 
     .th110 {
       width: 110px;
       overflow-wrap: break-word;
+      cursor: pointer;
     }
-
-  .thArrow {
-    display: flex;
-    justify-content: space-between;
-  }
 
   .th130 {
     width: 130px;
     overflow-wrap: break-word;
+    cursor: pointer;
   }
 
   .th150 {
     width: 150px;
     overflow-wrap: break-word;
+    cursor: pointer;
   }
 
   .th170 {
     width: 170px;
     overflow-wrap: break-word;
+    cursor: pointer;
   }
 
   .th200 {
     min-width: 200px;
     overflow-wrap: break-word;
+    cursor: pointer;
   }
 
   .th250 {
     min-width: 250px;
     overflow-wrap: break-word;
+    cursor: pointer;
   }
 
 
-  .tdValue {
-    text-align: right;
-  }
- 

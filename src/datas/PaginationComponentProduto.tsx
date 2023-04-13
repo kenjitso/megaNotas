@@ -1,24 +1,25 @@
 import React from "react";
 import { Pagination } from "react-bootstrap";
-import "./PaginationComponent.css"
+import "./PaginationComponent.css";
 
 interface IPaginationButtonProps {
   children: React.ReactNode;
   onClick: () => void;
   active?: boolean;
+  className?: string;
 }
 
 interface IPaginationProps<T> {
-  items: number;
+  items?: T[] | null;
   pageSize: number;
   onPageChange?: (currentPage: number) => void;
   currentPage?: number;
 }
 
-export class PaginationComponent<T> extends React.Component<IPaginationProps<T>> {
+export class PaginationComponentProduto<T> extends React.Component<IPaginationProps<T>> {
   private get totalPages() {
     const { items, pageSize } = this.props;
-    return items ? Math.ceil(items / pageSize) : 0;
+    return items ? Math.ceil(items.length / pageSize) : 0;
   }
 
   handlePageChange(page: number) {
@@ -26,18 +27,31 @@ export class PaginationComponent<T> extends React.Component<IPaginationProps<T>>
   }
 
   render() {
-    const { currentPage = 1 } = this.props; // Define um valor padrão para currentPage, caso não esteja presente
+    const { currentPage = 1 } = this.props;
+    const maxPagesToShow = 10;
 
     const CustomPaginationButton: React.FC<IPaginationButtonProps> = ({
       children,
       onClick,
       active,
+      className,
       ...props
     }) => (
-      <Pagination.Item {...props} active={active} onClick={onClick} className="page-item">
+      <Pagination.Item
+        {...props}
+        active={active}
+        onClick={onClick}
+        className={`page-item ${className}`}
+      >
         <span>{children}</span>
       </Pagination.Item>
     );
+
+    const startPage = Math.max(
+      1,
+      Math.min(currentPage - Math.floor(maxPagesToShow / 2), this.totalPages - maxPagesToShow + 1)
+    );
+    const endPage = Math.min(this.totalPages, startPage + maxPagesToShow - 1);
 
     return (
       <Pagination className=" px-3 ">
@@ -46,15 +60,20 @@ export class PaginationComponent<T> extends React.Component<IPaginationProps<T>>
           Anterior
         </CustomPaginationButton>
 
-        {Array.from({ length: this.totalPages }, (_, i) => i + 1).map((page) => (
+        {startPage > 1 && <CustomPaginationButton onClick={() => { }}>...</CustomPaginationButton>}
+
+        {Array.from({ length: endPage - startPage + 1 }, (_, i) => i + startPage).map((page) => (
           <CustomPaginationButton
             key={page}
             active={page === currentPage}
             onClick={() => this.handlePageChange(page)}
+            className="pagination-button"
           >
             {page}
           </CustomPaginationButton>
         ))}
+
+        {endPage < this.totalPages && <CustomPaginationButton onClick={() => { }}>...</CustomPaginationButton>}
 
         <CustomPaginationButton
           onClick={() => currentPage < this.totalPages && this.handlePageChange(currentPage + 1)}

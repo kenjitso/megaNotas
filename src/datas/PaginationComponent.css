@@ -22,7 +22,10 @@ td {
 
     
 }
-
+.pagination-button {
+    width: 40px;
+    height: 40px;
+  }
 
 
 .pagination .page-item:not(.active) .page-link {

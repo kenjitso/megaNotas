@@ -42,7 +42,6 @@ interface Props<T> {
  * Cria um hook para atualizar dados de uma classe/objeto e salvar no banco de dados.
  */
 export default function useQueryMutation<T>(initialState: T, {
-    
     queryKey,
     queryFn,
     saveFn,
@@ -61,6 +60,7 @@ export default function useQueryMutation<T>(initialState: T, {
     const query = useQuery(queryKey, () => {
         // Caso haja toasts, cria as mensagens.
         if (toasts?.fetching) toast.loading(toasts.fetching, { toastId: idToast });
+
         return queryFn();
     }, {
         onSuccess: (data) => {

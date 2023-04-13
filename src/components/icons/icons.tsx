@@ -8,19 +8,38 @@ import { BsFillCaretDownFill } from "react-icons/bs";
 import { VscEdit } from "react-icons/vsc";
 import { BsTrash } from "react-icons/bs";
 import { BsSearch } from "react-icons/bs";
-
+import { FaRegUserCircle } from "react-icons/fa"
+import { FaFlagUsa } from "react-icons/fa"
+import { BiLink } from "react-icons/bi"
 
 
 interface props {
-    tipo: "nota" | "loja" | "casa" | "caixa" | "produto" | "historico" | "up" | "down" | "edit" | "trash" | "search"
+    tipo: "nota" | "loja" | "casa" | "caixa" | "produto" | "historico" | "up" | "down" | "edit" | "trash" | "search" | "user" | "flag" | "link"
 }
 
 export function Icons({ tipo }: props) {
 
+    if (tipo === "link") {
+        return (
+            <BiLink size={18} />
+        );
+    }
+
+    if (tipo === "flag") {
+        return (
+            <FaFlagUsa size={18} />
+        );
+    }
+
+    if (tipo === "user") {
+        return (
+            <FaRegUserCircle size={40} />
+        );
+    }
 
     if (tipo === "search") {
         return (
-            <BsSearch size={13} />
+            <BsSearch size={20} />
         );
     }
 

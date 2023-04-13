@@ -1,3 +1,78 @@
+
+.accordion {
+
+    --bs-accordion-border-width: 0px;
+}
+
+.accordion-button {
+    display: inherit;
+    padding-top: 0px;
+    padding-left: 0px;
+    padding-bottom: 0px;
+    padding-right: 0px;
+
+}
+
+
+.image-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 45px;
+    /* 75px * 1.2 = 90px */
+    min-height: 75px;
+    /* 125px * 1.2 = 150px */
+}
+
+.responsive-image {
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 45px;
+    /* 75px * 1.2 = 90px */
+    min-height: 75px;
+    /* 125px * 1.2 = 150px */
+    object-fit: contain;
+}
+
+
+
+.custom-tabs .nav-link {
+    background-color: #f8f9fa;
+    color: #007bff;
+    border: none;
+}
+
+.custom-tabs .nav-link.active {
+    background-color: #198754;
+    ;
+    color: #fff;
+    border: none;
+}
+
+.modal {
+    --bs-modal-width: 80%;
+    overflow-x: none;
+}
+
+.modal-footer {
+
+    display: table-row-group;
+
+}
+
+.position {
+    float: right;
+}
+
+.element.style {
+
+    width: none;
+    height: none;
+}
+
+
 .body {
     height: 100%;
     width: 100%;
