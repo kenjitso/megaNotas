@@ -4,7 +4,7 @@ import { parseISO } from "date-fns";
 export const schema = z.object({
 
     id: z.string().default(""),
-    ativo: z.boolean().default(false),
+    ativo: z.boolean().default(true),
     nome: z.string().default(""),
     cotacao: z.number().default(0),
     url_cotacao: z.string().default(""),
@@ -22,12 +22,12 @@ export class LojaController {
     public static createNew(): ILoja {
         return {
             id: "",
-            ativo: false,
+            ativo: true,
             nome: "",
             cotacao: 0,
             url_cotacao: "",
             url_catalogo: "",
-            ultima_atualizacao: new Date(""),
+            ultima_atualizacao: new Date(),
             algoritmo: 0
         }
     }
@@ -58,7 +58,9 @@ export class LojaController {
             body: JSON.stringify(loja)
         };
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas`, options);
+       
         const responseData: unknown = await response.json();
+        console.log(responseData);
         const lojaSchema = schema.parse(responseData);
         return lojaSchema;
     }
@@ -75,6 +77,7 @@ export class LojaController {
         };
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas/${loja.id}`, options);
         const responseData: unknown = await response.json();
+        console.log(responseData);
         const lojaSchema = schema.parse(responseData);
         return lojaSchema;
     }
@@ -118,6 +121,8 @@ export class LojaController {
                 "Content-type": "application/json"
             }
         };
+        const a = `https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas?${params}`;
+        console.log(a);
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas?${params}`, options);
         const responseData: unknown = await response.json();
         console.log(responseData);

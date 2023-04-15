@@ -31,6 +31,7 @@ export function PageLoja() {
         defaultOrder: "nome"
     });
 
+
     const handlePageChange = (page: number) => {
         navigate(`/lojas/${page}`);
     };

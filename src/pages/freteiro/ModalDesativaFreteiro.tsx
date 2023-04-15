@@ -11,11 +11,14 @@ export function ModalDesativaFreteiro({ onHide, freteiroId }: IProps) {
 
     const freteiroMutator = useQueryMutation(new FreteiroController(), {
         queryEnabled: !!freteiroId && typeof onHide === 'function',
-        queryKey: ["Freteiros", freteiroId ?? ""],
+        queryKey: ["freteiros", freteiroId ?? ""],
         queryFn: async () => await FreteiroController.get(freteiroId ?? ""),
         onSaveSuccess: onHide,
+        toasts: {
+            saveComplete: `Freteiro desativado com sucesso!`,
+        },
         saveFn: () => FreteiroController.deactivate(freteiroId ?? ""),
-        invalidateKeys: [["Freteiros"]],
+        invalidateKeys: [["freteiros"]],
     });
 
     return (

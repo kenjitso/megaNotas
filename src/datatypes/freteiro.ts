@@ -3,7 +3,7 @@ import { TypeOf, z } from "zod";
 export const schema = z.object({
 
   id: z.string().default(""),
-  ativo: z.boolean().default(false),
+  ativo: z.boolean().default(true),
   nome: z.string().default(""),
   fixo: z.number().default(0),
   percentual: z.number().min(0).default(0),
@@ -16,7 +16,7 @@ export class FreteiroController {
   public static createNew(): IFreteiro {
     return {
       id: "",
-      ativo: false,
+      ativo: true,
       nome: "",
       fixo: 0,
       percentual: 0,
@@ -89,7 +89,7 @@ export class FreteiroController {
   }
 
   public static async search(page = 1, limit = 25, q: string, ordenar = "nome", ordem = "crescente", ativo: boolean | undefined = true) {
-
+console.log("Rodou");
     const params = new URLSearchParams();
     if (q) params.set("q", q);
     if (ativo !== undefined) params.set("ativo", ativo.toString());
@@ -106,7 +106,6 @@ export class FreteiroController {
     };
     const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/freteiro?${params}`, options);
     const responseData: unknown = await response.json();
-    console.log(responseData);
     const freteiroSchema = z.object({
       page: z.number().min(1),
       limit: z.number().min(1),

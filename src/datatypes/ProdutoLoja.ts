@@ -29,7 +29,7 @@ export class ProdutoLojaController {
             categoria: "",
             estoque: false,
             preco: 0,
-            ultima_atualizacao: new Date(""),
+            ultima_atualizacao: new Date(),
             vinculos: []
         }
     }

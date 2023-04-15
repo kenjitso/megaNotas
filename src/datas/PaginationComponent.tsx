@@ -41,9 +41,9 @@ export class PaginationComponent<T> extends React.Component<IPaginationProps<T>>
 
     return (
       <Pagination className=" px-3 ">
-        <CustomPaginationButton onClick={() => this.handlePageChange(1)}>Primeiro</CustomPaginationButton>
+        <CustomPaginationButton onClick={() => this.handlePageChange(1)}>   &lt;   &lt;</CustomPaginationButton>
         <CustomPaginationButton onClick={() => currentPage > 1 && this.handlePageChange(currentPage - 1)}>
-          Anterior
+          &lt;
         </CustomPaginationButton>
 
         {Array.from({ length: this.totalPages }, (_, i) => i + 1).map((page) => (
@@ -59,9 +59,9 @@ export class PaginationComponent<T> extends React.Component<IPaginationProps<T>>
         <CustomPaginationButton
           onClick={() => currentPage < this.totalPages && this.handlePageChange(currentPage + 1)}
         >
-          Próximo
+          &gt;
         </CustomPaginationButton>
-        <CustomPaginationButton onClick={() => this.handlePageChange(this.totalPages)}>Último</CustomPaginationButton>
+        <CustomPaginationButton onClick={() => this.handlePageChange(this.totalPages)}>&gt;&gt;</CustomPaginationButton>
       </Pagination>
     );
   }

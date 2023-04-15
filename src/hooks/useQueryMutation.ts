@@ -11,8 +11,6 @@ interface Props<T> {
     queryFn: () => Promise<T>,
     // Função utilizada para gravar os dados do objeto no backend.
     saveFn: (data: T) => Promise<T>,
-    // Chave de busca dos dados para invalidar ao salvar o objeto no banco de dados (invalida o cache).
-    invalidateKeys?: string[][],
     // Função executada caso haja um erro ao gravar os dados do objeto no backend.
     onSaveError?: (error: unknown) => void,
     // Função executada caso haja um erro ao buscar os dados do objeto no backend.
@@ -45,14 +43,14 @@ export default function useQueryMutation<T>(initialState: T, {
     queryKey,
     queryFn,
     saveFn,
-    invalidateKeys = [queryKey],
-    onQuerySuccess = () => {},
-    onQueryError = () => {},
-    onSaveSuccess = () => {},
-    onSaveError = () => {},
+    onQuerySuccess = () => { },
+    onQueryError = () => { },
+    onSaveSuccess = () => { },
+    onSaveError = () => { },
     queryEnabled = true,
     toasts
 }: Props<T>) {
+    console.log(queryKey);
     const idToast = queryKey.join(";");
     const queryClient = useQueryClient();
     // Cria as funções para edição do objeto interno.
@@ -65,7 +63,7 @@ export default function useQueryMutation<T>(initialState: T, {
     }, {
         onSuccess: (data) => {
             // Ao fazer o download do objeto, atualiza o objeto interno para edição.
-            set(data); 
+            set(data);
 
             // Manda o objeto para a função pai.
             onQuerySuccess(data);
@@ -91,16 +89,20 @@ export default function useQueryMutation<T>(initialState: T, {
     }, {
         onSuccess: (data) => {
             // Invalida todas as chaves de busca (cache) relacionados à esse objeto
-            for(const keys of invalidateKeys) {
-                queryClient.invalidateQueries(keys);
-            }
-            
+            queryClient.invalidateQueries({
+                queryKey: [queryKey[0]]
+
+            });
             // Manda o objeto salvo para a função pai.
             onSaveSuccess(data);
 
             // Caso haja toasts, atualiza as mensagens.
             if (!toasts?.saveComplete) return;
-            toast.update(idToast, { render: toasts.saveComplete, type: "success", isLoading: false, autoClose: 3000 });
+            if (toasts.saving) {
+                toast.update(idToast, { render: toasts.saveComplete, type: "success", isLoading: false, autoClose: 3000 });
+                return;
+            }
+            toast.success(toasts.saveComplete, { autoClose: 3000 });
         },
         onError: (error) => {
             // Manda o objeto de errro para a função pai.

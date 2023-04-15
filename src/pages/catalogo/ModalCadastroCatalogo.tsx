@@ -91,8 +91,11 @@ export function ModalCadastroCatalogo({ onHide, catalogoId }: IProps) {
                                                         as={InputNumero}
                                                         type="number"
                                                         decimals={0}
-                                                        value={(catalogoMutator.state.comissao) * 100}
-                                                        readOnly={true}
+                                                        max={100}
+                                                        value={(catalogoMutator.state.comissao * 100 )}
+                                                        onValueChange={(numero: number) => { catalogoMutator.update("comissao", numero) }}
+                                                        placeholder="Insira a comissão"
+                                                        readOnly={catalogoId ? true : false}
                                                     />
                                                 </FloatingLabel>
                                             </Form.Group>
@@ -108,9 +111,10 @@ export function ModalCadastroCatalogo({ onHide, catalogoId }: IProps) {
                                                         as={InputNumero}
                                                         type="number"
                                                         decimals={2}
-                                                        value={(catalogoMutator.state.frete) * 100}
+                                                        value={catalogoMutator.state.frete * 100}
+                                                        onValueChange={(numero: number) => { catalogoMutator.update("frete", numero) }}
                                                         placeholder="Insira o frete"
-                                                        readOnly={true}
+                                                        readOnly={catalogoId ? true : false}
                                                     />
                                                 </FloatingLabel>
                                             </Form.Group>
@@ -125,10 +129,10 @@ export function ModalCadastroCatalogo({ onHide, catalogoId }: IProps) {
                                                         as={InputNumero}
                                                         type="number"
                                                         decimals={2}
-                                                        value={(catalogoMutator.state.preco) * 100}
-
+                                                        value={catalogoMutator.state.preco * 100}
+                                                        onValueChange={(numero: number) => { catalogoMutator.update("preco", numero) }}
                                                         placeholder="Insira o preco"
-                                                        readOnly={true}
+                                                        readOnly={catalogoId ? true : false}
                                                     />
                                                 </FloatingLabel>
                                             </Form.Group>
@@ -145,7 +149,7 @@ export function ModalCadastroCatalogo({ onHide, catalogoId }: IProps) {
                                                         value={catalogoMutator.state.nome}
                                                         placeholder="Insira o nome do produto"
                                                         onChange={(event) => catalogoMutator.update("nome", event.target.value)}
-                                                        readOnly={true}
+                                                        readOnly={catalogoId ? true : false}
                                                     />
                                                 </FloatingLabel>
                                             </Form.Group>

@@ -5,7 +5,7 @@ import { z } from "zod";
 export const schema = z.object({
 
     id: z.string().default(""),
-    ativo: z.boolean().default(false),
+    ativo: z.boolean().default(true),
     nome: z.string().default(""),
     url_thumbnail: z.string().default(""),
     url_catalogo: z.string().default(""),
@@ -25,7 +25,7 @@ export class CatalogoController {
     public static createNew(): ICatalogo {
         return {
             id: "",
-            ativo: false,
+            ativo: true,
             nome: "",
             url_thumbnail: "",
             url_catalogo: "",
@@ -33,7 +33,7 @@ export class CatalogoController {
             frete: 0,
             premium: false,
             preco: 0,
-            ultima_atualizacao: new Date()
+            ultima_atualizacao: new Date(),
         }
     }
 
@@ -54,7 +54,7 @@ export class CatalogoController {
     }
 
     public static async create(produto: ICatalogo) {
-
+console.log(produto);
         const options: RequestInit = {
             method: "POST",
             headers: {
@@ -62,8 +62,10 @@ export class CatalogoController {
             },
             body: JSON.stringify(produto)
         };
+        
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos`, options);
         const responseData: unknown = await response.json();
+        console.log(responseData);
         const catalogoSchema = schema.parse(responseData);
         return catalogoSchema;
     }
@@ -78,6 +80,7 @@ export class CatalogoController {
         };
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/${produto.id}`, options);
         const responseData: unknown = await response.json();
+        console.log(responseData);
         const catalogoSchema = schema.parse(responseData);
         return catalogoSchema;
     }
@@ -140,7 +143,6 @@ export class CatalogoController {
 
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos?${params}`, options);
         const responseData: unknown = await response.json();
-        console.log(responseData);
         const catalogosSchema = z.object({
             page: z.number().min(1),
             limit: z.number().min(1),

@@ -16,6 +16,9 @@ export function ModalDesativaLoja({ onHide, lojaId }: IProps) {
         queryKey: ["Lojas", lojaId ?? ""],
         queryFn: async () => await LojaController.get(lojaId ?? ""),
         onSaveSuccess: onHide,
+        toasts: {
+            saveComplete: `Loja desativado com sucesso!`,
+        },
         saveFn: () => LojaController.deactivate(lojaId ?? ""),
         invalidateKeys: [["Lojas"]]
     });

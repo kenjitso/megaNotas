@@ -13,6 +13,7 @@ import {
     Row,
     Table,
 } from "react-bootstrap";
+import ratata from "../../assets/megaPreco.svg";
 import { useNavigate, useParams } from "react-router-dom";
 import useDataTypes from "@/hooks/useDataTypes";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
@@ -66,13 +67,7 @@ export function PageHome() {
             <Table bordered>
                 <thead>
                     <tr>
-                        <th className="th70" onClick={() => orderBy("id")}>
-                            <div className="thArrow">
-                                <span>ID</span>
-                                <span>
-                                    {ordenar === "id" && (ordem ? "▼" : "▲")}
-                                </span>
-                            </div>
+                        <th className="th70">
                         </th>
                         <th className="th200" onClick={() => orderBy("nome")}>
                             <div className="thArrow">
@@ -160,7 +155,13 @@ function ItemTable({ catalogo }: IPropItensTable) {
                                 <Table bordered hover style={{ marginBottom: "0px" }}>
                                     <tbody>
                                         <tr>
-                                            <td className="th70">{catalogo.id}</td>
+                                            <td className="image-cell">
+                                                <img
+                                                    className="responsive-image"
+                                                    src={catalogo.url_thumbnail || ratata}
+                                                    alt="Descrição da imagem"
+                                                />
+                                            </td>
                                             <td className="th200">
                                                 <a
                                                     style={{ color: "blue" }}

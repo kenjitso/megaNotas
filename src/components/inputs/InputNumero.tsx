@@ -9,6 +9,7 @@ interface Props {
     onValueChange?: (value: number) => void;
     style?: CSSProperties;
     value: number;
+    readOnly: boolean;
 }
 
 /**
@@ -22,6 +23,7 @@ const InputNumero = React.forwardRef<HTMLInputElement, Props>(({
     max = Number.MAX_SAFE_INTEGER,
     onValueChange,
     style = {},
+    readOnly = false,
     value,
     negative
 }, ref) => {
@@ -66,6 +68,7 @@ const InputNumero = React.forwardRef<HTMLInputElement, Props>(({
             onChange={onChange}
             style={style}
             value={valueDisplay}
+            readOnly={readOnly}
         />
     );
 });

@@ -28,7 +28,7 @@ export default function useDataTypes<T>({
     const [ordenar, setOrdenar] = useState<string>(defaultOrder);
 
 
-    const { isFetching, isError, refetch, data } = useQuery([queryKey, filtro, ordenar, ordem], queryFn, {
+    const { isFetching, isError, data } = useQuery([...queryKey, filtro, ordenar, ordem], queryFn, {
         enabled: true,
         refetchOnMount: true
     });
@@ -39,13 +39,10 @@ export default function useDataTypes<T>({
         setOrdenar(campo);
     }
 
-    React.useEffect(() => {
-        refetch();
-    }, [ordem, ordenar, filtro])
 
     const result = {
 
-        refetch,
+
         isLoading: isFetching,
         orderBy,
         ordem,

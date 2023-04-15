@@ -15,14 +15,14 @@ export function ModalCadastroLoja({ onHide, lojaId }: IProps) {
 
     const lojaMutator = useQueryMutation(LojaController.createNew(), {
         queryEnabled: !!lojaId && typeof onHide === 'function',
-        queryKey: ["lojasitens", lojaId ?? ""],
+        queryKey: ["lojas", lojaId ?? ""],
         queryFn: async () => await LojaController.get(lojaId ?? ""),
         onSaveSuccess: onHide,
         toasts: {
             saveComplete: lojaId ? `Loja alterado com sucesso!` : `Loja cadastrado com sucesso!`
         },
-        saveFn: LojaController.save, 
-        invalidateKeys: [["lojasitens"]]
+        saveFn: LojaController.save,
+        invalidateKeys: [["lojas"]]
     });
 
     const handleSelect = (eventKey: any, event: any) => {
@@ -62,16 +62,16 @@ export function ModalCadastroLoja({ onHide, lojaId }: IProps) {
                                         </Form.Group>
                                     </Col>
                                     <Col>
-                                        <Form.Group
-                                            controlId="formCotacao"
-                                            className="mb-3">
+                                        <Form.Group controlId="formCotacao" className="mb-3">
                                             <Form.Label><b>Cotação:</b></Form.Label>
                                             <Form.Control
                                                 as={InputNumero}
                                                 type="number"
                                                 decimals={2}
                                                 value={lojaMutator.state.cotacao}
-                                                placeholder="Insira a cotação" />
+                                                onValueChange={(numero: number) => lojaMutator.update("cotacao", numero)}
+                                                placeholder="Insira a cotação"
+                                            />
                                         </Form.Group>
                                     </Col>
                                 </Row>

@@ -12,15 +12,14 @@ interface props {
 export function ModalCadastroFreteiro({ onHide, freteiroId }: props) {
 
     const freteiroMutator = useQueryMutation(FreteiroController.createNew(), {
-        queryEnabled: !!freteiroId && typeof onHide==='function',
-        queryKey: ["freteirositens", freteiroId ?? ""],
+        queryEnabled: !!freteiroId && typeof onHide === 'function',
+        queryKey: ["freteiros", freteiroId ?? ""],
         queryFn: async () => await FreteiroController.get(freteiroId ?? ""),
         onSaveSuccess: onHide,
         toasts: {
             saveComplete: freteiroId ? `Freteiro alterado com sucesso!` : `Freteiro cadastrado com sucesso!`,
         },
         saveFn: FreteiroController.save,
-        invalidateKeys: [["freteirositens"]]
     });
 
     return (
@@ -64,6 +63,7 @@ export function ModalCadastroFreteiro({ onHide, freteiroId }: props) {
                                                 type="number"
                                                 decimals={2}
                                                 value={freteiroMutator.state.fixo}
+                                                onValueChange={(numero: number) => freteiroMutator.update("fixo", numero)}
                                                 placeholder="Insira o valor fixo" />
                                         </Form.Group>
                                     </Col>
@@ -75,7 +75,8 @@ export function ModalCadastroFreteiro({ onHide, freteiroId }: props) {
                                                 type="number"
                                                 decimals={0}
                                                 max={100}
-                                                value={freteiroMutator.state.fixo}
+                                                value={freteiroMutator.state.percentual}
+                                                onValueChange={(numero: number) => freteiroMutator.update("percentual", numero)}
                                                 placeholder="Insira o Percentual"
                                             />
                                         </Form.Group>

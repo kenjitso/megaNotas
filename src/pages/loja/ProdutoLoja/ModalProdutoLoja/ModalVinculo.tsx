@@ -64,9 +64,9 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
             onHide={onHide}>
 
             <Modal.Header closeButton>
-                <Modal.Title> Vinculos de produto da Loja </Modal.Title>
+                <Modal.Title> Vincular Catálogo ao Produto </Modal.Title>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body className = "text-center">
 
                 {produtoParaguay?.nome}
 
@@ -105,7 +105,7 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
                                         <span>Catalogo</span>
                                     </div>
                                 </th>
-                                <th className="th50">Selecionar</th>
+                                <th className="th50">Vincular</th>
                             </tr>
                         </thead>
                         <tbody>

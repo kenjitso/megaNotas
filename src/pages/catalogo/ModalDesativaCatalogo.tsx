@@ -13,6 +13,9 @@ export function ModalDesativaCatalogo({ onHide, catalogoId }: IProps) {
         queryKey: ["Catalogos", catalogoId ?? ""],
         queryFn: async () => await CatalogoController.get(catalogoId ?? ""),
         onSaveSuccess: onHide,
+        toasts: {
+            saveComplete: `Catalogo desativado com sucesso!`,
+        },
         saveFn: () => CatalogoController.deactivate(catalogoId ?? ""),
         invalidateKeys: [["Catalogos"]]
     });
