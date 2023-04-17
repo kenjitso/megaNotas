@@ -1,9 +1,12 @@
 import { Icons } from "@/components/icons/icons";
-import InputNumero from "@/components/inputs/InputNumero";
 import React, { useEffect, useState } from "react";
-import { Button, Container, Form, Modal, Nav, Navbar } from "react-bootstrap";
+import { Container, Form, Nav, Navbar } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ratata from "../assets/megaPreco.svg"
+import { ModalDolar } from "./ModalDolar";
+import useDataTypes from "@/hooks/useDataTypes";
+import { FreteiroController, IFreteiro } from "@/datatypes/freteiro";
+import { useSelectedId } from "@/context/SelectedIdContext";
 
 interface CotacaoMoedas {
   [key: string]: {
@@ -20,28 +23,29 @@ interface CotacaoMoedas {
   };
 }
 
-interface ModalDolarProps {
-  showModal: boolean;
-  setShowModal: (show: boolean) => void;
-}
 
 export function MenuMega() {
   const [cotacaoDolar, setCotacaoDolar] = useState<string>("");
   const [showModal, setShowModal] = useState(false);
-  const [inputCotacao, setInputCotacao] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+  const [filtro, setFiltro] = useState("");
+  const { selectedId, setSelectedId } = useSelectedId();
 
-  const handleModalSave = () => {
+  const {
 
-    const cotacao = (+inputCotacao / 100).toString().replace(".", ",");
-    setCotacaoDolar((cotacao).toString());
-    setShowModal(false);
-  };
+    isLoading,
+    orderBy,
+    ordem,
+    ordenar,
+    data
+  } = useDataTypes<IFreteiro>({
+    queryKey: ["freteiros"],
+    queryFn: async () => await FreteiroController.search(1, 100, filtro, ordenar, ordem ? "crescente" : "descrescente", true),
+    filtro: filtro,
+    defaultOrder: "nome"
+  })
 
-  const handleDolarClick = () => {
-    setShowModal(true);
-  };
 
   useEffect(() => {
     fetch("https://economia.awesomeapi.com.br/last/USD-BRL")
@@ -54,6 +58,8 @@ export function MenuMega() {
         }
       });
   }, []);
+
+
 
   return (
     <React.Fragment>
@@ -91,66 +97,33 @@ export function MenuMega() {
                 </Nav.Item>
               </Nav>
             </Nav>
+
+          
             <Nav className="mx-end">
-              <Nav.Link onClick={handleDolarClick}>
+          
+            <Form.Select
+            className="optionStyle"
+              value={selectedId ?? 0}
+              onChange={(e) => setSelectedId(e.target.value)}
+            >
+              <option value="0">Freteiro</option>
+              {data?.items.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.nome}
+                </option>
+              ))}
+            </Form.Select>
+
+
+              <Nav.Link onClick={() => { setShowModal(true); }} className="no-wrap">
                 <Icons tipo="flag" /> <b>Dólar: R$ {cotacaoDolar}</b>
               </Nav.Link>
             </Nav>
-
           </Navbar.Collapse>
-          <ModalDolar showModal={showModal} setShowModal={setShowModal} onInputCotacao={setInputCotacao} handleModalSave={handleModalSave} />
+          <ModalDolar showModal={showModal} setShowModal={setShowModal} cotacaoDolar={cotacaoDolar} />
         </Container>
       </Navbar>
     </React.Fragment>
   );
 }
-interface ModalDolarProps {
-  showModal: boolean;
-  setShowModal: (show: boolean) => void;
-  onInputCotacao: (value: string) => void;
-  handleModalSave: () => void;
-}
 
-
-
-function ModalDolar({ showModal, setShowModal, onInputCotacao, handleModalSave }: ModalDolarProps) {
-  const [inputCotacao, setInputCotacao] = useState(0);
-  const handleValue = (value: number) => {
-    setInputCotacao(value);
-    onInputCotacao(value.toString());
-
-  }
-
-  return (
-    <Modal
-      size="lg"
-      centered
-      backdrop="static"
-      keyboard={false}
-      show={showModal}
-      onHide={() => setShowModal(false)}
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>Inserir cotação do dólar manualmente</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form>
-          <Form.Group controlId="formCotacao">
-            <Form.Label>Cotação do dólar:</Form.Label>
-            <Form.Control
-              as={InputNumero}
-              type="number"
-              value={inputCotacao}
-              onValueChange={handleValue}
-            />
-          </Form.Group>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button className="position" variant="secondary" onClick={handleModalSave}>
-          Salvar
-        </Button>
-      </Modal.Footer>
-    </Modal>
-  );
-}

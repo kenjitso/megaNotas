@@ -1,15 +1,17 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button, Col, FloatingLabel, Row, Table } from "react-bootstrap";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { PaginationComponent } from "@/datas/PaginationComponent";
 import { FreteiroController, IFreteiro } from "@/datatypes/freteiro";
 import { ModalCadastroFreteiro } from "./ModalCadastroFreteiro";
 import React from "react";
+import "@/assets/style.css"
 import { Icons } from "@/components/icons/icons";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { ModalDesativaFreteiro } from "./ModalDesativaFreteiro";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import useDataTypes from "@/hooks/useDataTypes";
+import { formatCurrency } from "@/components/utils/FormatCurrency";
 
 export function PageFreteiro() {
     const navigate = useNavigate();
@@ -132,7 +134,9 @@ function ItemTable({ freteiro, onEdit, onDelete }: IPropItensTable) {
             <tr>
 
                 <td>{freteiro.nome}</td>
-                <td className="tdValue">R$: {(freteiro.fixo / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td className="tdValue">
+                    R$: {formatCurrency(freteiro.fixo / 100)}
+                </td>
                 <td className="tdValue">{freteiro.percentual}%</td>
                 <td
                     onClick={onEdit}

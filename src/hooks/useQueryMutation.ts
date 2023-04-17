@@ -50,7 +50,7 @@ export default function useQueryMutation<T>(initialState: T, {
     queryEnabled = true,
     toasts
 }: Props<T>) {
-    console.log(queryKey);
+    const clear = () => { set(initialState) };
     const idToast = queryKey.join(";");
     const queryClient = useQueryClient();
     // Cria as funções para edição do objeto interno.
@@ -80,7 +80,7 @@ export default function useQueryMutation<T>(initialState: T, {
             if (!toasts?.fetchError) return;
             toast.update(idToast, { render: toasts.fetchError, type: "error", isLoading: false, autoClose: false });
         },
-        enabled: queryEnabled
+        enabled: queryEnabled, staleTime: 1, cacheTime: 1
     });
     const mutation = useMutation(() => {
         // Caso haja toasts, cria as mensagens.
@@ -124,6 +124,7 @@ export default function useQueryMutation<T>(initialState: T, {
         refetch: query.refetch,
         save: mutation.mutate,
         state,
+        clear,
         update,
         set
     };

@@ -1,8 +1,10 @@
 import MercadoLivre from "@/functions/mercadolivre";
 import { parseISO } from "date-fns";
 import { z } from "zod";
+import { schemaLoja } from "./loja";
+import { schemaProdutoLoja } from "./ProdutoLoja";
 
-export const schema = z.object({
+export const schemaCatalogo = z.object({
 
     id: z.string().default(""),
     ativo: z.boolean().default(true),
@@ -19,7 +21,26 @@ export const schema = z.object({
 
 })
 
-export type ICatalogo = z.infer<typeof schema>;
+export const schemaCompetidor = schemaCatalogo.merge(z.object({
+
+    lucro: z.number(),
+    margem: z.number(),
+    frete: z.number(),
+    vencedor: z.null().or(z.object({
+        loja: schemaLoja,
+        produto: schemaProdutoLoja,
+
+    })),
+
+    competidores: z.array(z.object({
+        loja: schemaLoja,
+        produto: schemaProdutoLoja,
+        frete: z.number(),
+    }))
+}));
+
+export type ICatalogo = z.infer<typeof schemaCatalogo>;
+export type ICatalogoCompetidor = z.infer<typeof schemaCompetidor>;
 export class CatalogoController {
 
     public static createNew(): ICatalogo {
@@ -48,13 +69,13 @@ export class CatalogoController {
         };
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/${id}`, options);
         const responseData: unknown = await response.json();
-        const catalogoSchema = schema.parse(responseData);
+        const catalogoSchema = schemaCatalogo.parse(responseData);
         return catalogoSchema;
 
     }
 
     public static async create(produto: ICatalogo) {
-console.log(produto);
+        console.log(produto);
         const options: RequestInit = {
             method: "POST",
             headers: {
@@ -62,11 +83,11 @@ console.log(produto);
             },
             body: JSON.stringify(produto)
         };
-        
+
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos`, options);
         const responseData: unknown = await response.json();
         console.log(responseData);
-        const catalogoSchema = schema.parse(responseData);
+        const catalogoSchema = schemaCatalogo.parse(responseData);
         return catalogoSchema;
     }
 
@@ -81,7 +102,7 @@ console.log(produto);
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/${produto.id}`, options);
         const responseData: unknown = await response.json();
         console.log(responseData);
-        const catalogoSchema = schema.parse(responseData);
+        const catalogoSchema = schemaCatalogo.parse(responseData);
         return catalogoSchema;
     }
 
@@ -96,7 +117,7 @@ console.log(produto);
         };
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/${id}`, options);
         const responseData: unknown = await response.json();
-        const catalogoSchema = schema.parse(responseData);
+        const catalogoSchema = schemaCatalogo.parse(responseData);
         return catalogoSchema;
     }
 
@@ -146,9 +167,42 @@ console.log(produto);
         const catalogosSchema = z.object({
             page: z.number().min(1),
             limit: z.number().min(1),
-            items: z.array(schema),
-            total: z.number().min(1)
+            items: z.array(schemaCatalogo),
+            total: z.number().min(0)
         }).parse(responseData);
+        return catalogosSchema;
+    }
+
+
+    public static async searchCompetidor(freteiro = 0, page = 1, limit = 25, q: string = "", ordenar = "margem", ordem = "descrescente") {
+
+        const params = new URLSearchParams();
+        if (q) params.set("q", q);
+        if (freteiro !== 0) params.set("freteiro", freteiro.toString());
+        console.log(freteiro);
+        params.set("limit", limit.toString());
+        params.set("page", page.toString());
+        params.set("ordenar", ordenar);
+        params.set("ordem", ordem);
+
+        const options: RequestInit = {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json"
+            }
+        };
+
+        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/competidores?${params}`, options);
+        const responseData: unknown = await response.json();
+
+        const catalogosSchema = z.object({
+            page: z.number().min(1),
+            limit: z.number().min(1),
+            items: z.array(schemaCompetidor),
+            total: z.number().min(0)
+        }).parse(responseData);
+
+        console.log(catalogosSchema);
         return catalogosSchema;
     }
 }

@@ -10,7 +10,6 @@ export default class MercadoLivre {
             throw new Error(`Parece que o link inserido não é do mercado livre ou não é um catalogo. Verifique se o link começa com: ${"https://www.mercadolivre.com.br/"}`)
         }
 
-
         const urlPart1 = url.split("/p/");
 
         if (urlPart1.length < 2) {

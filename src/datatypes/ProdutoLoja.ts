@@ -1,7 +1,7 @@
 import { parseISO } from "date-fns";
 import { z } from "zod";
 
-export const schema = z.object({
+export const schemaProdutoLoja = z.object({
 
     id: z.string().default(""),
     codigo: z.string().default(""),
@@ -17,7 +17,7 @@ export const schema = z.object({
 
 })
 
-export type IProdutoLoja = z.infer<typeof schema>;
+export type IProdutoLoja = z.infer<typeof schemaProdutoLoja>;
 
 export class ProdutoLojaController {
     public static createNew(): IProdutoLoja {
@@ -43,7 +43,7 @@ export class ProdutoLojaController {
         };
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja?loja=${idLoja}`, options);
         const responseData: unknown = await response.json();
-        const produtoLojaSchema = z.array(schema).parse(responseData);
+        const produtoLojaSchema = z.array(schemaProdutoLoja).parse(responseData);
         return produtoLojaSchema;
     }
 
@@ -61,7 +61,7 @@ export class ProdutoLojaController {
 
         const responseData: unknown = await response.json();
         console.log(responseData);
-        const produtosLojaSchema = z.array(schema).parse(responseData);
+        const produtosLojaSchema = z.array(schemaProdutoLoja).parse(responseData);
         return produtosLojaSchema;
     }
 
@@ -77,7 +77,7 @@ export class ProdutoLojaController {
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja/${produtoLoja.id}`, options);
         const responseData: unknown = await response.json();
         console.log(responseData);
-        const produtoLojaSchema = schema.parse(responseData);
+        const produtoLojaSchema = schemaProdutoLoja.parse(responseData);
         return produtoLojaSchema;
     }
 
@@ -105,8 +105,8 @@ export class ProdutoLojaController {
         const catalogos = z.object({
             page: z.number().min(1),
             limit: z.number().min(1),
-            items: z.array(schema),
-            total: z.number().min(1)
+            items: z.array(schemaProdutoLoja),
+            total: z.number().min(0)
         }).parse(responseData);
         return catalogos;
     }

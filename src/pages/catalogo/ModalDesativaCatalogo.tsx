@@ -1,3 +1,4 @@
+import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { CatalogoController } from "@/datatypes/catalogo";
 import useQueryMutation from "@/hooks/useQueryMutation";
 import { Button, Modal } from "react-bootstrap";
@@ -10,14 +11,16 @@ interface IProps {
 export function ModalDesativaCatalogo({ onHide, catalogoId }: IProps) {
     const catalogoMutator = useQueryMutation(new CatalogoController(), {
         queryEnabled: !!catalogoId && typeof onHide === 'function',
-        queryKey: ["Catalogos", catalogoId ?? ""],
+        queryKey: ["catalogos", catalogoId ?? ""],
         queryFn: async () => await CatalogoController.get(catalogoId ?? ""),
-        onSaveSuccess: onHide,
+        onSaveSuccess: () => {
+            onHide();
+            catalogoMutator.clear();
+        },
         toasts: {
             saveComplete: `Catalogo desativado com sucesso!`,
         },
         saveFn: () => CatalogoController.deactivate(catalogoId ?? ""),
-        invalidateKeys: [["Catalogos"]]
     });
 
     return (
@@ -33,13 +36,24 @@ export function ModalDesativaCatalogo({ onHide, catalogoId }: IProps) {
                 <Modal.Title> Desativar catalogo </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                Confirma desativação do catalogo?
+                {catalogoMutator.isLoading ? (
+                    <div>{<FragmentLoading />}</div>) : (
+                    <div>Confirma desativação do catalogo?</div>
+                )}
             </Modal.Body>
             <Modal.Footer>
-                <Button className="position" variant="secondary" onClick={() => catalogoMutator.save()}>
+                <Button
+                    className="position"
+                    variant="secondary"
+                    disabled={catalogoMutator.isLoading}
+                    onClick={() => catalogoMutator.save()}>
                     Confirmar
                 </Button>
-                <Button className="position" variant="secondary" onClick={onHide}>
+                <Button
+                    className="position"
+                    variant="secondary"
+                    disabled={catalogoMutator.isLoading}
+                    onClick={onHide}>
                     Cancelar
                 </Button>
             </Modal.Footer>

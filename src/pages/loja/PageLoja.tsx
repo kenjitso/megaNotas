@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button, Col, FloatingLabel, Row, Table, } from "react-bootstrap";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { PaginationComponent } from "../../datas/PaginationComponent";
 import { ILoja, LojaController } from "@/datatypes/loja";
 import React from "react";
@@ -10,6 +10,9 @@ import { Icons } from "@/components/icons/icons";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import { ModalDesativaLoja } from "./ModalDesativaLoja";
+import { useQueryClient } from "@tanstack/react-query";
+import { formatCurrency } from "@/components/utils/FormatCurrency";
+
 
 export function PageLoja() {
     const navigate = useNavigate();
@@ -17,6 +20,8 @@ export function PageLoja() {
     const [lojaIdEdit, setEdit] = useState<string | undefined>(undefined)
     const [lojaIdDelete, setDelete] = useState("");
     const [filtro, setFiltro] = useState("");
+
+
 
     const {
         isLoading,
@@ -124,16 +129,28 @@ interface IPropsItensTable {
 
 function ItemTable({ loja, onEdit, onDelete }: IPropsItensTable) {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     return (
         <React.Fragment>
             <tr >
-                <td><span style={{ color: "blue", cursor: 'pointer' }}
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        Number(loja.id) !== 0 && navigate(`/lojas/${loja.id}/produtos/1`);
-                    }}>{loja.nome}</span></td>
-                <td className="tdValue">R$: {(loja.cotacao / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td>
+                    <span
+                        style={{ color: "blue", cursor: 'pointer' }}
+                        onClick={() => {
+                            if (Number(loja.id) !== 0) {
+                                queryClient.invalidateQueries(["produtosloja"]);
+                                navigate(`/lojas/${loja.id}/produtos/1`);
+                            }
+                        }}
+                    >
+                        {loja.nome}
+                    </span>
+                </td>
+
+                <td className="tdValue">
+                    R$: {formatCurrency(loja.cotacao)}
+                </td>
                 <td
                     onClick={onEdit}
                     role="button"

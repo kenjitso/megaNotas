@@ -2,6 +2,8 @@ import { Table } from "react-bootstrap";
 import "@/assets/style.css"
 import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 import React from "react";
+import { format } from "path";
+import { formatCurrency } from "@/components/utils/FormatCurrency";
 
 interface IProps {
     listProdutoLoja?: IProdutoLoja[] | null;
@@ -32,7 +34,7 @@ export function ModalTableProdutoLoja({ listProdutoLoja }: IProps) {
                     </tr>
                 </thead>
                 <tbody>
-                    {listProdutoLoja?.slice(0,10).map((produtoLoja, index) => (
+                    {listProdutoLoja?.slice(0, 10).map((produtoLoja, index) => (
                         <tr key={index} >
                             <td>
                                 {produtoLoja.codigo}
@@ -41,7 +43,7 @@ export function ModalTableProdutoLoja({ listProdutoLoja }: IProps) {
                                 {produtoLoja.nome}
                             </td>
                             <td >
-                                U$: {(produtoLoja.preco).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                U$: {formatCurrency(produtoLoja.preco)}
                             </td>
                         </tr>
                     ))

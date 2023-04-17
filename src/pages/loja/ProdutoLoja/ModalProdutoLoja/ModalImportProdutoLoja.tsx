@@ -24,14 +24,13 @@ export function ModalImportProdutoLoja({ onHide, lojaId }: IProps) {
         return data;
     }, { enabled: !!lojaId && typeof onHide === 'function' }); // habilita a consulta somente quando lojaId estiver definido e onHide for uma função });
 
-
     const mutation = useMutation(() => {
         if (!lojaId) throw new Error("Loja Indefinido");
         return ProdutoLojaController.importar(formattedList);
     }, {
         onSuccess: () => {
             onHide();
-            queryClient.invalidateQueries(["produtosloja", lojaId]);
+            queryClient.invalidateQueries(["produtosloja"]);
         }
     });
 
@@ -88,7 +87,7 @@ export function ModalImportProdutoLoja({ onHide, lojaId }: IProps) {
             backdrop="static"
             keyboard={false}
             show={lojaId !== undefined}
-            onHide={onHide}
+            onHide={() => { onHide(); setFormattedList([]) }}
         >
             <Modal.Header closeButton>
                 <Modal.Title>Arraste um arquivo</Modal.Title>
@@ -116,7 +115,7 @@ export function ModalImportProdutoLoja({ onHide, lojaId }: IProps) {
 
             </Modal.Body>
             <Modal.Footer>
-                <Button className="position" variant="secondary" onClick={() => onHide()}>
+                <Button className="position" variant="secondary" onClick={() => { onHide(); setFormattedList([]); }}>
                     Fechar
                 </Button>
                 <Button className="position" variant="secondary" onClick={() => mutation.mutate()}>

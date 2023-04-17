@@ -1,3 +1,4 @@
+import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { FreteiroController } from "@/datatypes/freteiro";
 import useQueryMutation from "@/hooks/useQueryMutation";
 import { Button, Modal } from "react-bootstrap";
@@ -13,12 +14,14 @@ export function ModalDesativaFreteiro({ onHide, freteiroId }: IProps) {
         queryEnabled: !!freteiroId && typeof onHide === 'function',
         queryKey: ["freteiros", freteiroId ?? ""],
         queryFn: async () => await FreteiroController.get(freteiroId ?? ""),
-        onSaveSuccess: onHide,
+        onSaveSuccess: () => {
+            onHide();
+            freteiroMutator.clear();
+        },
         toasts: {
             saveComplete: `Freteiro desativado com sucesso!`,
         },
         saveFn: () => FreteiroController.deactivate(freteiroId ?? ""),
-        invalidateKeys: [["freteiros"]],
     });
 
     return (
@@ -34,13 +37,24 @@ export function ModalDesativaFreteiro({ onHide, freteiroId }: IProps) {
                 <Modal.Title> Desativar Freteiro </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                Confirma desativação do freteiro?
+                {freteiroMutator.isLoading ? (
+                    <div>{<FragmentLoading />}</div>) : (
+                    <div>Confirma desativação do freteiro?</div>
+                )}
             </Modal.Body>
             <Modal.Footer>
-                <Button className="position" variant="secondary" onClick={() => freteiroMutator.save()}>
+                <Button
+                    className="position"
+                    variant="secondary"
+                    disabled={freteiroMutator.isLoading}
+                    onClick={() => freteiroMutator.save()}>
                     Confirmar
                 </Button>
-                <Button className="position" variant="secondary" onClick={onHide}>
+                <Button
+                    className="position"
+                    variant="secondary"
+                    disabled={freteiroMutator.isLoading}
+                    onClick={onHide}>
                     Cancelar
                 </Button>
             </Modal.Footer>

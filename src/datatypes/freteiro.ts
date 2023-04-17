@@ -1,6 +1,6 @@
 import { TypeOf, z } from "zod";
 
-export const schema = z.object({
+export const schemaFreteiro = z.object({
 
   id: z.string().default(""),
   ativo: z.boolean().default(true),
@@ -10,7 +10,7 @@ export const schema = z.object({
 
 })
 
-export type IFreteiro = z.infer<typeof schema>;
+export type IFreteiro = z.infer<typeof schemaFreteiro>;
 export class FreteiroController {
 
   public static createNew(): IFreteiro {
@@ -32,7 +32,7 @@ export class FreteiroController {
     };
     const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/freteiro/${id}`, options);
     const responseData: unknown = await response.json();
-    const freteiro = schema.parse(responseData);
+    const freteiro = schemaFreteiro.parse(responseData);
     return freteiro;
   }
 
@@ -47,7 +47,8 @@ export class FreteiroController {
     };
     const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/freteiro`, options);
     const responseData: unknown = await response.json();
-    const freteiroSchema = schema.parse(responseData);
+    console.log(responseData);
+    const freteiroSchema = schemaFreteiro.parse(responseData);
     return freteiroSchema;
   }
 
@@ -61,7 +62,7 @@ export class FreteiroController {
     };
     const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/freteiro/${freteiro.id}`, options);
     const responseData: unknown = await response.json();
-    const freteiroSchema = schema.parse(responseData);
+    const freteiroSchema = schemaFreteiro.parse(responseData);
     return freteiroSchema;
   }
 
@@ -76,7 +77,7 @@ export class FreteiroController {
     };
     const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/freteiro/${id}`, options);
     const responseData: unknown = await response.json();
-    const freteiro = schema.parse(responseData);
+    const freteiro = schemaFreteiro.parse(responseData);
     return freteiro;
   }
 
@@ -89,7 +90,6 @@ export class FreteiroController {
   }
 
   public static async search(page = 1, limit = 25, q: string, ordenar = "nome", ordem = "crescente", ativo: boolean | undefined = true) {
-console.log("Rodou");
     const params = new URLSearchParams();
     if (q) params.set("q", q);
     if (ativo !== undefined) params.set("ativo", ativo.toString());
@@ -106,11 +106,12 @@ console.log("Rodou");
     };
     const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/freteiro?${params}`, options);
     const responseData: unknown = await response.json();
+
     const freteiroSchema = z.object({
       page: z.number().min(1),
       limit: z.number().min(1),
-      items: z.array(schema),
-      total: z.number().min(1)
+      items: z.array(schemaFreteiro),
+      total: z.number().min(0)
     }).parse(responseData);
     return freteiroSchema;
   }

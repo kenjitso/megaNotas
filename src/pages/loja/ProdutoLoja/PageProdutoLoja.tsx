@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Row, Col, Table, Button, FloatingLabel } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
 import { ModalImportProdutoLoja } from "./ModalProdutoLoja/ModalImportProdutoLoja";
@@ -9,6 +9,7 @@ import { Icons } from "@/components/icons/icons";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import { ModalVinculo } from "./ModalProdutoLoja/ModalVinculo";
 import { PaginationComponent } from "@/datas/PaginationComponent";
+import { formatCurrency } from "@/components/utils/FormatCurrency";
 
 export function PageProdutoLoja() {
     const { lojaId } = useParams();
@@ -17,6 +18,7 @@ export function PageProdutoLoja() {
     const [modalVinculoProduto, setVinculoProduto] = useState<IProdutoLoja | undefined>(undefined);
     const [importIdLoja, setImportLoja] = useState<string | undefined>(undefined);
     const [filtro, setFiltro] = useState("");
+
     const {
         isLoading,
         orderBy,
@@ -33,7 +35,7 @@ export function PageProdutoLoja() {
     const handlePageChange = (page: number) => {
         navigate(`/lojas/${lojaId}/produtos/${page}`);
     };
-    console.log(lojaId);
+
     return (
         <React.Fragment>
 
@@ -80,9 +82,6 @@ export function PageProdutoLoja() {
                         <th className="th70" onClick={() => orderBy("codigo")}>
                             <div className="thArrow">
                                 <span>Codigo</span>
-                                <span>
-
-                                </span>
                             </div>
                         </th>
                         <th className="th250" onClick={() => orderBy("nome")}>
@@ -152,16 +151,21 @@ function ItemTable({ produtoLoja, onVinculo }: IPropsItensTable) {
                     {produtoLoja.nome}
                 </td>
                 <td>
-                    U$: {(produtoLoja.preco).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    U$: {formatCurrency(produtoLoja.preco)}
                 </td>
                 <td
-                    style={{ backgroundColor: produtoLoja.vinculos && produtoLoja.vinculos.length > 0 ? "green" : "red" }}
+                    className="centralize-icon"
+                    style={{
+                        backgroundColor: produtoLoja.vinculos && produtoLoja.vinculos.length > 0 ? "green" : "red"
+                    }}
                     onClick={() => { onVinculo(produtoLoja) }}
                     role="button"
-                    aria-label="Vincular Produto">
+                    aria-label="Vincular Produto"
+                >
                     <Icons tipo="link" />
-
                 </td>
+
+
             </tr>
         </React.Fragment >
     )

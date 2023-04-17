@@ -4,12 +4,15 @@ import {
 import {
     CatalogoController,
     ICatalogo,
+    ICatalogoCompetidor,
 } from "@/datatypes/catalogo";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Accordion,
+    Card,
     Col,
     FloatingLabel,
+    ListGroup,
     Row,
     Table,
 } from "react-bootstrap";
@@ -18,11 +21,26 @@ import { useNavigate, useParams } from "react-router-dom";
 import useDataTypes from "@/hooks/useDataTypes";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
+import { useSelectedId } from "@/context/SelectedIdContext";
+import { useQueryClient } from "@tanstack/react-query";
+import { formatCurrency } from "@/components/utils/FormatCurrency";
 
 export function PageHome() {
     const navigate = useNavigate();
     const { page } = useParams();
     const [filtro, setFiltro] = useState("");
+    const [expandedKey, setExpandedKey] = useState<string | null>(null);
+    const { selectedId } = useSelectedId();
+    const [currentSelectedId, setCurrentSelectedId] = useState(selectedId);
+
+    const queryClient = useQueryClient();
+
+    useEffect(() => {
+        queryClient.invalidateQueries(["catalogos", page ?? "1", "10"]);
+        setCurrentSelectedId(selectedId);
+    }, [selectedId]);
+
+    console.log(currentSelectedId);
 
     const {
         isLoading,
@@ -30,19 +48,20 @@ export function PageHome() {
         ordem,
         ordenar,
         data,
-    } = useDataTypes<ICatalogo>({
+    } = useDataTypes<ICatalogoCompetidor>({
         queryKey: ["catalogos", page ?? "1", "10"],
         queryFn: async () =>
-            await CatalogoController.search(
+
+            await CatalogoController.searchCompetidor(
+                parseInt(selectedId ?? "0"),
                 parseInt(page ?? "1"),
                 10,
                 filtro,
                 ordenar,
-                ordem ? "crescente" : "descrescente",
-                true
+                ordem ? "descrescente" : "crescente"
             ),
         filtro: filtro,
-        defaultOrder: "nome",
+        defaultOrder: "margem",
     });
 
     const handlePageChange = (page: number) => {
@@ -67,7 +86,10 @@ export function PageHome() {
             <Table bordered>
                 <thead>
                     <tr>
-                        <th className="th70">
+                        <th className="th70" >
+                            <div className="thArrow">
+                                <span></span>
+                            </div>
                         </th>
                         <th className="th200" onClick={() => orderBy("nome")}>
                             <div className="thArrow">
@@ -77,7 +99,7 @@ export function PageHome() {
                                 </span>
                             </div>
                         </th>
-                        <th className="th200" onClick={() => orderBy("premium")}>
+                        <th className="th70" onClick={() => orderBy("premium")}>
                             <div className="thArrow">
                                 <span>Premium</span>
                                 <span>
@@ -85,7 +107,7 @@ export function PageHome() {
                                 </span>
                             </div>
                         </th>
-                        <th className="th200" onClick={() => orderBy("preco")}>
+                        <th className="th110" onClick={() => orderBy("preco")}>
                             <div className="thArrow">
                                 <span>Preço U$</span>
                                 <span>
@@ -93,27 +115,27 @@ export function PageHome() {
                                 </span>
                             </div>
                         </th>
-                        <th className="th200" onClick={() => orderBy("preco")}>
+                        <th className="th110" onClick={() => orderBy("lucro")}>
                             <div className="thArrow">
                                 <span>Preço ML</span>
                                 <span>
-                                    {ordenar === "nome" && (ordem ? "▼" : "▲")}
+                                    {ordenar === "lucro" && (ordem ? "▼" : "▲")}
                                 </span>
                             </div>
                         </th>
-                        <th className="th200" onClick={() => orderBy("nome")}>
+                        <th className="th110" onClick={() => orderBy("margem")}>
                             <div className="thArrow">
                                 <span>Margem Liq.</span>
                                 <span>
-                                    {ordenar === "nome" && (ordem ? "▼" : "▲")}
+                                    {ordenar === "margem" && (ordem ? "▼" : "▲")}
                                 </span>
                             </div>
                         </th>
-                        <th className="th200" onClick={() => orderBy("nome")}>
+                        <th className="th110" onClick={() => orderBy("vencedor")}>
                             <div className="thArrow">
-                                <span>Atualizado em</span>
+                                <span>Vencedor</span>
                                 <span>
-                                    {ordenar === "nome" && (ordem ? "▼" : "▲")}
+                                    {ordenar === "vencedor" && (ordem ? "▼" : "▲")}
                                 </span>
                             </div>
                         </th>
@@ -123,10 +145,11 @@ export function PageHome() {
                 <tbody>
                     {!isLoading &&
                         data?.items.map((catalogo, index) => (
-                            <ItemTable key={index} catalogo={catalogo} />
+                            <ItemTable key={index} catalogo={catalogo} eventKey={index.toString()} onToggle={setExpandedKey} expandedKey={expandedKey} />
                         ))}
                 </tbody>
             </Table>
+
             {isLoading && <FragmentLoading />}
             <Row className="mt-2">
                 <PaginationComponent<ICatalogo>
@@ -140,22 +163,29 @@ export function PageHome() {
     );
 }
 
+
 interface IPropItensTable {
-    catalogo: ICatalogo;
+    catalogo: ICatalogoCompetidor;
+    eventKey: string;
+    onToggle: (key: string | null) => void;
+    expandedKey: string | null;
 }
 
-function ItemTable({ catalogo }: IPropItensTable) {
+
+function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTable) {
+
     return (
         <React.Fragment>
             <tr>
                 <td colSpan={7} style={{ padding: "0" }}>
-                    <Accordion>
-                        <Accordion.Item eventKey="0">
-                            <Accordion.Header>
+                    <Accordion activeKey={expandedKey}>
+                        <Accordion.Item eventKey={eventKey}>
+                            <Accordion.Header onClick={() => onToggle(expandedKey === eventKey ? null : eventKey)}>
+
                                 <Table bordered hover style={{ marginBottom: "0px" }}>
                                     <tbody>
                                         <tr>
-                                            <td className="image-cell">
+                                            <td className="th70" style={{ textAlign: "center" }}>
                                                 <img
                                                     className="responsive-image"
                                                     src={catalogo.url_thumbnail || ratata}
@@ -168,33 +198,27 @@ function ItemTable({ catalogo }: IPropItensTable) {
                                                     href={catalogo.url_catalogo}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
+                                                    title={catalogo.nome}
                                                 >
                                                     {catalogo.nome}
                                                 </a>
                                             </td>
-                                            <td className="th200">{catalogo.comissao * 100}%</td>
-                                            <td className="th200">Preco Dolar</td>
-                                            <td className="th200 tdValue">
-                                                R${" "}
-                                                {Number(catalogo.preco)
-                                                    ? Number(catalogo.preco).toLocaleString("pt-BR", {
-                                                        minimumFractionDigits: 2,
-                                                        maximumFractionDigits: 2,
-                                                    })
-                                                    : "N/A"}
+                                            <td className="th70" style={{ textAlign: "right" }}>
+                                                {catalogo.comissao * 100}%
                                             </td>
-                                            <td className="th200">Margem Liq.</td>
-                                            <td className="th200">
-                                                {catalogo.ultima_atualizacao
-                                                    ? catalogo.ultima_atualizacao.toLocaleDateString(
-                                                        "pt-BR",
-                                                        {
-                                                            year: "numeric",
-                                                            month: "long",
-                                                            day: "numeric",
-                                                        }
-                                                    )
-                                                    : "N/A"}
+                                            <td className="th110" style={{ textAlign: "right" }}>
+                                                U${" "}
+                                                {formatCurrency(catalogo.vencedor?.produto.preco ?? 0)}
+                                            </td>
+                                            <td className="th110" style={{ textAlign: "right" }}>
+                                                R${" "}
+                                                {formatCurrency(catalogo.preco)}
+                                            </td>
+                                            <td className="th110" style={{ textAlign: "right" }}>
+                                                {(catalogo.margem * 100).toFixed(2)}%
+                                            </td>
+                                            <td className="th110" >
+                                                {catalogo.vencedor?.loja.nome ?? "Nenhum"}
                                             </td>
                                         </tr>
                                     </tbody>
@@ -202,7 +226,41 @@ function ItemTable({ catalogo }: IPropItensTable) {
                             </Accordion.Header>
 
                             <Accordion.Body>
-                                {catalogo.nome}
+                                <ListGroup>
+                                    {catalogo.competidores.map((competidor, i) => (
+                                        <ListGroup.Item key={i}>
+                                            <Card>
+                                                <Card.Header>
+                                                    <strong>Loja:</strong> {competidor.loja.nome}
+                                                </Card.Header>
+                                                <Card.Body>
+                                                    <Row>
+                                                        <Col xs={4} md={2}>
+                                                            <strong>Código:</strong> {competidor.produto.codigo}
+                                                        </Col>
+                                                        <Col xs={8} md={10}>
+                                                            <strong>Produto:</strong> {competidor.produto.nome}
+                                                        </Col>
+                                                    </Row>
+                                                    <Row>
+                                                        <Col xs={4} md={4}>
+                                                            <strong>Frete: </strong>
+                                                            {formatCurrency(competidor.frete)}
+                                                        </Col>
+                                                        <Col xs={4} md={4}>
+                                                            <strong>Preço U$: </strong>
+                                                            {formatCurrency(competidor.produto.preco)}
+                                                        </Col>
+                                                        <Col xs={4} md={4}>
+                                                            <strong>Preço R$: </strong>
+                                                            {formatCurrency(competidor.produto.preco * competidor.loja.cotacao)}
+                                                        </Col>
+                                                    </Row>
+                                                </Card.Body>
+                                            </Card>
+                                        </ListGroup.Item>
+                                    ))}
+                                </ListGroup>
                             </Accordion.Body>
                         </Accordion.Item>
                     </Accordion>

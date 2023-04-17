@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { parseISO } from "date-fns";
 
-export const schema = z.object({
+export const schemaLoja = z.object({
 
     id: z.string().default(""),
     ativo: z.boolean().default(true),
@@ -15,7 +15,7 @@ export const schema = z.object({
     algoritmo: z.number().default(0),
 })
 
-export type ILoja = z.infer<typeof schema>;
+export type ILoja = z.infer<typeof schemaLoja>;
 
 export class LojaController {
 
@@ -43,7 +43,7 @@ export class LojaController {
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas/${id}`, options);
         const responseData: unknown = await response.json();
         console.log(responseData);
-        const lojaSchema = schema.parse(responseData);
+        const lojaSchema = schemaLoja.parse(responseData);
         return lojaSchema;
     }
 
@@ -61,13 +61,13 @@ export class LojaController {
        
         const responseData: unknown = await response.json();
         console.log(responseData);
-        const lojaSchema = schema.parse(responseData);
+        const lojaSchema = schemaLoja.parse(responseData);
         return lojaSchema;
     }
 
     public static async update(loja: ILoja) {
 
-        console.log(loja);
+  
         const options: RequestInit = {
             method: "PATCH",
             headers: {
@@ -78,8 +78,24 @@ export class LojaController {
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas/${loja.id}`, options);
         const responseData: unknown = await response.json();
         console.log(responseData);
-        const lojaSchema = schema.parse(responseData);
+        const lojaSchema = schemaLoja.parse(responseData);
         return lojaSchema;
+    }
+
+    public static async updateCotacao(cotacao: number) {
+     
+        const options: RequestInit = {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify({cotacao})
+        };
+        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas/cotacao`, options);
+       
+        const responseData: unknown = await response.json();
+        const schema = z.object({message:z.string()}).parse(responseData);
+        return schema.message;
     }
 
     public static async deactivate(id: string) {
@@ -93,7 +109,7 @@ export class LojaController {
         };
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas/${id}`, options);
         const responseData: unknown = await response.json();
-        const lojaSchema = schema.parse(responseData);
+        const lojaSchema = schemaLoja.parse(responseData);
         return lojaSchema;
     }
 
@@ -121,16 +137,14 @@ export class LojaController {
                 "Content-type": "application/json"
             }
         };
-        const a = `https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas?${params}`;
-        console.log(a);
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas?${params}`, options);
         const responseData: unknown = await response.json();
         console.log(responseData);
         const lojasSchema = z.object({
             page: z.number().min(1),
             limit: z.number().min(1),
-            items: z.array(schema),
-            total: z.number().min(1)
+            items: z.array(schemaLoja),
+            total: z.number().min(0)
         }).parse(responseData);
         return lojasSchema;
     }

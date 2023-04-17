@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button, Col, FloatingLabel, Row, Table } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { PaginationComponent } from "@/datas/PaginationComponent";
@@ -12,6 +12,7 @@ import { ModalDesativaCatalogo } from "./ModalDesativaCatalogo";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { Icons } from "@/components/icons/icons";
+import { formatCurrency } from "@/components/utils/FormatCurrency";
 
 export function PageCatalogo() {
     const navigate = useNavigate();
@@ -26,7 +27,6 @@ export function PageCatalogo() {
         ordem,
         ordenar,
         data,
-        refetch,
     } = useDataTypes<ICatalogo>({
         queryKey: ["catalogos", page ?? "1", "10"],
         queryFn: async () => await CatalogoController.search(parseInt(page ?? "1"), 10, filtro, ordenar, ordem ? "crescente" : "descrescente", true),
@@ -81,7 +81,7 @@ export function PageCatalogo() {
                                 </span>
                             </div>
                         </th>
-                        <th className="th130" onClick={() => orderBy("comissao")}>
+                        <th className="th70" onClick={() => orderBy("comissao")}>
                             <div className="thArrow">
                                 <span>Comissão %</span>
                                 <span>
@@ -89,7 +89,7 @@ export function PageCatalogo() {
                                 </span>
                             </div>
                         </th>
-                        <th className="th130" onClick={() => orderBy("frete")}>
+                        <th className="th110" onClick={() => orderBy("frete")}>
                             <div className="thArrow">
                                 <span>Frete</span>
                                 <span>
@@ -97,7 +97,7 @@ export function PageCatalogo() {
                                 </span>
                             </div>
                         </th>
-                        <th className="th130" onClick={() => orderBy("preco")}>
+                        <th className="th110" onClick={() => orderBy("preco")}>
                             <div className="thArrow">
                                 <span>Preço</span>
                                 <span>
@@ -154,8 +154,12 @@ function ItemTable({ catalogo, onEdit, onDelete }: IPropItensTable) {
                     <a style={{ color: "blue" }} href={catalogo.url_catalogo} target="_blank" rel="noopener noreferrer">{catalogo.nome}</a>
                 </td>
                 <td className="tdValue"> {catalogo.comissao * 100}%</td>
-                <td className="tdValue">R$: {(catalogo.frete).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                <td className="tdValue">R$: {(catalogo.preco).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td className="tdValue">
+                    R$: {formatCurrency(catalogo.frete)}
+                </td>
+                <td className="tdValue">
+                    R$: {formatCurrency(catalogo.preco)}
+                </td>
                 <td
                     onClick={onEdit}
                     role="button"

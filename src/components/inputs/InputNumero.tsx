@@ -6,10 +6,10 @@ interface Props {
     decimals?: number;
     max?: number;
     negative?: boolean
-    onValueChange?: (value: number) => void;
+    onValueChange: (value: number) => void;
     style?: CSSProperties;
-    value: number;
     readOnly: boolean;
+    value: number;
 }
 
 /**
@@ -23,11 +23,10 @@ const InputNumero = React.forwardRef<HTMLInputElement, Props>(({
     max = Number.MAX_SAFE_INTEGER,
     onValueChange,
     style = {},
-    readOnly = false,
+    readOnly= false,
     value,
     negative
 }, ref) => {
-
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value;
@@ -40,24 +39,17 @@ const InputNumero = React.forwardRef<HTMLInputElement, Props>(({
         if (isNegative && negative) {
             nextValue *= -1;
         }
+        nextValue = nextValue / Math.pow(10, decimals);
         if (nextValue > max) {
             nextValue = parseInt(max.toString(), 10);
         }
-        onValueChange?.(nextValue);
-
+        if (!Number.isFinite(nextValue) || Number.isNaN(nextValue)) {
+            nextValue = 0;
+        }
+        onValueChange(nextValue);
     };
 
-    let endValue: number;
-    if (!Number.isFinite(value) || Number.isNaN(value)) {
-        endValue = 0;
-    } else {
-        const valueWithDot = value.toString().replace(",", ".");
-        endValue = parseFloat(valueWithDot);
-    }
-
-
-    const valueDisplay = (endValue / Math.pow(10, decimals)).toLocaleString("pt-BR", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).replace(".", ",");
-
+    const valueDisplay = value.toLocaleString("pt-BR", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
 
     return (
         <input

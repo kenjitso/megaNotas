@@ -1,60 +1,119 @@
-
-.thArrow {
-  display: flex;
-  justify-content: space-between;
+.no-wrap {
+  white-space: nowrap;
 }
 
+.optionStyle {
+  cursor: pointer;
+
+}
+
+/* Centraliza o ícone no elemento */
+.centralize-icon {
+  display: flex;
+  /* Define o container como flexível */
+  justify-content: center;
+  /* Centraliza o conteúdo horizontalmente */
+  align-items: center;
+  /* Centraliza o conteúdo verticalmente */
+}
+
+/* Estiliza o cabeçalho da tabela com seta indicadora */
+.thArrow {
+  display: flex;
+  /* Define o container como flexível */
+  justify-content: space-between;
+  /* Distribui o conteúdo igualmente, com espaço máximo entre os itens */
+}
+
+/* Alinha o valor da célula à direita */
 .tdValue {
   text-align: right;
 }
 
-
- .th40 {
+/* Define largura fixa de 40px para a célula da tabela */
+.th40 {
   width: 40px;
+  min-width: 40px;
+  max-width: 40px;
+  overflow-wrap: break-word;
+  /* Quebra a palavra caso necessário para caber no espaço disponível */
+  cursor: pointer;
+  /* Muda o cursor para um ponteiro quando o mouse estiver sobre o elemento */
+}
+
+/* Define largura fixa de 70px para a célula da tabela e oculta o texto excedente */
+.th70 {
+  width: 70px;
+  min-width: 70px;
+  max-width: 70px;
+  text-overflow: ellipsis;
+  /* Esconde o conteúdo excedente */
+}
+
+/* Define largura fixa de 110px para a célula da tabela e oculta o texto excedente */
+.th110 {
+  width: 110px;
+  min-width: 110px;
+  max-width: 110px;
+  overflow-wrap: break-word;
+  /* Quebra a palavra caso necessário para caber no espaço disponível */
+  white-space: nowrap;
+  /* Não permite a quebra de linha */
+  text-overflow: ellipsis;
+  /* Adiciona "..." ao final do texto truncado */
+  cursor: pointer;
+  /* Muda o cursor para um ponteiro quando o mouse estiver sobre o elemento */
+}
+
+/* Define largura fixa de 130px para a célula da tabela */
+.th130 {
+  width: 130px;
+  overflow-wrap: break-word;
+  /* Quebra a palavra caso necessário para caber no espaço disponível */
+  cursor: pointer;
+  /* Muda o cursor para um ponteiro quando o mouse estiver sobre o elemento */
+}
+
+/* Define largura fixa de 150px para a célula da tabela */
+.th150 {
+  width: 150px;
+  overflow-wrap: break-word;
+  /* Quebra a palavra caso necessário para caber no espaço disponível */
+  cursor: pointer;
+  /* Muda o cursor para um ponteiro quando o mouse estiver sobre o elemento */
+}
+
+/* Define largura fixa de 170px para a célula da tabela */
+.th170 {
+  width: 170px;
+  overflow-wrap: break-word;
+  /* Quebra a palavra caso necessário para caber no espaço disponível */
+  cursor: pointer;
+  /* Muda o cursor para um ponteiro quando o mouse estiver sobre o elemento */
+}
+
+/* Define largura fixa de 200px para a célula da tabela e oculta o texto excedente */
+.th200 {
+  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
+  overflow-wrap: break-word;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.th250 {
+  min-width: 250px;
   overflow-wrap: break-word;
   cursor: pointer;
-  }
+}
 
-  .th70 {
-    width: 70px;
-    overflow-wrap: break-word;
-    cursor: pointer;  
-  }
+.image-cell {
+  padding: 5px;
+}
 
-    .th110 {
-      width: 110px;
-      overflow-wrap: break-word;
-      cursor: pointer;
-    }
-
-  .th130 {
-    width: 130px;
-    overflow-wrap: break-word;
-    cursor: pointer;
-  }
-
-  .th150 {
-    width: 150px;
-    overflow-wrap: break-word;
-    cursor: pointer;
-  }
-
-  .th170 {
-    width: 170px;
-    overflow-wrap: break-word;
-    cursor: pointer;
-  }
-
-  .th200 {
-    min-width: 200px;
-    overflow-wrap: break-word;
-    cursor: pointer;
-  }
-
-  .th250 {
-    min-width: 250px;
-    overflow-wrap: break-word;
-    cursor: pointer;
-  }
-
-
+.responsive-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
