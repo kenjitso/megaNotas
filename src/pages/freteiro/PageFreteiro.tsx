@@ -135,7 +135,7 @@ function ItemTable({ freteiro, onEdit, onDelete }: IPropItensTable) {
 
                 <td>{freteiro.nome}</td>
                 <td className="tdValue">
-                    R$: {formatCurrency(freteiro.fixo / 100)}
+                    R$: {formatCurrency(freteiro.fixo)}
                 </td>
                 <td className="tdValue">{freteiro.percentual}%</td>
                 <td

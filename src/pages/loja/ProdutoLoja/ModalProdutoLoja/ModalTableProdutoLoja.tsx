@@ -2,7 +2,6 @@ import { Table } from "react-bootstrap";
 import "@/assets/style.css"
 import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 import React from "react";
-import { format } from "path";
 import { formatCurrency } from "@/components/utils/FormatCurrency";
 
 interface IProps {
@@ -16,7 +15,7 @@ export function ModalTableProdutoLoja({ listProdutoLoja }: IProps) {
             <Table bordered hover >
                 <thead>
                     <tr>
-                        <th className="th40">
+                        <th className="th70">
                             <div className="thArrow">
                                 <span>Codigo</span>
                             </div>

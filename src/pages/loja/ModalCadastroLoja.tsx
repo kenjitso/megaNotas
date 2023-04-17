@@ -1,8 +1,9 @@
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import InputNumero from "@/components/inputs/InputNumero";
+import { isValidForm } from "@/components/utils/ValidForm";
 import { LojaController } from "@/datatypes/loja";
 import useQueryMutation from "@/hooks/useQueryMutation";
-import { Button, Col,Form, Modal, Row } from "react-bootstrap";
+import { Button, Col, FloatingLabel, Form, Modal, Row } from "react-bootstrap";
 
 interface IProps {
     lojaId?: string;
@@ -48,29 +49,36 @@ export function ModalCadastroLoja({ onHide, lojaId }: IProps) {
                                 <Form className="text-start">
                                     <Row>
                                         <Col>
-                                            <Form.Group controlId="formNome" className="mb-3">
-                                                <Form.Label><b>Nome:</b></Form.Label>
-                                                <Form.Control
-                                                    type="text"
-                                                    title="Por favor, insira apenas caracteres não numéricos"
-                                                    value={lojaMutator.state.nome}
-                                                    onChange={(event) => lojaMutator.update("nome", event.target.value)}
-                                                    placeholder="Insira o nome da loja"
-                                                    required={true}
-                                                />
+                                            <Form.Group
+                                                controlId="formNome"
+                                                className="mb-3">
+                                                <FloatingLabel controlId="formNome" label="Nome">
+                                                    <Form.Control
+                                                        title="Por favor, insira apenas caracteres não numéricos"
+                                                        value={lojaMutator.state.nome}
+                                                        onChange={(event) => lojaMutator.update("nome", event.target.value)}
+                                                        required
+                                                    />
+                                                    <div className="invalid-feedback">Por favor, preencha o campo Nome.</div>
+                                                </FloatingLabel>
                                             </Form.Group>
                                         </Col>
                                         <Col>
-                                            <Form.Group controlId="formCotacao" className="mb-3">
-                                                <Form.Label><b>Cotação:</b></Form.Label>
-                                                <Form.Control
-                                                    as={InputNumero}
-                                                    type="number"
-                                                    decimals={2}
-                                                    value={lojaMutator.state.cotacao}
-                                                    onValueChange={(numero: number) => lojaMutator.update("cotacao", numero)}
-                                                    placeholder="Insira a cotação"
-                                                />
+                                            <Form.Group
+                                                controlId="formCotacao"
+                                                className="mb-3">
+                                                <FloatingLabel
+                                                    controlId="formCotacao"
+                                                    label="Cotação">
+                                                    <Form.Control
+                                                        as={InputNumero}
+                                                        type="number"
+                                                        decimals={2}
+                                                        value={lojaMutator.state.cotacao}
+                                                        onValueChange={(numero: number) => lojaMutator.update("cotacao", numero)}
+                                                        placeholder="Insira a cotação"
+                                                    />
+                                                </FloatingLabel>
                                             </Form.Group>
                                         </Col>
                                     </Row>
@@ -79,31 +87,35 @@ export function ModalCadastroLoja({ onHide, lojaId }: IProps) {
                                             <Form.Group
                                                 controlId="formUrlCotacao"
                                                 className="mb-3">
-                                                <Form.Label><b>Url Cotação:</b> </Form.Label>
-                                                <Form.Control
-                                                    type="text"
-                                                    value={lojaMutator.state.url_cotacao}
-                                                    onChange={(event) => lojaMutator.update("url_cotacao", event.target.value)}
-                                                    placeholder="Insira a URL cotação"
-                                                />
+                                                <FloatingLabel
+                                                    controlId="formUrlCotacao"
+                                                    label="Url Cotação">
+                                                    <Form.Control
+                                                        value={lojaMutator.state.url_cotacao}
+                                                        onChange={(event) => lojaMutator.update("url_cotacao", event.target.value)}
+                                                        placeholder="Insira a URL cotação"
+                                                    />
+                                                </FloatingLabel>
                                             </Form.Group>
                                             <Form.Group
                                                 controlId="formUrlCatalogo"
                                                 className="mb-3">
-                                                <Form.Label><b>Url Catalogo:</b></Form.Label>
-                                                <Form.Control
-                                                    type="text"
-                                                    value={lojaMutator.state.url_catalogo}
-                                                    onChange={(event) => lojaMutator.update("url_catalogo", event.target.value)}
-                                                    placeholder="Insira a URL catálogo"
-                                                />
+                                                <FloatingLabel
+                                                    controlId="formUrlCatalogo"
+                                                    label="Url Catalogo">
+                                                    <Form.Control
+                                                        type="text"
+                                                        value={lojaMutator.state.url_catalogo}
+                                                        onChange={(event) => lojaMutator.update("url_catalogo", event.target.value)}
+                                                        placeholder="Insira a URL catálogo"
+                                                    />
+                                                </FloatingLabel>
                                             </Form.Group>
 
                                             <Form.Group
                                                 controlId="formUrlCatalogo"
                                                 className="mb-3">
-                                                <Form.Label><b>Algoritmo:</b></Form.Label>
-                                                <Form.Select
+                                                 <Form.Select
                                                     value={lojaMutator.state.algoritmo}
                                                     onChange={(event) => lojaMutator.update("algoritmo", parseInt(event.target.value))}>
                                                     <option value="0">
@@ -127,7 +139,9 @@ export function ModalCadastroLoja({ onHide, lojaId }: IProps) {
                     className="position"
                     variant="secondary"
                     disabled={!!lojaId && lojaMutator.isLoading}
-                    onClick={() => { lojaMutator.save(); }}>
+                    onClick={() => {
+                         if (isValidForm()){lojaMutator.save();}; 
+                         }}>
                     {lojaId ? "Atualizar Loja" : "Cadastrar Loja"}
                 </Button>
             </Modal.Footer>

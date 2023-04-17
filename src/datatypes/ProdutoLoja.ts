@@ -48,7 +48,7 @@ export class ProdutoLojaController {
     }
 
     public static async importar(produtos: IProdutoLoja[]) {
-        console.log(produtos);
+  
         const options: RequestInit = {
             method: "POST",
             headers: {
@@ -56,17 +56,17 @@ export class ProdutoLojaController {
             },
             body: JSON.stringify({ produtos })
         };
-        console.log(options);
+
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja`, options);
 
         const responseData: unknown = await response.json();
-        console.log(responseData);
+    
         const produtosLojaSchema = z.array(schemaProdutoLoja).parse(responseData);
         return produtosLojaSchema;
     }
 
     public static async update(produtoLoja: IProdutoLoja) {
-        console.log(produtoLoja);
+
         const options: RequestInit = {
             method: "PATCH",
             headers: {
@@ -76,7 +76,7 @@ export class ProdutoLojaController {
         };
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja/${produtoLoja.id}`, options);
         const responseData: unknown = await response.json();
-        console.log(responseData);
+  
         const produtoLojaSchema = schemaProdutoLoja.parse(responseData);
         return produtoLojaSchema;
     }
@@ -101,7 +101,7 @@ export class ProdutoLojaController {
 
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja?${params}`, options);
         const responseData: unknown = await response.json();
-        console.log(responseData);
+  
         const catalogos = z.object({
             page: z.number().min(1),
             limit: z.number().min(1),

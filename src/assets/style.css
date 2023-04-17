@@ -47,6 +47,7 @@
   min-width: 70px;
   max-width: 70px;
   text-overflow: ellipsis;
+  cursor: pointer;
   /* Esconde o conteúdo excedente */
 }
 

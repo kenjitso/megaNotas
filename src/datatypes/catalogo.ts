@@ -75,7 +75,7 @@ export class CatalogoController {
     }
 
     public static async create(produto: ICatalogo) {
-        console.log(produto);
+
         const options: RequestInit = {
             method: "POST",
             headers: {
@@ -86,7 +86,7 @@ export class CatalogoController {
 
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos`, options);
         const responseData: unknown = await response.json();
-        console.log(responseData);
+ 
         const catalogoSchema = schemaCatalogo.parse(responseData);
         return catalogoSchema;
     }
@@ -101,7 +101,7 @@ export class CatalogoController {
         };
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/${produto.id}`, options);
         const responseData: unknown = await response.json();
-        console.log(responseData);
+  
         const catalogoSchema = schemaCatalogo.parse(responseData);
         return catalogoSchema;
     }
@@ -174,12 +174,12 @@ export class CatalogoController {
     }
 
 
-    public static async searchCompetidor(freteiro = 0, page = 1, limit = 25, q: string = "", ordenar = "margem", ordem = "descrescente") {
+    public static async searchCompetidor(freteiro = "", page = 1, limit = 25, q: string = "", ordenar = "margem", ordem = "descrescente") {
 
         const params = new URLSearchParams();
         if (q) params.set("q", q);
-        if (freteiro !== 0) params.set("freteiro", freteiro.toString());
-        console.log(freteiro);
+        if (freteiro) params.set("freteiro", freteiro);
+
         params.set("limit", limit.toString());
         params.set("page", page.toString());
         params.set("ordenar", ordenar);
@@ -202,7 +202,7 @@ export class CatalogoController {
             total: z.number().min(0)
         }).parse(responseData);
 
-        console.log(catalogosSchema);
+     
         return catalogosSchema;
     }
 }

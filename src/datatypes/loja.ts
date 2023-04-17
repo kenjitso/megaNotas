@@ -33,7 +33,7 @@ export class LojaController {
     }
 
     public static async get(id: string) {
-        console.log(id);
+
         const options: RequestInit = {
             method: "GET",
             headers: {
@@ -42,14 +42,13 @@ export class LojaController {
         };
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas/${id}`, options);
         const responseData: unknown = await response.json();
-        console.log(responseData);
+   
         const lojaSchema = schemaLoja.parse(responseData);
         return lojaSchema;
     }
 
     public static async create(loja: ILoja) {
-        console.log("Enviando: ");
-        console.log(loja);
+
         const options: RequestInit = {
             method: "POST",
             headers: {
@@ -60,7 +59,7 @@ export class LojaController {
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas`, options);
        
         const responseData: unknown = await response.json();
-        console.log(responseData);
+    
         const lojaSchema = schemaLoja.parse(responseData);
         return lojaSchema;
     }
@@ -77,7 +76,7 @@ export class LojaController {
         };
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas/${loja.id}`, options);
         const responseData: unknown = await response.json();
-        console.log(responseData);
+   
         const lojaSchema = schemaLoja.parse(responseData);
         return lojaSchema;
     }
@@ -139,7 +138,7 @@ export class LojaController {
         };
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas?${params}`, options);
         const responseData: unknown = await response.json();
-        console.log(responseData);
+
         const lojasSchema = z.object({
             page: z.number().min(1),
             limit: z.number().min(1),

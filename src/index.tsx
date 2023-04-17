@@ -9,14 +9,15 @@ import "react-toastify/dist/ReactToastify.css";
 import "@/assets/config.scss";
 import "@/assets/global.css";
 import "@/assets/darkmode.css";
+import { FreteiroStore } from "./context/FreteiroStore";
 
 
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
             refetchOnWindowFocus: false,
-            staleTime: 1000 * 60 * 60 , // 24 hours
-            cacheTime: 1000 * 60 * 60 , // 24 hours
+            staleTime: 1000 * 60 * 60, // 24 hours
+            cacheTime: 1000 * 60 * 60, // 24 hours
         },
     },
 });
@@ -25,7 +26,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
         <QueryClientProvider client={queryClient}>
             <ThemeStore.Provider>
-                <App />
+                <FreteiroStore.Provider>
+                    <App />
+                </FreteiroStore.Provider>
             </ThemeStore.Provider>
         </QueryClientProvider>
     </React.StrictMode>,

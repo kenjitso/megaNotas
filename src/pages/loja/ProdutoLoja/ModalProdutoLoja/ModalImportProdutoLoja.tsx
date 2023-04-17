@@ -8,6 +8,7 @@ import { useDropzone } from "react-dropzone";
 import { toast } from "react-toastify";
 import * as XLSX from 'xlsx';
 import { ModalTableProdutoLoja } from "./ModalTableProdutoLoja";
+import FragmentLoading from "@/components/fragments/FragmentLoading";
 
 interface IProps {
     onHide: () => void,
@@ -20,7 +21,7 @@ export function ModalImportProdutoLoja({ onHide, lojaId }: IProps) {
     const queryClient = useQueryClient();
     const { data } = useQuery(["loja", lojaId], async () => {
         const data = await LojaController.get(lojaId ?? "");
-        console.log(data);
+
         return data;
     }, { enabled: !!lojaId && typeof onHide === 'function' }); // habilita a consulta somente quando lojaId estiver definido e onHide for uma função });
 
@@ -30,6 +31,7 @@ export function ModalImportProdutoLoja({ onHide, lojaId }: IProps) {
     }, {
         onSuccess: () => {
             onHide();
+            setFormattedList([]);
             queryClient.invalidateQueries(["produtosloja"]);
         }
     });
@@ -118,9 +120,19 @@ export function ModalImportProdutoLoja({ onHide, lojaId }: IProps) {
                 <Button className="position" variant="secondary" onClick={() => { onHide(); setFormattedList([]); }}>
                     Fechar
                 </Button>
-                <Button className="position" variant="secondary" onClick={() => mutation.mutate()}>
-                    Confirmar
+                <Button
+                    className="position"
+                    variant="secondary"
+                    onClick={() => {
+                        formattedList.length > 0
+                            ? mutation.mutate()
+                            : toast.info("A lista está vazia, por favor adicione dados antes de confirmar.");
+                    }}
+                >
+                   Confirmar
                 </Button>
+
+
             </Modal.Footer>
         </Modal>
     );

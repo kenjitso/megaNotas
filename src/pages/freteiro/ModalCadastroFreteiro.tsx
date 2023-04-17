@@ -51,7 +51,9 @@ export function ModalCadastroFreteiro({ onHide, freteiroId }: props) {
                                         <Form.Group
                                             controlId="formNome"
                                             className="mb-3">
-                                            <FloatingLabel controlId="formNome" label="Nome">
+                                            <FloatingLabel
+                                                controlId="formNome"
+                                                label="Nome">
                                                 <Form.Control
                                                     title="Por favor, insira apenas caracteres não numéricos"
                                                     value={freteiroMutator.state.nome}
@@ -64,29 +66,40 @@ export function ModalCadastroFreteiro({ onHide, freteiroId }: props) {
                                     </Row>
                                     <Row>
                                         <Col>
-                                            <Form.Group controlId="formFixo" className="mb-3">
-                                                <Form.Label><b>Valor fixo:</b></Form.Label>
-                                                <Form.Control
-                                                    as={InputNumero}
-                                                    type="number"
-                                                    decimals={2}
-                                                    value={freteiroMutator.state.fixo}
-                                                    onValueChange={(numero: number) => freteiroMutator.update("fixo", numero)}
-                                                    placeholder="Insira o valor fixo" />
+                                            <Form.Group
+                                                controlId="formFixo"
+                                                className="mb-3">
+                                                <FloatingLabel
+                                                    controlId="formFixo"
+                                                    label="Fixo">
+                                                    <Form.Control
+                                                        as={InputNumero}
+                                                        type="number"
+                                                        decimals={2}
+                                                        value={freteiroMutator.state.fixo}
+                                                        onValueChange={(numero: number) => freteiroMutator.update("fixo", numero)}
+                                                        placeholder="Insira o valor fixo"
+                                                    />
+                                                </FloatingLabel>
                                             </Form.Group>
                                         </Col>
                                         <Col>
-                                            <Form.Group controlId="formValorMin" className="mb-3">
-                                                <Form.Label><b>Percentual:</b></Form.Label>
-                                                <Form.Control
-                                                    as={InputNumero}
-                                                    type="number"
-                                                    decimals={2}
-                                                    max={100}
-                                                    value={freteiroMutator.state.percentual}
-                                                    onValueChange={(numero: number) => freteiroMutator.update("percentual", numero)}
-                                                    placeholder="Insira o Percentual"
-                                                />
+                                            <Form.Group
+                                                controlId="formValorMin"
+                                                className="mb-3">
+                                                <FloatingLabel
+                                                    controlId="formValorMin"
+                                                    label="Perceltual">
+                                                    <Form.Control
+                                                        as={InputNumero}
+                                                        type="number"
+                                                        decimals={2}
+                                                        max={100}
+                                                        value={freteiroMutator.state.percentual}
+                                                        onValueChange={(numero: number) => freteiroMutator.update("percentual", numero)}
+                                                        placeholder="Insira o Percentual"
+                                                    />
+                                                </FloatingLabel>
                                             </Form.Group>
                                         </Col>
                                     </Row>

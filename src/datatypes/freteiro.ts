@@ -47,7 +47,7 @@ export class FreteiroController {
     };
     const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/freteiro`, options);
     const responseData: unknown = await response.json();
-    console.log(responseData);
+
     const freteiroSchema = schemaFreteiro.parse(responseData);
     return freteiroSchema;
   }

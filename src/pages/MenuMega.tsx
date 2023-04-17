@@ -6,7 +6,8 @@ import ratata from "../assets/megaPreco.svg"
 import { ModalDolar } from "./ModalDolar";
 import useDataTypes from "@/hooks/useDataTypes";
 import { FreteiroController, IFreteiro } from "@/datatypes/freteiro";
-import { useSelectedId } from "@/context/SelectedIdContext";
+import { FreteiroStore } from "@/context/FreteiroStore";
+
 
 interface CotacaoMoedas {
   [key: string]: {
@@ -30,7 +31,8 @@ export function MenuMega() {
   const navigate = useNavigate();
   const location = useLocation();
   const [filtro, setFiltro] = useState("");
-  const { selectedId, setSelectedId } = useSelectedId();
+  const { id } = FreteiroStore.useStore();
+  const dispatch = FreteiroStore.useDispatch();
 
   const {
 
@@ -98,21 +100,21 @@ export function MenuMega() {
               </Nav>
             </Nav>
 
-          
+
             <Nav className="mx-end">
-          
-            <Form.Select
-            className="optionStyle"
-              value={selectedId ?? 0}
-              onChange={(e) => setSelectedId(e.target.value)}
-            >
-              <option value="0">Freteiro</option>
-              {data?.items.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.nome}
-                </option>
-              ))}
-            </Form.Select>
+
+              <Form.Select
+                className="optionStyle"
+                value={id}
+                onChange={(e) => dispatch(e.target.value)}
+              >
+                <option value="">Selecionar Freteiro</option>
+                {data?.items.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.nome}
+                  </option>
+                ))}
+              </Form.Select>
 
 
               <Nav.Link onClick={() => { setShowModal(true); }} className="no-wrap">

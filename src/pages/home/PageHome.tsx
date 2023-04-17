@@ -21,26 +21,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import useDataTypes from "@/hooks/useDataTypes";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
-import { useSelectedId } from "@/context/SelectedIdContext";
-import { useQueryClient } from "@tanstack/react-query";
 import { formatCurrency } from "@/components/utils/FormatCurrency";
+import { FreteiroStore } from "@/context/FreteiroStore";
 
 export function PageHome() {
     const navigate = useNavigate();
     const { page } = useParams();
     const [filtro, setFiltro] = useState("");
     const [expandedKey, setExpandedKey] = useState<string | null>(null);
-    const { selectedId } = useSelectedId();
-    const [currentSelectedId, setCurrentSelectedId] = useState(selectedId);
-
-    const queryClient = useQueryClient();
-
-    useEffect(() => {
-        queryClient.invalidateQueries(["catalogos", page ?? "1", "10"]);
-        setCurrentSelectedId(selectedId);
-    }, [selectedId]);
-
-    console.log(currentSelectedId);
+    const { id } = FreteiroStore.useStore();
 
     const {
         isLoading,
@@ -49,11 +38,11 @@ export function PageHome() {
         ordenar,
         data,
     } = useDataTypes<ICatalogoCompetidor>({
-        queryKey: ["catalogos", page ?? "1", "10"],
+        queryKey: ["catalogos", page ?? "1", "10", id],
         queryFn: async () =>
 
             await CatalogoController.searchCompetidor(
-                parseInt(selectedId ?? "0"),
+                id,
                 parseInt(page ?? "1"),
                 10,
                 filtro,
@@ -95,7 +84,7 @@ export function PageHome() {
                             <div className="thArrow">
                                 <span>Nome</span>
                                 <span>
-                                    {ordenar === "nome" && (ordem ? "▼" : "▲")}
+                                    {ordenar === "nome" && (ordem ? "▲" : "▼")}
                                 </span>
                             </div>
                         </th>
@@ -103,7 +92,7 @@ export function PageHome() {
                             <div className="thArrow">
                                 <span>Premium</span>
                                 <span>
-                                    {ordenar === "premium" && (ordem ? "▼" : "▲")}
+                                    {ordenar === "premium" && (ordem ? "▲" : "▼")}
                                 </span>
                             </div>
                         </th>
@@ -111,7 +100,7 @@ export function PageHome() {
                             <div className="thArrow">
                                 <span>Preço U$</span>
                                 <span>
-                                    {ordenar === "preco" && (ordem ? "▼" : "▲")}
+                                    {ordenar === "preco" && (ordem ? "▲" : "▼")}
                                 </span>
                             </div>
                         </th>
@@ -119,7 +108,7 @@ export function PageHome() {
                             <div className="thArrow">
                                 <span>Preço ML</span>
                                 <span>
-                                    {ordenar === "lucro" && (ordem ? "▼" : "▲")}
+                                    {ordenar === "lucro" && (ordem ? "▲" : "▼")}
                                 </span>
                             </div>
                         </th>
@@ -127,17 +116,15 @@ export function PageHome() {
                             <div className="thArrow">
                                 <span>Margem Liq.</span>
                                 <span>
-                                    {ordenar === "margem" && (ordem ? "▼" : "▲")}
+                                    {ordenar === "margem" && (ordem ? "▲" : "▼")}
                                 </span>
                             </div>
                         </th>
-                        <th className="th110" onClick={() => orderBy("vencedor")}>
-                            <div className="thArrow">
-                                <span>Vencedor</span>
-                                <span>
-                                    {ordenar === "vencedor" && (ordem ? "▼" : "▲")}
-                                </span>
-                            </div>
+                        <th className="th110" >
+
+                            <span>Vencedor</span>
+                
+
                         </th>
                     </tr>
                 </thead>
