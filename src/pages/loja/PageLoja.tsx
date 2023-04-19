@@ -60,7 +60,6 @@ export function PageLoja() {
                 </Col>
                 <Col xs className="d-flex justify-content-end">
                     <Button
-                        style={{ borderRadius: '30px' }}
                         variant="success"
                         onClick={() => setEdit("")}
                     >

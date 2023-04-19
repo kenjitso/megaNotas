@@ -56,7 +56,6 @@ export function PageFreteiro() {
                 </Col>
                 <Col xs className="d-flex justify-content-end">
                     <Button
-                        style={{ borderRadius: '30px' }}
                         variant="success"
                         onClick={() => setEdit("")}
                     >
@@ -94,8 +93,10 @@ export function PageFreteiro() {
                             </div>
                         </th>
                         <th className="th40">
+
                         </th>
                         <th className="th40">
+
                         </th>
                     </tr>
                 </thead>
@@ -139,12 +140,15 @@ function ItemTable({ freteiro, onEdit, onDelete }: IPropItensTable) {
                 </td>
                 <td className="tdValue">{freteiro.percentual}%</td>
                 <td
+
                     onClick={onEdit}
                     role="button"
                     aria-label="Editar Freteiro">
                     <Icons tipo="edit" />
                 </td>
-                <td onClick={onDelete}
+                <td
+
+                    onClick={onDelete}
                     role="button"
                     aria-label="Desativar Freteiro">
                     <Icons tipo="trash" />

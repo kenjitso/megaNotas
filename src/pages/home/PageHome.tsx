@@ -96,9 +96,15 @@ export function PageHome() {
                                 </span>
                             </div>
                         </th>
-                        <th className="th110" onClick={() => orderBy("preco")}>
+                        <th className="th110" >
                             <div className="thArrow">
                                 <span>Preço U$</span>
+                                
+                            </div>
+                        </th>
+                        <th className="th110" onClick={() => orderBy("preco")}>
+                            <div className="thArrow">
+                                <span>Preço ML</span>
                                 <span>
                                     {ordenar === "preco" && (ordem ? "▲" : "▼")}
                                 </span>
@@ -106,7 +112,7 @@ export function PageHome() {
                         </th>
                         <th className="th110" onClick={() => orderBy("lucro")}>
                             <div className="thArrow">
-                                <span>Preço ML</span>
+                                <span>Lucro</span>
                                 <span>
                                     {ordenar === "lucro" && (ordem ? "▲" : "▼")}
                                 </span>
@@ -123,7 +129,7 @@ export function PageHome() {
                         <th className="th110" >
 
                             <span>Vencedor</span>
-                
+
 
                         </th>
                     </tr>
@@ -164,7 +170,7 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
     return (
         <React.Fragment>
             <tr>
-                <td colSpan={7} style={{ padding: "0" }}>
+                <td colSpan={8} style={{ padding: "0" }}>
                     <Accordion activeKey={expandedKey}>
                         <Accordion.Item eventKey={eventKey}>
                             <Accordion.Header onClick={() => onToggle(expandedKey === eventKey ? null : eventKey)}>
@@ -200,6 +206,10 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
                                             <td className="th110" style={{ textAlign: "right" }}>
                                                 R${" "}
                                                 {formatCurrency(catalogo.preco)}
+                                            </td>
+                                            <td className="th110" style={{ textAlign: "right" }}>
+                                                R${" "}
+                                                {(catalogo.lucro).toFixed(2)}
                                             </td>
                                             <td className="th110" style={{ textAlign: "right" }}>
                                                 {(catalogo.margem * 100).toFixed(2)}%

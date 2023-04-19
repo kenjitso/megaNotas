@@ -47,7 +47,7 @@ export class ProdutoLojaController {
         return produtoLojaSchema;
     }
 
-    public static async importar(produtos: IProdutoLoja[]) {
+    public static async cadastro(produtos: IProdutoLoja[]) {
   
         const options: RequestInit = {
             method: "POST",
@@ -64,6 +64,28 @@ export class ProdutoLojaController {
         const produtosLojaSchema = z.array(schemaProdutoLoja).parse(responseData);
         return produtosLojaSchema;
     }
+
+
+
+    public static async importar(produtos: IProdutoLoja[]) {
+  
+        const options: RequestInit = {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify({ produtos })
+        };
+
+        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja/importar`, options);
+
+        const responseData: unknown = await response.json();
+    
+        const produtosLojaSchema = z.array(schemaProdutoLoja).parse(responseData);
+        return produtosLojaSchema;
+    }
+
+
 
     public static async update(produtoLoja: IProdutoLoja) {
 

@@ -10,13 +10,15 @@ import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import { ModalVinculo } from "./ModalProdutoLoja/ModalVinculo";
 import { PaginationComponent } from "@/datas/PaginationComponent";
 import { formatCurrency } from "@/components/utils/FormatCurrency";
+import { ModalCadastroProdutoLoja } from "./ModalProdutoLoja/ModalCadastroProdutoLoja";
 
 export function PageProdutoLoja() {
     const { lojaId } = useParams();
     const navigate = useNavigate();
     const { page } = useParams();
     const [modalVinculoProduto, setVinculoProduto] = useState<IProdutoLoja | undefined>(undefined);
-    const [importIdLoja, setImportLoja] = useState<string | undefined>(undefined);
+    const [importProdutoLoja, setImportProdutoLoja] = useState<string | undefined>(undefined);
+    const [cadastroProdutoLoja, setCadastroProdutoLoja] = useState<string | undefined>(undefined);
     const [filtro, setFiltro] = useState("");
 
     const {
@@ -39,7 +41,8 @@ export function PageProdutoLoja() {
     return (
         <React.Fragment>
 
-            <ModalImportProdutoLoja onHide={() => setImportLoja(undefined)} lojaId={importIdLoja} />
+            <ModalImportProdutoLoja onHide={() => setImportProdutoLoja(undefined)} lojaId={importProdutoLoja} />
+            <ModalCadastroProdutoLoja onHide={() => setCadastroProdutoLoja(undefined)} lojaId={cadastroProdutoLoja} />
             <ModalVinculo onHide={() => setVinculoProduto(undefined)} produtoParaguay={modalVinculoProduto} />
 
             <Row className="my-3">
@@ -49,7 +52,6 @@ export function PageProdutoLoja() {
                         className="me-3 d-flex align-items-center justify-content-center"
                         variant="success"
                         onClick={() => navigate("/lojas")}
-                        style={{ borderRadius: '30px' }}
                     >
                         Voltar
                     </Button>
@@ -66,9 +68,15 @@ export function PageProdutoLoja() {
 
                 <Col xs className="d-flex justify-content-end">
                     <Button
-                        style={{ borderRadius: '30px' }}
                         variant="success"
-                        onClick={() => setImportLoja(lojaId)}
+                        onClick={() => setCadastroProdutoLoja(lojaId)}
+                        className="me-3"
+                    >
+                        Cadastrar
+                    </Button>
+                    <Button
+                        variant="success"
+                        onClick={() => setImportProdutoLoja(lojaId)}
                     >
                         Importar
                     </Button>
@@ -79,7 +87,7 @@ export function PageProdutoLoja() {
 
                 <thead>
                     <tr>
-                        <th className="th70" onClick={() => orderBy("codigo")}>
+                        <th className="th150" onClick={() => orderBy("codigo")}>
                             <div className="thArrow">
                                 <span>Codigo</span>
                             </div>
@@ -164,8 +172,6 @@ function ItemTable({ produtoLoja, onVinculo }: IPropsItensTable) {
                 >
                     <Icons tipo="link" />
                 </td>
-
-
             </tr>
         </React.Fragment >
     )

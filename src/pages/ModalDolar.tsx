@@ -1,6 +1,5 @@
 import InputNumero from "@/components/inputs/InputNumero";
 import { LojaController } from "@/datatypes/loja";
-import useQueryMutation from "@/hooks/useQueryMutation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";

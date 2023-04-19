@@ -1,17 +1,19 @@
-import { Table } from "react-bootstrap";
+import { Button, Col, FloatingLabel, Form, Row, Table } from "react-bootstrap";
 import "@/assets/style.css"
 import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { formatCurrency } from "@/components/utils/FormatCurrency";
 
 interface IProps {
     listProdutoLoja?: IProdutoLoja[] | null;
 }
 
-export function ModalTableProdutoLoja({ listProdutoLoja }: IProps) {
+export function ModalTableImportProdutoLoja({ listProdutoLoja }: IProps) {
+
 
     return (
         <React.Fragment>
+
             <Table bordered hover >
                 <thead>
                     <tr>

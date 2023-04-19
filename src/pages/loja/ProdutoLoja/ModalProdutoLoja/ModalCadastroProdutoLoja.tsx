@@ -7,20 +7,22 @@ import { Modal, Row, Col, Button, Spinner } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import { toast } from "react-toastify";
 import * as XLSX from 'xlsx';
-import { ModalTableImportProdutoLoja } from "./ModalTableImportProdutoLoja";
 import { Icons } from "@/components/icons/icons";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
+import { ModalTableCadastroProdutoLoja } from "./ModalTableCadastroProdutoLoja";
 
 interface IProps {
     onHide: () => void,
     lojaId?: string,
 }
 
-export function ModalImportProdutoLoja({ onHide, lojaId }: IProps) {
+export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
 
     const [formattedList, setFormattedList] = useState<IProdutoLoja[]>([]);
+    const [listToSave, setListToSave] = useState<IProdutoLoja[]>([]);
     const queryClient = useQueryClient();
     const [isLoading, setIsLoading] = useState(false);
+
 
 
     const { data } = useQuery(["loja", lojaId], async () => {
@@ -31,7 +33,7 @@ export function ModalImportProdutoLoja({ onHide, lojaId }: IProps) {
 
     const mutation = useMutation(() => {
         if (!lojaId) throw new Error("Loja Indefinido");
-        return ProdutoLojaController.importar(formattedList);
+        return ProdutoLojaController.cadastro(listToSave);
     }, {
         onSuccess: () => {
             onHide();
@@ -40,7 +42,7 @@ export function ModalImportProdutoLoja({ onHide, lojaId }: IProps) {
         }
     });
 
-    const { isLoading: importIsLoading } = mutation;
+    const { isLoading: cadastroIsLoading } = mutation;
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         setIsLoading(true);
@@ -100,7 +102,7 @@ export function ModalImportProdutoLoja({ onHide, lojaId }: IProps) {
             onHide={() => { onHide(); setFormattedList([]) }}
         >
             <Modal.Header closeButton>
-                <Modal.Title>Import - Arraste um arquivo</Modal.Title>
+                <Modal.Title>Cadastro - Arraste um arquivo</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Row>
@@ -131,19 +133,19 @@ export function ModalImportProdutoLoja({ onHide, lojaId }: IProps) {
                         }
 
 
-
                         {
-                            !importIsLoading && formattedList.length > 0 ? (
-                                <ModalTableImportProdutoLoja
+                            !cadastroIsLoading && formattedList.length > 0 ? (
+                                <ModalTableCadastroProdutoLoja
                                     listProdutoLoja={formattedList}
+                                    onListProdutoLoja={setListToSave}
                                 />
-                            ) : importIsLoading ? (
+                            ) : cadastroIsLoading ? (
                                 <div>
                                     <FragmentLoading />
                                 </div>
                             ) : null
-
                         }
+
 
 
                     </Col>
@@ -162,9 +164,9 @@ export function ModalImportProdutoLoja({ onHide, lojaId }: IProps) {
                             ? mutation.mutate()
                             : toast.info("A lista está vazia, por favor adicione dados antes de confirmar.");
                     }}
-                    disabled={importIsLoading}
+                    disabled={cadastroIsLoading}
                 >
-                    {importIsLoading ? (
+                    {cadastroIsLoading ? (
                         <>
                             <Spinner
                                 as="span"

@@ -11,13 +11,20 @@ import { BsSearch } from "react-icons/bs";
 import { FaRegUserCircle } from "react-icons/fa"
 import { FaFlagUsa } from "react-icons/fa"
 import { BiLink } from "react-icons/bi"
-
+import {FaFileDownload} from "react-icons/fa"
 
 interface props {
-    tipo: "nota" | "loja" | "casa" | "caixa" | "produto" | "historico" | "up" | "down" | "edit" | "trash" | "search" | "user" | "flag" | "link"
+    tipo: "nota" | "loja" | "casa" | "caixa" | "produto" | "historico" | "up" | "down" | "edit" | "trash" | "search" | "user" | "flag" | "link" | "download"
 }
 
 export function Icons({ tipo }: props) {
+
+
+    if (tipo === "download") {
+        return (
+            <FaFileDownload size={60} />
+        );
+    }
 
     if (tipo === "link") {
         return (

@@ -8,7 +8,6 @@ import useDataTypes from "@/hooks/useDataTypes";
 import { FreteiroController, IFreteiro } from "@/datatypes/freteiro";
 import { FreteiroStore } from "@/context/FreteiroStore";
 
-
 interface CotacaoMoedas {
   [key: string]: {
     codein: string;
@@ -24,7 +23,6 @@ interface CotacaoMoedas {
   };
 }
 
-
 export function MenuMega() {
   const [cotacaoDolar, setCotacaoDolar] = useState<string>("");
   const [showModal, setShowModal] = useState(false);
@@ -35,7 +33,6 @@ export function MenuMega() {
   const dispatch = FreteiroStore.useDispatch();
 
   const {
-
     isLoading,
     orderBy,
     ordem,
@@ -48,7 +45,6 @@ export function MenuMega() {
     defaultOrder: "nome"
   })
 
-
   useEffect(() => {
     fetch("https://economia.awesomeapi.com.br/last/USD-BRL")
       .then((response) => response.json())
@@ -60,8 +56,6 @@ export function MenuMega() {
         }
       });
   }, []);
-
-
 
   return (
     <React.Fragment>
@@ -100,7 +94,6 @@ export function MenuMega() {
               </Nav>
             </Nav>
 
-
             <Nav className="mx-end">
 
               <Form.Select
@@ -115,7 +108,6 @@ export function MenuMega() {
                   </option>
                 ))}
               </Form.Select>
-
 
               <Nav.Link onClick={() => { setShowModal(true); }} className="no-wrap">
                 <Icons tipo="flag" /> <b>Dólar: R$ {cotacaoDolar}</b>

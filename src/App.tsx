@@ -17,7 +17,6 @@ export default function App() {
         <React.Fragment >
             <ToastContainer />
             <BrowserRouter>
-
                 <Routes>
                     <Route path="/" element={<PageUsuario />} >
                         <Route path="/" element={<PageHome />} />
@@ -32,7 +31,6 @@ export default function App() {
                         <Route path="*" element={<PaginaNaoEncontrada />} />
                     </Route>
                 </Routes>
-
             </BrowserRouter>
         </React.Fragment>
     );
