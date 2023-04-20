@@ -3,6 +3,7 @@ import { parseISO } from "date-fns";
 import { z } from "zod";
 import { schemaLoja } from "./loja";
 import { schemaProdutoLoja } from "./ProdutoLoja";
+import { IFreteiro } from "./freteiro";
 
 export const schemaCatalogo = z.object({
 
@@ -86,7 +87,7 @@ export class CatalogoController {
 
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos`, options);
         const responseData: unknown = await response.json();
- 
+
         const catalogoSchema = schemaCatalogo.parse(responseData);
         return catalogoSchema;
     }
@@ -101,7 +102,7 @@ export class CatalogoController {
         };
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/${produto.id}`, options);
         const responseData: unknown = await response.json();
-  
+
         const catalogoSchema = schemaCatalogo.parse(responseData);
         return catalogoSchema;
     }
@@ -174,12 +175,10 @@ export class CatalogoController {
     }
 
 
-    public static async searchCompetidor(freteiro = "", page = 1, limit = 25, q: string = "", ordenar = "margem", ordem = "descrescente") {
+    public static async searchCompetidor(freteiro: IFreteiro | null, page = 1, limit = 25, q: string = "", ordenar = "margem", ordem = "descrescente") {
 
         const params = new URLSearchParams();
         if (q) params.set("q", q);
-        if (freteiro) params.set("freteiro", freteiro);
-
         params.set("limit", limit.toString());
         params.set("page", page.toString());
         params.set("ordenar", ordenar);
@@ -195,14 +194,15 @@ export class CatalogoController {
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/competidores?${params}`, options);
         const responseData: unknown = await response.json();
 
-        const catalogosSchema = z.object({
+        const catalogos = z.object({
             page: z.number().min(1),
             limit: z.number().min(1),
             items: z.array(schemaCompetidor),
             total: z.number().min(0)
         }).parse(responseData);
 
-     
-        return catalogosSchema;
+       
+
+        return catalogos;
     }
 }

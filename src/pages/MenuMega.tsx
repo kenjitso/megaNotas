@@ -29,7 +29,7 @@ export function MenuMega() {
   const navigate = useNavigate();
   const location = useLocation();
   const [filtro, setFiltro] = useState("");
-  const { id } = FreteiroStore.useStore();
+  const { freteiro } = FreteiroStore.useStore();
   const dispatch = FreteiroStore.useDispatch();
 
   const {
@@ -98,8 +98,8 @@ export function MenuMega() {
 
               <Form.Select
                 className="optionStyle"
-                value={id}
-                onChange={(e) => dispatch(e.target.value)}
+                value={freteiro?.id ?? ""}
+                onChange={(e) => dispatch(data?.items.find(freteiro => freteiro.id === e.target.value) ?? null)}
               >
                 <option value="">Selecionar Freteiro</option>
                 {data?.items.map((item) => (

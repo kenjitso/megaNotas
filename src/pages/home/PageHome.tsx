@@ -6,7 +6,7 @@ import {
     ICatalogo,
     ICatalogoCompetidor,
 } from "@/datatypes/catalogo";
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
     Accordion,
     Card,
@@ -29,7 +29,7 @@ export function PageHome() {
     const { page } = useParams();
     const [filtro, setFiltro] = useState("");
     const [expandedKey, setExpandedKey] = useState<string | null>(null);
-    const { id } = FreteiroStore.useStore();
+    const { freteiro } = FreteiroStore.useStore();
 
     const {
         isLoading,
@@ -38,11 +38,11 @@ export function PageHome() {
         ordenar,
         data,
     } = useDataTypes<ICatalogoCompetidor>({
-        queryKey: ["catalogos", page ?? "1", "10", id],
+        queryKey: ["catalogos", page ?? "1", "10"],
         queryFn: async () =>
 
             await CatalogoController.searchCompetidor(
-                id,
+                freteiro,
                 parseInt(page ?? "1"),
                 10,
                 filtro,
@@ -52,6 +52,24 @@ export function PageHome() {
         filtro: filtro,
         defaultOrder: "margem",
     });
+
+    const catalogos = useMemo(()=>{
+
+        return data?.items.map(catalogo => {
+            for (const competidor of catalogo.competidores) {
+                const frete = freteiro ? competidor.produto.preco * competidor.loja.cotacao * freteiro.percentual / 100 + freteiro.fixo : 0;
+                competidor.frete = frete;
+            }
+            catalogo.lucro = catalogo.lucro - catalogo.competidores[0]?.frete ?? 0;
+            if (catalogo.preco > 0) catalogo.margem = catalogo.lucro / catalogo.preco;
+            return {
+                ...catalogo
+            }
+        })
+
+    }, [data,freteiro]
+)
+
 
     const handlePageChange = (page: number) => {
         navigate(`/${page}`);
@@ -99,7 +117,7 @@ export function PageHome() {
                         <th className="th110" >
                             <div className="thArrow">
                                 <span>Preço U$</span>
-                                
+
                             </div>
                         </th>
                         <th className="th110" onClick={() => orderBy("preco")}>
@@ -137,7 +155,7 @@ export function PageHome() {
 
                 <tbody>
                     {!isLoading &&
-                        data?.items.map((catalogo, index) => (
+                       catalogos?.map((catalogo, index) => (
                             <ItemTable key={index} catalogo={catalogo} eventKey={index.toString()} onToggle={setExpandedKey} expandedKey={expandedKey} />
                         ))}
                 </tbody>

@@ -1,21 +1,23 @@
 import CreateStore from "@/context/lib/CreateStore";
+import { IFreteiro } from "@/datatypes/freteiro";
 
 interface Freteiro {
-    id: string;
+    freteiro: IFreteiro | null;
+
 }
 
 const defaultStore: Freteiro = {
-    id: ""
+    freteiro: null,
 };
 
 
 
-function reducer(state: Freteiro, value: string) {
+function reducer(state: Freteiro, value: IFreteiro|null) {
    
-    return {id: value};
+    return {freteiro: value};
 }
 
-const { StoreProvider, useStore, useDispatch } = CreateStore<Freteiro, string>(reducer, defaultStore, "freteiro");
+const { StoreProvider, useStore, useDispatch } = CreateStore<Freteiro, IFreteiro | null>(reducer, defaultStore);
 
 export abstract class FreteiroStore {
     public static Provider = StoreProvider;
