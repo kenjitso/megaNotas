@@ -1,4 +1,13 @@
+.acordionStyle {
 
+  
+  width: 70px;
+  min-width: 70px;
+  max-width: 70px;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  text-align: center
+}
 
 
 .no-wrap {
@@ -12,13 +21,10 @@
 
 /* Centraliza o ícone no elemento */
 .centralize-icon {
-  display: flex;
-  /* Define o container como flexível */
-  justify-content: center;
-  /* Centraliza o conteúdo horizontalmente */
-  align-items: center;
-  /* Centraliza o conteúdo verticalmente */
+  text-align: center;
+  cursor: pointer;
 }
+
 
 /* Estiliza o cabeçalho da tabela com seta indicadora */
 .thArrow {
@@ -62,13 +68,12 @@
   max-width: 110px;
   overflow-wrap: break-word;
   /* Quebra a palavra caso necessário para caber no espaço disponível */
-  white-space: nowrap;
-  /* Não permite a quebra de linha */
   text-overflow: ellipsis;
   /* Adiciona "..." ao final do texto truncado */
   cursor: pointer;
   /* Muda o cursor para um ponteiro quando o mouse estiver sobre o elemento */
 }
+
 
 /* Define largura fixa de 130px para a célula da tabela */
 .th130 {

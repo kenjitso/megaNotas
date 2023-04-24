@@ -59,7 +59,7 @@ export function PageFreteiro() {
                         variant="success"
                         onClick={() => setEdit("")}
                     >
-                        Cadastro
+                        <Icons tipo="cadastro" tamanho={23} /> Cadastro
                     </Button>
                 </Col>
             </Row>
@@ -139,15 +139,13 @@ function ItemTable({ freteiro, onEdit, onDelete }: IPropItensTable) {
                     R$: {formatCurrency(freteiro.fixo)}
                 </td>
                 <td className="tdValue">{freteiro.percentual}%</td>
-                <td
-
+                <td    className="centralize-icon"
                     onClick={onEdit}
                     role="button"
                     aria-label="Editar Freteiro">
                     <Icons tipo="edit" />
                 </td>
-                <td
-
+                <td    className="centralize-icon"
                     onClick={onDelete}
                     role="button"
                     aria-label="Desativar Freteiro">

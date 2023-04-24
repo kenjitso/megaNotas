@@ -62,7 +62,7 @@ export function PageCatalogo() {
                         variant="success"
                         onClick={() => setEdit("")}
                     >
-                        Cadastro
+                         <Icons tipo="cadastro" tamanho={23}/> Cadastro
                     </Button>
                 </Col>
             </Row>
@@ -140,37 +140,38 @@ interface IPropItensTable {
 
 function ItemTable({ catalogo, onEdit, onDelete }: IPropItensTable) {
     return (
-        <React.Fragment>
-            <tr>
-                <td className="image-cell">
-                    <img
-                        className="responsive-image"
-                        src={catalogo.url_thumbnail || ratata}
-                        alt="Descrição da imagem"
-                    />
-                </td>
-                <td>
-                    <a style={{ color: "blue" }} href={catalogo.url_catalogo} target="_blank" rel="noopener noreferrer">{catalogo.nome}</a>
-                </td>
-                <td className="tdValue"> {catalogo.comissao * 100}%</td>
-                <td className="tdValue">
-                    R$: {formatCurrency(catalogo.frete)}
-                </td>
-                <td className="tdValue">
-                    R$: {formatCurrency(catalogo.preco)}
-                </td>
-                <td
-                    onClick={onEdit}
-                    role="button"
-                    aria-label="Editar Catalogo">
-                    <Icons tipo="edit" />
-                </td>
-                <td onClick={onDelete}
-                    role="button"
-                    aria-label="Desativar Catalogo">
-                    <Icons tipo="trash" />
-                </td>
-            </tr>
-        </React.Fragment>
-    )
+        <tr>
+            <td className="image-cell">
+                <img
+                    className="responsive-image"
+                    src={catalogo.url_thumbnail || ratata}
+                    alt="Descrição da imagem"
+                />
+            </td>
+            <td>
+                <a style={{ color: "blue" }} href={catalogo.url_catalogo} target="_blank" rel="noopener noreferrer">{catalogo.nome}</a>
+            </td>
+            <td className="tdValue"> {catalogo.comissao * 100}%</td>
+            <td className="tdValue">
+                R$: {formatCurrency(catalogo.frete)}
+            </td>
+            <td className="tdValue">
+                R$: {formatCurrency(catalogo.preco)}
+            </td>
+            <td    className="centralize-icon"
+                onClick={onEdit}
+                role="button"
+                aria-label="Editar Catalogo"
+            >
+                <Icons tipo="edit" />
+            </td>
+            <td    className="centralize-icon"
+                onClick={onDelete}
+                role="button"
+                aria-label="Desativar Catalogo"
+            >
+                <Icons tipo="trash" />
+            </td>
+        </tr>
+    );
 }

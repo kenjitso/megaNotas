@@ -11,18 +11,41 @@ import { BsSearch } from "react-icons/bs";
 import { FaRegUserCircle } from "react-icons/fa"
 import { FaFlagUsa } from "react-icons/fa"
 import { BiLink } from "react-icons/bi"
-import {FaFileDownload} from "react-icons/fa"
+import { FaFileDownload } from "react-icons/fa"
+import { TbFileImport } from "react-icons/tb"
+import { RxThickArrowLeft } from "react-icons/rx"
+import { CgNotes } from "react-icons/cg"
+
 
 interface props {
-    tipo: "nota" | "loja" | "casa" | "caixa" | "produto" | "historico" | "up" | "down" | "edit" | "trash" | "search" | "user" | "flag" | "link" | "download"
+    tipo: "nota" | "loja" | "casa" | "caixa" | "produto" | "historico" | "up" | "down" | "edit" | "trash" | "search" | "user" | "flag" | "link" | "download" | "import"
+   | "voltar" | "cadastro"
+    tamanho?: number
 }
 
-export function Icons({ tipo }: props) {
+export function Icons({ tipo, tamanho }: props) {
 
+    if (tipo === "cadastro") {
+        return (
+            <CgNotes size={tamanho} />
+        );
+    }
+
+    if (tipo === "voltar") {
+        return (
+            <RxThickArrowLeft size={24} />
+        );
+    }
+
+    if (tipo === "import") {
+        return (
+            <TbFileImport size={24} />
+        );
+    }
 
     if (tipo === "download") {
         return (
-            <FaFileDownload size={60} />
+            <FaFileDownload size={tamanho} />
         );
     }
 

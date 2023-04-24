@@ -13,11 +13,10 @@ export function ModalTableImportProdutoLoja({ listProdutoLoja }: IProps) {
 
     return (
         <React.Fragment>
-
             <Table bordered hover >
                 <thead>
                     <tr>
-                        <th className="th70">
+                        <th className="th110">
                             <div className="thArrow">
                                 <span>Codigo</span>
                             </div>
@@ -37,7 +36,7 @@ export function ModalTableImportProdutoLoja({ listProdutoLoja }: IProps) {
                 <tbody>
                     {listProdutoLoja?.slice(0, 10).map((produtoLoja, index) => (
                         <tr key={index} >
-                            <td>
+                            <td style={{ textAlign: 'left' }}>
                                 {produtoLoja.codigo}
                             </td>
                             <td>

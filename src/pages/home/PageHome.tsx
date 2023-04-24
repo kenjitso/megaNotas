@@ -9,6 +9,7 @@ import {
 import React, { useMemo, useState } from "react";
 import {
     Accordion,
+    Button,
     Card,
     Col,
     FloatingLabel,
@@ -53,7 +54,7 @@ export function PageHome() {
         defaultOrder: "margem",
     });
 
-    const catalogos = useMemo(()=>{
+    const catalogos = useMemo(() => {
 
         return data?.items.map(catalogo => {
             for (const competidor of catalogo.competidores) {
@@ -67,8 +68,8 @@ export function PageHome() {
             }
         })
 
-    }, [data,freteiro]
-)
+    }, [data, freteiro]
+    )
 
 
     const handlePageChange = (page: number) => {
@@ -89,6 +90,10 @@ export function PageHome() {
                     </FloatingLabel>
                 </Col>
             </Row>
+
+
+
+
 
             <Table bordered>
                 <thead>
@@ -155,7 +160,7 @@ export function PageHome() {
 
                 <tbody>
                     {!isLoading &&
-                       catalogos?.map((catalogo, index) => (
+                        catalogos?.map((catalogo, index) => (
                             <ItemTable key={index} catalogo={catalogo} eventKey={index.toString()} onToggle={setExpandedKey} expandedKey={expandedKey} />
                         ))}
                 </tbody>
@@ -187,77 +192,70 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
 
     return (
         <React.Fragment>
-            <tr>
-                <td colSpan={8} style={{ padding: "0" }}>
-                    <Accordion activeKey={expandedKey}>
-                        <Accordion.Item eventKey={eventKey}>
-                            <Accordion.Header onClick={() => onToggle(expandedKey === eventKey ? null : eventKey)}>
-
-                                <Table bordered hover style={{ marginBottom: "0px" }}>
-                                    <tbody>
-                                        <tr>
-                                            <td className="th70" style={{ textAlign: "center" }}>
-                                                <img
-                                                    className="responsive-image"
-                                                    src={catalogo.url_thumbnail || ratata}
-                                                    alt="Descrição da imagem"
-                                                />
-                                            </td>
-                                            <td className="th200">
-                                                <a
-                                                    style={{ color: "blue" }}
-                                                    href={catalogo.url_catalogo}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    title={catalogo.nome}
-                                                >
-                                                    {catalogo.nome}
-                                                </a>
-                                            </td>
-                                            <td className="th70" style={{ textAlign: "right" }}>
-                                                {catalogo.comissao * 100}%
-                                            </td>
-                                            <td className="th110" style={{ textAlign: "right" }}>
-                                                U${" "}
-                                                {formatCurrency(catalogo.vencedor?.produto.preco ?? 0)}
-                                            </td>
-                                            <td className="th110" style={{ textAlign: "right" }}>
-                                                R${" "}
-                                                {formatCurrency(catalogo.preco)}
-                                            </td>
-                                            <td className="th110" style={{ textAlign: "right" }}>
-                                                R${" "}
-                                                {(catalogo.lucro).toFixed(2)}
-                                            </td>
-                                            <td className="th110" style={{ textAlign: "right" }}>
-                                                {(catalogo.margem * 100).toFixed(2)}%
-                                            </td>
-                                            <td className="th110" >
-                                                {catalogo.vencedor?.loja.nome ?? "Nenhum"}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </Table>
-                            </Accordion.Header>
-
+            <tr onClick={() => onToggle(expandedKey === eventKey ? null : eventKey)}>
+                <td className="acordionStyle">
+                    <img
+                        className="responsive-image"
+                        src={catalogo.url_thumbnail || ratata}
+                        alt="Descrição da imagem"
+                    />
+                </td>
+                <td className="th200">
+                    <a
+                        style={{ color: "blue" }}
+                        href={catalogo.url_catalogo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={catalogo.nome}
+                    >
+                        {catalogo.nome}
+                    </a>
+                </td>
+                <td className="th110" style={{ textAlign: "right" }}>
+                    {catalogo.comissao * 100}%
+                </td>
+                <td className="th110" style={{ textAlign: "right" }}>
+                    U${" "}
+                    {formatCurrency(catalogo.vencedor?.produto.preco ?? 0)}
+                </td>
+                <td className="th110" style={{ textAlign: "right" }}>
+                    R${" "}
+                    {formatCurrency(catalogo.preco)}
+                </td>
+                <td className="th110" style={{ textAlign: "right" }}>
+                    R${" "}
+                    {formatCurrency(catalogo.lucro)}
+                </td>
+                <td className="th110" style={{ textAlign: "right" }}>
+                    {(catalogo.margem * 100).toFixed(2)}%
+                </td>
+                <td className="th110" >
+                    {catalogo.vencedor?.loja.nome ?? "Nenhum"}
+                </td>
+            </tr>
+            <tr >
+                <td colSpan={8} style={{ height: 0, padding: 0 }}>
+                    <Accordion activeKey={expandedKey} >
+                        <Accordion.Item eventKey={eventKey} >
+                            <Accordion.Header ></Accordion.Header>
                             <Accordion.Body>
-                                <ListGroup>
+                                <ListGroup >
                                     {catalogo.competidores.map((competidor, i) => (
                                         <ListGroup.Item key={i}>
-                                            <Card>
-                                                <Card.Header>
+                                            <Card >
+                                                <Card.Header >
                                                     <strong>Loja:</strong> {competidor.loja.nome}
                                                 </Card.Header>
                                                 <Card.Body>
                                                     <Row>
-                                                        <Col xs={4} md={2}>
+                                                        <Col xs={4} md={2} >
                                                             <strong>Código:</strong> {competidor.produto.codigo}
                                                         </Col>
                                                         <Col xs={8} md={10}>
                                                             <strong>Produto:</strong> {competidor.produto.nome}
                                                         </Col>
                                                     </Row>
-                                                    <Row>
+                                                    <Row >
                                                         <Col xs={4} md={4}>
                                                             <strong>Frete: </strong>
                                                             {formatCurrency(competidor.frete)}
@@ -266,7 +264,7 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
                                                             <strong>Preço U$: </strong>
                                                             {formatCurrency(competidor.produto.preco)}
                                                         </Col>
-                                                        <Col xs={4} md={4}>
+                                                        <Col xs={4} md={4} >
                                                             <strong>Preço R$: </strong>
                                                             {formatCurrency(competidor.produto.preco * competidor.loja.cotacao)}
                                                         </Col>

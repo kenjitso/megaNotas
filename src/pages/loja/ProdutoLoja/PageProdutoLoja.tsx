@@ -53,7 +53,7 @@ export function PageProdutoLoja() {
                         variant="success"
                         onClick={() => navigate("/lojas")}
                     >
-                        Voltar
+                       <Icons tipo="voltar" tamanho={22} />   Voltar
                     </Button>
 
                     <FloatingLabel className="w-100" label="Pesquisar">
@@ -72,13 +72,13 @@ export function PageProdutoLoja() {
                         onClick={() => setCadastroProdutoLoja(lojaId)}
                         className="me-3"
                     >
-                        Cadastrar
+                         <Icons tipo="download" tamanho={22} />  Cadastrar
                     </Button>
                     <Button
                         variant="success"
                         onClick={() => setImportProdutoLoja(lojaId)}
                     >
-                        Importar
+                        <Icons tipo="download" tamanho={22} />  Importar
                     </Button>
                 </Col>
             </Row>
@@ -87,7 +87,7 @@ export function PageProdutoLoja() {
 
                 <thead>
                     <tr>
-                        <th className="th150" onClick={() => orderBy("codigo")}>
+                        <th className="th150" >
                             <div className="thArrow">
                                 <span>Codigo</span>
                             </div>

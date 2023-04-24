@@ -122,7 +122,7 @@ export function ModalImportProdutoLoja({ onHide, lojaId }: IProps) {
                                         <p style={{ cursor: "pointer" }}>
                                             Arraste e solte um arquivo aqui ou clique para selecionar um arquivo <br /><br />
 
-                                            <Icons tipo="download" />
+                                            <Icons tipo="download" tamanho={55}/>
                                         </p>
                                     )}
 

@@ -13,6 +13,7 @@ interface IProps {
 export function ModalTableCadastroProdutoLoja({ listProdutoLoja, onListProdutoLoja }: IProps) {
     const [selectedProdutoLoja, setSelectedProdutoLoja] = useState<Set<IProdutoLoja>>(new Set());
     const [filtro, setFiltro] = useState("");
+    const [lastCheckedIndex, setLastCheckedIndex] = useState<number | null>(null);
 
 
 
@@ -20,17 +21,44 @@ export function ModalTableCadastroProdutoLoja({ listProdutoLoja, onListProdutoLo
         produtoLoja.nome.toLowerCase().includes(filtro.toLowerCase())
     );
 
-    const handleCheckboxChange = (produtoLoja: IProdutoLoja) => {
+    const handleCheckboxChange = (
+        produtoLoja: IProdutoLoja,
+        index: number,
+        event: React.MouseEvent<HTMLInputElement>
+      ) => {
         const update = new Set(selectedProdutoLoja);
-        if (selectedProdutoLoja.has(produtoLoja)) {
-            update.delete(produtoLoja);
+      
+        if (event.shiftKey && lastCheckedIndex !== null) {
+          const start = Math.min(lastCheckedIndex, index);
+          const end = Math.max(lastCheckedIndex, index);
+          const itemsToSelect = filteredProdutoLoja?.slice(start, end + 1);
+      
+          if (itemsToSelect) {
+            const isSelecting = !selectedProdutoLoja.has(produtoLoja);
+      
+            itemsToSelect.forEach((item) => {
+              if (isSelecting) {
+                update.add(item);
+              } else {
+                update.delete(item);
+              }
+            });
+          }
         } else {
+          if (selectedProdutoLoja.has(produtoLoja)) {
+            update.delete(produtoLoja);
+          } else {
             update.add(produtoLoja);
+          }
+          setLastCheckedIndex(index);
         }
-
+      
         setSelectedProdutoLoja(update);
         onListProdutoLoja(Array.from(update));
-    };
+      };
+      
+
+
 
     return (
         <React.Fragment>
@@ -60,7 +88,7 @@ export function ModalTableCadastroProdutoLoja({ listProdutoLoja, onListProdutoLo
                 <Table bordered hover >
                     <thead>
                         <tr>
-                            <th className="th70">
+                            <th className="th150" >
                                 <div className="thArrow">
                                     <span>Codigo</span>
                                 </div>
@@ -75,7 +103,7 @@ export function ModalTableCadastroProdutoLoja({ listProdutoLoja, onListProdutoLo
                                     <span>Preço</span>
                                 </div>
                             </th>
-                            <th className="th100" style={{ display: "flex", justifyContent: "center" }} >
+                            <th className="th100" style={{ justifyContent: "center" }} >
                                 <div className="thArrow" >
                                     <span>Selecionados</span>
                                 </div>
@@ -83,9 +111,9 @@ export function ModalTableCadastroProdutoLoja({ listProdutoLoja, onListProdutoLo
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredProdutoLoja?.slice(0, 20).map((produtoLoja, index) => (
+                        {filteredProdutoLoja?.slice(0, 25).map((produtoLoja, index) => (
                             <tr key={index} >
-                                <td>
+                                <td style={{ textAlign: 'left' }}>
                                     {produtoLoja.codigo}
                                 </td>
                                 <td>
@@ -98,8 +126,10 @@ export function ModalTableCadastroProdutoLoja({ listProdutoLoja, onListProdutoLo
                                 <td>
                                     <Form.Check
                                         checked={selectedProdutoLoja.has(produtoLoja)}
-                                        onChange={() => handleCheckboxChange(produtoLoja)}
+                                        onClick={(e: React.MouseEvent<HTMLInputElement>) => handleCheckboxChange(produtoLoja, index, e)}
+                                        readOnly
                                     />
+
                                 </td>
                             </tr>
                         ))
@@ -107,6 +137,9 @@ export function ModalTableCadastroProdutoLoja({ listProdutoLoja, onListProdutoLo
                     </tbody>
                 </Table>
             </div>
+
+
+            
         </React.Fragment>
     );
 }

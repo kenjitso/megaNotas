@@ -1,7 +1,7 @@
 import { CatalogoController, ICatalogo } from "@/datatypes/catalogo";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
 import { useEffect, useState } from "react";
-import { Button, Col, FloatingLabel, Form, FormControl, InputGroup, Modal, Row, Table } from "react-bootstrap";
+import { Button, Col, FloatingLabel, Form, Modal, Row, Table } from "react-bootstrap";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import useDataTypes from "@/hooks/useDataTypes";
 import { abreviaLink } from "@/components/utils/AbreviaLink";
@@ -78,7 +78,6 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
                                     controlName="sku"
                                     placeholder="pesquisar"
                                     onUpdate={setFiltro}
-
                                 />
                             </FloatingLabel>
 

@@ -57,9 +57,24 @@ export function MenuMega() {
       });
   }, []);
 
+  function getActiveKey(pathname: string) {
+    if (pathname.startsWith("/lojas")) {
+      return "/lojas";
+    } else if (pathname.startsWith("/catalogos")) {
+      return "/catalogos";
+    } else if (pathname.startsWith("/freteiro")) {
+      return "/freteiro";
+    } else if (pathname.startsWith("/home")) {
+      return "/home";
+    } else {
+      return pathname;
+    }
+  }
+
+
   return (
     <React.Fragment>
-      <Navbar bg="light" expand="lg" sticky="top">
+      <Navbar bg="dark" expand="lg" sticky="top">
         <Container fluid>
           <Navbar.Brand as={Link} to="/">
             <img
@@ -76,9 +91,10 @@ export function MenuMega() {
               <Nav
                 variant="pills"
                 className="p-2 d-none d-md-flex border-0 custom-tabs"
-                activeKey={location.pathname}
+                activeKey={getActiveKey(location.pathname)}
                 onSelect={(eventKey) => navigate(eventKey ?? "/")}
               >
+
                 <Nav.Item>
                   <Nav.Link eventKey="/" title="Home">Home</Nav.Link>
                 </Nav.Item>
@@ -109,9 +125,10 @@ export function MenuMega() {
                 ))}
               </Form.Select>
 
-              <Nav.Link onClick={() => { setShowModal(true); }} className="no-wrap">
+              <Nav.Link onClick={() => { setShowModal(true); }} className="no-wrap" style={{ color: "white" }}>
                 <Icons tipo="flag" /> <b>Dólar: R$ {cotacaoDolar}</b>
               </Nav.Link>
+
             </Nav>
           </Navbar.Collapse>
           <ModalDolar showModal={showModal} setShowModal={setShowModal} cotacaoDolar={cotacaoDolar} />

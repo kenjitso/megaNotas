@@ -1,3 +1,28 @@
+.table-row {
+    border-bottom: none;
+}
+
+
+body {
+    background-color: #bbbbbb;
+}
+
+table {
+    background-color: #ffffff;
+}
+
+
+.table-bordered>tbody>tr,
+.table-bordered>thead>tr {
+    border-color: rgb(150, 150, 150);
+    
+}
+
+.div-acordion-body{
+border-bottom: none;
+
+}
+
 .accordion {
 
     --bs-accordion-border-width: 0px;
@@ -15,15 +40,15 @@
 
 
 .image-cell {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    max-width: 100%;
-    max-height: 100%;
-    min-width: 45px;
-    /* 75px * 1.2 = 90px */
-    min-height: 75px;
-    /* 125px * 1.2 = 150px */
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    padding: 0;
+}
+
+.image-cell img {
+    max-width: 45px;
+    max-height: 75px;
 }
 
 .responsive-image {
@@ -36,18 +61,15 @@
     object-fit: contain;
 }
 
-
-
 .custom-tabs .nav-link {
-    background-color: #f8f9fa;
-    color: #007bff;
+    background-color: none;
+    color: #ffffff;
     border: none;
 }
 
 .custom-tabs .nav-link.active {
     background-color: #198754;
-    ;
-    color: #fff;
+    color: #ffffff;
     border: none;
 }
 
@@ -57,9 +79,7 @@
 }
 
 .modal-footer {
-
     display: table-row-group;
-
 }
 
 .position {
@@ -71,7 +91,6 @@
     width: none;
     height: none;
 }
-
 
 .body {
     height: 100%;
@@ -87,8 +106,6 @@
     width: 100%;
     max-width: 100%
 }
-
-
 
 .logoEmprise {
     user-select: none;
@@ -118,8 +135,6 @@
     font-family: "verdana";
     font-weight: bold;
 }
-
-
 
 .table-link {
     background-color: none !important;

@@ -63,7 +63,7 @@ export function PageLoja() {
                         variant="success"
                         onClick={() => setEdit("")}
                     >
-                        Cadastro
+                      <Icons tipo="cadastro" tamanho={23}/>  Cadastro
                     </Button>
                 </Col>
             </Row>
@@ -150,13 +150,14 @@ function ItemTable({ loja, onEdit, onDelete }: IPropsItensTable) {
                 <td className="tdValue">
                     R$: {formatCurrency(loja.cotacao)}
                 </td>
-                <td
+                <td    className="centralize-icon"
                     onClick={onEdit}
                     role="button"
                     aria-label="Cadastrar Loja">
                     <Icons tipo="edit" />
                 </td>
-                <td onClick={onDelete}
+                 <td    className="centralize-icon" 
+                onClick={onDelete}
                     role="button"
                     aria-label="Desativar Loja">
                     <Icons tipo="trash" />
