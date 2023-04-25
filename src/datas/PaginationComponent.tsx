@@ -1,7 +1,5 @@
 import React from "react";
 import { Pagination } from "react-bootstrap";
-import "./PaginationComponent.css"
-import { Icons } from "@/components/icons/icons";
 
 interface IPaginationButtonProps {
   children: React.ReactNode;

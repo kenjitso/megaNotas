@@ -49,8 +49,8 @@ export function PageProdutoLoja() {
 
                 <Col xs className="d-flex" >
                     <Button
-                        className="me-3 d-flex align-items-center justify-content-center"
-                        variant="success"
+                        className="me-3 d-flex align-items-center justify-content-center custom-btn"
+                       
                         onClick={() => navigate("/lojas")}
                     >
                        <Icons tipo="voltar" tamanho={22} />   Voltar
@@ -68,14 +68,14 @@ export function PageProdutoLoja() {
 
                 <Col xs className="d-flex justify-content-end">
                     <Button
-                        variant="success"
+                       
                         onClick={() => setCadastroProdutoLoja(lojaId)}
-                        className="me-3"
+                        className="me-3 custom-btn"
                     >
                          <Icons tipo="download" tamanho={22} />  Cadastrar
                     </Button>
                     <Button
-                        variant="success"
+                        className="custom-btn"
                         onClick={() => setImportProdutoLoja(lojaId)}
                     >
                         <Icons tipo="download" tamanho={22} />  Importar

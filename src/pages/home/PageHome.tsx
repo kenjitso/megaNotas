@@ -3,13 +3,11 @@ import {
 } from "@/datas/PaginationComponent";
 import {
     CatalogoController,
-    ICatalogo,
     ICatalogoCompetidor,
 } from "@/datatypes/catalogo";
 import React, { useMemo, useState } from "react";
 import {
     Accordion,
-    Button,
     Card,
     Col,
     FloatingLabel,
@@ -231,7 +229,7 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
                 </td>
             </tr>
             <tr >
-                <td colSpan={8} style={{ height: 0, padding: 0}}>
+                <td colSpan={8} style={{ height: 0, padding: 0 }}>
                     <Accordion activeKey={expandedKey} >
                         <Accordion.Item eventKey={eventKey} >
                             <Accordion.Header ></Accordion.Header>

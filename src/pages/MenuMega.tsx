@@ -74,8 +74,8 @@ export function MenuMega() {
 
   return (
     <React.Fragment>
-      <Navbar bg="dark" expand="lg" sticky="top">
-        <Container fluid>
+      <Navbar className="custom-navbar" expand="lg" sticky="top">
+        <Container >
           <Navbar.Brand as={Link} to="/">
             <img
               src={ratata}
@@ -86,7 +86,7 @@ export function MenuMega() {
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
+          <Nav className="me-auto"> 
 
               <Nav
                 variant="pills"

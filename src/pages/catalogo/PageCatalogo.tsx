@@ -60,7 +60,7 @@ export function PageCatalogo() {
                 </Col>
                 <Col xs className="d-flex justify-content-end">
                     <Button
-                        variant="success"
+                      className="custom-btn"
                         onClick={() => setEdit("")}
                     >
                          <Icons tipo="cadastro" tamanho={23}/> Cadastro
