@@ -12,6 +12,7 @@ import { ModalDesativaFreteiro } from "./ModalDesativaFreteiro";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import useDataTypes from "@/hooks/useDataTypes";
 import { formatCurrency } from "@/components/utils/FormatCurrency";
+import { ILoja } from "@/datatypes/loja";
 
 export function PageFreteiro() {
     const navigate = useNavigate();

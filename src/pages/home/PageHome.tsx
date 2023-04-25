@@ -24,6 +24,7 @@ import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { formatCurrency } from "@/components/utils/FormatCurrency";
 import { FreteiroStore } from "@/context/FreteiroStore";
+import { ILoja } from "@/datatypes/loja";
 
 export function PageHome() {
     const navigate = useNavigate();
