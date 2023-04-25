@@ -41,7 +41,7 @@ export class PaginationComponent<T> extends React.Component<IPaginationProps<T>>
     );
 
     return (
-      <Pagination className=" px-3 ">
+      <Pagination className=" px-0 ">
         <CustomPaginationButton onClick={() => this.handlePageChange(1)}>   ◁◁</CustomPaginationButton>
         <CustomPaginationButton onClick={() => currentPage > 1 && this.handlePageChange(currentPage - 1)}>
         ◁

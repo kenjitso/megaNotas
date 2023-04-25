@@ -13,6 +13,7 @@ import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { Icons } from "@/components/icons/icons";
 import { formatCurrency } from "@/components/utils/FormatCurrency";
+import { ILoja } from "@/datatypes/loja";
 
 export function PageCatalogo() {
     const navigate = useNavigate();
@@ -67,7 +68,7 @@ export function PageCatalogo() {
                 </Col>
             </Row>
 
-            <Table bordered hover >
+            <Table striped bordered hover className="rounded-table">
                 <thead>
                     <tr>
                         <th className="th70" >
@@ -118,15 +119,17 @@ export function PageCatalogo() {
             </Table>
             {isLoading && <FragmentLoading />}
 
-            <Row className="mt-2">
-                <Col xs>
-                    <PaginationComponent<ICatalogo>
+            {isLoading && <FragmentLoading />}
+            <Row className="my-3">
+                <Col xs className="d-flex">
+                    <PaginationComponent<ILoja>
                         items={data?.total ?? 0}
                         pageSize={10}
                         onPageChange={handlePageChange}
                         currentPage={data?.page ?? 1}
                     />
                 </Col>
+
             </Row>
         </React.Fragment >
     );

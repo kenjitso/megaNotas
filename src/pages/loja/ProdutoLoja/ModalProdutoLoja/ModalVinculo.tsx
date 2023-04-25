@@ -88,7 +88,7 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
 
 
                  
-                    <Table bordered hover className={isLoading || mutation.isLoading ? "invisible" : ""}>
+                    <Table  className={isLoading || mutation.isLoading ? "invisible" : ""}>
                         <thead>
                             <tr>
                                 <th className="th200" onClick={() => orderBy("nome")}>

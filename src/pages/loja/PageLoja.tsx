@@ -63,12 +63,12 @@ export function PageLoja() {
                         variant="success"
                         onClick={() => setEdit("")}
                     >
-                      <Icons tipo="cadastro" tamanho={23}/>  Cadastro
+                        <Icons tipo="cadastro" tamanho={23} />  Cadastro
                     </Button>
                 </Col>
             </Row>
 
-            <Table bordered hover>
+            <Table striped bordered hover className="rounded-table">
                 <thead>
                     <tr>
 
@@ -101,19 +101,18 @@ export function PageLoja() {
                 </tbody>
             </Table>
             {isLoading && <FragmentLoading />}
-
-
-            <Row className="mt-2">
-                <Col xs>
+            <Row className="my-3">
+                <Col xs className="d-flex">
                     <PaginationComponent<ILoja>
                         items={data?.total ?? 0}
                         pageSize={10}
                         onPageChange={handlePageChange}
                         currentPage={data?.page ?? 1}
                     />
-
                 </Col>
+
             </Row>
+
         </React.Fragment>
     );
 }
@@ -150,14 +149,14 @@ function ItemTable({ loja, onEdit, onDelete }: IPropsItensTable) {
                 <td className="tdValue">
                     R$: {formatCurrency(loja.cotacao)}
                 </td>
-                <td    className="centralize-icon"
+                <td className="centralize-icon"
                     onClick={onEdit}
                     role="button"
                     aria-label="Cadastrar Loja">
                     <Icons tipo="edit" />
                 </td>
-                 <td    className="centralize-icon" 
-                onClick={onDelete}
+                <td className="centralize-icon"
+                    onClick={onDelete}
                     role="button"
                     aria-label="Desativar Loja">
                     <Icons tipo="trash" />

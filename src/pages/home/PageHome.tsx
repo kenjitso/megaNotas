@@ -91,11 +91,7 @@ export function PageHome() {
                 </Col>
             </Row>
 
-
-
-
-
-            <Table bordered>
+            <Table striped bordered hover className="rounded-table">
                 <thead>
                     <tr>
                         <th className="th70" >
@@ -113,7 +109,7 @@ export function PageHome() {
                         </th>
                         <th className="th70" onClick={() => orderBy("premium")}>
                             <div className="thArrow">
-                                <span>Premium</span>
+                                <span>Comissão</span>
                                 <span>
                                     {ordenar === "premium" && (ordem ? "▲" : "▼")}
                                 </span>
@@ -150,10 +146,7 @@ export function PageHome() {
                             </div>
                         </th>
                         <th className="th110" >
-
                             <span>Vencedor</span>
-
-
                         </th>
                     </tr>
                 </thead>
@@ -167,13 +160,16 @@ export function PageHome() {
             </Table>
 
             {isLoading && <FragmentLoading />}
-            <Row className="mt-2">
-                <PaginationComponent<ICatalogo>
-                    items={data?.total ?? 0}
-                    pageSize={10}
-                    onPageChange={handlePageChange}
-                    currentPage={data?.page ?? 1}
-                />
+            <Row className="my-3">
+                <Col xs className="d-flex">
+                    <PaginationComponent<ILoja>
+                        items={data?.total ?? 0}
+                        pageSize={10}
+                        onPageChange={handlePageChange}
+                        currentPage={data?.page ?? 1}
+                    />
+                </Col>
+
             </Row>
         </React.Fragment>
     );
@@ -234,7 +230,7 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
                 </td>
             </tr>
             <tr >
-                <td colSpan={8} style={{ height: 0, padding: 0 }}>
+                <td colSpan={8} style={{ height: 0, padding: 0}}>
                     <Accordion activeKey={expandedKey} >
                         <Accordion.Item eventKey={eventKey} >
                             <Accordion.Header ></Accordion.Header>

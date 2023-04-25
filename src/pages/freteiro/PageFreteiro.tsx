@@ -64,7 +64,7 @@ export function PageFreteiro() {
                 </Col>
             </Row>
 
-            <Table bordered hover>
+            <Table striped bordered hover className="rounded-table">
                 <thead>
                     <tr>
 
@@ -107,16 +107,16 @@ export function PageFreteiro() {
                 </tbody>
             </Table>
             {isLoading && <FragmentLoading />}
-
-            <Row className="mt-2">
-                <Col xs>
-                    <PaginationComponent<IFreteiro>
+            <Row className="my-3">
+                <Col xs className="d-flex">
+                    <PaginationComponent<ILoja>
                         items={data?.total ?? 0}
                         pageSize={10}
                         onPageChange={handlePageChange}
                         currentPage={data?.page ?? 1}
                     />
                 </Col>
+
             </Row>
         </React.Fragment>
     );

@@ -83,7 +83,7 @@ export function PageProdutoLoja() {
                 </Col>
             </Row>
 
-            <Table bordered hover >
+            <Table striped bordered hover className="rounded-table">
 
                 <thead>
                     <tr>
