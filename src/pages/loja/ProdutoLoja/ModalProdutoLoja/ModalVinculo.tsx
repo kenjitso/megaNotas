@@ -8,7 +8,6 @@ import { abreviaLink } from "@/components/utils/AbreviaLink";
 import { useMutation } from "@tanstack/react-query";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 
-
 interface IProps {
     produtoParaguay?: IProdutoLoja;
     onHide: () => void;
@@ -83,8 +82,6 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
         }
     }
 
-
-
     return (
         <Modal
             size="lg"
@@ -157,7 +154,6 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
                     </Table>
                     {isLoading || mutation.isLoading && <FragmentLoading />}
                 </div>
-
 
             </Modal.Body>
             <Modal.Footer>

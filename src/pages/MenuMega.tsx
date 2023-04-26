@@ -74,7 +74,7 @@ export function MenuMega() {
 
   return (
     <React.Fragment>
-      <Navbar className="custom-navbar" expand="lg" sticky="top">
+      <Navbar className="custom-navbar" expand="lg" >
         <Container >
           <Navbar.Brand as={Link} to="/">
             <img

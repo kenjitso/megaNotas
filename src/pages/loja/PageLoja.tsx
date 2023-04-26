@@ -42,12 +42,12 @@ export function PageLoja() {
     };
 
     return (
-        <React.Fragment>
+        <React.Fragment >
 
             <ModalCadastroLoja onHide={() => setEdit(undefined)} lojaId={lojaIdEdit} />
             <ModalDesativaLoja onHide={() => setDelete("")} lojaId={lojaIdDelete} />
 
-            <Row className="my-3">
+            <Row className="my-3" >
                 <Col xs className="d-flex">
                     <FloatingLabel className="w-100" label="Pesquisar">
                         <InputSearchDebounce
@@ -60,7 +60,7 @@ export function PageLoja() {
                 </Col>
                 <Col xs className="d-flex justify-content-end ">
                     <Button
-                    className="custom-btn"
+                        className="custom-btn"
                         onClick={() => setEdit("")}
                     >
                         <Icons tipo="cadastro" tamanho={23} />  Cadastro

@@ -10,9 +10,9 @@ export default function PageUsuario() {
 
     return (
         <React.Fragment>
-            <MenuMega />
+            <MenuMega/>
            
-            <Container style={{marginTop:"30px"}}>
+            <Container style={{marginTop:"10px"}} className="content-wrapper">
                 <Outlet />
             </Container>
 

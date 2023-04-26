@@ -77,6 +77,7 @@ export function PageHome() {
 
     return (
         <React.Fragment>
+         
             <Row className="my-3">
                 <Col xs className="d-flex">
                     <FloatingLabel className="w-100" label="Pesquisar">
@@ -170,6 +171,7 @@ export function PageHome() {
                 </Col>
 
             </Row>
+     
         </React.Fragment>
     );
 }

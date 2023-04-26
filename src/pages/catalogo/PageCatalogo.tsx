@@ -117,7 +117,7 @@ export function PageCatalogo() {
                     }
                 </tbody>
             </Table>
-            {isLoading && <FragmentLoading />}
+       
 
             {isLoading && <FragmentLoading />}
             <Row className="my-3">

@@ -55,7 +55,7 @@ export function ModalTableCadastroProdutoLoja({ listProdutoLoja, onListProdutoLo
       
         setSelectedProdutoLoja(update);
         onListProdutoLoja(Array.from(update));
-      };
+      }
       
 
 
