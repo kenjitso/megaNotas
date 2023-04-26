@@ -1,6 +1,6 @@
 import { CatalogoController, ICatalogo } from "@/datatypes/catalogo";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Col, FloatingLabel, Form, Modal, Row, Table } from "react-bootstrap";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import useDataTypes from "@/hooks/useDataTypes";
@@ -14,9 +14,14 @@ interface IProps {
     onHide: () => void;
 }
 
+interface ItemType {
+    id: string;
+}
+
 export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const [filtro, setFiltro] = useState("");
+    const [lastCheckedIndex, setLastCheckedIndex] = useState<number>(0);
 
     const {
         isLoading,
@@ -43,16 +48,42 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
         setSelectedIds(new Set(produtoParaguay?.vinculos ?? []))
     }, [produtoParaguay]);
 
-    const handleCheckboxChange = (id: string) => {
+    const handleCheckboxChange = (
+        id: string,
+        index: number,
+        event: React.MouseEvent<HTMLInputElement>
+    ) => {
         const update = new Set(selectedIds);
-        if (selectedIds.has(id)) {
-            update.delete(id);
+
+        if (event.shiftKey && selectedIds.has(id) !== null) {
+            const start = Math.min(lastCheckedIndex, index);
+            const end = Math.max(lastCheckedIndex, index);
+            const idsToSelect = data?.items.map((item: ItemType) => item.id).slice(start, end + 1);
+
+            if (idsToSelect) {
+                const isSelecting = !selectedIds.has(id);
+                idsToSelect.forEach((item) => {
+                    if (isSelecting) {
+                        update.add(item);
+                    } else {
+                        update.delete(item);
+                    }
+                });
+            }
+
             setSelectedIds(update);
-            return;
+        } else {
+            if (selectedIds.has(id)) {
+                update.delete(id);
+            } else {
+                update.add(id);
+            }
+            setLastCheckedIndex(index);
+            setSelectedIds(update);
         }
-        update.add(id);
-        setSelectedIds(update);
-    };
+    }
+
+
 
     return (
         <Modal
@@ -66,29 +97,29 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
             <Modal.Header closeButton>
                 <Modal.Title> Vincular Catálogo ao Produto </Modal.Title>
             </Modal.Header>
-            <Modal.Body className = "text-center">
+            <Modal.Body className="text-center">
 
                 {produtoParaguay?.nome}
 
-                
-                <Row className="my-3">
-                        <Col xs className="d-flex ">
-                            <FloatingLabel className="w-100" label="Pesquisar">
-                                <InputSearchDebounce
-                                    controlName="sku"
-                                    placeholder="pesquisar"
-                                    onUpdate={setFiltro}
-                                />
-                            </FloatingLabel>
 
-                        </Col>
-                    </Row>
-                
+                <Row className="my-3">
+                    <Col xs className="d-flex ">
+                        <FloatingLabel className="w-100" label="Pesquisar">
+                            <InputSearchDebounce
+                                controlName="sku"
+                                placeholder="pesquisar"
+                                onUpdate={setFiltro}
+                            />
+                        </FloatingLabel>
+
+                    </Col>
+                </Row>
+
                 <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
 
 
-                 
-                    <Table  className={isLoading || mutation.isLoading ? "invisible" : ""}>
+
+                    <Table className={isLoading || mutation.isLoading ? "invisible" : ""}>
                         <thead>
                             <tr>
                                 <th className="th200" onClick={() => orderBy("nome")}>
@@ -115,7 +146,8 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
                                     <td className="td50">
                                         <Form.Check
                                             checked={selectedIds.has(catalogoProduto.id)}
-                                            onChange={() => handleCheckboxChange(catalogoProduto.id)}
+                                            onClick={(e: React.MouseEvent<HTMLInputElement>) => handleCheckboxChange(catalogoProduto.id, index, e)}
+                                            readOnly
                                         />
                                     </td>
                                 </tr>
