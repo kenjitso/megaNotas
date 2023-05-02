@@ -42,7 +42,7 @@ export class LojaController {
         };
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas/${id}`, options);
         const responseData: unknown = await response.json();
-        console.log(responseData);
+
         const lojaSchema = schemaLoja.parse(responseData);
         return lojaSchema;
     }
@@ -115,10 +115,8 @@ export class LojaController {
     public static async save(loja: ILoja) {
 
         if (loja.id) {
-            console.log(loja.algoritmo);
             return await LojaController.update(loja);
         }
-        console.log(loja.algoritmo);
         return await LojaController.create(loja);
     }
 

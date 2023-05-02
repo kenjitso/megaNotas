@@ -88,7 +88,6 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
                                     allPagesText.push(...dataList);
                                 }
 
-                                console.log(data?.algoritmo);
                                 if (data?.algoritmo === 3) {
                                     setFormattedList(BestShopFormat(lojaId ?? "", allPagesText)); //BESTSHOP  FUNCIONANDO OK
                                 }

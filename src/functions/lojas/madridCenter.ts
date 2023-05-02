@@ -37,7 +37,6 @@ export function MadridCenterFormat(idLoja: string, pdfArray: string[]): Array<IP
 
         return itens;
     } catch (error) {
-        console.log(error);
         toast.error(`Entre em contato com o desenvolvedor, parece que a estrutura fornecida pela loja mudou.`);
         return [];
     }

@@ -5,7 +5,6 @@ import { z } from "zod";
 
 
 export function AtlanticoFormat(idLoja: string, pdfArray: string[]): Array<IProdutoLoja> {
-console.log(pdfArray);
 
     try {
         //   const atacadoGamesString = 'ATACADO GAMES';
@@ -15,8 +14,6 @@ console.log(pdfArray);
         //       return [];
         //    }
         const extractedItems = processPdfArray(pdfArray);
-
-console.log(extractedItems);
 
         const lineValidation = z.object({
             codigo: z.string(),
