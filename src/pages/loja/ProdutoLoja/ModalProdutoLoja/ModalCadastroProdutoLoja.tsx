@@ -10,6 +10,13 @@ import * as XLSX from 'xlsx';
 import { Icons } from "@/components/icons/icons";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { ModalTableCadastroProdutoLoja } from "./ModalTableCadastroProdutoLoja";
+import * as pdfjsLib from "pdfjs-dist";
+import { StarGamesFormat } from "@/functions/lojas/starGames";
+import { BestShopFormat } from "@/functions/lojas/bestShop";
+import { AtlanticoFormat } from "@/functions/lojas/atlantico";
+import { CellShopFormat } from "@/functions/lojas/cellShop";
+import { MadridCenterFormat } from "@/functions/lojas/madridCenter";
+pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
 
 interface IProps {
     onHide: () => void,
@@ -52,17 +59,56 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
                 file.type === "text/plain" ||
                 file.type ===
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
-                file.type === "application/vnd.ms-excel"
+                file.type === "application/pdf"
             ) {
                 const reader = new FileReader();
                 reader.onload = () => {
                     const fileData = reader.result;
 
                     if (fileData) {
-                        if (file.type === "text/plain") {
-                            const data = (fileData as string)
-                                .split("\n")
-                                .map((line: string) => line.trim().split(/\s{2,}/));
+
+                        if (file.type === "application/pdf") {
+                            // Use pdfjs-dist to parse the PDF file
+                            const arrayBuffer = reader.result as ArrayBuffer;
+                            const uint8Array = new Uint8Array(arrayBuffer);
+                            pdfjsLib.getDocument(uint8Array).promise.then(async (pdf) => {
+                                // Extract text and other information from the PDF file
+
+                                const numPages = pdf.numPages;
+                                const allPagesText: string[] = [];
+
+                                for (let pageIndex = 1; pageIndex <= numPages; pageIndex++) {
+                                    const page = await pdf.getPage(pageIndex);
+                                    const textContent = await page.getTextContent();
+
+                                    const dataList = textContent.items
+                                        .filter((item) => 'str' in item)
+                                        .map((item) => (item as any).str);
+
+                                    allPagesText.push(...dataList);
+                                }
+
+                                console.log(data?.algoritmo);
+                                if (data?.algoritmo === 3) {
+                                    setFormattedList(BestShopFormat(lojaId ?? "", allPagesText)); //BESTSHOP  FUNCIONANDO OK
+                                }
+
+                                if (data?.algoritmo === 1) {
+                                    setFormattedList(AtacadoGamesFormat(lojaId ?? "", allPagesText)); //ATACADO GAMES  FUNCIONANDO OK
+                                }
+
+                                if (data?.algoritmo === 5) {
+                                    setFormattedList(MadridCenterFormat(lojaId ?? "", allPagesText)); //MADRID CENTER FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
+                                }
+                                if (data?.algoritmo === 6) {
+                                    setFormattedList(StarGamesFormat(lojaId ?? "", allPagesText)); //STAR GAMES FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
+                                }
+
+                                if (data?.algoritmo === 2) {
+                                    setFormattedList(AtlanticoFormat(lojaId ?? "", allPagesText)); //ATLANTICO FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
+                                }
+
+                            });
                         } else {
                             const workbook = XLSX.read(fileData, { type: "binary" });
                             const sheetName = workbook.SheetNames[0];
@@ -71,20 +117,18 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
                                 header: 1,
                             });
 
-                            if (data?.algoritmo === 1) {
-                                setFormattedList(AtacadoGamesFormat(lojaId ?? "", dataList));
+                            if (data?.algoritmo === 4) {
+                                setFormattedList(CellShopFormat(lojaId ?? "", dataList)); //CELLSHOP FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
                             }
-                            if (data?.algoritmo === 2) {
-                                console.log("Clodoaldo GAMES");
-                            }
+
 
                         }
                     }
                     setIsLoading(false);
                 };
-                reader.readAsBinaryString(file);
+                reader.readAsArrayBuffer(file);
             } else {
-                toast.info("Tipo de arquivo não suportado, precisa ser excel ou txt");
+                toast.info("Tipo de arquivo não suportado, precisa ser excel ou PDF");
                 setIsLoading(false);
             }
         });
@@ -102,7 +146,7 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
             onHide={() => { onHide(); setFormattedList([]) }}
         >
             <Modal.Header closeButton>
-                <Modal.Title>Cadastro - Arraste um arquivo</Modal.Title>
+                <Modal.Title>Cadastro - Arraste um arquivo de {data?.nome}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Row>
@@ -119,20 +163,22 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
                                             <FragmentLoading />
                                         </div>
                                     ) : isDragActive ? (
-                                        <p>Solte o arquivo aqui...</p>
+                                        <p style={{ cursor: "pointer" }}>
+                                            Solte o arquivo <b>pdf</b> ou <b>excel</b> aqui. <br /><br />
+
+                                            <Icons tipo="download" tamanho={55} />
+                                        </p>
                                     ) : (
                                         <p style={{ cursor: "pointer" }}>
-                                            Arraste e solte um arquivo aqui ou clique para selecionar um arquivo <br /><br />
+                                            Arraste e solte um arquivo <b>pdf</b> ou <b>excel</b> referente a loja ou clique para selecionar o arquivo <br /><br />
 
-                                            <Icons tipo="download" tamanho={55}/>
+                                            <Icons tipo="download" tamanho={55} />
                                         </p>
                                     )}
 
                                 </div>
                             )
                         }
-
-
                         {
                             !cadastroIsLoading && formattedList.length > 0 ? (
                                 <ModalTableCadastroProdutoLoja

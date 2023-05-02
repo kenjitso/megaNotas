@@ -124,6 +124,21 @@ export function ModalCadastroLoja({ onHide, lojaId }: IProps) {
                                                     <option value="1">
                                                         Atacado Games
                                                     </option>
+                                                    <option value="2">
+                                                        Atantico
+                                                    </option>
+                                                    <option value="3">
+                                                        Best Shop
+                                                    </option>
+                                                    <option value="4">
+                                                        Cell Shop
+                                                    </option>
+                                                    <option value="5">
+                                                        Madrid Center
+                                                    </option>
+                                                    <option value="6">
+                                                        Star Games
+                                                    </option>
                                                 </Form.Select>
                                             </Form.Group>
                                         </Col>

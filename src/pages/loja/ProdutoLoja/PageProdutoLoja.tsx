@@ -68,7 +68,6 @@ export function PageProdutoLoja() {
 
                 <Col xs className="d-flex justify-content-end">
                     <Button
-                       
                         onClick={() => setCadastroProdutoLoja(lojaId)}
                         className="me-3 custom-btn"
                     >

@@ -4,15 +4,19 @@ import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 import { z } from "zod";
 
 
-export function AtacadoGamesFormat(idLoja: string, pdfArray: string[]): Array<IProdutoLoja> {
-
+export function BestShopFormat(idLoja: string, pdfArray: string[]): Array<IProdutoLoja> {
     try {
-           const atacadoGamesString = 'ATACADO GAMES';
-          const atacadoGamesPdf = pdfArray.some(text => text.includes(atacadoGamesString));
-           if (!atacadoGamesPdf || pdfArray.length === 0) {
-               toast.error("Verifique se o arquivo é de ATACADO GAMES e se não está vazio. Caso contrario entre em contato com o desenvolvedor.");
-               return [];
-            }
+
+        const bestString = 'B E S T';
+        const shopString = 'S H O P';
+        const bestPdf = pdfArray.some(text => text.includes(bestString));
+        const shopPdf = pdfArray.some(text => text.includes(shopString));
+
+        if (!bestPdf || !shopPdf || pdfArray.length === 0) {
+            toast.error("Verifique se o arquivo é de BEST SHOP e se não está vazio. Caso contrario entre em contato com o desenvolvedor.");
+            return [];
+        }
+
         const extractedItems = processPdfArray(pdfArray);
         const lineValidation = z.object({
             codigo: z.string(),
@@ -41,7 +45,7 @@ export function AtacadoGamesFormat(idLoja: string, pdfArray: string[]): Array<IP
 }
 
 function processPdfArray(
-    pdfArray: string[]
+    pdfArray: unknown[]
 ): Array<{ codigo: string; descricao: string; preco: string }> {
     const result = [];
 
@@ -63,7 +67,8 @@ function processPdfArray(
             .join(' ');
 
         // Remove /, /D ou /EIG no final da descrição
-        descricao = descricao.replace(/(\/|\/UNI|\/EIG)$/, '');
+        descricao = descricao.replace(/(\/|\/D|\/EIG)$/, '');
+
 
         // Remove a vírgula do preço antes de adicioná-lo ao resultado
         preco = preco.replace(',', '');

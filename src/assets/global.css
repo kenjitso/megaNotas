@@ -32,8 +32,7 @@
   }
   
   .custom-btn:hover,
-  .custom-btn:focus,
-  .custom-btn:active {
+  .custom-btn.clickable:hover{
     background-color: #d35400;
     /* Cor de fundo do botão ao passar o mouse, focar ou ativar */
     border-color: #d35400;
