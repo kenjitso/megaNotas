@@ -24,7 +24,7 @@ export function ModalDolar({ showModal, setShowModal, cotacaoDolar }: ModalDolar
             setShowModal(false);
             setCotacaoDolar(0);
             queryClient.invalidateQueries(["lojas"]);
-            queryClient.invalidateQueries(["catalogos"]);
+            queryClient.invalidateQueries(["catalogosHome"]);
         },
     });
 
