@@ -117,6 +117,7 @@ export class LojaController {
         if (loja.id) {
             return await LojaController.update(loja);
         }
+
         return await LojaController.create(loja);
     }
 
@@ -136,7 +137,9 @@ export class LojaController {
                 "Content-type": "application/json"
             }
         };
+     
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas?${params}`, options);
+       
         const responseData: unknown = await response.json();
 
         const lojasSchema = z.object({

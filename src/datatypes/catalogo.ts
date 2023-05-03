@@ -162,7 +162,7 @@ export class CatalogoController {
                 "Content-type": "application/json"
             }
         };
-
+    
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos?${params}`, options);
         const responseData: unknown = await response.json();
         const catalogosSchema = z.object({
@@ -190,7 +190,8 @@ export class CatalogoController {
                 "Content-type": "application/json"
             }
         };
-
+        const url = `https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/competidores?${params}`;
+        console.log(url);
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/competidores?${params}`, options);
         const responseData: unknown = await response.json();
 

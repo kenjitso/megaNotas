@@ -38,7 +38,7 @@ export function PageHome() {
         ordenar,
         data,
     } = useDataTypes<ICatalogoCompetidor>({
-        queryKey: ["catalogos", page ?? "1", "10"],
+        queryKey: ["catalogosHome", page ?? "1", "10"],
         queryFn: async () =>
 
             await CatalogoController.searchCompetidor(
@@ -107,7 +107,7 @@ export function PageHome() {
                                 </span>
                             </div>
                         </th>
-                        <th className="th70" onClick={() => orderBy("premium")}>
+                        <th className="th110" onClick={() => orderBy("premium")}>
                             <div className="thArrow">
                                 <span>Comissão</span>
                                 <span>

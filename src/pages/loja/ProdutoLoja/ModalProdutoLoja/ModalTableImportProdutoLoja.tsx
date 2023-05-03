@@ -1,4 +1,4 @@
-import { Button, Col, FloatingLabel, Form, Row, Table } from "react-bootstrap";
+import {Table } from "react-bootstrap";
 import "@/assets/style.css"
 import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 import React, { useEffect, useState } from "react";

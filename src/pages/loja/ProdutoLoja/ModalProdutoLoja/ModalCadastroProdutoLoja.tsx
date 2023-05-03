@@ -144,8 +144,10 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
             show={lojaId !== undefined}
             onHide={() => { onHide(); setFormattedList([]) }}
         >
-            <Modal.Header closeButton>
-                <Modal.Title>Cadastro - Arraste um arquivo de {data?.nome}</Modal.Title>
+             <Modal.Header closeButton>
+                <Modal.Title>{formattedList.length > 0
+                    ? `Import - ${data?.nome}`
+                    : `Import - Arraste um arquivo de ${data?.nome}`}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Row>

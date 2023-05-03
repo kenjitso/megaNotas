@@ -83,7 +83,7 @@ export function PageCatalogo() {
                         </th>
                         <th className="th70" onClick={() => orderBy("comissao")}>
                             <div className="thArrow">
-                                <span>Comissão %</span>
+                                <span>Comissão</span>
                                 <span>
                                     {ordenar === "comissao" && (ordem ? "▼" : "▲")}
                                 </span>
