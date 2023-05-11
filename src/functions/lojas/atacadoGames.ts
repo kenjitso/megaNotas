@@ -7,12 +7,12 @@ import { z } from "zod";
 export function AtacadoGamesFormat(idLoja: string, pdfArray: string[]): Array<IProdutoLoja> {
 
     try {
-           const atacadoGamesString = 'ATACADO GAMES';
-          const atacadoGamesPdf = pdfArray.some(text => text.includes(atacadoGamesString));
-           if (!atacadoGamesPdf || pdfArray.length === 0) {
-               toast.error("Verifique se o arquivo é de ATACADO GAMES e se não está vazio. Caso contrario entre em contato com o desenvolvedor.");
-               return [];
-            }
+        const atacadoGamesString = "ATACADO GAMES";
+        const atacadoGamesPdf = pdfArray.some(text => text.includes(atacadoGamesString));
+        if (!atacadoGamesPdf || pdfArray.length === 0) {
+            toast.error("Verifique se o arquivo é de ATACADO GAMES e se não está vazio. Caso contrario entre em contato com o desenvolvedor.");
+            return [];
+        }
         const extractedItems = processPdfArray(pdfArray);
         const lineValidation = z.object({
             codigo: z.string(),
@@ -35,7 +35,7 @@ export function AtacadoGamesFormat(idLoja: string, pdfArray: string[]): Array<IP
 
         return itens;
     } catch (error) {
-        toast.error(`Entre em contato com o desenvolvedor, parece que a estrutura fornecida pela loja mudou.`);
+        toast.error("Entre em contato com o desenvolvedor, parece que a estrutura fornecida pela loja mudou.");
         return [];
     }
 }
@@ -45,7 +45,7 @@ function processPdfArray(
 ): Array<{ codigo: string; descricao: string; preco: string }> {
     const result = [];
 
-    const text = pdfArray.join(' ');
+    const text = pdfArray.join(" ");
 
     const regex = /(\d{4,}-\d)\s+(.*?)\s+((?:\d{1,3},)?\d+\.\d+)\s+\|/g;
     let match;
@@ -56,17 +56,17 @@ function processPdfArray(
         let preco = match[3];
 
         descricao = descricao
-            .split('  ')
+            .split("  ")
             .map((word) =>
-                word.split(' ').filter((letter) => letter.trim() !== '').join('')
+                word.split(" ").filter((letter) => letter.trim() !== "").join("")
             )
-            .join(' ');
+            .join(" ");
 
         // Remove /, /D ou /EIG no final da descrição
-        descricao = descricao.replace(/(\/|\/UNI|\/EIG)$/, '');
+        descricao = descricao.replace(/(\/|\/UNI|\/EIG)$/, "");
 
         // Remove a vírgula do preço antes de adicioná-lo ao resultado
-        preco = preco.replace(',', '');
+        preco = preco.replace(",", "");
 
         result.push({
             codigo: codigo.trim(),

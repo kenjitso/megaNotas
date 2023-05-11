@@ -50,7 +50,7 @@ export default function useQueryMutation<T>(initialState: T, {
     queryEnabled = true,
     toasts
 }: Props<T>) {
-    const clear = () => { set(initialState) };
+    const clear = () => { set(initialState); };
     const idToast = queryKey.join(";");
     const queryClient = useQueryClient();
     // Cria as funções para edição do objeto interno.
