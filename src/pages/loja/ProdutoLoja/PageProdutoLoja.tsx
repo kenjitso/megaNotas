@@ -73,11 +73,9 @@ export function PageProdutoLoja() {
                         onClick={() => setCadastroProdutoLoja(lojaId)}
                         className="me-3 custom-btn"
                     >
-<<<<<<< HEAD
+
                          <Icons tipo="import" tamanho={22} />  Importar
-=======
-                        <Icons tipo="download" tamanho={22} />  Cadastrar
->>>>>>> fdd2ca622d4f53e9c6830e3701c6f50465a02747
+
                     </Button>
                     <Button
                         className="custom-btn"
