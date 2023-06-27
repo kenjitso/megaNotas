@@ -1,16 +1,18 @@
 import React, { useState } from "react";
-import { Row, Col, Table, Button, FloatingLabel } from "react-bootstrap";
+import { Row, Col, Table, Button, FloatingLabel, Form } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
-import { ModalImportProdutoLoja } from "./ModalProdutoLoja/ModalImportProdutoLoja";
-import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
-import useDataTypes from "@/hooks/useDataTypes";
+
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { Icons } from "@/components/icons/icons";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
-import { ModalVinculo } from "./ModalProdutoLoja/ModalVinculo";
-import { PaginationComponent } from "@/datas/PaginationComponent";
 import { formatCurrency } from "@/components/utils/FormatCurrency";
+import { PaginationComponent } from "@/datas/PaginationComponent";
+import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
+import useDataTypes from "@/hooks/useDataTypes";
+
 import { ModalCadastroProdutoLoja } from "./ModalProdutoLoja/ModalCadastroProdutoLoja";
+import { ModalImportProdutoLoja } from "./ModalProdutoLoja/ModalImportProdutoLoja";
+import { ModalVinculo } from "./ModalProdutoLoja/ModalVinculo";
 
 export function PageProdutoLoja() {
     const { lojaId } = useParams();
@@ -32,7 +34,7 @@ export function PageProdutoLoja() {
         queryFn: async () => await ProdutoLojaController.search(lojaId ?? "", parseInt(page ?? "1"), 10, filtro, ordenar, ordem ? "crescente" : "descrescente", true),
         filtro: filtro,
         defaultOrder: "nome"
-    })
+    });
 
     const handlePageChange = (page: number) => {
         navigate(`/lojas/${lojaId}/produtos/${page}`);
@@ -50,10 +52,10 @@ export function PageProdutoLoja() {
                 <Col xs className="d-flex" >
                     <Button
                         className="me-3 d-flex align-items-center justify-content-center custom-btn"
-                       
+
                         onClick={() => navigate("/lojas")}
                     >
-                       <Icons tipo="voltar" tamanho={22} />   Voltar
+                        <Icons tipo="voltar" tamanho={22} />   Voltar
                     </Button>
 
                     <FloatingLabel className="w-100" label="Pesquisar">
@@ -71,7 +73,11 @@ export function PageProdutoLoja() {
                         onClick={() => setCadastroProdutoLoja(lojaId)}
                         className="me-3 custom-btn"
                     >
+<<<<<<< HEAD
                          <Icons tipo="import" tamanho={22} />  Importar
+=======
+                        <Icons tipo="download" tamanho={22} />  Cadastrar
+>>>>>>> fdd2ca622d4f53e9c6830e3701c6f50465a02747
                     </Button>
                     <Button
                         className="custom-btn"
@@ -115,10 +121,12 @@ export function PageProdutoLoja() {
                                 </span>
                             </div>
                         </th>
+                        <th className="th70">
+                            <span>Est.</span>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
-
                     {
                         !isLoading && data?.items.map((produtoLoja, index) => <ItemTable key={index} produtoLoja={produtoLoja} onVinculo={setVinculoProduto} />)
                     }
@@ -165,13 +173,19 @@ function ItemTable({ produtoLoja, onVinculo }: IPropsItensTable) {
                     style={{
                         backgroundColor: produtoLoja.vinculos && produtoLoja.vinculos.length > 0 ? "green" : "red"
                     }}
-                    onClick={() => { onVinculo(produtoLoja) }}
+                    onClick={() => { onVinculo(produtoLoja); }}
                     role="button"
                     aria-label="Vincular Produto"
                 >
                     <Icons tipo="link" />
                 </td>
+                <td className="centralize-icon">
+                    <Form.Check
+                        checked={produtoLoja.estoque}
+                        readOnly
+                    />
+                </td>
             </tr>
         </React.Fragment >
-    )
+    );
 }

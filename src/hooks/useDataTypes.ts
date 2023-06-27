@@ -1,6 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
-import React from "react";
 import { useState } from "react";
+
+import { useQuery } from "@tanstack/react-query";
 
 interface ISearchData<T> {
     page: number;
@@ -37,7 +37,7 @@ export default function useDataTypes<T>({
         if (typeof campo !== "string") throw new Error;
         if (ordenar === campo) setOrdem(!ordem);
         setOrdenar(campo);
-    }
+    };
 
 
     const result = {
@@ -49,7 +49,7 @@ export default function useDataTypes<T>({
         ordenar,
         data,
         isError
-    }
+    };
 
     return result;
 
