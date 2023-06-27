@@ -111,7 +111,7 @@ export function ModalTableCadastroProdutoLoja({ listProdutoLoja, onListProdutoLo
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredProdutoLoja?.slice(0, 25).map((produtoLoja, index) => (
+                        {filteredProdutoLoja?.map((produtoLoja, index) => (
                             <tr key={index} >
                                 <td style={{ textAlign: 'left' }}>
                                     {produtoLoja.codigo}

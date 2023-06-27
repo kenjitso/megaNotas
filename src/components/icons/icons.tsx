@@ -11,15 +11,16 @@ import { BsSearch } from "react-icons/bs";
 import { FaRegUserCircle } from "react-icons/fa"
 import { FaFlagUsa } from "react-icons/fa"
 import { BiLink } from "react-icons/bi"
-import { FaFileDownload } from "react-icons/fa"
+import { RxUpdate } from "react-icons/rx"
 import { TbFileImport } from "react-icons/tb"
 import { RxThickArrowLeft } from "react-icons/rx"
 import { CgNotes } from "react-icons/cg"
+import {CiImport} from "react-icons/ci"
 
 
 interface props {
-    tipo: "nota" | "loja" | "casa" | "caixa" | "produto" | "historico" | "up" | "down" | "edit" | "trash" | "search" | "user" | "flag" | "link" | "download" | "import"
-   | "voltar" | "cadastro"
+    tipo: "nota" | "loja" | "casa" | "caixa" | "produto" | "historico" | "up" | "down" | "edit" | "trash" | "search" | "user" | "flag" | "link" | "update" | "import"
+   | "voltar" | "cadastro" | "download" | "CiImport" 
     tamanho?: number
 }
 
@@ -39,15 +40,22 @@ export function Icons({ tipo, tamanho }: props) {
 
     if (tipo === "import") {
         return (
-            <TbFileImport size={24} />
+            <TbFileImport size={tamanho} />
         );
     }
 
-    if (tipo === "download") {
+    if (tipo === "update") {
         return (
-            <FaFileDownload size={tamanho} />
+            <RxUpdate size={tamanho} />
         );
     }
+
+    if (tipo === "CiImport") {
+        return (
+            <CiImport size={tamanho} />
+        );
+    }
+    
 
     if (tipo === "link") {
         return (

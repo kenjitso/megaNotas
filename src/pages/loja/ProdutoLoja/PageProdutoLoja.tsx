@@ -71,13 +71,13 @@ export function PageProdutoLoja() {
                         onClick={() => setCadastroProdutoLoja(lojaId)}
                         className="me-3 custom-btn"
                     >
-                         <Icons tipo="download" tamanho={22} />  Cadastrar
+                         <Icons tipo="import" tamanho={22} />  Importar
                     </Button>
                     <Button
                         className="custom-btn"
                         onClick={() => setImportProdutoLoja(lojaId)}
                     >
-                        <Icons tipo="download" tamanho={22} />  Importar
+                        <Icons tipo="update" tamanho={22} />  Atualizar
                     </Button>
                 </Col>
             </Row>

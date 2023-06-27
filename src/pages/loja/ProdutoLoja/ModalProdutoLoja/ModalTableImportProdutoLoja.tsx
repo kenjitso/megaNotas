@@ -1,4 +1,4 @@
-import {Table } from "react-bootstrap";
+/*import {Table } from "react-bootstrap";
 import "@/assets/style.css"
 import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 import React, { useEffect, useState } from "react";
@@ -48,6 +48,42 @@ export function ModalTableImportProdutoLoja({ listProdutoLoja }: IProps) {
                         </tr>
                     ))
                     }
+                </tbody>
+            </Table>
+        </React.Fragment>
+    );
+}
+*/
+
+
+import { Table } from "react-bootstrap";
+import "@/assets/style.css"
+import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
+import React, { useEffect, useState } from "react";
+import { formatCurrency } from "@/components/utils/FormatCurrency";
+
+interface IProps {
+    listProdutoLoja?: IProdutoLoja[] | null;
+}
+
+export function ModalTableImportProdutoLoja({ listProdutoLoja }: IProps) {
+
+
+    return (
+        <React.Fragment>
+            <Table bordered hover>
+                <thead>
+                    <tr>
+                        <th>Arquivo carregado com sucesso</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <strong>Total de itens a serem atualizados:</strong>{" "}
+                            {listProdutoLoja?.length || 0}
+                        </td>
+                    </tr>
                 </tbody>
             </Table>
         </React.Fragment>

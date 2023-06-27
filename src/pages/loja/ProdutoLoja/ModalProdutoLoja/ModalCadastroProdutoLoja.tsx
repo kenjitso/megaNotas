@@ -146,8 +146,8 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
         >
              <Modal.Header closeButton>
                 <Modal.Title>{formattedList.length > 0
-                    ? `Import - ${data?.nome}`
-                    : `Import - Arraste um arquivo de ${data?.nome}`}</Modal.Title>
+                    ? `Importar - ${data?.nome}`
+                    : `Importar - Arraste um arquivo de ${data?.nome}`}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Row>
@@ -167,13 +167,13 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
                                         <p style={{ cursor: "pointer" }}>
                                             Solte o arquivo <b>pdf</b> ou <b>excel</b> aqui. <br /><br />
 
-                                            <Icons tipo="download" tamanho={55} />
+                                            <Icons tipo="CiImport" tamanho={55} />
                                         </p>
                                     ) : (
                                         <p style={{ cursor: "pointer" }}>
                                             Arraste e solte um arquivo <b>pdf</b> ou <b>excel</b> referente a loja ou clique para selecionar o arquivo <br /><br />
 
-                                            <Icons tipo="download" tamanho={55} />
+                                            <Icons tipo="CiImport" tamanho={55} />
                                         </p>
                                     )}
 
