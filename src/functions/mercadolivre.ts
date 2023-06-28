@@ -22,12 +22,10 @@ export default class MercadoLivre {
 
         if (!urlSplitMatch) {
             throw new Error("O link inserido não encontrou o catalogo do produto.");
-
         }
 
-        const apiUrl = `https://api.mercadolibre.com/products/${urlSplit}`;
-
-        const result = await fetch(apiUrl);
+        console.log(urlSplitMatch[0]);
+        const result = await fetch(`https://us-central1-mega-notas.cloudfunctions.net/api/mercadolivre/catalogo/${urlSplitMatch[0]}`);
 
         if (!result.ok) throw new Error("Não foi possivel encontrar o catálogo no mercado livre.");
 
@@ -78,6 +76,10 @@ export default class MercadoLivre {
 
 
     public static async getProduct(item_id: string) {
+        console.log(item_id);
+
+
+        
         const apiUrl = `https://api.mercadolibre.com/items/${item_id}`;
 
         const result = await fetch(apiUrl);

@@ -14,11 +14,13 @@ import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { Icons } from "@/components/icons/icons";
 import { formatCurrency } from "@/components/utils/FormatCurrency";
 import { ILoja } from "@/datatypes/loja";
+import { ModalLoadingUpdate } from "./ModalLoadingUpdate";
 
 export function PageCatalogo() {
     const navigate = useNavigate();
     const { page } = useParams();
     const [catalogoIdEdit, setEdit] = useState<string | undefined>(undefined);
+    const [catalogoLoadingUpdate, setLoadingUpdate] = useState<boolean>(false);
     const [catalogoIdDelete, setDelete] = useState("");
     const [filtro, setFiltro] = useState("");
 
@@ -46,6 +48,7 @@ export function PageCatalogo() {
 
             <ModalDesativaCatalogo onHide={() => setDelete("")} catalogoId={catalogoIdDelete} />
             <ModalCadastroCatalogo onHide={() => setEdit(undefined)} catalogoId={catalogoIdEdit} />
+            <ModalLoadingUpdate onHide={() => setLoadingUpdate(false)} isVisible={catalogoLoadingUpdate} catalogos={data?.total} />
 
             <Row className="my-3">
                 <Col xs className="d-flex">
@@ -60,10 +63,17 @@ export function PageCatalogo() {
                 </Col>
                 <Col xs className="d-flex justify-content-end">
                     <Button
-                      className="custom-btn"
+                        onClick={() => setLoadingUpdate(true)}
+                        className="me-3 custom-btn"
+                    >
+                        <Icons tipo="update" tamanho={23} /> Sincronizar
+                    </Button>
+
+                    <Button
+                        className="custom-btn "
                         onClick={() => setEdit("")}
                     >
-                         <Icons tipo="cadastro" tamanho={23}/> Cadastro
+                        <Icons tipo="cadastro" tamanho={23} /> Cadastro
                     </Button>
                 </Col>
             </Row>
@@ -72,6 +82,7 @@ export function PageCatalogo() {
                 <thead>
                     <tr>
                         <th className="th70" >
+
                         </th>
                         <th className="th200" onClick={() => orderBy("nome")}>
                             <div className="thArrow">
@@ -117,7 +128,7 @@ export function PageCatalogo() {
                     }
                 </tbody>
             </Table>
-       
+
 
             {isLoading && <FragmentLoading />}
             <Row className="my-3">
@@ -161,14 +172,14 @@ function ItemTable({ catalogo, onEdit, onDelete }: IPropItensTable) {
             <td className="tdValue">
                 R$: {formatCurrency(catalogo.preco)}
             </td>
-            <td    className="centralize-icon"
+            <td className="centralize-icon"
                 onClick={onEdit}
                 role="button"
                 aria-label="Editar Catalogo"
             >
                 <Icons tipo="edit" />
             </td>
-            <td    className="centralize-icon"
+            <td className="centralize-icon"
                 onClick={onDelete}
                 role="button"
                 aria-label="Desativar Catalogo"

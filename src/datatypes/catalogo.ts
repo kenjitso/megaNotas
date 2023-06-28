@@ -92,6 +92,21 @@ export class CatalogoController {
         return catalogoSchema;
     }
 
+    public static async sync(data: string, catalogos: number) {
+        const options: RequestInit = {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify({ data, catalogos })
+        };
+
+        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/sync`, options);
+        const responseData = await response.json();
+        console.log(responseData);
+        return responseData;
+    }
+
     public static async update(produto: ICatalogo) {
         const options: RequestInit = {
             method: "PATCH",
@@ -162,7 +177,7 @@ export class CatalogoController {
                 "Content-type": "application/json"
             }
         };
-    
+
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos?${params}`, options);
         const responseData: unknown = await response.json();
         const catalogosSchema = z.object({
@@ -202,8 +217,32 @@ export class CatalogoController {
             total: z.number().min(0)
         }).parse(responseData);
 
-       
+
 
         return catalogos;
     }
+
+    public static getValoresML(catalogo: ICatalogo, custo: number) {
+
+
+        if (catalogo.premium) {
+            const precoP = catalogo.preco;
+            const precoC = precoP * 1.11 / 1.16;
+            const lucroC = precoC - custo;
+            const lucroP = precoP - custo;
+            return { precoP, precoC, lucroC, lucroP };
+
+        }
+
+        const precoC = catalogo.preco;
+        const precoP = precoC * 1.16 / 1.11;
+        const lucroC = precoC - custo;
+        const lucroP = precoP - custo;
+        return { precoP, precoC, lucroC, lucroP };
+
+
+    }
+
+
+
 }

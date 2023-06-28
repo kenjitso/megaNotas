@@ -75,9 +75,11 @@ export function PageHome() {
         navigate(`/${page}`);
     };
 
+
+
     return (
         <React.Fragment>
-         
+
             <Row className="my-3">
                 <Col xs className="d-flex">
                     <FloatingLabel className="w-100" label="Pesquisar">
@@ -107,39 +109,64 @@ export function PageHome() {
                                 </span>
                             </div>
                         </th>
-                        <th className="th110" onClick={() => orderBy("premium")}>
-                            <div className="thArrow">
-                                <span>Comissão</span>
-                                <span>
-                                    {ordenar === "premium" && (ordem ? "▲" : "▼")}
-                                </span>
-                            </div>
-                        </th>
                         <th className="th110" >
                             <div className="thArrow">
                                 <span>Preço U$</span>
 
                             </div>
                         </th>
+                        <th className="th130" >
+                            <div className="thArrow">
+                                <span>Custo Total R$</span>
+
+                            </div>
+                        </th>
                         <th className="th110" onClick={() => orderBy("preco")}>
                             <div className="thArrow">
-                                <span>Preço ML</span>
+                                <span>Preço ML C</span>
                                 <span>
                                     {ordenar === "preco" && (ordem ? "▲" : "▼")}
                                 </span>
                             </div>
                         </th>
+                        <th className="th110" onClick={() => orderBy("preco")} >
+                            <div className="thArrow">
+                                <span>Preço ML P</span>
+                                <span>
+                                    {ordenar === "preco" && (ordem ? "▲" : "▼")}
+                                </span>
+                            </div>
+                        </th>
+
+
                         <th className="th110" onClick={() => orderBy("lucro")}>
                             <div className="thArrow">
-                                <span>Lucro</span>
+                                <span>Lucro C</span>
                                 <span>
                                     {ordenar === "lucro" && (ordem ? "▲" : "▼")}
                                 </span>
                             </div>
                         </th>
-                        <th className="th110" onClick={() => orderBy("margem")}>
+                        <th className="th110" onClick={() => orderBy("lucro")}>
                             <div className="thArrow">
-                                <span>Margem Liq.</span>
+                                <span>Lucro P</span>
+                                <span>
+                                    {ordenar === "lucro" && (ordem ? "▲" : "▼")}
+                                </span>
+                            </div>
+                        </th>
+
+                        <th className="th130" onClick={() => orderBy("margem")}>
+                            <div className="thArrow">
+                                <span>Margem Liq. C</span>
+                                <span>
+                                    {ordenar === "margem" && (ordem ? "▲" : "▼")}
+                                </span>
+                            </div>
+                        </th>
+                        <th className="th130" onClick={() => orderBy("margem")}>
+                            <div className="thArrow">
+                                <span>Margem Liq. P</span>
                                 <span>
                                     {ordenar === "margem" && (ordem ? "▲" : "▼")}
                                 </span>
@@ -171,7 +198,7 @@ export function PageHome() {
                 </Col>
 
             </Row>
-     
+
         </React.Fragment>
     );
 }
@@ -185,7 +212,18 @@ interface IPropItensTable {
 }
 
 
+
+
+
 function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTable) {
+    const freteiro = FreteiroStore.useStore().freteiro;
+    const percentual_freteiro = freteiro?.percentual ?? 0;
+    const custo_produto = catalogo.vencedor?.produto.preco ?? 0;
+    const custo_freteiro = percentual_freteiro * custo_produto / 100;
+    const cotacao = catalogo.vencedor?.loja.cotacao ?? 1;
+    const custo_total = (custo_freteiro + custo_produto) * cotacao;
+    const valoresML = CatalogoController.getValoresML(catalogo, custo_total);
+
 
     return (
         <React.Fragment>
@@ -209,29 +247,63 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
                     </a>
                 </td>
                 <td className="th110" style={{ textAlign: "right" }}>
-                    {catalogo.comissao * 100}%
-                </td>
-                <td className="th110" style={{ textAlign: "right" }}>
                     U${" "}
                     {formatCurrency(catalogo.vencedor?.produto.preco ?? 0)}
                 </td>
+
+
+
+                <td className="th130" style={{ textAlign: "right" }}>
+                    R$ {" "}
+                    {formatCurrency(custo_total)}
+                </td>
+
+
+
+                <td className="th130" style={{ textAlign: "right" }}>
+                    R$ {" "}
+                    {formatCurrency(valoresML.precoC)}
+                </td>
+
                 <td className="th110" style={{ textAlign: "right" }}>
                     R${" "}
-                    {formatCurrency(catalogo.preco)}
+                    {formatCurrency(valoresML.precoP)}
                 </td>
+
+
                 <td className="th110" style={{ textAlign: "right" }}>
                     R${" "}
-                    {formatCurrency(catalogo.lucro)}
+                    {formatCurrency(valoresML.lucroC)}
                 </td>
+
                 <td className="th110" style={{ textAlign: "right" }}>
-                    {(catalogo.margem * 100).toFixed(2)}%
+                    R${" "}
+                    {formatCurrency(valoresML.lucroP)}
                 </td>
+                <td className="th130" style={{ textAlign: "right" }}>
+                    {(valoresML.lucroC / valoresML.precoP * 100).toFixed(2)}%
+                </td>
+
+                <td className="th130" style={{ textAlign: "right" }}>
+                    {(valoresML.lucroP / valoresML.precoP * 100).toFixed(2)}%
+                </td>
+
+
+
+
+
+
                 <td className="th110" >
-                    {catalogo.vencedor?.loja.nome ?? "Nenhum"}
+                    {catalogo.vencedor?.loja.nome ?? ""}
+                    <br />
+                    {catalogo.vencedor?.produto.codigo ?? ""}
                 </td>
+
+
+
             </tr>
             <tr >
-                <td colSpan={8} style={{ height: 0, padding: 0 }}>
+                <td colSpan={11} style={{ height: 0, padding: 0 }}>
                     <Accordion activeKey={expandedKey} >
                         <Accordion.Item eventKey={eventKey} >
                             <Accordion.Header ></Accordion.Header>
