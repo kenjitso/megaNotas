@@ -4,11 +4,15 @@ import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 import { z } from "zod";
 
 
-export function CellShopFormat(idLoja: string, excelArray: unknown[]): Array<IProdutoLoja> {
+export function AlgoritmoPadraoFormat(idLoja: string, excelArray: unknown[]): Array<IProdutoLoja> {
 
-    console.log(excelArray);
+
     try {
-        excelArray.splice(0, 2);
+        excelArray.splice(0, 1);
+        const filteredArray = excelArray.filter((array: unknown) => {
+            return Array.isArray(array) && array.length > 2;
+        }) as Array<unknown[]>;
+
 
         const lineValidation = z.array(
             z.string().or(z.number().transform(numero => numero.toString())).or(z.null().transform(() => ""))
@@ -25,7 +29,7 @@ export function CellShopFormat(idLoja: string, excelArray: unknown[]): Array<IPr
         }));
 
 
-        const itens: IProdutoLoja[] = z.array(lineValidation).parse(excelArray);
+        const itens: IProdutoLoja[] = z.array(lineValidation).parse(filteredArray);
         console.log(itens);
         return itens;
     } catch (error) {

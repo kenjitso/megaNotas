@@ -12,7 +12,7 @@ export default function PageUsuario() {
         <React.Fragment>
             <MenuMega/>
            
-            <Container style={{marginTop:"10px"}} className="content-wrapper">
+            <Container fluid style={{marginTop:"10px"}} className="content-wrapper px-4">
                 <Outlet />
             </Container>
 

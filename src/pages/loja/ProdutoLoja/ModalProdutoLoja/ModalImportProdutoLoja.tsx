@@ -17,6 +17,9 @@ import { MadridCenterFormat } from "@/functions/lojas/madridCenter";
 import * as pdfjsLib from "pdfjs-dist";
 
 import { StarGamesFormat } from "@/functions/lojas/starGames";
+import { MegaFormat } from "@/functions/lojas/mega";
+import { MobileZoneFormat } from "@/functions/lojas/mobileZone";
+import { AlgoritmoPadraoFormat } from "@/functions/lojas/algoritmoPadrao";
 pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
 
 interface IProps {
@@ -104,6 +107,11 @@ export function ModalImportProdutoLoja({ onHide, lojaId }: IProps) {
                                     setFormattedList(AtlanticoFormat(lojaId ?? "", allPagesText)); //ATLANTICO FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
                                 }
 
+                                if (data?.algoritmo === 7) {
+                                    console.log(allPagesText);
+                                    setFormattedList(MegaFormat(lojaId ?? "", allPagesText)); //MEGA FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
+                                }
+
                             });
                         } else {
                             const workbook = XLSX.read(fileData, { type: "binary" });
@@ -117,6 +125,13 @@ export function ModalImportProdutoLoja({ onHide, lojaId }: IProps) {
                                 setFormattedList(CellShopFormat(lojaId ?? "", dataList)); //CELLSHOP FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
                             }
 
+                            if (data?.algoritmo === 8) {
+                                setFormattedList(MobileZoneFormat(lojaId ?? "", dataList)); //CELLSHOP FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
+                            }
+        
+                            if (data?.algoritmo === 9) {
+                                setFormattedList(AlgoritmoPadraoFormat(lojaId ?? "", dataList)); //AlgoritmoPadrao FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
+                            }
 
                         }
                     }

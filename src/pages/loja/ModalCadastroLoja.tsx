@@ -84,33 +84,7 @@ export function ModalCadastroLoja({ onHide, lojaId }: IProps) {
                                     </Row>
                                     <Row>
                                         <Col>
-                                            <Form.Group
-                                                controlId="formUrlCotacao"
-                                                className="mb-3">
-                                                <FloatingLabel
-                                                    controlId="formUrlCotacao"
-                                                    label="Url Cotação">
-                                                    <Form.Control
-                                                        value={lojaMutator.state.url_cotacao}
-                                                        onChange={(event) => lojaMutator.update("url_cotacao", event.target.value)}
-                                                        placeholder="Insira a URL cotação"
-                                                    />
-                                                </FloatingLabel>
-                                            </Form.Group>
-                                            <Form.Group
-                                                controlId="formUrlCatalogo"
-                                                className="mb-3">
-                                                <FloatingLabel
-                                                    controlId="formUrlCatalogo"
-                                                    label="Url Catalogo">
-                                                    <Form.Control
-                                                        type="text"
-                                                        value={lojaMutator.state.url_catalogo}
-                                                        onChange={(event) => lojaMutator.update("url_catalogo", event.target.value)}
-                                                        placeholder="Insira a URL catálogo"
-                                                    />
-                                                </FloatingLabel>
-                                            </Form.Group>
+                                          
 
                                             <Form.Group
                                                 controlId="formUrlCatalogo"
@@ -120,6 +94,9 @@ export function ModalCadastroLoja({ onHide, lojaId }: IProps) {
                                                     onChange={(event) => lojaMutator.update("algoritmo", parseInt(event.target.value))}>
                                                     <option value="0">
                                                         Selecione o Algoritimo
+                                                    </option>
+                                                    <option value="9">
+                                                       Algoritimo Padrao
                                                     </option>
                                                     <option value="1">
                                                         Atacado Games
@@ -139,8 +116,17 @@ export function ModalCadastroLoja({ onHide, lojaId }: IProps) {
                                                     <option value="6">
                                                         Star Games
                                                     </option>
+                                                    <option value="7">
+                                                        Mega
+                                                    </option>
+                                                    <option value="8">
+                                                        Mobile Zone
+                                                    </option>
+                                                    
+                                                    
                                                 </Form.Select>
                                             </Form.Group>
+                                            {lojaMutator.state.algoritmo === 9 && <center><a href="/modelo.xlsx">Download Modelo</a></center>}
                                         </Col>
                                     </Row>
                                 </Form>

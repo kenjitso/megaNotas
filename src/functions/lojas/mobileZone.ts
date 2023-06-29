@@ -4,12 +4,16 @@ import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 import { z } from "zod";
 
 
-export function CellShopFormat(idLoja: string, excelArray: unknown[]): Array<IProdutoLoja> {
+export function MobileZoneFormat(idLoja: string, excelArray: unknown[]): Array<IProdutoLoja> {
 
-    console.log(excelArray);
+    
     try {
         excelArray.splice(0, 2);
-
+        const filteredArray = excelArray.filter((array: unknown) => {
+            return Array.isArray(array) && array.length > 2;
+          }) as Array<unknown[]>;
+          
+      
         const lineValidation = z.array(
             z.string().or(z.number().transform(numero => numero.toString())).or(z.null().transform(() => ""))
         ).min(3).transform(array => ({
@@ -25,8 +29,8 @@ export function CellShopFormat(idLoja: string, excelArray: unknown[]): Array<IPr
         }));
 
 
-        const itens: IProdutoLoja[] = z.array(lineValidation).parse(excelArray);
-        console.log(itens);
+        const itens: IProdutoLoja[] = z.array(lineValidation).parse(filteredArray);
+  console.log(itens);
         return itens;
     } catch (error) {
         toast.error(`Erro ao processar arquivo: ${error}`);

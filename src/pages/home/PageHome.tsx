@@ -250,16 +250,10 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
                     U${" "}
                     {formatCurrency(catalogo.vencedor?.produto.preco ?? 0)}
                 </td>
-
-
-
                 <td className="th130" style={{ textAlign: "right" }}>
                     R$ {" "}
                     {formatCurrency(custo_total)}
                 </td>
-
-
-
                 <td className="th130" style={{ textAlign: "right" }}>
                     R$ {" "}
                     {formatCurrency(valoresML.precoC)}
@@ -269,8 +263,6 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
                     R${" "}
                     {formatCurrency(valoresML.precoP)}
                 </td>
-
-
                 <td className="th110" style={{ textAlign: "right" }}>
                     R${" "}
                     {formatCurrency(valoresML.lucroC)}
@@ -287,20 +279,11 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
                 <td className="th130" style={{ textAlign: "right" }}>
                     {(valoresML.lucroP / valoresML.precoP * 100).toFixed(2)}%
                 </td>
-
-
-
-
-
-
                 <td className="th110" >
                     {catalogo.vencedor?.loja.nome ?? ""}
                     <br />
                     {catalogo.vencedor?.produto.codigo ?? ""}
                 </td>
-
-
-
             </tr>
             <tr >
                 <td colSpan={11} style={{ height: 0, padding: 0 }}>
