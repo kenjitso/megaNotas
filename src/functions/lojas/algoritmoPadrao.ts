@@ -30,7 +30,7 @@ export function AlgoritmoPadraoFormat(idLoja: string, excelArray: unknown[]): Ar
 
 
         const itens: IProdutoLoja[] = z.array(lineValidation).parse(filteredArray);
-        console.log(itens);
+   
         return itens;
     } catch (error) {
         toast.error(`Erro ao processar arquivo: ${error}`);

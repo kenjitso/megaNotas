@@ -112,7 +112,7 @@ export class CatalogoController {
 
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/sync`, options);
         const responseData = await response.json();
-        console.log(responseData);
+  
         return responseData;
     }
 
@@ -226,7 +226,7 @@ export class CatalogoController {
             }
         };
         const url = `https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/competidores?${params}`;
-        console.log(url);
+   
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/competidores?${params}`, options);
         const responseData: unknown = await response.json();
 

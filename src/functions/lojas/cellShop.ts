@@ -6,7 +6,7 @@ import { z } from "zod";
 
 export function CellShopFormat(idLoja: string, excelArray: unknown[]): Array<IProdutoLoja> {
 
-    console.log(excelArray);
+
     try {
         excelArray.splice(0, 2);
 
@@ -26,7 +26,7 @@ export function CellShopFormat(idLoja: string, excelArray: unknown[]): Array<IPr
 
 
         const itens: IProdutoLoja[] = z.array(lineValidation).parse(excelArray);
-        console.log(itens);
+      
         return itens;
     } catch (error) {
         toast.error(`Erro ao processar arquivo: ${error}`);

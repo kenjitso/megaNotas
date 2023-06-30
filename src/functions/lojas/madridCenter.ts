@@ -51,7 +51,7 @@ function processPdfArray(
         const codigo = match[1];
         let descricao = match[2];
         let preco = match[3];
-        console.log(descricao);
+       
 
         // Remove a vírgula do preço antes de adicioná-lo ao resultado
         preco = preco.replace(',', '');

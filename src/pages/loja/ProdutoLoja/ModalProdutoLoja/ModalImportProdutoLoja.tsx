@@ -108,7 +108,7 @@ export function ModalImportProdutoLoja({ onHide, lojaId }: IProps) {
                                 }
 
                                 if (data?.algoritmo === 7) {
-                                    console.log(allPagesText);
+
                                     setFormattedList(MegaFormat(lojaId ?? "", allPagesText)); //MEGA FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
                                 }
 
@@ -128,7 +128,7 @@ export function ModalImportProdutoLoja({ onHide, lojaId }: IProps) {
                             if (data?.algoritmo === 8) {
                                 setFormattedList(MobileZoneFormat(lojaId ?? "", dataList)); //CELLSHOP FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
                             }
-        
+
                             if (data?.algoritmo === 9) {
                                 setFormattedList(AlgoritmoPadraoFormat(lojaId ?? "", dataList)); //AlgoritmoPadrao FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
                             }

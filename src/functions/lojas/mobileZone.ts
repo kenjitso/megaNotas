@@ -30,7 +30,7 @@ export function MobileZoneFormat(idLoja: string, excelArray: unknown[]): Array<I
 
 
         const itens: IProdutoLoja[] = z.array(lineValidation).parse(filteredArray);
-  console.log(itens);
+
         return itens;
     } catch (error) {
         toast.error(`Erro ao processar arquivo: ${error}`);

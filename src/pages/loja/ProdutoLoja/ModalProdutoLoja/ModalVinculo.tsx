@@ -57,7 +57,7 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
         if (event.shiftKey && selectedIds.has(id) !== null) {
             const start = Math.min(lastCheckedIndex, index);
             const end = Math.max(lastCheckedIndex, index);
-            const idsToSelect = data?.items.map((item: ItemType) => item.id).slice(start, end + 1);
+            const idsToSelect = data?.items.map((item) => item.id??"").slice(start, end + 1);
 
             if (idsToSelect) {
                 const isSelecting = !selectedIds.has(id);
@@ -142,8 +142,8 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
                                     <td>{abreviaLink(catalogoProduto.url_catalogo, 50)}</td>
                                     <td className="td50">
                                         <Form.Check
-                                            checked={selectedIds.has(catalogoProduto.id)}
-                                            onClick={(e: React.MouseEvent<HTMLInputElement>) => handleCheckboxChange(catalogoProduto.id, index, e)}
+                                            checked={selectedIds.has(catalogoProduto.id ?? "")}
+                                            onClick={(e: React.MouseEvent<HTMLInputElement>) => handleCheckboxChange(catalogoProduto.id ?? "", index, e)}
                                             readOnly
                                         />
                                     </td>

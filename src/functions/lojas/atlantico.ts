@@ -49,7 +49,7 @@ function processPdfArray(
 
     const regex = /(\d{5,}-\d)(?:\s{2,})(.*?)(?:\s{2,})(\d{1,3}(?:,\d{3})*\.\d+)(?=\s|$)/g;
     let match;
-console.log(regex.exec(text));
+
     while ((match = regex.exec(text)) !== null) {
         const codigo = match[1];
         let descricao = match[2];

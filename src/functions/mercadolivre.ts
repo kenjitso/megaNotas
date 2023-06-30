@@ -105,12 +105,11 @@ shipping
 
 
     public static async getProduct(item_id: string) {
-        console.log(item_id);
-
+      
 
         //https://api.mercadolibre.com/items/MLB12866565
         const apiUrl = `https://api.mercadolibre.com/items/${item_id}`;
-        console.log(apiUrl);
+      
         const result = await fetch(apiUrl);
 
         if (!result.ok) throw new Error("Não foi possivel encontrar o id do item no mercado livre.");

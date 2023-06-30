@@ -5,7 +5,7 @@ import { z } from "zod";
 
 
 export function MegaFormat(idLoja: string, pdfArray: string[]): Array<IProdutoLoja> {
-    console.log(pdfArray);
+  
     try {
 
         const extractedItems = processPdfArray(pdfArray);
@@ -27,7 +27,7 @@ export function MegaFormat(idLoja: string, pdfArray: string[]): Array<IProdutoLo
 
 
         const itens: IProdutoLoja[] = z.array(lineValidation).parse(extractedItems);
-        console.log(itens);
+      
         return itens;
     } catch (error) {
         toast.error(`Entre em contato com o desenvolvedor, parece que a estrutura fornecida pela loja mudou.`);
@@ -43,7 +43,7 @@ function processPdfArray(
 
     const regex = /\|\s*(\d+-\d+)\|\s*\d+\|\s*(.*?)\s*\|\s*([\d.]+)\|\s*([\d.]+)\|/g;
     let match;
-    console.log(text);
+   
  
     while ((match = regex.exec(text)) !== null) {
         const codigo = match[1];

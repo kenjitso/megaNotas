@@ -100,7 +100,7 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
                                 }
 
                                 if (data?.algoritmo === 5) {
-                                    console.log(allPagesText);
+                                    
                                     setFormattedList(MadridCenterFormat(lojaId ?? "", allPagesText)); //MADRID CENTER FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
                                 }
                                 if (data?.algoritmo === 6) {
@@ -112,7 +112,7 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
                                 }
 
                                 if (data?.algoritmo === 7) {
-                                    console.log(allPagesText);
+                                    
                                     setFormattedList(MegaFormat(lojaId ?? "", allPagesText)); //MEGA FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
                                 }
 
