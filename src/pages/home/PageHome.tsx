@@ -2,8 +2,7 @@ import {
     PaginationComponent,
 } from "@/datas/PaginationComponent";
 import {
-    CatalogoController,
-    ICatalogoCompetidor,
+    CatalogoController, ICatalogo,
 } from "@/datatypes/catalogo";
 import React, { useMemo, useState } from "react";
 import {
@@ -37,7 +36,7 @@ export function PageHome() {
         ordem,
         ordenar,
         data,
-    } = useDataTypes<ICatalogoCompetidor>({
+    } = useDataTypes<ICatalogo>({
         queryKey: ["catalogosHome", page ?? "1", "10"],
         queryFn: async () =>
 
@@ -46,8 +45,6 @@ export function PageHome() {
                 parseInt(page ?? "1"),
                 10,
                 filtro,
-                ordenar,
-                ordem ? "descrescente" : "crescente"
             ),
         filtro: filtro,
         defaultOrder: "margem",
@@ -60,11 +57,34 @@ export function PageHome() {
                 const frete = freteiro ? competidor.produto.preco * competidor.loja.cotacao * freteiro.percentual / 100 + freteiro.fixo : 0;
                 competidor.frete = frete;
             }
-            catalogo.lucro = catalogo.lucro - catalogo.competidores[0]?.frete ?? 0;
-            if (catalogo.preco > 0) catalogo.margem = catalogo.lucro / catalogo.preco;
-            return {
-                ...catalogo
+            //to do calcular lucro e margem e preco
+
+            let precoC = Number.MAX_SAFE_INTEGER;
+            let precoP = Number.MAX_SAFE_INTEGER;
+
+            for (const competidor of catalogo.competicaoML) {
+                if (competidor.premium) {
+                    precoP = Math.min(competidor.preco, precoP);
+                    continue;
+                }
+                precoC = Math.min(competidor.preco, precoC);
             }
+            catalogo.precoC = precoC;
+            catalogo.precoP = precoP;
+
+            const vencedor = catalogo.competidores[0];
+
+            if (vencedor) {
+                catalogo.custoTotal = vencedor.produto.preco * vencedor.loja.cotacao + vencedor.frete;
+                catalogo.lucroC = catalogo.precoC - catalogo.custoTotal;
+                catalogo.lucroP = catalogo.precoP - catalogo.custoTotal;
+                catalogo.margemC = catalogo.lucroC / catalogo.precoC * 100;
+                catalogo.margemP = catalogo.lucroP / catalogo.precoP * 100;
+
+
+            }
+
+            return catalogo;
         })
 
     }, [data, freteiro]
@@ -121,7 +141,7 @@ export function PageHome() {
 
                             </div>
                         </th>
-                        <th className="th110" onClick={() => orderBy("preco")}>
+                        <th className="th110" onClick={() => orderBy("precoC")}>
                             <div className="thArrow">
                                 <span>Preço ML C</span>
                                 <span>
@@ -129,7 +149,7 @@ export function PageHome() {
                                 </span>
                             </div>
                         </th>
-                        <th className="th110" onClick={() => orderBy("preco")} >
+                        <th className="th110" onClick={() => orderBy("precoP")} >
                             <div className="thArrow">
                                 <span>Preço ML P</span>
                                 <span>
@@ -139,7 +159,7 @@ export function PageHome() {
                         </th>
 
 
-                        <th className="th110" onClick={() => orderBy("lucro")}>
+                        <th className="th110" onClick={() => orderBy("lucroC")}>
                             <div className="thArrow">
                                 <span>Lucro C</span>
                                 <span>
@@ -147,7 +167,7 @@ export function PageHome() {
                                 </span>
                             </div>
                         </th>
-                        <th className="th110" onClick={() => orderBy("lucro")}>
+                        <th className="th110" onClick={() => orderBy("lucroP")}>
                             <div className="thArrow">
                                 <span>Lucro P</span>
                                 <span>
@@ -156,7 +176,7 @@ export function PageHome() {
                             </div>
                         </th>
 
-                        <th className="th130" onClick={() => orderBy("margem")}>
+                        <th className="th130" onClick={() => orderBy("margemC")}>
                             <div className="thArrow">
                                 <span>Margem Liq. C</span>
                                 <span>
@@ -164,7 +184,7 @@ export function PageHome() {
                                 </span>
                             </div>
                         </th>
-                        <th className="th130" onClick={() => orderBy("margem")}>
+                        <th className="th130" onClick={() => orderBy("margemP")}>
                             <div className="thArrow">
                                 <span>Margem Liq. P</span>
                                 <span>
@@ -205,7 +225,7 @@ export function PageHome() {
 
 
 interface IPropItensTable {
-    catalogo: ICatalogoCompetidor;
+    catalogo: ICatalogo;
     eventKey: string;
     onToggle: (key: string | null) => void;
     expandedKey: string | null;
@@ -216,14 +236,6 @@ interface IPropItensTable {
 
 
 function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTable) {
-    const freteiro = FreteiroStore.useStore().freteiro;
-    const percentual_freteiro = freteiro?.percentual ?? 0;
-    const custo_produto = catalogo.vencedor?.produto.preco ?? 0;
-    const custo_freteiro = percentual_freteiro * custo_produto / 100;
-    const cotacao = catalogo.vencedor?.loja.cotacao ?? 1;
-    const custo_total = (custo_freteiro + custo_produto) * cotacao;
-    const valoresML = CatalogoController.getValoresML(catalogo, custo_total);
-
 
     return (
         <React.Fragment>
@@ -248,41 +260,41 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
                 </td>
                 <td className="th110" style={{ textAlign: "right" }}>
                     U${" "}
-                    {formatCurrency(catalogo.vencedor?.produto.preco ?? 0)}
+                    {formatCurrency(catalogo.competidores[0]?.produto.preco ?? 0)}
                 </td>
                 <td className="th130" style={{ textAlign: "right" }}>
                     R$ {" "}
-                    {formatCurrency(custo_total)}
+                    {formatCurrency(catalogo.custoTotal)}
                 </td>
                 <td className="th130" style={{ textAlign: "right" }}>
                     R$ {" "}
-                    {formatCurrency(valoresML.precoC)}
+                    {formatCurrency(catalogo.precoC)}
                 </td>
 
                 <td className="th110" style={{ textAlign: "right" }}>
                     R${" "}
-                    {formatCurrency(valoresML.precoP)}
+                    {formatCurrency(catalogo.precoP)}
                 </td>
                 <td className="th110" style={{ textAlign: "right" }}>
                     R${" "}
-                    {formatCurrency(valoresML.lucroC)}
+                    {formatCurrency(catalogo.lucroC)}
                 </td>
 
                 <td className="th110" style={{ textAlign: "right" }}>
                     R${" "}
-                    {formatCurrency(valoresML.lucroP)}
+                    {formatCurrency(catalogo.lucroP)}
                 </td>
                 <td className="th130" style={{ textAlign: "right" }}>
-                    {(valoresML.lucroC / valoresML.precoP * 100).toFixed(2)}%
+                    {catalogo.margemC.toFixed(2)}%
                 </td>
 
                 <td className="th130" style={{ textAlign: "right" }}>
-                    {(valoresML.lucroP / valoresML.precoP * 100).toFixed(2)}%
+                    {catalogo.margemP.toFixed(2)}%
                 </td>
                 <td className="th110" >
-                    {catalogo.vencedor?.loja.nome ?? ""}
+                    {catalogo.competidores[0]?.loja.nome ?? ""}
                     <br />
-                    {catalogo.vencedor?.produto.codigo ?? ""}
+                    {catalogo.competidores[0]?.produto.codigo ?? ""}
                 </td>
             </tr>
             <tr >

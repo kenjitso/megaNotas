@@ -24,7 +24,6 @@ export default class MercadoLivre {
             throw new Error("O link inserido não encontrou o catalogo do produto.");
         }
 
-        console.log(urlSplitMatch[0]);
         const result = await fetch(`https://us-central1-mega-notas.cloudfunctions.net/api/mercadolivre/catalogo/${urlSplitMatch[0]}`);
 
         if (!result.ok) throw new Error("Não foi possivel encontrar o catálogo no mercado livre.");
@@ -49,9 +48,39 @@ export default class MercadoLivre {
 
         const dado = validation.parse(dados);
 
-        return dado;
+        const competicaoML = await fetch(`https://us-central1-mega-notas.cloudfunctions.net/api/mercadolivre/catalogo/${urlSplitMatch[0]}/competidores`);
 
+        if (!competicaoML.ok) throw new Error("Não foi possivel encontrar o catálogo no mercado livre.");
+
+        const dadosCompeticao = await competicaoML.json();
+
+        const validationCompeticao = z.object({
+            results: z.array(z.object({
+                sold_quantity: z.number(),
+                available_quantity: z.number(),
+                price: z.number(),
+                listing_type_id: z.string(),
+                shipping: z.null().or(z.object({
+                    free_shipping: z.boolean()
+                }))
+            }))
+        }).transform(item => item.results).parse(dadosCompeticao);
+
+        return {
+            dados_catalogo: dados,
+            dados_competicao: validationCompeticao,
+        };
     }
+
+    /*
+    sold_quantity
+available_quantity
+price
+listing_type_id
+
+shipping
+--free_shipping
+ */
 
     public static async getComissao(listing_type_id: string) {
 
@@ -79,9 +108,9 @@ export default class MercadoLivre {
         console.log(item_id);
 
 
-        
+        //https://api.mercadolibre.com/items/MLB12866565
         const apiUrl = `https://api.mercadolibre.com/items/${item_id}`;
-
+        console.log(apiUrl);
         const result = await fetch(apiUrl);
 
         if (!result.ok) throw new Error("Não foi possivel encontrar o id do item no mercado livre.");

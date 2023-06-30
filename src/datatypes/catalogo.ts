@@ -6,42 +6,40 @@ import { schemaProdutoLoja } from "./ProdutoLoja";
 import { IFreteiro } from "./freteiro";
 
 export const schemaCatalogo = z.object({
-
-    id: z.string().default(""),
+    id: z.string().optional(),
     ativo: z.boolean().default(true),
     nome: z.string().default(""),
     url_thumbnail: z.string().default(""),
     url_catalogo: z.string().default(""),
-    comissao: z.number().min(0).default(0),
-    frete: z.number().min(0).default(0),
+    comissao: z.number().default(0),
+    frete: z.number().default(0),
     premium: z.boolean().default(false),
-    preco: z.number().min(0).default(0),
-    ultima_atualizacao: z.date().or(
-        z.string().datetime({ offset: true }).transform(date => parseISO(date))
-    ).default(new Date())
-
-})
-
-export const schemaCompetidor = schemaCatalogo.merge(z.object({
-
-    lucro: z.number(),
-    margem: z.number(),
-    frete: z.number(),
-    vencedor: z.null().or(z.object({
-        loja: schemaLoja,
-        produto: schemaProdutoLoja,
-
-    })),
-
+    preco: z.number().default(0),
+    custoTotal: z.number().default(0),
+    precoC: z.number().default(0),
+    precoP: z.number().default(0),
+    lucroC: z.number().default(0),
+    lucroP: z.number().default(0),
+    margemC: z.number().default(0),
+    margemP: z.number().default(0),
+    competicaoML: z.array(z.object({
+        vendas: z.number().min(0).default(0),
+        unidades: z.number().min(0).default(0),
+        preco: z.number().min(0),
+        premium: z.boolean(),
+        frete_gratis: z.boolean()
+    })).default([]),
+    ultima_atualizacao: z.date().or(z.string().datetime({ offset: true }).transform(item => parseISO(item))).or(z.number().transform(item => new Date(item))).default(new Date(0)),
+    ultima_atualizacao_competidores: z.date().or(z.string().datetime({ offset: true }).transform(item => parseISO(item))).or(z.number().transform(item => new Date(item))).default(new Date(0)),
     competidores: z.array(z.object({
         loja: schemaLoja,
         produto: schemaProdutoLoja,
-        frete: z.number(),
-    }))
-}));
+        frete: z.number().min(0).default(0),
+    })).default([])
+});
+
 
 export type ICatalogo = z.infer<typeof schemaCatalogo>;
-export type ICatalogoCompetidor = z.infer<typeof schemaCompetidor>;
 export class CatalogoController {
 
     public static createNew(): ICatalogo {
@@ -55,7 +53,18 @@ export class CatalogoController {
             frete: 0,
             premium: false,
             preco: 0,
+            custoTotal: 0,
+            precoC:0,
+            precoP:0,
+            lucroC:0,
+            lucroP:0,
+            margemC:0,
+            margemP:0,
+            competicaoML: [],
             ultima_atualizacao: new Date(),
+            ultima_atualizacao_competidores: new Date(0),
+            competidores: [],
+
         }
     }
 
@@ -138,17 +147,30 @@ export class CatalogoController {
     }
 
     public static async integrarML(catalogo: ICatalogo) {
-        const mlCatalogo = await MercadoLivre.getCatalogo(catalogo.url_catalogo);
+        const {
+            dados_catalogo, dados_competicao
+        } = await MercadoLivre.getCatalogo(catalogo.url_catalogo);
 
-        if (!mlCatalogo.buy_box_winner) return catalogo;
-        catalogo.nome = mlCatalogo.name;
-        catalogo.preco = mlCatalogo.buy_box_winner.price;
-        const dataComissao = await MercadoLivre.getComissao(mlCatalogo.buy_box_winner.listing_type_id);
+        if (!dados_catalogo.buy_box_winner) return catalogo;
+        catalogo.nome = dados_catalogo.name;
+        catalogo.preco = dados_catalogo.buy_box_winner.price;
+        const dataComissao = await MercadoLivre.getComissao(dados_catalogo.buy_box_winner.listing_type_id);
         catalogo.comissao = dataComissao;
-        const dataProduct = await MercadoLivre.getProduct(mlCatalogo.buy_box_winner.item_id);
+        const dataProduct = await MercadoLivre.getProduct(dados_catalogo.buy_box_winner.item_id);
         catalogo.url_thumbnail = dataProduct;
-        const dataPriceFrete = await MercadoLivre.getPriceFrete(mlCatalogo.buy_box_winner.item_id);
+        const dataPriceFrete = await MercadoLivre.getPriceFrete(dados_catalogo.buy_box_winner.item_id);
         catalogo.frete = dataPriceFrete;
+
+        catalogo.competicaoML = dados_competicao.map(objeto => {
+            return {
+                premium: objeto.listing_type_id === "gold_pro",
+                preco: objeto.price,
+                vendas: objeto.sold_quantity,
+                unidades: objeto.available_quantity,
+                frete_gratis: objeto.shipping?.free_shipping ?? true,
+            };
+        })
+
         return catalogo;
     }
 
@@ -190,14 +212,12 @@ export class CatalogoController {
     }
 
 
-    public static async searchCompetidor(freteiro: IFreteiro | null, page = 1, limit = 25, q: string = "", ordenar = "margem", ordem = "descrescente") {
+    public static async searchCompetidor(freteiro: IFreteiro | null, page = 1, limit = 25, q: string = "") {
 
         const params = new URLSearchParams();
         if (q) params.set("q", q);
         params.set("limit", limit.toString());
         params.set("page", page.toString());
-        params.set("ordenar", ordenar);
-        params.set("ordem", ordem);
 
         const options: RequestInit = {
             method: "GET",
@@ -213,7 +233,7 @@ export class CatalogoController {
         const catalogos = z.object({
             page: z.number().min(1),
             limit: z.number().min(1),
-            items: z.array(schemaCompetidor),
+            items: z.array(schemaCatalogo),
             total: z.number().min(0)
         }).parse(responseData);
 

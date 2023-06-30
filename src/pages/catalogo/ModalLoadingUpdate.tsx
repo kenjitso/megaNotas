@@ -4,6 +4,7 @@ import { Col, Modal, Row, Spinner } from "react-bootstrap";
 import ratata from "../../assets/megaPreco.svg";
 import { isValidForm } from "@/components/utils/ValidForm";
 import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface IProps {
   isVisible?: boolean;
@@ -13,7 +14,7 @@ interface IProps {
 
 export function ModalLoadingUpdate({ onHide, catalogos, isVisible }: IProps) {
   const [isLoading, setIsLoading] = useState(false);
-
+  const queryClient = useQueryClient();
   useEffect(() => {
     if (isVisible && isValidForm()) {
       syncData();
@@ -26,7 +27,10 @@ export function ModalLoadingUpdate({ onHide, catalogos, isVisible }: IProps) {
       const currentDate = new Date();
       const isoDate = currentDate.toISOString();
       await CatalogoController.sync(isoDate, catalogos ?? 1);
+      queryClient.invalidateQueries(["catalogos"]);
+      queryClient.invalidateQueries(["catalogosHome"]);
       toast.success("Dados sincronizados com sucesso!");
+      
     } catch (error) {
       toast.error("Erro ao sincronizar os dados.");
     } finally {
@@ -51,7 +55,7 @@ export function ModalLoadingUpdate({ onHide, catalogos, isVisible }: IProps) {
 
         <Modal.Body>
           <Row>
-            <Col xs={3}>
+            <Col xs={2}>
               <img
                 src={ratata}
                 alt="Descrição da imagem"
@@ -63,25 +67,18 @@ export function ModalLoadingUpdate({ onHide, catalogos, isVisible }: IProps) {
                 style={{ objectFit: "contain" }}
               />
             </Col>
-          </Row>
-          {isLoading && (
+            <Col  >
+            {isLoading && (
             <div className="text-center mt-3">
-              <Spinner animation="border" size="sm" /> Sincronizando...
+              <Spinner animation="border" size="sm" /> <b>Sincronizando...</b>
             </div>
           )}
+            </Col>
+          </Row>
+        
         </Modal.Body>
 
-        <Modal.Footer>
-          {!isLoading && isValidForm() && (
-            <button
-              className="btn btn-secondary"
-              onClick={syncData}
-              disabled={!isValidForm()}
-            >
-              Sincronizar
-            </button>
-          )}
-        </Modal.Footer>
+
       </Modal>
     </React.Fragment>
   );

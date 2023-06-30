@@ -24,7 +24,7 @@ export default function App() {
                         <Route path="/freteiro" element={<PageFreteiro />} />
                         <Route path="/freteiros/:page" element={<PageFreteiro />} />
                         <Route path="/lojas" element={<PageLoja />} />
-                        <Route path="/lojas/:lojaId" element={<PageProdutoLoja />} />
+                        <Route path="/lojas/:lojaId" element={<PageLoja />} />
                         <Route path="/lojas/:lojaId/produtos/:page" element={<PageProdutoLoja />} />
                         <Route path="/catalogos" element={<PageCatalogo />} />
                         <Route path="/catalogos/:page" element={<PageCatalogo />} />
