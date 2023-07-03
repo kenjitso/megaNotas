@@ -54,12 +54,12 @@ export class CatalogoController {
             premium: false,
             preco: 0,
             custoTotal: 0,
-            precoC:0,
-            precoP:0,
-            lucroC:0,
-            lucroP:0,
-            margemC:0,
-            margemP:0,
+            precoC: 0,
+            precoP: 0,
+            lucroC: 0,
+            lucroP: 0,
+            margemC: 0,
+            margemP: 0,
             competicaoML: [],
             ultima_atualizacao: new Date(),
             ultima_atualizacao_competidores: new Date(0),
@@ -112,7 +112,7 @@ export class CatalogoController {
 
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/sync`, options);
         const responseData = await response.json();
-  
+
         return responseData;
     }
 
@@ -226,7 +226,7 @@ export class CatalogoController {
             }
         };
         const url = `https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/competidores?${params}`;
-   
+
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/competidores?${params}`, options);
         const responseData: unknown = await response.json();
 
@@ -238,11 +238,10 @@ export class CatalogoController {
         }).parse(responseData);
 
 
-
         return catalogos;
     }
 
-    public static getValoresML(catalogo: ICatalogo, custo: number) {
+   /* public static getValoresML(catalogo: ICatalogo, custo: number) {
 
 
         if (catalogo.premium) {
@@ -251,7 +250,6 @@ export class CatalogoController {
             const lucroC = precoC - custo;
             const lucroP = precoP - custo;
             return { precoP, precoC, lucroC, lucroP };
-
         }
 
         const precoC = catalogo.preco;
@@ -262,7 +260,7 @@ export class CatalogoController {
 
 
     }
-
+*/
 
 
 }

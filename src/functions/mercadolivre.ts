@@ -72,16 +72,6 @@ export default class MercadoLivre {
         };
     }
 
-    /*
-    sold_quantity
-available_quantity
-price
-listing_type_id
-
-shipping
---free_shipping
- */
-
     public static async getComissao(listing_type_id: string) {
 
         const apiUrl = `https://api.mercadolibre.com/sites/MLB/listing_prices?price=1`;
@@ -99,6 +89,7 @@ shipping
 
         const parse = validation.parse(dados);
         const dado = parse.find(item => item.listing_type_id === listing_type_id)?.sale_fee_amount ?? 0;
+   
         return dado;
 
     }

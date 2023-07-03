@@ -42,16 +42,17 @@ function processPdfArray(
 ): Array<{ codigo: string; descricao: string; preco: string }> {
     const result = [];
 
-    const text = pdfArray.join(' ');
+    const text = pdfArray.join(' ').replace(/Preço/g, '');
 
     const regex = /(\d{6})\s+(.*?)\s+U\$\s+(\d+\.\d+)/g;
+
     let match;
 
     while ((match = regex.exec(text)) !== null) {
         const codigo = match[1];
         let descricao = match[2];
         let preco = match[3];
-       
+
 
         // Remove a vírgula do preço antes de adicioná-lo ao resultado
         preco = preco.replace(',', '');
@@ -62,6 +63,6 @@ function processPdfArray(
             preco: preco.trim(),
         });
     }
-    
+
     return result;
 }

@@ -13,10 +13,6 @@ interface IProps {
     onHide: () => void;
 }
 
-interface ItemType {
-    id: string;
-}
-
 export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const [filtro, setFiltro] = useState("");
@@ -57,7 +53,7 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
         if (event.shiftKey && selectedIds.has(id) !== null) {
             const start = Math.min(lastCheckedIndex, index);
             const end = Math.max(lastCheckedIndex, index);
-            const idsToSelect = data?.items.map((item) => item.id??"").slice(start, end + 1);
+            const idsToSelect = data?.items.map((item) => item.id ?? "").slice(start, end + 1);
 
             if (idsToSelect) {
                 const isSelecting = !selectedIds.has(id);
@@ -82,6 +78,26 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
         }
     }
 
+    const formataDados = (nome: string | null): string[] => {
+        let tamanho: string;
+        let valores: string[];
+
+        const regex = /(64|128|256|512)/; // Expressão regular para detectar "64G" ou "128G"
+
+        if (!nome) return ['']; // Retorna um array vazio se o nome for nulo ou indefinido
+
+        if (regex.test(nome)) {
+            valores = nome.split(regex);
+            tamanho = valores[1]; // O segundo item será "64G" ou "128G"
+        } else {
+            return [nome]; // Retorna o nome original como um array se não houver "64G" ou "128G" no texto
+        }
+        
+        return valores;
+    };
+
+
+
     return (
         <Modal
             size="lg"
@@ -89,15 +105,24 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
             backdrop="static"
             keyboard={false}
             show={produtoParaguay?.id !== undefined}
-            onHide={onHide}>
+            onHide={onHide}
+        >
 
             <Modal.Header closeButton>
                 <Modal.Title> Vincular Catálogo ao Produto </Modal.Title>
             </Modal.Header>
+
+
             <Modal.Body className="text-center">
 
-                {produtoParaguay?.nome}
+                {formataDados(produtoParaguay?.nome ?? "")[0]}
+              
+                    {formataDados(produtoParaguay?.nome ?? "")[1]}
+             
+                {formataDados(produtoParaguay?.nome ?? "")[2]}
 
+                <br />
+             
 
                 <Row className="my-3">
                     <Col xs className="d-flex ">
@@ -138,7 +163,9 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
                         <tbody>
                             {data?.items.map((catalogoProduto, index) => (
                                 <tr key={index}>
-                                    <td>{catalogoProduto.nome}</td>
+                                    <td>
+                                     {catalogoProduto.nome}
+                                    </td>
                                     <td>{abreviaLink(catalogoProduto.url_catalogo, 50)}</td>
                                     <td className="td50">
                                         <Form.Check
@@ -148,9 +175,9 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
                                         />
                                     </td>
                                 </tr>
-                            ))
-                            }
+                            ))}
                         </tbody>
+
                     </Table>
                     {isLoading || mutation.isLoading && <FragmentLoading />}
                 </div>

@@ -29,7 +29,8 @@
 
 /* Estiliza o cabeçalho da tabela com seta indicadora */
 .thArrow {
-  display: flex;
+
+  text-align: center;
   /* Define o container como flexível */
   justify-content: space-between;
   /* Distribui o conteúdo igualmente, com espaço máximo entre os itens */

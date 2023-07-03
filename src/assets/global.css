@@ -78,7 +78,9 @@
       --bs-pagination-focus-bg: #c0392b;
   }
 
-
+  .text-info {
+    color: lightblue;
+}
 
   td {
       height: 50px;

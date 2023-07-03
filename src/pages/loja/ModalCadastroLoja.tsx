@@ -102,7 +102,7 @@ export function ModalCadastroLoja({ onHide, lojaId }: IProps) {
                                                         Atacado Games
                                                     </option>
                                                     <option value="2">
-                                                        Atantico
+                                                        Atlantico
                                                     </option>
                                                     <option value="3">
                                                         Best Shop

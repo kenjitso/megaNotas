@@ -42,6 +42,7 @@ function processPdfArray(
     const text = pdfArray.join(' ').replace(/\\/g, '');
 
     const regex = /\|\s*(\d+-\d+)\|\s*\d+\|\s*(.*?)\s*\|\s*([\d.]+)\|\s*([\d.]+)\|/g;
+  
     let match;
    
  

@@ -57,7 +57,7 @@ export function PageHome() {
                 const frete = freteiro ? competidor.produto.preco * competidor.loja.cotacao * freteiro.percentual / 100 + freteiro.fixo : 0;
                 competidor.frete = frete;
             }
-            //to do calcular lucro e margem e preco
+            //to do calcular lucro , margem , preco
 
             let precoC = Number.MAX_SAFE_INTEGER;
             let precoP = Number.MAX_SAFE_INTEGER;
@@ -69,26 +69,26 @@ export function PageHome() {
                 }
                 precoC = Math.min(competidor.preco, precoC);
             }
-            catalogo.precoC = precoC;
-            catalogo.precoP = precoP;
+
+            catalogo.precoC = precoC !== Number.MAX_SAFE_INTEGER ? precoC : 0;
+            catalogo.precoP = precoP !== Number.MAX_SAFE_INTEGER ? precoP : 0;
 
             const vencedor = catalogo.competidores[0];
 
+
             if (vencedor) {
                 catalogo.custoTotal = vencedor.produto.preco * vencedor.loja.cotacao + vencedor.frete;
-                catalogo.lucroC = catalogo.precoC - catalogo.custoTotal;
-                catalogo.lucroP = catalogo.precoP - catalogo.custoTotal;
-                catalogo.margemC = catalogo.lucroC / catalogo.precoC * 100;
-                catalogo.margemP = catalogo.lucroP / catalogo.precoP * 100;
-
-
+                catalogo.lucroC = catalogo.precoC - (catalogo.precoC * 0.11) - 20 - catalogo.custoTotal; // falta frete api ml
+                catalogo.lucroP = catalogo.precoP - (catalogo.precoP * 0.16) - 20 - catalogo.custoTotal; // falta frete api ml
+                catalogo.margemC = (catalogo.lucroC / catalogo.precoC) * 100;
+                catalogo.margemP = (catalogo.lucroP / catalogo.precoP) * 100;
             }
 
             return catalogo;
+
         })
 
-    }, [data, freteiro]
-    )
+    }, [data, freteiro])
 
 
     const handlePageChange = (page: number) => {
@@ -112,6 +112,9 @@ export function PageHome() {
                     </FloatingLabel>
                 </Col>
             </Row>
+
+
+
 
             <Table striped bordered hover className="rounded-table">
                 <thead>
@@ -186,7 +189,7 @@ export function PageHome() {
                         </th>
                         <th className="th130" onClick={() => orderBy("margemP")}>
                             <div className="thArrow">
-                                <span>Margem Liq. P</span>
+                                <span >Margem Liq. P</span>
                                 <span>
                                     {ordenar === "margem" && (ordem ? "▲" : "▼")}
                                 </span>
@@ -216,9 +219,7 @@ export function PageHome() {
                         currentPage={data?.page ?? 1}
                     />
                 </Col>
-
             </Row>
-
         </React.Fragment>
     );
 }
@@ -258,37 +259,36 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
                         {catalogo.nome}
                     </a>
                 </td>
-                <td className="th110" style={{ textAlign: "right" }}>
+                <td className="th110" style={{ textAlign: "center" }}>
                     U${" "}
                     {formatCurrency(catalogo.competidores[0]?.produto.preco ?? 0)}
                 </td>
-                <td className="th130" style={{ textAlign: "right" }}>
+                <td className="th130" style={{ textAlign: "center" }}>
                     R$ {" "}
                     {formatCurrency(catalogo.custoTotal)}
                 </td>
-                <td className="th130" style={{ textAlign: "right" }}>
+                <td className="th130" style={{ textAlign: "center" }}>
                     R$ {" "}
                     {formatCurrency(catalogo.precoC)}
                 </td>
-
-                <td className="th110" style={{ textAlign: "right" }}>
+                <td className="th110" style={{ textAlign: "center" }}>
                     R${" "}
                     {formatCurrency(catalogo.precoP)}
                 </td>
-                <td className="th110" style={{ textAlign: "right" }}>
+                <td className="th110" style={{ textAlign: "center" }}>
                     R${" "}
                     {formatCurrency(catalogo.lucroC)}
                 </td>
 
-                <td className="th110" style={{ textAlign: "right" }}>
+                <td className="th110" style={{ textAlign: "center" }}>
                     R${" "}
                     {formatCurrency(catalogo.lucroP)}
                 </td>
-                <td className="th130" style={{ textAlign: "right" }}>
+                <td className="th130" style={{ textAlign: "center" }}>
                     {catalogo.margemC.toFixed(2)}%
                 </td>
 
-                <td className="th130" style={{ textAlign: "right" }}>
+                <td className="th130" style={{ textAlign: "center" }}>
                     {catalogo.margemP.toFixed(2)}%
                 </td>
                 <td className="th110" >
@@ -306,6 +306,7 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
                                 <ListGroup >
                                     {catalogo.competidores.map((competidor, i) => (
                                         <ListGroup.Item key={i}>
+
                                             <Card >
                                                 <Card.Header >
                                                     <strong>Loja:</strong> {competidor.loja.nome}
