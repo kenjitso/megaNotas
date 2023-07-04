@@ -7,8 +7,10 @@ import {
 import React, { useMemo, useState } from "react";
 import {
     Accordion,
+    Button,
     Card,
     Col,
+    Dropdown,
     FloatingLabel,
     ListGroup,
     Row,
@@ -22,6 +24,8 @@ import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { formatCurrency } from "@/components/utils/FormatCurrency";
 import { FreteiroStore } from "@/context/FreteiroStore";
 import { ILoja } from "@/datatypes/loja";
+import { Icons } from "@/components/icons/icons";
+
 
 export function PageHome() {
     const navigate = useNavigate();
@@ -29,6 +33,7 @@ export function PageHome() {
     const [filtro, setFiltro] = useState("");
     const [expandedKey, setExpandedKey] = useState<string | null>(null);
     const { freteiro } = FreteiroStore.useStore();
+    const [itemsPerPage, setItemsPerpage] = useState(10);
 
     const {
         isLoading,
@@ -37,13 +42,13 @@ export function PageHome() {
         ordenar,
         data,
     } = useDataTypes<ICatalogo>({
-        queryKey: ["catalogosHome", page ?? "1", "10"],
+        queryKey: ["catalogosHome", page ?? "1", itemsPerPage.toString()],
         queryFn: async () =>
 
             await CatalogoController.searchCompetidor(
                 freteiro,
                 parseInt(page ?? "1"),
-                10,
+                itemsPerPage,
                 filtro,
             ),
         filtro: filtro,
@@ -73,15 +78,19 @@ export function PageHome() {
             catalogo.precoC = precoC !== Number.MAX_SAFE_INTEGER ? precoC : 0;
             catalogo.precoP = precoP !== Number.MAX_SAFE_INTEGER ? precoP : 0;
 
+
             const vencedor = catalogo.competidores[0];
 
 
             if (vencedor) {
                 catalogo.custoTotal = vencedor.produto.preco * vencedor.loja.cotacao + vencedor.frete;
-                catalogo.lucroC = catalogo.precoC - (catalogo.precoC * 0.11) - 20 - catalogo.custoTotal; // falta frete api ml
-                catalogo.lucroP = catalogo.precoP - (catalogo.precoP * 0.16) - 20 - catalogo.custoTotal; // falta frete api ml
-                catalogo.margemC = (catalogo.lucroC / catalogo.precoC) * 100;
-                catalogo.margemP = (catalogo.lucroP / catalogo.precoP) * 100;
+
+
+                catalogo.margemC = (catalogo.precoC !== 0) ? (catalogo.lucroC / catalogo.precoC) * 100 : 0;
+                catalogo.margemP = (catalogo.precoP !== 0) ? (catalogo.lucroP / catalogo.precoP) * 100 : 0;
+                catalogo.lucroC = (catalogo.precoC !== 0) ? (catalogo.precoC - (catalogo.precoC * 0.11) - 20 - catalogo.custoTotal) : 0;
+                catalogo.lucroP = (catalogo.precoP !== 0) ? (catalogo.precoP - (catalogo.precoP * 0.16) - 20 - catalogo.custoTotal) : 0;
+
             }
 
             return catalogo;
@@ -101,16 +110,36 @@ export function PageHome() {
         <React.Fragment>
 
             <Row className="my-3">
-                <Col xs className="d-flex">
-                    <FloatingLabel className="w-100" label="Pesquisar">
+                <Col xs={12} className="d-flex">
+
+
+                    <FloatingLabel className="w-100 mr-custom" label="Pesquisar" >
                         <InputSearchDebounce
                             controlName="sku"
                             placeholder="pesquisar"
                             onUpdate={setFiltro}
                             pageLink={`/1`}
                         />
+
+
                     </FloatingLabel>
+
+                    <Dropdown >
+                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown  justify-content-end my-1">
+                            <Icons tipo="filtro" tamanho={16} />
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu className="custom-dropdown-menu">
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setItemsPerpage(10)}>10</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setItemsPerpage(25)}>25</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setItemsPerpage(50)}>50</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setItemsPerpage(100)}>100</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setItemsPerpage(200)}>200</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+
+
                 </Col>
+
             </Row>
 
 
@@ -214,7 +243,7 @@ export function PageHome() {
                 <Col xs className="d-flex">
                     <PaginationComponent<ILoja>
                         items={data?.total ?? 0}
-                        pageSize={10}
+                        pageSize={itemsPerPage}
                         onPageChange={handlePageChange}
                         currentPage={data?.page ?? 1}
                     />
@@ -306,6 +335,7 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
                                 <ListGroup >
                                     {catalogo.competidores.map((competidor, i) => (
                                         <ListGroup.Item key={i}>
+
 
                                             <Card >
                                                 <Card.Header >

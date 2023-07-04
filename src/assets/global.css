@@ -24,6 +24,76 @@
       border: none;
   }
 
+
+  .mr-custom {
+    margin-right: 10px; 
+}
+
+  .custom-dropdown-item {
+      background-color: #ffffff;
+      /* Cor de fundo do botão */
+      border-color: rgba(197, 197, 197, 0.904);
+      /* Cor da borda do botão */
+  }
+
+  .custom-dropdown-item:hover,
+  .custom-dropdown-item.clickable:hover {
+      color: white;
+      background-color: #686868;
+      /* Cor de fundo do botão ao passar o mouse, focar ou ativar */
+      border-color: #ced4da
+          /* Cor da borda do botão ao passar o mouse, focar ou ativar */
+  }
+
+
+
+  .custom-dropdown-menu {
+      background-color: #ffffff;
+      /* Cor de fundo do botão */
+      border-color: #ced4da;
+      /* Cor da borda do botão */
+  }
+
+  .custom-dropdown-menu:hover,
+  .custom-dropdown-menu.clickable:hover {
+      background-color: #ffffff;
+      /* Cor de fundo do botão ao passar o mouse, focar ou ativar */
+      border-color: #ced4da
+          /* Cor da borda do botão ao passar o mouse, focar ou ativar */
+  }
+
+
+  .custom-dropdown {
+      background-color: #e67e22;
+      /* Cor de fundo do botão */
+      border-color: #e67e22;
+      /* Cor da borda do botão */
+  }
+
+  .custom-dropdown.show {
+    background-color: #e67e22;
+    /* Cor de fundo do botão */
+    border-color: #e67e22;
+    /* Cor da borda do botão */
+}
+
+
+  .custom-dropdown:hover,
+  .custom-dropdown.clickable:hover {
+      background-color: #d35400;
+      /* Cor de fundo do botão ao passar o mouse, focar ou ativar */
+      border-color: #d35400;
+      /* Cor da borda do botão ao passar o mouse, focar ou ativar */
+  }
+
+  .custom-dropdown:active,
+  .custom-dropdown.clickable:active {
+      background-color: #d35400 !important;
+      border-color: #d35400 !important;
+  }
+
+
+
   .custom-btn {
       background-color: #e67e22;
       /* Cor de fundo do botão */
@@ -79,8 +149,8 @@
   }
 
   .text-info {
-    color: lightblue;
-}
+      color: lightblue;
+  }
 
   td {
       height: 50px;
@@ -134,6 +204,12 @@
   }
 
 
+
+  .no-caret::after {
+      display: none;
+  }
+
+
   .image-cell {
       display: table-cell;
       vertical-align: middle;
@@ -162,6 +238,8 @@
       color: #ffffff;
       border: none;
   }
+
+
 
 
 

@@ -16,15 +16,23 @@ import { TbFileImport } from "react-icons/tb"
 import { RxThickArrowLeft } from "react-icons/rx"
 import { CgNotes } from "react-icons/cg"
 import {CiImport} from "react-icons/ci"
+import {FaFilter} from "react-icons/fa"
 
 
 interface props {
     tipo: "nota" | "loja" | "casa" | "caixa" | "produto" | "historico" | "up" | "down" | "edit" | "trash" | "search" | "user" | "flag" | "link" | "update" | "import"
-   | "voltar" | "cadastro" | "download" | "CiImport" 
+   | "voltar" | "cadastro" | "download" | "CiImport" | "filtro"
     tamanho?: number
 }
 
 export function Icons({ tipo, tamanho }: props) {
+
+
+    if (tipo === "filtro") {
+        return (
+            <FaFilter size={tamanho} />
+        );
+    }
 
     if (tipo === "cadastro") {
         return (

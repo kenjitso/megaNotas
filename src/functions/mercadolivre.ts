@@ -89,7 +89,7 @@ export default class MercadoLivre {
 
         const parse = validation.parse(dados);
         const dado = parse.find(item => item.listing_type_id === listing_type_id)?.sale_fee_amount ?? 0;
-   
+  
         return dado;
 
     }

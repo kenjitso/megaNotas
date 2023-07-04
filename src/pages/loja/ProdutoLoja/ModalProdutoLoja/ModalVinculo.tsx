@@ -5,7 +5,7 @@ import { Button, Col, FloatingLabel, Form, Modal, Row, Table } from "react-boots
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import useDataTypes from "@/hooks/useDataTypes";
 import { abreviaLink } from "@/components/utils/AbreviaLink";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 
 interface IProps {
@@ -17,7 +17,8 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const [filtro, setFiltro] = useState("");
     const [lastCheckedIndex, setLastCheckedIndex] = useState<number>(0);
-
+    const queryClient = useQueryClient();
+    
     const {
         isLoading,
         orderBy,
@@ -36,7 +37,10 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
         produtoParaguay.vinculos = [...selectedIds.values()];
         return ProdutoLojaController.update(produtoParaguay);
     }, {
-        onSuccess: onHide
+        onSuccess: ()=>{
+            onHide();
+            queryClient.invalidateQueries(["catalogosHome"]);
+        }
     });
 
     useEffect(() => {
@@ -122,7 +126,7 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
                 {formataDados(produtoParaguay?.nome ?? "")[2]}
 
                 <br />
-             
+           
 
                 <Row className="my-3">
                     <Col xs className="d-flex ">

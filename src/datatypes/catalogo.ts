@@ -111,8 +111,9 @@ export class CatalogoController {
         };
 
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/sync`, options);
+      
         const responseData = await response.json();
-
+    
         return responseData;
     }
 

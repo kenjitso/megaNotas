@@ -14,13 +14,13 @@ import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { Icons } from "@/components/icons/icons";
 import { formatCurrency } from "@/components/utils/FormatCurrency";
 import { ILoja } from "@/datatypes/loja";
-import { ModalLoadingUpdate } from "./ModalLoadingUpdate";
+import { ModalSincronismoUpdate } from "./ModalSincronismoUpdate";
 
 export function PageCatalogo() {
     const navigate = useNavigate();
     const { page } = useParams();
     const [catalogoIdEdit, setEdit] = useState<string | undefined>(undefined);
-    const [catalogoLoadingUpdate, setLoadingUpdate] = useState<boolean>(false);
+    const [catalogoSincronismoUpdate, setSincronismoUpdate] = useState<boolean>(false);
     const [catalogoIdDelete, setDelete] = useState("");
     const [filtro, setFiltro] = useState("");
 
@@ -48,7 +48,7 @@ export function PageCatalogo() {
 
             <ModalDesativaCatalogo onHide={() => setDelete("")} catalogoId={catalogoIdDelete} />
             <ModalCadastroCatalogo onHide={() => setEdit(undefined)} catalogoId={catalogoIdEdit} />
-            <ModalLoadingUpdate onHide={() => setLoadingUpdate(false)} isVisible={catalogoLoadingUpdate} catalogos={data?.total} />
+            <ModalSincronismoUpdate onHide={() => setSincronismoUpdate(false)} isVisible={catalogoSincronismoUpdate} catalogos={data?.total} />
 
             <Row className="my-3">
                 <Col xs className="d-flex">
@@ -63,7 +63,7 @@ export function PageCatalogo() {
                 </Col>
                 <Col xs className="d-flex justify-content-end">
                     <Button
-                        onClick={() => setLoadingUpdate(true)}
+                        onClick={() => setSincronismoUpdate(true)}
                         className="me-3 custom-btn"
                     >
                         <Icons tipo="update" tamanho={23} /> Sincronizar
