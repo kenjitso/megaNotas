@@ -103,7 +103,7 @@ export function PageFreteiro() {
                 </thead>
                 <tbody>
                     {
-                        !isLoading && data?.items.map((freteiro, index) => <ItemTable key={index} freteiro={freteiro} onEdit={() => setEdit(freteiro.id)} onDelete={() => setDelete(freteiro.id)} />)
+                        !isLoading && data?.items?.map((freteiro, index) => <ItemTable key={index} freteiro={freteiro} onEdit={() => setEdit(freteiro.id)} onDelete={() => setDelete(freteiro.id)} />)
                     }
                 </tbody>
             </Table>

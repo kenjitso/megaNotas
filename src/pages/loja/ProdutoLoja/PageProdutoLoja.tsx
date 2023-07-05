@@ -126,7 +126,7 @@ export function PageProdutoLoja() {
                 </thead>
                 <tbody>
                     {
-                        !isLoading && data?.items.map((produtoLoja, index) => <ItemTable key={index} produtoLoja={produtoLoja} onVinculo={setVinculoProduto} />)
+                        !isLoading && data?.items?.map((produtoLoja, index) => <ItemTable key={index} produtoLoja={produtoLoja} onVinculo={setVinculoProduto} />)
                     }
                 </tbody>
             </Table>

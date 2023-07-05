@@ -96,7 +96,7 @@ export function PageLoja() {
                 </thead>
                 <tbody>
                     {
-                        !isLoading && data?.items.map((loja, index) => <ItemTable key={index} loja={loja} onEdit={() => setEdit(loja.id)} onDelete={() => setDelete(loja.id)} />)
+                        !isLoading && data?.items?.map((loja, index) => <ItemTable key={index} loja={loja} onEdit={() => setEdit(loja.id)} onDelete={() => setDelete(loja.id)} />)
                     }
                 </tbody>
             </Table>

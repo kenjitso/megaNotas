@@ -115,10 +115,10 @@ export function MenuMega() {
               <Form.Select
                 className="optionStyle"
                 value={freteiro?.id ?? ""}
-                onChange={(e) => dispatch(data?.items.find(freteiro => freteiro.id === e.target.value) ?? null)}
+                onChange={(e) => dispatch(data?.items?.find(freteiro => freteiro.id === e.target.value) ?? null)}
               >
                 <option value="">Selecionar Freteiro</option>
-                {data?.items.map((item) => (
+                {data?.items?.map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.nome}
                   </option>

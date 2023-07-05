@@ -63,7 +63,7 @@ export function ModalCadastroCatalogo({ onHide, catalogoId }: IProps) {
                 onHide={() => { onHide(); catalogoMutator.clear() }}>
 
                 <Modal.Header closeButton>
-                    <Modal.Title> {catalogoId ? "Atualizar Produto" : "Cadastrar Produto"} </Modal.Title>
+                    <Modal.Title> {catalogoId ? "Atualizar Catalogo" : "Cadastrar Catalogo"} </Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
@@ -210,7 +210,7 @@ export function ModalCadastroCatalogo({ onHide, catalogoId }: IProps) {
                         onClick={() => {
                             if (isValidForm()) { catalogoMutator.save(); }
                         }}>
-                        {catalogoId ? "Atualizar Produto" : "Cadastrar Produto"}
+                        {catalogoId ? "Atualizar Catalogo" : "Cadastrar Catalogo"}
                     </Button>
                 </Modal.Footer>
 

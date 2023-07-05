@@ -60,7 +60,7 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
         if (event.shiftKey && selectedIds.has(id) !== null) {
             const start = Math.min(lastCheckedIndex, index);
             const end = Math.max(lastCheckedIndex, index);
-            const idsToSelect = data?.items.map((item) => item.id ?? "").slice(start, end + 1);
+            const idsToSelect = data?.items?.map((item) => item.id ?? "").slice(start, end + 1);
 
             if (idsToSelect) {
                 const isSelecting = !selectedIds.has(id);
@@ -168,7 +168,7 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
                             </tr>
                         </thead>
                         <tbody>
-                            {data?.items.map((catalogoProduto, index) => (
+                            {data?.items?.map((catalogoProduto, index) => (
                                 <tr key={index}>
                                     <td>
                                         {catalogoProduto.nome}
