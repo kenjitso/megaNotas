@@ -68,7 +68,7 @@ export class CatalogoController {
         }
     }
 
-    // o metodo get retorna 1 item ou um array?
+
     public static async get(id: string) {
 
         const options: RequestInit = {
@@ -111,9 +111,9 @@ export class CatalogoController {
         };
 
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/sync`, options);
-      
+
         const responseData = await response.json();
-    
+
         return responseData;
     }
 
@@ -213,55 +213,30 @@ export class CatalogoController {
     }
 
 
-    public static async searchCompetidor(freteiro: IFreteiro | null, page = 1, limit = 25, q: string = "") {
+    public static async searchCompetidor(q: string = "") {
 
         const params = new URLSearchParams();
         if (q) params.set("q", q);
-        params.set("limit", limit.toString());
-        params.set("page", page.toString());
-
+        params.set("limit", "9999");
         const options: RequestInit = {
             method: "GET",
             headers: {
                 "Content-type": "application/json"
             }
         };
-        const url = `https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/competidores?${params}`;
 
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/competidores?${params}`, options);
         const responseData: unknown = await response.json();
-
+        console.log(responseData);
         const catalogos = z.object({
-            page: z.number().min(1),
-            limit: z.number().min(1),
-            items: z.array(schemaCatalogo),
-            total: z.number().min(0)
-        }).parse(responseData);
+            items: z.array(schemaCatalogo).transform(items => items.filter(item => item.competidores && item.competidores.length > 0)),
+        }).transform(dados => dados.items).parse(responseData);
+
 
 
         return catalogos;
     }
 
-   /* public static getValoresML(catalogo: ICatalogo, custo: number) {
-
-
-        if (catalogo.premium) {
-            const precoP = catalogo.preco;
-            const precoC = precoP * 1.11 / 1.16;
-            const lucroC = precoC - custo;
-            const lucroP = precoP - custo;
-            return { precoP, precoC, lucroC, lucroP };
-        }
-
-        const precoC = catalogo.preco;
-        const precoP = precoC * 1.16 / 1.11;
-        const lucroC = precoC - custo;
-        const lucroP = precoP - custo;
-        return { precoP, precoC, lucroC, lucroP };
-
-
-    }
-*/
 
 
 }

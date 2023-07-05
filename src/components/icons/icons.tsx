@@ -15,18 +15,31 @@ import { RxUpdate } from "react-icons/rx"
 import { TbFileImport } from "react-icons/tb"
 import { RxThickArrowLeft } from "react-icons/rx"
 import { CgNotes } from "react-icons/cg"
-import {CiImport} from "react-icons/ci"
-import {FaFilter} from "react-icons/fa"
+import { CiImport } from "react-icons/ci"
+import { FaFilter } from "react-icons/fa"
+import { FaFileDownload } from "react-icons/fa"
+import { HiViewList } from "react-icons/hi"
 
 
 interface props {
     tipo: "nota" | "loja" | "casa" | "caixa" | "produto" | "historico" | "up" | "down" | "edit" | "trash" | "search" | "user" | "flag" | "link" | "update" | "import"
-   | "voltar" | "cadastro" | "download" | "CiImport" | "filtro"
+    | "voltar" | "cadastro" | "download" | "CiImport" | "filtro" | "downloadXLSX" | "listLimitPage"
     tamanho?: number
 }
 
 export function Icons({ tipo, tamanho }: props) {
 
+    if (tipo === "listLimitPage") {
+        return (
+            <HiViewList size={tamanho} />
+        );
+    }
+
+    if (tipo === "downloadXLSX") {
+        return (
+            <FaFileDownload size={tamanho} />
+        );
+    }
 
     if (tipo === "filtro") {
         return (
@@ -63,7 +76,7 @@ export function Icons({ tipo, tamanho }: props) {
             <CiImport size={tamanho} />
         );
     }
-    
+
 
     if (tipo === "link") {
         return (

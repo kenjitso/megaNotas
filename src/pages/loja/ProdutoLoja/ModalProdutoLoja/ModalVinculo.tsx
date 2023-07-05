@@ -18,7 +18,9 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
     const [filtro, setFiltro] = useState("");
     const [lastCheckedIndex, setLastCheckedIndex] = useState<number>(0);
     const queryClient = useQueryClient();
-    
+
+
+
     const {
         isLoading,
         orderBy,
@@ -32,12 +34,13 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
         defaultOrder: "nome"
     });
 
+
     const mutation = useMutation(() => {
         if (!produtoParaguay) throw new Error("Produto Indefinido");
         produtoParaguay.vinculos = [...selectedIds.values()];
         return ProdutoLojaController.update(produtoParaguay);
     }, {
-        onSuccess: ()=>{
+        onSuccess: () => {
             onHide();
             queryClient.invalidateQueries(["catalogosHome"]);
         }
@@ -96,7 +99,7 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
         } else {
             return [nome]; // Retorna o nome original como um array se não houver "64G" ou "128G" no texto
         }
-        
+
         return valores;
     };
 
@@ -120,13 +123,13 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
             <Modal.Body className="text-center">
 
                 {formataDados(produtoParaguay?.nome ?? "")[0]}
-              
+                <span className="text-info">
                     {formataDados(produtoParaguay?.nome ?? "")[1]}
-             
+                </span>
                 {formataDados(produtoParaguay?.nome ?? "")[2]}
 
                 <br />
-           
+                {produtoParaguay?.nome}
 
                 <Row className="my-3">
                     <Col xs className="d-flex ">
@@ -168,7 +171,7 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
                             {data?.items.map((catalogoProduto, index) => (
                                 <tr key={index}>
                                     <td>
-                                     {catalogoProduto.nome}
+                                        {catalogoProduto.nome}
                                     </td>
                                     <td>{abreviaLink(catalogoProduto.url_catalogo, 50)}</td>
                                     <td className="td50">

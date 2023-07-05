@@ -17,52 +17,44 @@ import {
     Table,
 } from "react-bootstrap";
 import ratata from "../../assets/megaPreco.svg";
-import { useNavigate, useParams } from "react-router-dom";
-import useDataTypes from "@/hooks/useDataTypes";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { formatCurrency } from "@/components/utils/FormatCurrency";
 import { FreteiroStore } from "@/context/FreteiroStore";
 import { ILoja } from "@/datatypes/loja";
 import { Icons } from "@/components/icons/icons";
+import * as XLSX from 'xlsx';
+import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 
 
 export function PageHome() {
-    const navigate = useNavigate();
-    const { page } = useParams();
+    const [params, setParams] = useSearchParams();
     const [filtro, setFiltro] = useState("");
     const [expandedKey, setExpandedKey] = useState<string | null>(null);
     const { freteiro } = FreteiroStore.useStore();
-    const [itemsPerPage, setItemsPerpage] = useState(10);
+    const page = parseInt(params.get("page") ?? "1");
+    const limit = parseInt(params.get("limit") ?? "10");
+
+
+
 
     const {
-        isLoading,
-        orderBy,
-        ordem,
-        ordenar,
-        data,
-    } = useDataTypes<ICatalogo>({
-        queryKey: ["catalogosHome", page ?? "1", itemsPerPage.toString()],
-        queryFn: async () =>
+        isFetching,
+        data
+    } = useQuery(["catalogoHome", filtro], () => CatalogoController.searchCompetidor(filtro));
 
-            await CatalogoController.searchCompetidor(
-                freteiro,
-                parseInt(page ?? "1"),
-                itemsPerPage,
-                filtro,
-            ),
-        filtro: filtro,
-        defaultOrder: "margem",
-    });
+
+
 
     const catalogos = useMemo(() => {
 
-        return data?.items.map(catalogo => {
+        const dados = data?.map(catalogo => {
             for (const competidor of catalogo.competidores) {
                 const frete = freteiro ? competidor.produto.preco * competidor.loja.cotacao * freteiro.percentual / 100 + freteiro.fixo : 0;
                 competidor.frete = frete;
             }
-            //to do calcular lucro , margem , preco
+
 
             let precoC = Number.MAX_SAFE_INTEGER;
             let precoP = Number.MAX_SAFE_INTEGER;
@@ -78,13 +70,10 @@ export function PageHome() {
             catalogo.precoC = precoC !== Number.MAX_SAFE_INTEGER ? precoC : 0;
             catalogo.precoP = precoP !== Number.MAX_SAFE_INTEGER ? precoP : 0;
 
-
             const vencedor = catalogo.competidores[0];
-
 
             if (vencedor) {
                 catalogo.custoTotal = vencedor.produto.preco * vencedor.loja.cotacao + vencedor.frete;
-
 
                 catalogo.margemC = (catalogo.precoC !== 0) ? (catalogo.lucroC / catalogo.precoC) * 100 : 0;
                 catalogo.margemP = (catalogo.precoP !== 0) ? (catalogo.lucroP / catalogo.precoP) * 100 : 0;
@@ -95,16 +84,26 @@ export function PageHome() {
 
             return catalogo;
 
-        })
+        }) ?? []
+        const total = dados.length;
+        const items = dados.slice((page - 1) * limit, limit * page);
+        return {
+            page, total, limit, items
+        }
+    }, [data, freteiro, page, limit])
 
-    }, [data, freteiro])
+    function exportCatalogoExcel(catalogos: ICatalogo[]) {
+        const filteredCatalogos = catalogos.map(({ id, ativo, frete, url_catalogo, comissao, premium, preco, competicaoML, ultima_atualizacao, ultima_atualizacao_competidores, competidores, ...rest }) => rest);
+        const ws = XLSX.utils.json_to_sheet(filteredCatalogos);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Catalogos");
+        XLSX.writeFile(wb, "catalogo.xlsx");
+    }
 
 
     const handlePageChange = (page: number) => {
-        navigate(`/${page}`);
+        setParams(`?limit=${limit}&page=${page}`);
     };
-
-
 
     return (
         <React.Fragment>
@@ -112,37 +111,47 @@ export function PageHome() {
             <Row className="my-3">
                 <Col xs={12} className="d-flex">
 
-
                     <FloatingLabel className="w-100 mr-custom" label="Pesquisar" >
                         <InputSearchDebounce
                             controlName="sku"
                             placeholder="pesquisar"
                             onUpdate={setFiltro}
-                            pageLink={`/1`}
+                            pageLink={`?limit=10&page=1`}
                         />
 
-
                     </FloatingLabel>
-
-                    <Dropdown >
-                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown  justify-content-end my-1">
-                            <Icons tipo="filtro" tamanho={16} />
+                    <Dropdown>
+                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown  justify-content-end my-1 mr-custom" >
+                            <Icons tipo="filtro" tamanho={20} />
                         </Dropdown.Toggle>
                         <Dropdown.Menu className="custom-dropdown-menu">
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setItemsPerpage(10)}>10</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setItemsPerpage(25)}>25</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setItemsPerpage(50)}>50</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setItemsPerpage(100)}>100</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setItemsPerpage(200)}>200</Dropdown.Item>
+                            <center>
+                                Filtro 1<br />
+                                Filtro 2<br />
+                                Filtro 3<br />
+                                Filtro 4<br />
+                                Filtro 5<br />
+                            </center>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                    <Dropdown >
+                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown  justify-content-end my-1 mr-custom">
+                            <Icons tipo="listLimitPage" tamanho={20} />
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu className="custom-dropdown-menu">
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=10&page=1"))}>10</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=25&page=1"))}>25</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=50&page=1"))}>50</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=100&page=1"))}>100</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=200&page=1"))}>200</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
 
-
+                    <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown  justify-content-end my-1" onClick={() => exportCatalogoExcel(catalogos.items)}>
+                        <Icons tipo="downloadXLSX" tamanho={20} />
+                    </Dropdown.Toggle>
                 </Col>
-
             </Row>
-
-
 
 
             <Table striped bordered hover className="rounded-table">
@@ -153,11 +162,11 @@ export function PageHome() {
                                 <span></span>
                             </div>
                         </th>
-                        <th className="th200" onClick={() => orderBy("nome")}>
+                        <th className="th200" >
                             <div className="thArrow">
                                 <span>Nome</span>
                                 <span>
-                                    {ordenar === "nome" && (ordem ? "▲" : "▼")}
+
                                 </span>
                             </div>
                         </th>
@@ -173,54 +182,54 @@ export function PageHome() {
 
                             </div>
                         </th>
-                        <th className="th110" onClick={() => orderBy("precoC")}>
+                        <th className="th110" >
                             <div className="thArrow">
                                 <span>Preço ML C</span>
                                 <span>
-                                    {ordenar === "preco" && (ordem ? "▲" : "▼")}
+
                                 </span>
                             </div>
                         </th>
-                        <th className="th110" onClick={() => orderBy("precoP")} >
+                        <th className="th110" >
                             <div className="thArrow">
                                 <span>Preço ML P</span>
                                 <span>
-                                    {ordenar === "preco" && (ordem ? "▲" : "▼")}
+
                                 </span>
                             </div>
                         </th>
 
 
-                        <th className="th110" onClick={() => orderBy("lucroC")}>
+                        <th className="th110" >
                             <div className="thArrow">
                                 <span>Lucro C</span>
                                 <span>
-                                    {ordenar === "lucro" && (ordem ? "▲" : "▼")}
+
                                 </span>
                             </div>
                         </th>
-                        <th className="th110" onClick={() => orderBy("lucroP")}>
+                        <th className="th110">
                             <div className="thArrow">
                                 <span>Lucro P</span>
                                 <span>
-                                    {ordenar === "lucro" && (ordem ? "▲" : "▼")}
+
                                 </span>
                             </div>
                         </th>
 
-                        <th className="th130" onClick={() => orderBy("margemC")}>
+                        <th className="th130">
                             <div className="thArrow">
                                 <span>Margem Liq. C</span>
                                 <span>
-                                    {ordenar === "margem" && (ordem ? "▲" : "▼")}
+
                                 </span>
                             </div>
                         </th>
-                        <th className="th130" onClick={() => orderBy("margemP")}>
+                        <th className="th130" >
                             <div className="thArrow">
                                 <span >Margem Liq. P</span>
                                 <span>
-                                    {ordenar === "margem" && (ordem ? "▲" : "▼")}
+
                                 </span>
                             </div>
                         </th>
@@ -231,21 +240,24 @@ export function PageHome() {
                 </thead>
 
                 <tbody>
-                    {!isLoading &&
-                        catalogos?.map((catalogo, index) => (
-                            <ItemTable key={index} catalogo={catalogo} eventKey={index.toString()} onToggle={setExpandedKey} expandedKey={expandedKey} />
-                        ))}
+                    {!isFetching &&
+                        catalogos.items.map((catalogo, index) => {
+                            return (
+                                <ItemTable key={index} catalogo={catalogo} eventKey={index.toString()} onToggle={setExpandedKey} expandedKey={expandedKey} />
+                            );
+                        })
+                    }
                 </tbody>
-            </Table>
 
-            {isLoading && <FragmentLoading />}
+            </Table>
+            {isFetching && <FragmentLoading />}
             <Row className="my-3">
                 <Col xs className="d-flex">
                     <PaginationComponent<ILoja>
-                        items={data?.total ?? 0}
-                        pageSize={itemsPerPage}
+                        items={catalogos.total}
+                        pageSize={catalogos.limit}
                         onPageChange={handlePageChange}
-                        currentPage={data?.page ?? 1}
+                        currentPage={catalogos.page ?? 1}
                     />
                 </Col>
             </Row>
@@ -260,9 +272,6 @@ interface IPropItensTable {
     onToggle: (key: string | null) => void;
     expandedKey: string | null;
 }
-
-
-
 
 
 function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTable) {
@@ -335,7 +344,6 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
                                 <ListGroup >
                                     {catalogo.competidores.map((competidor, i) => (
                                         <ListGroup.Item key={i}>
-
 
                                             <Card >
                                                 <Card.Header >

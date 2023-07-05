@@ -1,6 +1,6 @@
 import React from "react";
 import { Pagination } from "react-bootstrap";
-import "./PaginationComponent.css";
+
 
 interface IPaginationButtonProps {
   children: React.ReactNode;

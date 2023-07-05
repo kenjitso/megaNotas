@@ -124,7 +124,7 @@ export function PageCatalogo() {
                 </thead>
                 <tbody>
                     {
-                        !isLoading && data?.items.map((catalogo, index) => <ItemTable key={index} catalogo={catalogo} onEdit={() => setEdit(catalogo.id)} onDelete={() => setDelete(catalogo.id??"")} />)
+                        !isLoading && data?.items?.map((catalogo, index) => <ItemTable key={index} catalogo={catalogo} onEdit={() => setEdit(catalogo.id)} onDelete={() => setDelete(catalogo.id ?? "")} />)
                     }
                 </tbody>
             </Table>

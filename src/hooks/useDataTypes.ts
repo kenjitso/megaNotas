@@ -4,8 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 
 interface ISearchData<T> {
     page: number;
-    limit: number;
-    items: T[];
+    limit?: number;
+    items?: T[];
     total: number;
 }
 

@@ -40,7 +40,7 @@ export function ModalSincronismoUpdate({ onHide, catalogos, isVisible }: IProps)
     setIsSyncing(true);
     setIsLoading(true);
     const totalCatalogos = catalogos ?? 1;
-    const chunkSize = 10;
+    const chunkSize = 5;
     try {
       const currentDate = new Date();
       const isoDate = currentDate.toISOString();
