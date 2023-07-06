@@ -80,11 +80,11 @@ export function PageHome() {
             if (vencedor) {
                 catalogo.custoTotal = vencedor.produto.preco * vencedor.loja.cotacao + vencedor.frete;
 
-                catalogo.margemC = (catalogo.precoC !== 0) ? (catalogo.lucroC / catalogo.precoC) * 100 : 0;
-                catalogo.margemP = (catalogo.precoP !== 0) ? (catalogo.lucroP / catalogo.precoP) * 100 : 0;
+
                 catalogo.lucroC = (catalogo.precoC !== 0) ? (catalogo.precoC - (catalogo.precoC * 0.11) - catalogo.frete - catalogo.custoTotal) : 0;
                 catalogo.lucroP = (catalogo.precoP !== 0) ? (catalogo.precoP - (catalogo.precoP * 0.16) - catalogo.frete - catalogo.custoTotal) : 0;
-
+                catalogo.margemC = (catalogo.precoC !== 0) ? (catalogo.lucroC / catalogo.precoC) * 100 : 0;
+                catalogo.margemP = (catalogo.precoP !== 0) ? (catalogo.lucroP / catalogo.precoP) * 100 : 0;
 
 
             }
@@ -195,7 +195,7 @@ export function PageHome() {
                                 </span>
                             </div>
                         </th>
-                   
+
                         <th className="th110" >
                             <div className="thArrow">
                                 <span>Preço U$</span>
@@ -325,7 +325,7 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
                         {catalogo.nome}
                     </a>
                 </td>
-               
+
                 <td className="th110" style={{ textAlign: "center" }}>
                     U${" "}
                     {formatCurrency(catalogo.competidores[0]?.produto.preco ?? 0)}
