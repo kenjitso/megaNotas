@@ -84,9 +84,9 @@ export function PageHome() {
                 catalogo.margemP = (catalogo.precoP !== 0) ? (catalogo.lucroP / catalogo.precoP) * 100 : 0;
                 catalogo.lucroC = (catalogo.precoC !== 0) ? (catalogo.precoC - (catalogo.precoC * 0.11) - catalogo.frete - catalogo.custoTotal) : 0;
                 catalogo.lucroP = (catalogo.precoP !== 0) ? (catalogo.precoP - (catalogo.precoP * 0.16) - catalogo.frete - catalogo.custoTotal) : 0;
-            
 
-                
+
+
             }
 
             return catalogo;
@@ -191,31 +191,22 @@ export function PageHome() {
                             <div className="thArrow">
                                 <span>Nome</span>
                                 <span>
-                                    {sortBy === "nome" ? (sortOrder === "asc" ? "▲" : "▼") : "▲"}
+                                    {sortBy === "nome" ? (sortOrder === "desc" ? "▲" : "▼") : "▼"}
                                 </span>
                             </div>
                         </th>
-                        <th className="th200" onClick={()=> handleSort('frete')}>
-                            <div className="thArrow">
-                                <span>Frete</span>
-                                <span>
-                                    {sortBy === "frete" ? (sortOrder === "asc" ? "▲" : "▼") : "▲"}
-                                </span>
-                            </div>
-                        </th>
-                        <th className="th110" onClick={() => handleSort('preco')} >
+                   
+                        <th className="th110" >
                             <div className="thArrow">
                                 <span>Preço U$</span>
-                                <span>
-                                    {sortBy === "preco" ? (sortOrder === "asc" ? "▲" : "▼") : "▲"}
-                                </span>
+
                             </div>
                         </th>
                         <th className="th130" onClick={() => handleSort('custoTotal')} >
                             <div className="thArrow">
                                 <span>Custo Total R$</span>
                                 <span>
-                                    {sortBy === "custoTotal" ? (sortOrder === "asc" ? "▲" : "▼") : "▲"}
+                                    {sortBy === "custoTotal" ? (sortOrder === "desc" ? "▲" : "▼") : "▼"}
                                 </span>
                             </div>
                         </th>
@@ -223,7 +214,7 @@ export function PageHome() {
                             <div className="thArrow">
                                 <span>Preço ML C</span>
                                 <span>
-                                    {sortBy === "precoC" ? (sortOrder === "asc" ? "▲" : "▼") : "▲"}
+                                    {sortBy === "precoC" ? (sortOrder === "desc" ? "▲" : "▼") : "▼"}
                                 </span>
                             </div>
                         </th>
@@ -231,7 +222,7 @@ export function PageHome() {
                             <div className="thArrow">
                                 <span>Preço ML P</span>
                                 <span>
-                                    {sortBy === "precoP" ? (sortOrder === "asc" ? "▲" : "▼") : "▲"}
+                                    {sortBy === "precoP" ? (sortOrder === "desc" ? "▲" : "▼") : "▼"}
                                 </span>
                             </div>
                         </th>
@@ -241,7 +232,7 @@ export function PageHome() {
                             <div className="thArrow">
                                 <span>Lucro C</span>
                                 <span>
-                                    {sortBy === "lucroC" ? (sortOrder === "asc" ? "▲" : "▼") : "▲"}
+                                    {sortBy === "lucroC" ? (sortOrder === "desc" ? "▲" : "▼") : "▼"}
                                 </span>
                             </div>
                         </th>
@@ -249,7 +240,7 @@ export function PageHome() {
                             <div className="thArrow">
                                 <span>Lucro P</span>
                                 <span>
-                                    {sortBy === "lucroP" ? (sortOrder === "asc" ? "▲" : "▼") : "▲"}
+                                    {sortBy === "lucroP" ? (sortOrder === "desc" ? "▲" : "▼") : "▼"}
                                 </span>
                             </div>
                         </th>
@@ -258,7 +249,7 @@ export function PageHome() {
                             <div className="thArrow">
                                 <span>Margem Liq. C</span>
                                 <span>
-                                    {sortBy === "margemC" ? (sortOrder === "asc" ? "▲" : "▼") : "▲"}
+                                    {sortBy === "margemC" ? (sortOrder === "desc" ? "▲" : "▼") : "▼"}
                                 </span>
                             </div>
                         </th>
@@ -266,7 +257,7 @@ export function PageHome() {
                             <div className="thArrow">
                                 <span >Margem Liq. P</span>
                                 <span>
-                                    {sortBy === "margemP" ? (sortOrder === "asc" ? "▲" : "▼") : "▲"}
+                                    {sortBy === "margemP" ? (sortOrder === "desc" ? "▲" : "▼") : "▼"}
                                 </span>
                             </div>
                         </th>
@@ -334,10 +325,7 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
                         {catalogo.nome}
                     </a>
                 </td>
-                <td className="th130" style={{ textAlign: "center" }}>
-                    R$ {" "}
-                    {formatCurrency(catalogo.frete)}
-                </td>
+               
                 <td className="th110" style={{ textAlign: "center" }}>
                     U${" "}
                     {formatCurrency(catalogo.competidores[0]?.produto.preco ?? 0)}
@@ -354,20 +342,20 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
                     R${" "}
                     {formatCurrency(catalogo.precoP)}
                 </td>
-                <td className="th110" style={{ textAlign: "center" }}>
+                <td className="th110" style={{ textAlign: "center", color: catalogo.lucroC < 0 ? "red" : catalogo.lucroC > 0 ? "green" : "black" }}>
                     R${" "}
                     {formatCurrency(catalogo.lucroC)}
                 </td>
 
-                <td className="th110" style={{ textAlign: "center" }}>
+                <td className="th110" style={{ textAlign: "center", color: catalogo.lucroC < 0 ? "red" : catalogo.lucroP > 0 ? "green" : "black" }}>
                     R${" "}
                     {formatCurrency(catalogo.lucroP)}
                 </td>
-                <td className="th130" style={{ textAlign: "center" }}>
+                <td className="th130" style={{ textAlign: "center", color: catalogo.margemC < 0 ? "red" : catalogo.margemP > 0 ? "green" : "black" }}>
                     {catalogo.margemC.toFixed(2)}%
                 </td>
 
-                <td className="th130" style={{ textAlign: "center" }}>
+                <td className="th130" style={{ textAlign: "center", color: catalogo.margemC < 0 ? "red" : catalogo.margemP > 0 ? "green" : "black" }}>
                     {catalogo.margemP.toFixed(2)}%
                 </td>
                 <td className="th110" >
