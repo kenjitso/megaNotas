@@ -94,7 +94,7 @@ export function PageHome() {
         }) ?? []
 
 
-        const sortedData = [...dados].sort((a, b) => compareValues(a[sortBy], b[sortBy], sortOrder));
+        const sortedData = [...dados].sort(compareValues(sortBy, sortOrder));
 
         const total = sortedData.length;
         const items = sortedData.slice((page - 1) * limit, limit * page);
@@ -129,6 +129,9 @@ export function PageHome() {
         setParams(`?limit=${limit}&page=${page}`);
     };
 
+
+
+    
 
     return (
         <React.Fragment>
@@ -167,22 +170,24 @@ export function PageHome() {
                             <div className="thArrow">
                                 <span>Nome</span>
                                 <span>
-                                    {sortBy === "nome" ? (sortOrder === "desc" ? "▲" : "▼") : "▼"}
+                                    {sortBy === "nome" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
                                 </span>
                             </div>
                         </th>
 
-                        <th className="th110" >
+                        <th className="th110" onClick={() => handleSort('competidores[0].produto.preco')} >
                             <div className="thArrow">
                                 <span>Preço U$</span>
-
+                                <span>
+                                    {sortBy === "competidores[0].produto.preco" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
+                                </span>
                             </div>
                         </th>
                         <th className="th130" onClick={() => handleSort('custoTotal')} >
                             <div className="thArrow">
                                 <span>Custo Total R$</span>
                                 <span>
-                                    {sortBy === "custoTotal" ? (sortOrder === "desc" ? "▲" : "▼") : "▼"}
+                                    {sortBy === "custoTotal" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
                                 </span>
                             </div>
                         </th>
@@ -190,7 +195,7 @@ export function PageHome() {
                             <div className="thArrow">
                                 <span>Preço ML C</span>
                                 <span>
-                                    {sortBy === "precoC" ? (sortOrder === "desc" ? "▲" : "▼") : "▼"}
+                                    {sortBy === "precoC" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
                                 </span>
                             </div>
                         </th>
@@ -198,7 +203,7 @@ export function PageHome() {
                             <div className="thArrow">
                                 <span>Preço ML P</span>
                                 <span>
-                                    {sortBy === "precoP" ? (sortOrder === "desc" ? "▲" : "▼") : "▼"}
+                                    {sortBy === "precoP" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
                                 </span>
                             </div>
                         </th>
@@ -208,7 +213,7 @@ export function PageHome() {
                             <div className="thArrow">
                                 <span>Lucro C</span>
                                 <span>
-                                    {sortBy === "lucroC" ? (sortOrder === "desc" ? "▲" : "▼") : "▼"}
+                                    {sortBy === "lucroC" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
                                 </span>
                             </div>
                         </th>
@@ -216,7 +221,7 @@ export function PageHome() {
                             <div className="thArrow">
                                 <span>Lucro P</span>
                                 <span>
-                                    {sortBy === "lucroP" ? (sortOrder === "desc" ? "▲" : "▼") : "▼"}
+                                    {sortBy === "lucroP" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
                                 </span>
                             </div>
                         </th>
@@ -225,7 +230,7 @@ export function PageHome() {
                             <div className="thArrow">
                                 <span>Margem Liq. C</span>
                                 <span>
-                                    {sortBy === "margemC" ? (sortOrder === "desc" ? "▲" : "▼") : "▼"}
+                                    {sortBy === "margemC" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
                                 </span>
                             </div>
                         </th>
@@ -233,7 +238,7 @@ export function PageHome() {
                             <div className="thArrow">
                                 <span >Margem Liq. P</span>
                                 <span>
-                                    {sortBy === "margemP" ? (sortOrder === "desc" ? "▲" : "▼") : "▼"}
+                                    {sortBy === "margemP" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
                                 </span>
                             </div>
                         </th>
@@ -245,7 +250,11 @@ export function PageHome() {
 
                 <tbody>
                     {!isFetching &&
-                        catalogos.items.map((catalogo, index) => {
+                     catalogos.items
+                     .sort(compareValues(sortBy, sortOrder))
+                     .map((catalogo, index) => {
+                     
+                 
                             return (
                                 <ItemTable key={index} catalogo={catalogo} eventKey={index.toString()} onToggle={setExpandedKey} expandedKey={expandedKey} />
                             );
