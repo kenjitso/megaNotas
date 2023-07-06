@@ -4,7 +4,7 @@ import {
 import {
     CatalogoController, ICatalogo,
 } from "@/datatypes/catalogo";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import {
     Accordion,
     Button,
@@ -26,6 +26,8 @@ import { ILoja } from "@/datatypes/loja";
 import { Icons } from "@/components/icons/icons";
 import * as XLSX from 'xlsx';
 import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import { compareValues, useSort } from "@/components/utils/FilterArrows";
+
 
 
 export function PageHome() {
@@ -35,17 +37,20 @@ export function PageHome() {
     const { freteiro } = FreteiroStore.useStore();
     const page = parseInt(params.get("page") ?? "1");
     const limit = parseInt(params.get("limit") ?? "10");
+    const { sortOrder, sortBy, handleSort } = useSort<ICatalogo>('nome');
 
 
 
+    const { isFetching, data } = useQuery(["catalogoHome", filtro], () => {
+        const catalogo = CatalogoController.searchCompetidor(filtro);
+        return catalogo;
+    });
 
-    const {
-        isFetching,
-        data
-    } = useQuery(["catalogoHome", filtro], () => CatalogoController.searchCompetidor(filtro));
+    const [listFiltred, setListFiltred] = useState<ICatalogo[] | null>(data ?? []);
 
-
-
+    const listFiltered = (filtered: ICatalogo[]) => {
+        setListFiltred(filtered);
+    }
 
     const catalogos = useMemo(() => {
 
@@ -77,23 +82,42 @@ export function PageHome() {
 
                 catalogo.margemC = (catalogo.precoC !== 0) ? (catalogo.lucroC / catalogo.precoC) * 100 : 0;
                 catalogo.margemP = (catalogo.precoP !== 0) ? (catalogo.lucroP / catalogo.precoP) * 100 : 0;
-                catalogo.lucroC = (catalogo.precoC !== 0) ? (catalogo.precoC - (catalogo.precoC * 0.11) - 20 - catalogo.custoTotal) : 0;
-                catalogo.lucroP = (catalogo.precoP !== 0) ? (catalogo.precoP - (catalogo.precoP * 0.16) - 20 - catalogo.custoTotal) : 0;
+                catalogo.lucroC = (catalogo.precoC !== 0) ? (catalogo.precoC - (catalogo.precoC * 0.11) - catalogo.frete - catalogo.custoTotal) : 0;
+                catalogo.lucroP = (catalogo.precoP !== 0) ? (catalogo.precoP - (catalogo.precoP * 0.16) - catalogo.frete - catalogo.custoTotal) : 0;
+            
 
+                
             }
 
             return catalogo;
 
         }) ?? []
-        const total = dados.length;
-        const items = dados.slice((page - 1) * limit, limit * page);
+
+
+        const sortedData = [...dados].sort((a, b) => compareValues(a[sortBy], b[sortBy], sortOrder));
+
+        const total = sortedData.length;
+        const items = sortedData.slice((page - 1) * limit, limit * page);
         return {
             page, total, limit, items
         }
-    }, [data, freteiro, page, limit])
+    }, [data, freteiro, page, limit, sortBy, sortOrder])
 
     function exportCatalogoExcel(catalogos: ICatalogo[]) {
-        const filteredCatalogos = catalogos.map(({ id, ativo, frete, url_catalogo, comissao, premium, preco, competicaoML, ultima_atualizacao, ultima_atualizacao_competidores, competidores, ...rest }) => rest);
+        const filteredCatalogos = catalogos.map(({
+            id,
+            ativo,
+            frete,
+            url_catalogo,
+            comissao,
+            premium,
+            preco,
+            competicaoML,
+            ultima_atualizacao,
+            ultima_atualizacao_competidores,
+            competidores,
+            ...rest
+        }) => rest);
         const ws = XLSX.utils.json_to_sheet(filteredCatalogos);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Catalogos");
@@ -104,6 +128,7 @@ export function PageHome() {
     const handlePageChange = (page: number) => {
         setParams(`?limit=${limit}&page=${page}`);
     };
+
 
     return (
         <React.Fragment>
@@ -162,74 +187,86 @@ export function PageHome() {
                                 <span></span>
                             </div>
                         </th>
-                        <th className="th200" >
+                        <th className="th200" onClick={() => handleSort('nome')}>
                             <div className="thArrow">
                                 <span>Nome</span>
                                 <span>
-
+                                    {sortBy === "nome" ? (sortOrder === "asc" ? "▲" : "▼") : "▲"}
                                 </span>
                             </div>
                         </th>
-                        <th className="th110" >
+                        <th className="th200" onClick={()=> handleSort('frete')}>
+                            <div className="thArrow">
+                                <span>Frete</span>
+                                <span>
+                                    {sortBy === "frete" ? (sortOrder === "asc" ? "▲" : "▼") : "▲"}
+                                </span>
+                            </div>
+                        </th>
+                        <th className="th110" onClick={() => handleSort('preco')} >
                             <div className="thArrow">
                                 <span>Preço U$</span>
-
+                                <span>
+                                    {sortBy === "preco" ? (sortOrder === "asc" ? "▲" : "▼") : "▲"}
+                                </span>
                             </div>
                         </th>
-                        <th className="th130" >
+                        <th className="th130" onClick={() => handleSort('custoTotal')} >
                             <div className="thArrow">
                                 <span>Custo Total R$</span>
-
+                                <span>
+                                    {sortBy === "custoTotal" ? (sortOrder === "asc" ? "▲" : "▼") : "▲"}
+                                </span>
                             </div>
                         </th>
-                        <th className="th110" >
+                        <th className="th110" onClick={() => handleSort('precoC')} >
                             <div className="thArrow">
                                 <span>Preço ML C</span>
                                 <span>
-
+                                    {sortBy === "precoC" ? (sortOrder === "asc" ? "▲" : "▼") : "▲"}
                                 </span>
                             </div>
                         </th>
-                        <th className="th110" >
+                        <th className="th110" onClick={() => handleSort('precoP')}>
                             <div className="thArrow">
                                 <span>Preço ML P</span>
                                 <span>
-
+                                    {sortBy === "precoP" ? (sortOrder === "asc" ? "▲" : "▼") : "▲"}
                                 </span>
                             </div>
                         </th>
 
 
-                        <th className="th110" >
+                        <th className="th110" onClick={() => handleSort('lucroC')}>
                             <div className="thArrow">
                                 <span>Lucro C</span>
                                 <span>
-
+                                    {sortBy === "lucroC" ? (sortOrder === "asc" ? "▲" : "▼") : "▲"}
                                 </span>
                             </div>
                         </th>
-                        <th className="th110">
+                        <th className="th110" onClick={() => handleSort('lucroP')}>
                             <div className="thArrow">
                                 <span>Lucro P</span>
                                 <span>
-
+                                    {sortBy === "lucroP" ? (sortOrder === "asc" ? "▲" : "▼") : "▲"}
                                 </span>
                             </div>
                         </th>
 
-                        <th className="th130">
+                        <th className="th130" onClick={() => handleSort('margemC')}>
                             <div className="thArrow">
                                 <span>Margem Liq. C</span>
                                 <span>
-
+                                    {sortBy === "margemC" ? (sortOrder === "asc" ? "▲" : "▼") : "▲"}
                                 </span>
                             </div>
                         </th>
-                        <th className="th130" >
+                        <th className="th130" onClick={() => handleSort('margemP')}>
                             <div className="thArrow">
                                 <span >Margem Liq. P</span>
                                 <span>
-
+                                    {sortBy === "margemP" ? (sortOrder === "asc" ? "▲" : "▼") : "▲"}
                                 </span>
                             </div>
                         </th>
@@ -296,6 +333,10 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
                     >
                         {catalogo.nome}
                     </a>
+                </td>
+                <td className="th130" style={{ textAlign: "center" }}>
+                    R$ {" "}
+                    {formatCurrency(catalogo.frete)}
                 </td>
                 <td className="th110" style={{ textAlign: "center" }}>
                     U${" "}
