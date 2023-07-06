@@ -7,6 +7,7 @@ import useDataTypes from "@/hooks/useDataTypes";
 import { abreviaLink } from "@/components/utils/AbreviaLink";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
+import { useQuery} from "@tanstack/react-query";
 
 interface IProps {
     produtoParaguay?: IProdutoLoja;
@@ -18,21 +19,13 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
     const [filtro, setFiltro] = useState("");
     const [lastCheckedIndex, setLastCheckedIndex] = useState<number>(0);
     const queryClient = useQueryClient();
+ 
 
-
-
-    const {
-        isLoading,
-        orderBy,
-        ordem,
-        ordenar,
-        data
-    } = useDataTypes<ICatalogo>({
-        queryKey: ["lojas"],
-        queryFn: async () => await CatalogoController.search(1, 10, filtro, ordenar, ordem ? "crescente" : "descrescente", true),
-        filtro: filtro,
-        defaultOrder: "nome"
+    const { isFetching, data } = useQuery(["lojas", filtro], () => {
+        const catalogo = CatalogoController.searchCatalogoML(filtro);
+        return catalogo;
     });
+   
 
 
     const mutation = useMutation(() => {
@@ -60,7 +53,7 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
         if (event.shiftKey && selectedIds.has(id) !== null) {
             const start = Math.min(lastCheckedIndex, index);
             const end = Math.max(lastCheckedIndex, index);
-            const idsToSelect = data?.items?.map((item) => item.id ?? "").slice(start, end + 1);
+            const idsToSelect = data?.map((item) => item.id ?? "").slice(start, end + 1);
 
             if (idsToSelect) {
                 const isSelecting = !selectedIds.has(id);
@@ -123,13 +116,13 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
             <Modal.Body className="text-center">
 
                 {formataDados(produtoParaguay?.nome ?? "")[0]}
-        
+                <span className="text-info">
                     {formataDados(produtoParaguay?.nome ?? "")[1]}
-          
+                </span>
                 {formataDados(produtoParaguay?.nome ?? "")[2]}
 
                 <br />
-               
+
 
                 <Row className="my-3">
                     <Col xs className="d-flex ">
@@ -148,14 +141,14 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
 
 
 
-                    <Table className={isLoading || mutation.isLoading ? "invisible" : ""}>
+                    <Table className={isFetching || mutation.isLoading ? "invisible" : ""}>
                         <thead>
                             <tr>
-                                <th className="th200" onClick={() => orderBy("nome")}>
+                                <th className="th200" >
                                     <div className="thArrow">
                                         <span>Nome</span>
                                         <span>
-                                            {ordenar === "nome" && (ordem ? "▼" : "▲")}
+                                            
                                         </span>
                                     </div>
                                 </th>
@@ -168,7 +161,7 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
                             </tr>
                         </thead>
                         <tbody>
-                            {data?.items?.map((catalogoProduto, index) => (
+                            {data?.map((catalogoProduto, index) => (
                                 <tr key={index}>
                                     <td>
                                         {catalogoProduto.nome}
@@ -186,7 +179,7 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
                         </tbody>
 
                     </Table>
-                    {isLoading || mutation.isLoading && <FragmentLoading />}
+                    {isFetching || mutation.isLoading && <FragmentLoading />}
                 </div>
 
             </Modal.Body>

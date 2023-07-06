@@ -238,5 +238,29 @@ export class CatalogoController {
     }
 
 
+    public static async searchCatalogoML(q: string = "") {
+
+        const params = new URLSearchParams();
+        if (q) params.set("q", q);
+        const options: RequestInit = {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json"
+            }
+        };
+
+        const response = await fetch(`https://us-central1-mega-notas.cloudfunctions.net/api/mercadolivre/catalogo/search?${params}`, options);
+        const responseData: unknown = await response.json();
+        console.log(responseData);
+        const catalogos = z.object({
+            items: z.array(schemaCatalogo).transform(items => items.filter(item => item.competidores && item.competidores.length > 0)),
+        }).transform(dados => dados.items).parse(responseData);
+
+
+
+        return catalogos;
+    }
+
+
 
 }
