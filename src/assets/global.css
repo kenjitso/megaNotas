@@ -23,7 +23,10 @@
       color: #ffffff;
       border: none;
   }
-
+  .limitPagination {
+    height: 36px;
+    
+}
 
   .mr-custom {
     margin-right: 10px; 

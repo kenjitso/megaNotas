@@ -145,32 +145,8 @@ export function PageHome() {
                         />
 
                     </FloatingLabel>
-                    <Dropdown>
-                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown  justify-content-end my-1 mr-custom" >
-                            <Icons tipo="filtro" tamanho={20} />
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu className="custom-dropdown-menu">
-                            <center>
-                                Filtro 1<br />
-                                Filtro 2<br />
-                                Filtro 3<br />
-                                Filtro 4<br />
-                                Filtro 5<br />
-                            </center>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                    <Dropdown >
-                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown  justify-content-end my-1 mr-custom">
-                            <Icons tipo="listLimitPage" tamanho={20} />
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu className="custom-dropdown-menu">
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=10&page=1"))}>10</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=25&page=1"))}>25</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=50&page=1"))}>50</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=100&page=1"))}>100</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=200&page=1"))}>200</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
+
+
 
                     <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown  justify-content-end my-1" onClick={() => exportCatalogoExcel(catalogos.items)}>
                         <Icons tipo="downloadXLSX" tamanho={20} />
@@ -287,6 +263,20 @@ export function PageHome() {
                         onPageChange={handlePageChange}
                         currentPage={catalogos.page ?? 1}
                     />
+
+                    <Dropdown >
+                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-3 limitPagination">
+                            Mostrando {catalogos.items.length} de {limit}
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu className="custom-dropdown-menu">
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=10&page=1"))}>10</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=25&page=1"))}>25</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=50&page=1"))}>50</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=100&page=1"))}>100</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=200&page=1"))}>200</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+
                 </Col>
             </Row>
         </React.Fragment>
@@ -347,15 +337,15 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
                     {formatCurrency(catalogo.lucroC)}
                 </td>
 
-                <td className="th110" style={{ textAlign: "center", color: catalogo.lucroC < 0 ? "red" : catalogo.lucroP > 0 ? "green" : "black" }}>
+                <td className="th110" style={{ textAlign: "center", color: catalogo.lucroP < 0 ? "red" : catalogo.lucroP > 0 ? "green" : "black" }}>
                     R${" "}
                     {formatCurrency(catalogo.lucroP)}
                 </td>
-                <td className="th130" style={{ textAlign: "center", color: catalogo.margemC < 0 ? "red" : catalogo.margemP > 0 ? "green" : "black" }}>
+                <td className="th130" style={{ textAlign: "center", color: catalogo.margemC < 0 ? "red" : catalogo.margemC > 0 ? "green" : "black" }}>
                     {catalogo.margemC.toFixed(2)}%
                 </td>
 
-                <td className="th130" style={{ textAlign: "center", color: catalogo.margemC < 0 ? "red" : catalogo.margemP > 0 ? "green" : "black" }}>
+                <td className="th130" style={{ textAlign: "center", color: catalogo.margemP < 0 ? "red" : catalogo.margemP > 0 ? "green" : "black" }}>
                     {catalogo.margemP.toFixed(2)}%
                 </td>
                 <td className="th110" >
