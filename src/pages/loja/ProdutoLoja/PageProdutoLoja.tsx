@@ -74,7 +74,7 @@ export function PageProdutoLoja() {
                         className="me-3 custom-btn"
                     >
 
-                         <Icons tipo="import" tamanho={22} />  Importar
+                        <Icons tipo="import" tamanho={22} />  Importar
 
                     </Button>
                     <Button

@@ -227,7 +227,7 @@ export class CatalogoController {
 
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/competidores?${params}`, options);
         const responseData: unknown = await response.json();
-        console.log(responseData);
+
         const catalogos = z.object({
             items: z.array(schemaCatalogo).transform(items => items.filter(item => item.competidores && item.competidores.length > 0)),
         }).transform(dados => dados.items).parse(responseData);
@@ -240,8 +240,12 @@ export class CatalogoController {
 
     public static async searchCatalogoML(q: string = "") {
 
+        if (!q || q.trim() === "") return [];
+
         const params = new URLSearchParams();
-        if (q) params.set("q", q);
+        params.set("q", q);
+        params.set("limit", "5");
+
         const options: RequestInit = {
             method: "GET",
             headers: {
@@ -251,15 +255,34 @@ export class CatalogoController {
 
         const response = await fetch(`https://us-central1-mega-notas.cloudfunctions.net/api/mercadolivre/catalogo/search?${params}`, options);
         const responseData: unknown = await response.json();
-        console.log(responseData);
+
+console.log(responseData);
+        const schemaProduto = z.object({
+            id: z.string(),
+            name: z.string(),
+            pictures: z.array(z.object({
+                url: z.string(),
+            }))
+        });
+
         const catalogos = z.object({
-            items: z.array(schemaCatalogo).transform(items => items.filter(item => item.competidores && item.competidores.length > 0)),
-        }).transform(dados => dados.items).parse(responseData);
+            results: z.array(schemaProduto)
+        }).parse(responseData);
 
+        const produtos = catalogos.results.map(product => {
+            return {
+                codigo_catalogo: product.id,
+                nome: product.name,
+                url_Imagem: product.pictures.length > 0 ? product.pictures[0].url : null
+            };
+        });
 
+        console.log(produtos);
 
-        return catalogos;
+        return produtos;
     }
+
+
 
 
 
