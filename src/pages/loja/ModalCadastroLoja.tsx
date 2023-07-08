@@ -41,6 +41,7 @@ export function ModalCadastroLoja({ onHide, lojaId }: IProps) {
                 <Modal.Title> {lojaId ? "Atualizar Loja" : "Cadastrar Loja"} </Modal.Title>
             </Modal.Header>
             <Modal.Body>
+
                 {lojaId && lojaMutator.isLoading ? (
                     <div>{<FragmentLoading />}</div>) : (
                     <Row>
@@ -64,6 +65,7 @@ export function ModalCadastroLoja({ onHide, lojaId }: IProps) {
                                             </Form.Group>
                                         </Col>
                                         <Col>
+
                                             <Form.Group
                                                 controlId="formCotacao"
                                                 className="mb-3">
@@ -74,29 +76,31 @@ export function ModalCadastroLoja({ onHide, lojaId }: IProps) {
                                                         as={InputNumero}
                                                         type="number"
                                                         decimals={2}
-                                                        value={lojaMutator.state.cotacao}
+                                                        value={lojaMutator.state.cotacao || 0}
                                                         onValueChange={(numero: number) => lojaMutator.update("cotacao", numero)}
                                                         placeholder="Insira a cotação"
                                                     />
+
+
                                                 </FloatingLabel>
                                             </Form.Group>
                                         </Col>
                                     </Row>
                                     <Row>
                                         <Col>
-                                          
+
 
                                             <Form.Group
                                                 controlId="formUrlCatalogo"
                                                 className="mb-3">
-                                                 <Form.Select
+                                                <Form.Select
                                                     value={lojaMutator.state.algoritmo}
                                                     onChange={(event) => lojaMutator.update("algoritmo", parseInt(event.target.value))}>
                                                     <option value="0">
                                                         Selecione o Algoritimo
                                                     </option>
                                                     <option value="9">
-                                                       Algoritimo Padrao
+                                                        Algoritimo Padrao
                                                     </option>
                                                     <option value="1">
                                                         Atacado Games
@@ -122,8 +126,8 @@ export function ModalCadastroLoja({ onHide, lojaId }: IProps) {
                                                     <option value="8">
                                                         Mobile Zone
                                                     </option>
-                                                    
-                                                    
+
+
                                                 </Form.Select>
                                             </Form.Group>
                                             {lojaMutator.state.algoritmo === 9 && <center><a href="/modelo.xlsx">Download Modelo</a></center>}
@@ -141,8 +145,8 @@ export function ModalCadastroLoja({ onHide, lojaId }: IProps) {
                     variant="secondary"
                     disabled={!!lojaId && lojaMutator.isLoading}
                     onClick={() => {
-                         if (isValidForm()){lojaMutator.save();}; 
-                         }}>
+                        if (isValidForm()) { lojaMutator.save(); };
+                    }}>
                     {lojaId ? "Atualizar Loja" : "Cadastrar Loja"}
                 </Button>
             </Modal.Footer>

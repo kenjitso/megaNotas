@@ -256,7 +256,7 @@ export class CatalogoController {
         const response = await fetch(`https://us-central1-mega-notas.cloudfunctions.net/api/mercadolivre/catalogo/search?${params}`, options);
         const responseData: unknown = await response.json();
 
-console.log(responseData);
+
         const schemaProduto = z.object({
             id: z.string(),
             name: z.string(),
@@ -277,7 +277,7 @@ console.log(responseData);
             };
         });
 
-        console.log(produtos);
+      
 
         return produtos;
     }

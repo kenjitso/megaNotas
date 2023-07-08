@@ -23,16 +23,23 @@
       color: #ffffff;
       border: none;
   }
+
   .limitPagination {
-    height: 36px;
-    
-}
+      height: 36px;
+
+  }
+
+  .limitFilter {
+      height: 45px;
+
+  }
 
   .mr-custom {
-    margin-right: 10px; 
-}
+      margin-right: 10px;
+  }
 
   .custom-dropdown-item {
+
       background-color: #ffffff;
       /* Cor de fundo do botão */
       border-color: rgba(197, 197, 197, 0.904);
@@ -74,11 +81,11 @@
   }
 
   .custom-dropdown.show {
-    background-color: #e67e22;
-    /* Cor de fundo do botão */
-    border-color: #e67e22;
-    /* Cor da borda do botão */
-}
+      background-color: #e67e22;
+      /* Cor de fundo do botão */
+      border-color: #e67e22;
+      /* Cor da borda do botão */
+  }
 
 
   .custom-dropdown:hover,

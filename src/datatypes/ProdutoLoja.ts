@@ -87,9 +87,8 @@ export class ProdutoLojaController {
 
 
     public static async updateML(produtoLoja: IProdutoLoja, url_catalogoML: string) {
-        console.log(produtoLoja);
-        console.log(url_catalogoML);
-       
+   
+
         const options: RequestInit = {
             method: "POST",
             headers: {
@@ -102,7 +101,7 @@ export class ProdutoLojaController {
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja/${produtoLoja.id}/vincular`, options);
         const responseData: unknown = await response.json();
 
-        console.log(responseData);
+      
 
         const produtoLojaSchema = schemaProdutoLoja.parse(responseData);
         return produtoLojaSchema;
@@ -127,16 +126,12 @@ export class ProdutoLojaController {
         return produtoLojaSchema;
     }
 
-    public static async search(loja: string, page = 1, limit = 25, q: string = "", ordenar = "nome", ordem = "crescente", ativo: boolean | undefined = true) {
+    public static async search(q: string = "") {
 
         const params = new URLSearchParams();
         if (q) params.set("q", q);
-        if (ativo !== undefined) params.set("ativo", ativo.toString());
-        params.set("loja", loja);
-        params.set("limit", limit.toString());
-        params.set("page", page.toString());
-        params.set("ordenar", ordenar);
-        params.set("ordem", ordem);
+
+        params.set("limit", "9999");
 
         const options: RequestInit = {
             method: "GET",
@@ -148,13 +143,12 @@ export class ProdutoLojaController {
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja?${params}`, options);
         const responseData: unknown = await response.json();
 
-        const catalogos = z.object({
-            page: z.number().min(1),
-            limit: z.number().min(1),
+        const produtoLoja = z.object({
             items: z.array(schemaProdutoLoja),
-            total: z.number().min(0)
-        }).parse(responseData);
-        return catalogos;
+        }).transform(dados => dados.items).parse(responseData);
+
+     
+        return produtoLoja;
     }
 
 }

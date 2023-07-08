@@ -4,10 +4,9 @@ import {
 import {
     CatalogoController, ICatalogo,
 } from "@/datatypes/catalogo";
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import {
     Accordion,
-    Button,
     Card,
     Col,
     Dropdown,
@@ -17,7 +16,7 @@ import {
     Table,
 } from "react-bootstrap";
 import ratata from "../../assets/megaPreco.svg";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { formatCurrency } from "@/components/utils/FormatCurrency";
@@ -25,7 +24,7 @@ import { FreteiroStore } from "@/context/FreteiroStore";
 import { ILoja } from "@/datatypes/loja";
 import { Icons } from "@/components/icons/icons";
 import * as XLSX from 'xlsx';
-import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { compareValues, useSort } from "@/components/utils/FilterArrows";
 
 
@@ -45,12 +44,6 @@ export function PageHome() {
         const catalogo = CatalogoController.searchCompetidor(filtro);
         return catalogo;
     });
-
-    const [listFiltred, setListFiltred] = useState<ICatalogo[] | null>(data ?? []);
-
-    const listFiltered = (filtered: ICatalogo[]) => {
-        setListFiltred(filtered);
-    }
 
     const catalogos = useMemo(() => {
 
@@ -131,7 +124,7 @@ export function PageHome() {
 
 
 
-    
+
 
     return (
         <React.Fragment>
@@ -250,15 +243,15 @@ export function PageHome() {
 
                 <tbody>
                     {!isFetching &&
-                     catalogos.items
-                     .sort(compareValues(sortBy, sortOrder))
-                     .map((catalogo, index) => {
-                     
-                 
-                            return (
-                                <ItemTable key={index} catalogo={catalogo} eventKey={index.toString()} onToggle={setExpandedKey} expandedKey={expandedKey} />
-                            );
-                        })
+                        catalogos.items
+                            .sort(compareValues(sortBy, sortOrder))
+                            .map((catalogo, index) => {
+
+
+                                return (
+                                    <ItemTable key={index} catalogo={catalogo} eventKey={index.toString()} onToggle={setExpandedKey} expandedKey={expandedKey} />
+                                );
+                            })
                     }
                 </tbody>
 
@@ -283,9 +276,11 @@ export function PageHome() {
                             <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=50&page=1"))}>50</Dropdown.Item>
                             <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=100&page=1"))}>100</Dropdown.Item>
                             <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=200&page=1"))}>200</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=400&page=1"))}>400</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=800&page=1"))}>800</Dropdown.Item>
+                    
                         </Dropdown.Menu>
                     </Dropdown>
-
                 </Col>
             </Row>
         </React.Fragment>

@@ -123,7 +123,7 @@ export default class MercadoLivre {
 
 
     public static async getPriceFrete(item_id: string) {
-        console.log(item_id)
+     
         const apiUrl = `https://api.mercadolibre.com/items/${item_id}/shipping_options?zip_code_from=11920000&zip_code_to=11920000`;
 
         const result = await fetch(apiUrl);

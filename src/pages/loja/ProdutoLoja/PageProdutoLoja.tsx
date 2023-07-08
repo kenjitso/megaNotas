@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { Row, Col, Table, Button, FloatingLabel, Form } from "react-bootstrap";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useMemo, useState } from "react";
+import { Row, Col, Table, Button, FloatingLabel, Form, Dropdown } from "react-bootstrap";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { Icons } from "@/components/icons/icons";
@@ -8,37 +8,78 @@ import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import { formatCurrency } from "@/components/utils/FormatCurrency";
 import { PaginationComponent } from "@/datas/PaginationComponent";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
-import useDataTypes from "@/hooks/useDataTypes";
-
 import { ModalCadastroProdutoLoja } from "./ModalProdutoLoja/ModalCadastroProdutoLoja";
 import { ModalImportProdutoLoja } from "./ModalProdutoLoja/ModalImportProdutoLoja";
 import { ModalVinculo } from "./ModalProdutoLoja/ModalVinculo";
+import { useQuery } from "@tanstack/react-query";
+import { compareValues, useSort } from "@/components/utils/FilterArrows";
+
 
 export function PageProdutoLoja() {
+    const [params, setParams] = useSearchParams();
     const { lojaId } = useParams();
     const navigate = useNavigate();
-    const { page } = useParams();
     const [modalVinculoProduto, setVinculoProduto] = useState<IProdutoLoja | undefined>(undefined);
     const [importProdutoLoja, setImportProdutoLoja] = useState<string | undefined>(undefined);
     const [cadastroProdutoLoja, setCadastroProdutoLoja] = useState<string | undefined>(undefined);
     const [filtro, setFiltro] = useState("");
+    const page = parseInt(params.get("page") ?? "1");
+    const limit = parseInt(params.get("limit") ?? "10");
+    const { sortOrder, sortBy, handleSort } = useSort<IProdutoLoja>('nome');
+    const [isFilteredOff, setIsFilteredOff] = useState(false);
+    const [isFilteredOn, setIsFilteredOn] = useState(false);
 
-    const {
-        isLoading,
-        orderBy,
-        ordem,
-        ordenar,
-        data
-    } = useDataTypes<IProdutoLoja>({
-        queryKey: ["produtosloja", page ?? "1", "10"],
-        queryFn: async () => await ProdutoLojaController.search(lojaId ?? "", parseInt(page ?? "1"), 10, filtro, ordenar, ordem ? "crescente" : "descrescente", true),
-        filtro: filtro,
-        defaultOrder: "nome"
+
+    const { isFetching, data } = useQuery(["produtoloja", filtro], () => {
+        const produtoLoja = ProdutoLojaController.search(filtro);
+        return produtoLoja;
     });
 
+
+
+    const produtosLoja = useMemo(() => {
+
+
+        let dados = data?.map((produtoLoja: IProdutoLoja) => {
+            return produtoLoja;
+        }) ?? []
+
+        if (isFilteredOff) {
+            dados = dados.filter(produto => produto.vinculos !== null && produto.vinculos.length > 0);
+        }
+
+        if (isFilteredOn) {
+            dados = dados.filter(produto => produto.vinculos === null || produto.vinculos.length === 0);
+        }
+
+        const sortedData = [...dados].sort(compareValues(sortBy, sortOrder));
+
+        const total = sortedData.length;
+        const items = sortedData.slice((page - 1) * limit, limit * page);
+        return {
+            page, total, limit, items
+        }
+    }, [data, page, limit, sortBy, sortOrder, isFilteredOff, isFilteredOn])
+
     const handlePageChange = (page: number) => {
-        navigate(`/lojas/${lojaId}/produtos/${page}`);
+        setParams(`?limit=${limit}&page=${page}`);
     };
+
+    const handleFilterOff = () => {
+        setIsFilteredOff(prevState => !prevState);
+        setParams({ page: '1', limit: params.get("limit") || '10' });
+
+    }
+    const handleFilterOn = () => {
+        setIsFilteredOn(prevState => !prevState);
+        setParams({ page: '1', limit: params.get("limit") || '10' });
+
+    }
+
+
+
+
+
 
     return (
         <React.Fragment>
@@ -63,9 +104,45 @@ export function PageProdutoLoja() {
                             controlName="sku"
                             placeholder="pesquisar"
                             onUpdate={setFiltro}
-                            pageLink={`/lojas/${lojaId}/produtos/1`}
+                            pageLink={`?limit=10&page=1`}
                         />
                     </FloatingLabel>
+                    <Dropdown>
+                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-3 limitFilter">
+                            Filtros
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu className="custom-dropdown-menu">
+                            <Dropdown.Item className="custom-dropdown-item" onClick={(e) => e.stopPropagation()}>
+                                <Form.Switch
+
+                                    type="checkbox"
+                                    label="Filtrar itens desativados"
+                                    checked={isFilteredOff}
+                                    onChange={() => { }}
+                                    onMouseDown={e => {
+                                        e.preventDefault();
+                                        handleFilterOff();
+                                    }}
+                                />
+                            </Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={(e) => e.stopPropagation()}>
+                                <Form.Switch
+
+                                    type="checkbox"
+                                    label="Filtrar itens ativados"
+                                    checked={isFilteredOn}
+                                    onChange={() => { }}
+                                    onMouseDown={e => {
+                                        e.preventDefault();
+                                        handleFilterOn();
+                                    }}
+                                />
+                            </Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+
+
+
                 </Col>
 
                 <Col xs className="d-flex justify-content-end">
@@ -90,32 +167,35 @@ export function PageProdutoLoja() {
 
                 <thead>
                     <tr>
-                        <th className="th150" >
+                        <th className="th150" onClick={() => handleSort('codigo')} >
                             <div className="thArrow">
                                 <span>Codigo</span>
+                                <span>
+                                    {sortBy === "codigo" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
+                                </span>
                             </div>
                         </th>
-                        <th className="th250" onClick={() => orderBy("nome")}>
+                        <th className="th250" onClick={() => handleSort('nome')} >
                             <div className="thArrow">
                                 <span>Nome</span>
                                 <span>
-                                    {ordenar === "nome" && (ordem ? "▲" : "▼")}
+                                    {sortBy === "nome" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
                                 </span>
                             </div>
                         </th>
-                        <th className="th130" onClick={() => orderBy("preco")}>
+                        <th className="th130" onClick={() => handleSort('preco')}>
                             <div className="thArrow">
                                 <span>Preço U$</span>
                                 <span>
-                                    {ordenar === "preco" && (ordem ? "▲" : "▼")}
+                                    {sortBy === "preco" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
                                 </span>
                             </div>
                         </th>
-                        <th className="th70" onClick={() => orderBy("vinculos")}>
+                        <th className="th70" onClick={() => handleSort('vinculos')}>
                             <div className="thArrow">
                                 <span>Vinc.</span>
                                 <span>
-                                    {ordenar === "vinculos" && (ordem ? "▲" : "▼")}
+                                    {sortBy === "vinculos" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
                                 </span>
                             </div>
                         </th>
@@ -126,23 +206,37 @@ export function PageProdutoLoja() {
                 </thead>
                 <tbody>
                     {
-                        !isLoading && data?.items?.map((produtoLoja, index) => <ItemTable key={index} produtoLoja={produtoLoja} onVinculo={setVinculoProduto} />)
+                        !isFetching && produtosLoja?.items?.map((produtoLoja, index) => <ItemTable key={index} produtoLoja={produtoLoja} onVinculo={setVinculoProduto} />)
                     }
                 </tbody>
             </Table>
-            {isLoading && <FragmentLoading />}
-
-            <Row className="mt-2">
-                <Col xs>
+            {isFetching && <FragmentLoading />}
+            <Row className="my-3">
+                <Col xs className="d-flex">
                     <PaginationComponent<IProdutoLoja>
-                        items={data?.total ?? 0}
-                        pageSize={10}
+                        items={produtosLoja?.total}
+                        pageSize={produtosLoja.limit}
                         onPageChange={handlePageChange}
-                        currentPage={data?.page ?? 1}
+                        currentPage={produtosLoja.page ?? 1}
                     />
+
+                    <Dropdown>
+                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-3 limitPagination">
+                            Mostrando {produtosLoja.items.length} de {limit}
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu className="custom-dropdown-menu">
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=10&page=1"))}>10</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=25&page=1"))}>25</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=50&page=1"))}>50</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=100&page=1"))}>100</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=200&page=1"))}>200</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=400&page=1"))}>400</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=800&page=1"))}>800</Dropdown.Item>
+                     
+                        </Dropdown.Menu>
+                    </Dropdown>
                 </Col>
             </Row>
-
         </React.Fragment>
     );
 }

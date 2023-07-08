@@ -48,9 +48,13 @@ const InputNumero = React.forwardRef<HTMLInputElement, Props>(({
         }
         onValueChange(nextValue);
     };
-
-    const valueDisplay = value.toLocaleString("pt-BR", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-
+    let valueDisplay;
+    if (value !== undefined) {
+        valueDisplay = value.toLocaleString("pt-BR", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    } else {
+        valueDisplay = (0).toLocaleString("pt-BR", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    }
+    
     return (
         <input
             autoFocus={autoFocus}
