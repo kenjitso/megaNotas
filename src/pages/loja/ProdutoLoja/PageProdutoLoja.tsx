@@ -29,12 +29,12 @@ export function PageProdutoLoja() {
     const [isFilteredDesvinculados, setIsFilteredDesvinculados] = useState(false);
     const [isFilteredVinculados, setIsFilteredVinculados] = useState(false);
     const [minRange, setMinRange] = useState(0);
-    const [maxRange, setMaxRange] = useState(50);
+    const [maxRange, setMaxRange] = useState(9999);
 
 
 
-    const { isFetching, data } = useQuery(["produtoloja", filtro], () => {
-        const produtoLoja = ProdutoLojaController.search(filtro);
+    const { isFetching, data } = useQuery(["produtoloja", lojaId, filtro], () => {
+        const produtoLoja = ProdutoLojaController.search(lojaId ?? "", filtro);
         return produtoLoja;
     });
 

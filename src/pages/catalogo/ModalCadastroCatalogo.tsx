@@ -92,7 +92,7 @@ export function ModalCadastroCatalogo({ onHide, catalogoId }: IProps) {
                                                             placeholder="Insira a url do catálogo"
                                                             aria-label="Recipient's username"
                                                             aria-describedby="basic-addon2"
-                                                            value={catalogoMutator.state.url_catalogo}
+                                                            value={catalogoMutator.state.url_catalogo ?? ""}
                                                             onChange={((event) => catalogoMutator.update("url_catalogo", event.target.value))}
                                                             required
                                                         />
@@ -131,7 +131,7 @@ export function ModalCadastroCatalogo({ onHide, catalogoId }: IProps) {
                                                             type="number"
                                                             decimals={0}
                                                             max={100}
-                                                            value={(catalogoMutator.state.comissao * 100)}
+                                                            value={(catalogoMutator.state.comissao * 100)??0}
                                                             onValueChange={(numero: number) => { catalogoMutator.update("comissao", numero) }}
                                                             placeholder="Insira a comissão"
                                                             readOnly={true}
@@ -150,7 +150,7 @@ export function ModalCadastroCatalogo({ onHide, catalogoId }: IProps) {
                                                             as={InputNumero}
                                                             type="number"
                                                             decimals={2}
-                                                            value={catalogoMutator.state.frete}
+                                                            value={catalogoMutator.state.frete??0}
                                                             onValueChange={(numero: number) => { catalogoMutator.update("frete", numero) }}
                                                             placeholder="Insira o frete"
                                                             readOnly={true}
@@ -168,7 +168,7 @@ export function ModalCadastroCatalogo({ onHide, catalogoId }: IProps) {
                                                             as={InputNumero}
                                                             type="number"
                                                             decimals={2}
-                                                            value={catalogoMutator.state.preco}
+                                                            value={catalogoMutator.state.preco??0}
                                                             onValueChange={(numero: number) => { catalogoMutator.update("preco", numero) }}
                                                             placeholder="Insira o preco"
                                                             readOnly={true}
@@ -185,7 +185,7 @@ export function ModalCadastroCatalogo({ onHide, catalogoId }: IProps) {
                                                         label="Nome produto">
                                                         <Form.Control
                                                             type="text"
-                                                            value={catalogoMutator.state.nome}
+                                                            value={catalogoMutator.state.nome??""}
                                                             placeholder="Insira o nome do produto"
                                                             onChange={(event) => catalogoMutator.update("nome", event.target.value)}
                                                             readOnly={true}

@@ -49,6 +49,11 @@ export class ProdutoLojaController {
 
     public static async cadastro(produtos: IProdutoLoja[]) {
 
+        for (const produto of produtos) {
+            produto.codigo = produto.codigo.trim();
+
+        }
+
         const options: RequestInit = {
             method: "POST",
             headers: {
@@ -87,7 +92,7 @@ export class ProdutoLojaController {
 
 
     public static async updateML(produtoLoja: IProdutoLoja, url_catalogoML: string) {
-   
+
 
         const options: RequestInit = {
             method: "POST",
@@ -101,7 +106,7 @@ export class ProdutoLojaController {
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja/${produtoLoja.id}/vincular`, options);
         const responseData: unknown = await response.json();
 
-      
+
 
         const produtoLojaSchema = schemaProdutoLoja.parse(responseData);
         return produtoLojaSchema;
@@ -126,13 +131,13 @@ export class ProdutoLojaController {
         return produtoLojaSchema;
     }
 
-    public static async search(q: string = "") {
+    public static async search(idLoja: string, q: string = "") {
 
         const params = new URLSearchParams();
         if (q) params.set("q", q);
 
         params.set("limit", "9999");
-
+        params.set("loja", idLoja);
         const options: RequestInit = {
             method: "GET",
             headers: {
@@ -147,7 +152,7 @@ export class ProdutoLojaController {
             items: z.array(schemaProdutoLoja),
         }).transform(dados => dados.items).parse(responseData);
 
-     
+
         return produtoLoja;
     }
 

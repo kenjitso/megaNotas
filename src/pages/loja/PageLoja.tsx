@@ -20,7 +20,7 @@ export function PageLoja() {
     const [lojaIdDelete, setDelete] = useState("");
     const [filtro, setFiltro] = useState("");
     const page = parseInt(params.get("page") ?? "1");
-    const limit = parseInt(params.get("limit") ?? "25");
+    const limit = parseInt(params.get("limit") ?? "20");
     const { sortOrder, sortBy, handleSort } = useSort<ILoja>('nome');
 
 
@@ -68,7 +68,7 @@ export function PageLoja() {
                             controlName="sku"
                             placeholder="pesquisar"
                             onUpdate={setFiltro}
-                            pageLink="/lojas/1"
+                            pageLink={`/lojas/?limit=${limit}&page=${page}`}
                         />
                     </FloatingLabel>
                 </Col>

@@ -12,8 +12,10 @@ import {
     Dropdown,
     FloatingLabel,
     ListGroup,
+    OverlayTrigger,
     Row,
     Table,
+    Tooltip,
 } from "react-bootstrap";
 import ratata from "../../assets/megaPreco.svg";
 import { useSearchParams } from "react-router-dom";
@@ -144,9 +146,14 @@ export function PageHome() {
 
 
 
-                    <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown  justify-content-end my-1" onClick={() => exportCatalogoExcel(catalogos.items)}>
-                        <Icons tipo="downloadXLSX" tamanho={20} />
-                    </Dropdown.Toggle>
+                    <OverlayTrigger
+                        placement="top"
+                        overlay={<Tooltip id="download-tooltip">Exportar para Excel</Tooltip>}
+                    >
+                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown justify-content-end my-1" onClick={() => exportCatalogoExcel(catalogos.items)}>
+                            <Icons tipo="downloadXLSX" tamanho={20} />
+                        </Dropdown.Toggle>
+                    </OverlayTrigger>
                 </Col>
             </Row>
 

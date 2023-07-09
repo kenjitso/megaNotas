@@ -61,7 +61,7 @@ export function TableVinculoManual({ produtoParaguay, onHide }: IProps) {
         data
     } = useDataTypes<ICatalogo>({
         queryKey: ["lojas"],
-        queryFn: async () => await CatalogoController.search(1, 10, filtro, ordenar, ordem ? "crescente" : "descrescente", true),
+        queryFn: async () => await CatalogoController.searchVinculo(1, 10, filtro, ordenar, ordem ? "crescente" : "descrescente", true),
         filtro: filtro,
         defaultOrder: "nome"
     });

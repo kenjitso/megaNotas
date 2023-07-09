@@ -19,7 +19,7 @@ export function PageFreteiro() {
     const [freteiroIdEdit, setEdit] = useState<string | undefined>(undefined);
     const [freteiroIdDelete, setDelete] = useState<string | undefined>("");
     const page = parseInt(params.get("page") ?? "1");
-    const limit = parseInt(params.get("limit") ?? "25");
+    const limit = parseInt(params.get("limit") ?? "20");
     const [filtro, setFiltro] = useState("");
     const { sortOrder, sortBy, handleSort } = useSort<IFreteiro>('nome');
 
@@ -65,7 +65,7 @@ export function PageFreteiro() {
                             controlName="sku"
                             placeholder="pesquisar"
                             onUpdate={setFiltro}
-                            pageLink="/freteiros/1"
+                            pageLink={`/freteiros/?limit=${limit}&page=${page}`}
                         />
                     </FloatingLabel>
                 </Col>
