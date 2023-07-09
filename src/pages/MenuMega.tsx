@@ -40,7 +40,7 @@ export function MenuMega() {
     data
   } = useDataTypes<IFreteiro>({
     queryKey: ["freteiros"],
-    queryFn: async () => await FreteiroController.search(1, 100, filtro, ordenar, ordem ? "crescente" : "descrescente", true),
+    queryFn: async () => await FreteiroController.searchFreteiro(1, 100, filtro, ordenar, ordem ? "crescente" : "descrescente", true),
     filtro: filtro,
     defaultOrder: "nome"
   })

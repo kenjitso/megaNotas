@@ -24,7 +24,17 @@ export function ModalCadastroFreteiro({ onHide, freteiroId }: props) {
         toasts: {
             saveComplete: freteiroId ? `Freteiro alterado com sucesso!` : `Freteiro cadastrado com sucesso!`,
         },
-        saveFn: FreteiroController.save,
+        saveFn: (freteiroArray) => {
+            const freteiroObject = {
+                id: freteiroArray.id ?? "",
+                ativo: freteiroArray.ativo ?? true,
+                nome: freteiroArray.nome,
+                fixo: freteiroArray.fixo,
+                percentual: freteiroArray.percentual,
+            }
+      
+            return FreteiroController.save(freteiroObject);
+        },
     });
 
 
@@ -56,7 +66,7 @@ export function ModalCadastroFreteiro({ onHide, freteiroId }: props) {
                                                 label="Nome">
                                                 <Form.Control
                                                     title="Por favor, insira apenas caracteres não numéricos"
-                                                    value={freteiroMutator.state.nome}
+                                                    value={freteiroMutator.state.nome??""}
                                                     onChange={((event) => freteiroMutator.update("nome", event.target.value))}
                                                     required
                                                 />
@@ -76,7 +86,7 @@ export function ModalCadastroFreteiro({ onHide, freteiroId }: props) {
                                                         as={InputNumero}
                                                         type="number"
                                                         decimals={2}
-                                                        value={freteiroMutator.state.fixo}
+                                                        value={freteiroMutator.state.fixo??0}
                                                         onValueChange={(numero: number) => freteiroMutator.update("fixo", numero)}
                                                         placeholder="Insira o valor fixo"
                                                     />
@@ -95,7 +105,7 @@ export function ModalCadastroFreteiro({ onHide, freteiroId }: props) {
                                                         type="number"
                                                         decimals={2}
                                                         max={100}
-                                                        value={freteiroMutator.state.percentual}
+                                                        value={freteiroMutator.state.percentual??0}
                                                         onValueChange={(numero: number) => freteiroMutator.update("percentual", numero)}
                                                         placeholder="Insira o Percentual"
                                                     />

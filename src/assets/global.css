@@ -6,6 +6,20 @@
 
   }
 
+/* Cor quando o switch está desligado */
+.custom-switch .form-check-input:not(:checked) ~ .form-switch-input::before {
+    background-color: #B5B5B5; 
+}
+
+
+.custom-switch .form-check-input:checked{
+    background-color: #e67e22; 
+    border-color: #e67e22;
+}
+
+
+
+
   .custom-navbar {
       background-color: #34495e;
   }

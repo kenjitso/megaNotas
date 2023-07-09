@@ -3,10 +3,10 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 interface ISearchData<T> {
-    page: number;
+    page?: number;
     limit?: number;
     items?: T[];
-    total: number;
+    total?: number;
 }
 
 interface IProps<T> {

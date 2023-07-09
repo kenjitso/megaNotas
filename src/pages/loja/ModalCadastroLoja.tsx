@@ -12,6 +12,9 @@ interface IProps {
 
 export function ModalCadastroLoja({ onHide, lojaId }: IProps) {
 
+
+
+
     const lojaMutator = useQueryMutation(LojaController.createNew(), {
         queryEnabled: !!lojaId && typeof onHide === 'function',
         queryKey: ["lojas", lojaId ?? ""],
@@ -23,7 +26,24 @@ export function ModalCadastroLoja({ onHide, lojaId }: IProps) {
         toasts: {
             saveComplete: lojaId ? `Loja alterado com sucesso!` : `Loja cadastrado com sucesso!`
         },
-        saveFn: LojaController.save,
+ 
+        saveFn: (lojaArray) => {
+            const lojaObject = {
+              id: lojaArray.id ?? "",
+              ativo: lojaArray.ativo ?? true,
+              nome: lojaArray.nome ?? "",
+              cotacao: lojaArray.cotacao ?? 0,
+              url_cotacao: lojaArray.url_cotacao ?? "",
+              url_catalogo: lojaArray.url_catalogo ?? "",
+              ultima_atualizacao: lojaArray.ultima_atualizacao ?? new Date(),
+              algoritmo: lojaArray.algoritmo ?? 0,
+            }
+          
+  
+            return LojaController.save(lojaObject);
+          },
+          
+
     });
 
 
@@ -56,7 +76,7 @@ export function ModalCadastroLoja({ onHide, lojaId }: IProps) {
                                                 <FloatingLabel controlId="formNome" label="Nome">
                                                     <Form.Control
                                                         title="Por favor, insira apenas caracteres não numéricos"
-                                                        value={lojaMutator.state.nome}
+                                                        value={lojaMutator.state.nome??""}
                                                         onChange={(event) => lojaMutator.update("nome", event.target.value)}
                                                         required
                                                     />
@@ -76,7 +96,7 @@ export function ModalCadastroLoja({ onHide, lojaId }: IProps) {
                                                         as={InputNumero}
                                                         type="number"
                                                         decimals={2}
-                                                        value={lojaMutator.state.cotacao || 0}
+                                                        value={lojaMutator.state.cotacao??0}
                                                         onValueChange={(numero: number) => lojaMutator.update("cotacao", numero)}
                                                         placeholder="Insira a cotação"
                                                     />

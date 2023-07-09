@@ -1,44 +1,58 @@
-import { useState } from "react";
-import { Button, Col, FloatingLabel, Row, Table, } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
+import { useMemo, useState } from "react";
+import { Button, Col, Dropdown, FloatingLabel, Row, Table, } from "react-bootstrap";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { PaginationComponent } from "../../datas/PaginationComponent";
 import { ILoja, LojaController } from "@/datatypes/loja";
 import React from "react";
 import { ModalCadastroLoja } from "./ModalCadastroLoja";
-import useDataTypes from "@/hooks/useDataTypes";
 import { Icons } from "@/components/icons/icons";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import { ModalDesativaLoja } from "./ModalDesativaLoja";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatCurrency } from "@/components/utils/FormatCurrency";
+import { compareValues, useSort } from "@/components/utils/FilterArrows";
 
 
 export function PageLoja() {
-    const navigate = useNavigate();
-    const { page } = useParams();
+    const [params, setParams] = useSearchParams();
     const [lojaIdEdit, setEdit] = useState<string | undefined>(undefined)
     const [lojaIdDelete, setDelete] = useState("");
     const [filtro, setFiltro] = useState("");
+    const page = parseInt(params.get("page") ?? "1");
+    const limit = parseInt(params.get("limit") ?? "25");
+    const { sortOrder, sortBy, handleSort } = useSort<ILoja>('nome');
 
 
-
-    const {
-        isLoading,
-        orderBy,
-        ordem,
-        ordenar,
-        data
-    } = useDataTypes<ILoja>({
-        queryKey: ["lojas", page ?? "1", "10"],
-        queryFn: async () => await LojaController.search(parseInt(page ?? "1"), 10, filtro, ordenar, ordem ? "crescente" : "descrescente", true),
-        filtro: filtro,
-        defaultOrder: "nome"
+    const { isFetching, data } = useQuery(["lojas", filtro], () => {
+        const loja = LojaController.search(filtro);
+        return loja;
     });
+
+    const loja = useMemo(() => {
+
+        let dados = data?.map((loja: ILoja) => {
+
+            return loja;
+        }) ?? []
+
+        dados = dados.filter(loja => loja.ativo === true);
+
+        const sortedData = [...dados].sort(compareValues(sortBy, sortOrder));
+
+        const total = sortedData.length;
+        const items = sortedData.slice((page - 1) * limit, limit * page);
+        return {
+            page, total, limit, items
+        }
+
+
+    }, [data, page, limit, sortBy, sortOrder]);
+
 
 
     const handlePageChange = (page: number) => {
-        navigate(`/lojas/${page}`);
+        setParams(`?limit=${limit}&page=${page}`);
     };
 
     return (
@@ -72,19 +86,19 @@ export function PageLoja() {
                 <thead>
                     <tr>
 
-                        <th className="th200" onClick={() => orderBy("nome")}>
+                        <th className="th200" onClick={() => handleSort("nome")}>
                             <div className="thArrow">
                                 <span>Nome</span>
                                 <span>
-                                    {ordenar === "nome" && (ordem ? "▼" : "▲")}
+                                    {sortBy === "nome" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
                                 </span>
                             </div>
                         </th>
-                        <th className="th110" onClick={() => orderBy("cotacao")}>
+                        <th className="th110" onClick={() => handleSort("cotacao")}>
                             <div className="thArrow">
                                 <span>Cotação</span>
                                 <span>
-                                    {ordenar === "cotacao" && (ordem ? "▼" : "▲")}
+                                    {sortBy === "cotacao" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
                                 </span>
                             </div>
                         </th>
@@ -96,21 +110,35 @@ export function PageLoja() {
                 </thead>
                 <tbody>
                     {
-                        !isLoading && data?.items?.map((loja, index) => <ItemTable key={index} loja={loja} onEdit={() => setEdit(loja.id)} onDelete={() => setDelete(loja.id)} />)
+                        !isFetching && loja?.items?.map((loja, index) => <ItemTable key={index} loja={loja} onEdit={() => setEdit(loja.id)} onDelete={() => setDelete(loja.id)} />)
                     }
                 </tbody>
             </Table>
-            {isLoading && <FragmentLoading />}
+            {isFetching && <FragmentLoading />}
             <Row className="my-3">
                 <Col xs className="d-flex">
                     <PaginationComponent<ILoja>
-                        items={data?.total ?? 0}
-                        pageSize={10}
+                        items={loja.total}
+                        pageSize={loja.limit}
                         onPageChange={handlePageChange}
-                        currentPage={data?.page ?? 1}
+                        currentPage={loja.page ?? 1}
                     />
-                </Col>
 
+                    <Dropdown >
+                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-3 limitPagination">
+                            Mostrando {loja.items.length} de {limit}
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu className="custom-dropdown-menu">
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=20&page=1"))}>20</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=50&page=1"))}>50</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=100&page=1"))}>100</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=200&page=1"))}>200</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=400&page=1"))}>400</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=800&page=1"))}>800</Dropdown.Item>
+
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </Col>
             </Row>
 
         </React.Fragment>

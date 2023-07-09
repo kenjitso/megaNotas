@@ -35,7 +35,7 @@ export function PageHome() {
     const [expandedKey, setExpandedKey] = useState<string | null>(null);
     const { freteiro } = FreteiroStore.useStore();
     const page = parseInt(params.get("page") ?? "1");
-    const limit = parseInt(params.get("limit") ?? "10");
+    const limit = parseInt(params.get("limit") ?? "20");
     const { sortOrder, sortBy, handleSort } = useSort<ICatalogo>('nome');
 
 
@@ -137,7 +137,7 @@ export function PageHome() {
                             controlName="sku"
                             placeholder="pesquisar"
                             onUpdate={setFiltro}
-                            pageLink={`?limit=10&page=1`}
+                            pageLink={`?limit=20&page=1`}
                         />
 
                     </FloatingLabel>
@@ -271,14 +271,13 @@ export function PageHome() {
                             Mostrando {catalogos.items.length} de {limit}
                         </Dropdown.Toggle>
                         <Dropdown.Menu className="custom-dropdown-menu">
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=10&page=1"))}>10</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=25&page=1"))}>25</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=20&page=1"))}>20</Dropdown.Item>
                             <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=50&page=1"))}>50</Dropdown.Item>
                             <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=100&page=1"))}>100</Dropdown.Item>
                             <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=200&page=1"))}>200</Dropdown.Item>
                             <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=400&page=1"))}>400</Dropdown.Item>
                             <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=800&page=1"))}>800</Dropdown.Item>
-                    
+
                         </Dropdown.Menu>
                     </Dropdown>
                 </Col>

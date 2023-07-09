@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { Button, Col, FloatingLabel, Row, Table } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
+import { useMemo, useState } from "react";
+import { Button, Col, Dropdown, FloatingLabel, Row, Table } from "react-bootstrap";
+import { useSearchParams } from "react-router-dom";
 import { PaginationComponent } from "@/datas/PaginationComponent";
 import { FreteiroController, IFreteiro } from "@/datatypes/freteiro";
 import { ModalCadastroFreteiro } from "./ModalCadastroFreteiro";
@@ -10,33 +10,47 @@ import { Icons } from "@/components/icons/icons";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { ModalDesativaFreteiro } from "./ModalDesativaFreteiro";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
-import useDataTypes from "@/hooks/useDataTypes";
 import { formatCurrency } from "@/components/utils/FormatCurrency";
-import { ILoja } from "@/datatypes/loja";
+import { useQuery } from "@tanstack/react-query";
+import { compareValues, useSort } from "@/components/utils/FilterArrows";
 
 export function PageFreteiro() {
-    const navigate = useNavigate();
-    const { page } = useParams();
+    const [params, setParams] = useSearchParams();
     const [freteiroIdEdit, setEdit] = useState<string | undefined>(undefined);
     const [freteiroIdDelete, setDelete] = useState<string | undefined>("");
+    const page = parseInt(params.get("page") ?? "1");
+    const limit = parseInt(params.get("limit") ?? "25");
     const [filtro, setFiltro] = useState("");
+    const { sortOrder, sortBy, handleSort } = useSort<IFreteiro>('nome');
 
-    const {
 
-        isLoading,
-        orderBy,
-        ordem,
-        ordenar,
-        data
-    } = useDataTypes<IFreteiro>({
-        queryKey: ["freteiros", page ?? "1", "10"],
-        queryFn: async () => await FreteiroController.search(parseInt(page ?? "1"), 10, filtro, ordenar, ordem ? "crescente" : "descrescente", true),
-        filtro: filtro,
-        defaultOrder: "nome"
-    })
+    const { isFetching, data } = useQuery(["freteiros", filtro], () => {
+        const loja = FreteiroController.search(filtro);
+        return loja;
+    });
+
+    const freteiro = useMemo(() => {
+
+        let dados = data?.map((freteiro: IFreteiro) => {
+
+            return freteiro;
+        }) ?? []
+
+        dados = dados.filter(freteiro => freteiro.ativo === true);
+
+        const sortedData = [...dados].sort(compareValues(sortBy, sortOrder));
+
+        const total = sortedData.length;
+        const items = sortedData.slice((page - 1) * limit, limit * page);
+        return {
+            page, total, limit, items
+        }
+
+
+    }, [data, page, limit, sortBy, sortOrder]);
 
     const handlePageChange = (page: number) => {
-        navigate(`/freteiros/${page}`);
+        setParams(`?limit=${limit}&page=${page}`);
     };
 
     return (
@@ -57,7 +71,7 @@ export function PageFreteiro() {
                 </Col>
                 <Col xs className="d-flex justify-content-end">
                     <Button
-                       className="custom-btn"
+                        className="custom-btn"
                         onClick={() => setEdit("")}
                     >
                         <Icons tipo="cadastro" tamanho={23} /> Cadastro
@@ -69,27 +83,27 @@ export function PageFreteiro() {
                 <thead>
                     <tr>
 
-                        <th className="th200" onClick={() => orderBy("nome")}>
+                        <th className="th200" onClick={() => handleSort("nome")}>
                             <div className="thArrow">
                                 <span>Nome</span>
                                 <span>
-                                    {ordenar === "nome" && (ordem ? "▼" : "▲")}
+                                    {sortBy === "nome" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
                                 </span>
                             </div>
                         </th>
-                        <th className="th110" onClick={() => orderBy("fixo")}>
+                        <th className="th110" onClick={() => handleSort("fixo")}>
                             <div className="thArrow">
                                 <span>Fixo</span>
                                 <span>
-                                    {ordenar === "fixo" && (ordem ? "▼" : "▲")}
+                                    {sortBy === "fixo" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
                                 </span>
                             </div>
                         </th>
-                        <th className="th70" onClick={() => orderBy("percentual")}>
+                        <th className="th70" onClick={() => handleSort("percentual")}>
                             <div className="thArrow">
                                 <span>%</span>
                                 <span>
-                                    {ordenar === "percentual" && (ordem ? "▼" : "▲")}
+                                    {sortBy === "percentual" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
                                 </span>
                             </div>
                         </th>
@@ -103,21 +117,35 @@ export function PageFreteiro() {
                 </thead>
                 <tbody>
                     {
-                        !isLoading && data?.items?.map((freteiro, index) => <ItemTable key={index} freteiro={freteiro} onEdit={() => setEdit(freteiro.id)} onDelete={() => setDelete(freteiro.id)} />)
+                        !isFetching && freteiro?.items?.map((freteiro, index) => <ItemTable key={index} freteiro={freteiro} onEdit={() => setEdit(freteiro.id)} onDelete={() => setDelete(freteiro.id)} />)
                     }
                 </tbody>
             </Table>
-            {isLoading && <FragmentLoading />}
+            {isFetching && <FragmentLoading />}
             <Row className="my-3">
                 <Col xs className="d-flex">
-                    <PaginationComponent<ILoja>
-                        items={data?.total ?? 0}
-                        pageSize={10}
+                    <PaginationComponent<IFreteiro>
+                        items={freteiro.total}
+                        pageSize={freteiro.limit}
                         onPageChange={handlePageChange}
-                        currentPage={data?.page ?? 1}
+                        currentPage={freteiro.page ?? 1}
                     />
-                </Col>
 
+                    <Dropdown >
+                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-3 limitPagination">
+                            Mostrando {freteiro.items.length} de {limit}
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu className="custom-dropdown-menu">
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=20&page=1"))}>20</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=50&page=1"))}>50</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=100&page=1"))}>100</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=200&page=1"))}>200</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=400&page=1"))}>400</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=800&page=1"))}>800</Dropdown.Item>
+
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </Col>
             </Row>
         </React.Fragment>
     );
@@ -140,13 +168,13 @@ function ItemTable({ freteiro, onEdit, onDelete }: IPropItensTable) {
                     R$: {formatCurrency(freteiro.fixo)}
                 </td>
                 <td className="tdValue">{freteiro.percentual}%</td>
-                <td    className="centralize-icon"
+                <td className="centralize-icon"
                     onClick={onEdit}
                     role="button"
                     aria-label="Editar Freteiro">
                     <Icons tipo="edit" />
                 </td>
-                <td    className="centralize-icon"
+                <td className="centralize-icon"
                     onClick={onDelete}
                     role="button"
                     aria-label="Desativar Freteiro">

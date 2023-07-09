@@ -57,16 +57,17 @@ export class LojaController {
             body: JSON.stringify(loja)
         };
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas`, options);
-       
+
         const responseData: unknown = await response.json();
-    
+      
         const lojaSchema = schemaLoja.parse(responseData);
+  
         return lojaSchema;
     }
 
     public static async update(loja: ILoja) {
 
-  
+
         const options: RequestInit = {
             method: "PATCH",
             headers: {
@@ -76,24 +77,24 @@ export class LojaController {
         };
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas/${loja.id}`, options);
         const responseData: unknown = await response.json();
-   
+
         const lojaSchema = schemaLoja.parse(responseData);
         return lojaSchema;
     }
 
     public static async updateCotacao(cotacao: number) {
-     
+
         const options: RequestInit = {
             method: "POST",
             headers: {
                 "Content-type": "application/json"
             },
-            body: JSON.stringify({cotacao})
+            body: JSON.stringify({ cotacao })
         };
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas/cotacao`, options);
-       
+
         const responseData: unknown = await response.json();
-        const schema = z.object({message:z.string()}).parse(responseData);
+        const schema = z.object({ message: z.string() }).parse(responseData);
         return schema.message;
     }
 
@@ -121,15 +122,11 @@ export class LojaController {
         return await LojaController.create(loja);
     }
 
-    public static async search(page = 1, limit = 25, q: string = "", ordenar = "nome", ordem = "crescente", ativo: boolean | undefined = true) {
+    public static async search(q: string) {
 
         const params = new URLSearchParams();
         if (q) params.set("q", q);
-        if (ativo !== undefined) params.set("ativo", ativo.toString());
-        params.set("limit", limit.toString());
-        params.set("page", page.toString());
-        params.set("ordenar", ordenar);
-        params.set("ordem", ordem);
+        params.set("limit", "9999");
 
         const options: RequestInit = {
             method: "GET",
@@ -137,17 +134,14 @@ export class LojaController {
                 "Content-type": "application/json"
             }
         };
-     
+
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas?${params}`, options);
-       
+
         const responseData: unknown = await response.json();
 
         const lojasSchema = z.object({
-            page: z.number().min(1),
-            limit: z.number().min(1),
             items: z.array(schemaLoja),
-            total: z.number().min(0)
-        }).parse(responseData);
+        }).transform(dados => dados.items).parse(responseData);
         return lojasSchema;
     }
 

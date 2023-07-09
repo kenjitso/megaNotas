@@ -24,10 +24,13 @@ export function PageProdutoLoja() {
     const [cadastroProdutoLoja, setCadastroProdutoLoja] = useState<string | undefined>(undefined);
     const [filtro, setFiltro] = useState("");
     const page = parseInt(params.get("page") ?? "1");
-    const limit = parseInt(params.get("limit") ?? "10");
+    const limit = parseInt(params.get("limit") ?? "20");
     const { sortOrder, sortBy, handleSort } = useSort<IProdutoLoja>('nome');
-    const [isFilteredOff, setIsFilteredOff] = useState(false);
-    const [isFilteredOn, setIsFilteredOn] = useState(false);
+    const [isFilteredDesvinculados, setIsFilteredDesvinculados] = useState(false);
+    const [isFilteredVinculados, setIsFilteredVinculados] = useState(false);
+    const [minRange, setMinRange] = useState(0);
+    const [maxRange, setMaxRange] = useState(50);
+
 
 
     const { isFetching, data } = useQuery(["produtoloja", filtro], () => {
@@ -44,12 +47,15 @@ export function PageProdutoLoja() {
             return produtoLoja;
         }) ?? []
 
-        if (isFilteredOff) {
-            dados = dados.filter(produto => produto.vinculos !== null && produto.vinculos.length > 0);
+        dados = dados.filter((_, index) => index >= minRange && index < maxRange);
+
+        if (isFilteredDesvinculados) {
+            dados = dados.filter(produto => produto.vinculos === null || produto.vinculos.length === 0);
         }
 
-        if (isFilteredOn) {
-            dados = dados.filter(produto => produto.vinculos === null || produto.vinculos.length === 0);
+        if (isFilteredVinculados) {
+            dados = dados.filter(produto => produto.vinculos !== null && produto.vinculos.length > 0);
+
         }
 
         const sortedData = [...dados].sort(compareValues(sortBy, sortOrder));
@@ -59,20 +65,20 @@ export function PageProdutoLoja() {
         return {
             page, total, limit, items
         }
-    }, [data, page, limit, sortBy, sortOrder, isFilteredOff, isFilteredOn])
+    }, [data, page, limit, sortBy, sortOrder, isFilteredDesvinculados, isFilteredVinculados, minRange, maxRange])
 
     const handlePageChange = (page: number) => {
         setParams(`?limit=${limit}&page=${page}`);
     };
 
-    const handleFilterOff = () => {
-        setIsFilteredOff(prevState => !prevState);
-        setParams({ page: '1', limit: params.get("limit") || '10' });
+    const handleFilterDesvinculados = () => {
+        setIsFilteredDesvinculados(prevState => !prevState);
+        setParams({ page: '1', limit: params.get("limit") || '20' });
 
     }
-    const handleFilterOn = () => {
-        setIsFilteredOn(prevState => !prevState);
-        setParams({ page: '1', limit: params.get("limit") || '10' });
+    const handleFilterVinculados = () => {
+        setIsFilteredVinculados(prevState => !prevState);
+        setParams({ page: '1', limit: params.get("limit") || '20' });
 
     }
 
@@ -89,11 +95,9 @@ export function PageProdutoLoja() {
             <ModalVinculo onHide={() => setVinculoProduto(undefined)} produtoParaguay={modalVinculoProduto} />
 
             <Row className="my-3">
-
-                <Col xs className="d-flex" >
+                <Col xs={6} className="d-flex">
                     <Button
                         className="me-3 d-flex align-items-center justify-content-center custom-btn"
-
                         onClick={() => navigate("/lojas")}
                     >
                         <Icons tipo="voltar" tamanho={22} />   Voltar
@@ -104,46 +108,40 @@ export function PageProdutoLoja() {
                             controlName="sku"
                             placeholder="pesquisar"
                             onUpdate={setFiltro}
-                            pageLink={`?limit=10&page=1`}
+                            pageLink={`?limit=20&page=1`}
                         />
                     </FloatingLabel>
-                    <Dropdown>
-                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-3 limitFilter">
-                            Filtros
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu className="custom-dropdown-menu">
-                            <Dropdown.Item className="custom-dropdown-item" onClick={(e) => e.stopPropagation()}>
-                                <Form.Switch
-
-                                    type="checkbox"
-                                    label="Filtrar itens desativados"
-                                    checked={isFilteredOff}
-                                    onChange={() => { }}
-                                    onMouseDown={e => {
-                                        e.preventDefault();
-                                        handleFilterOff();
-                                    }}
-                                />
-                            </Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={(e) => e.stopPropagation()}>
-                                <Form.Switch
-
-                                    type="checkbox"
-                                    label="Filtrar itens ativados"
-                                    checked={isFilteredOn}
-                                    onChange={() => { }}
-                                    onMouseDown={e => {
-                                        e.preventDefault();
-                                        handleFilterOn();
-                                    }}
-                                />
-                            </Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-
-
 
                 </Col>
+                <Col>
+                    <div className="d-flex my-2">
+                        <Form.Switch
+                            type="checkbox"
+                            label="Vinculado"
+                            checked={isFilteredVinculados}
+                            onChange={() => { }}
+                            onMouseDown={e => {
+                                e.preventDefault();
+                                handleFilterVinculados();
+                            }}
+                            className="me-3 custom-switch"  // Adicionado a classe custom-switch
+
+                        />
+
+                        <Form.Switch
+                            type="checkbox"
+                            label="Não Vinculado"
+                            checked={isFilteredDesvinculados}
+                            onChange={() => { }}
+                            onMouseDown={e => {
+                                e.preventDefault();
+                                handleFilterDesvinculados();
+                            }}
+                            className="me-3 custom-switch"
+                        />
+                    </div>
+                </Col>
+
 
                 <Col xs className="d-flex justify-content-end">
                     <Button
@@ -162,6 +160,7 @@ export function PageProdutoLoja() {
                     </Button>
                 </Col>
             </Row>
+
 
             <Table striped bordered hover className="rounded-table">
 
@@ -225,16 +224,28 @@ export function PageProdutoLoja() {
                             Mostrando {produtosLoja.items.length} de {limit}
                         </Dropdown.Toggle>
                         <Dropdown.Menu className="custom-dropdown-menu">
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=10&page=1"))}>10</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=25&page=1"))}>25</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=20&page=1"))}>20</Dropdown.Item>
                             <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=50&page=1"))}>50</Dropdown.Item>
                             <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=100&page=1"))}>100</Dropdown.Item>
                             <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=200&page=1"))}>200</Dropdown.Item>
                             <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=400&page=1"))}>400</Dropdown.Item>
                             <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=800&page=1"))}>800</Dropdown.Item>
-                     
+
                         </Dropdown.Menu>
                     </Dropdown>
+                    { /*  <Row className="my-3">
+                        <Col xs>
+                            <FloatingLabel className="w-100" label="Min">
+                                <Form.Control type="number" min="0" value={minRange} onChange={(e) => setMinRange(parseInt(e.target.value))} />
+                            </FloatingLabel>
+                        </Col>
+                        <Col xs>
+                            <FloatingLabel className="w-100" label="Max">
+                                <Form.Control type="number" min="0" value={maxRange} onChange={(e) => setMaxRange(parseInt(e.target.value))} />
+                            </FloatingLabel>
+                        </Col>
+                    </Row>
+*/}
                 </Col>
             </Row>
         </React.Fragment>
