@@ -7,9 +7,14 @@ export const schemaProdutoLoja = z.object({
     codigo: z.string().default(""),
     loja: z.string().default(""),
     nome: z.string().default(""),
+    modelo: z.string().default("n/a"),
     categoria: z.string().default(""),
     estoque: z.boolean().default(false),
     preco: z.number().min(0).default(0),
+    rede: z.number().min(0).optional().default(0),
+    capacidade: z.number().optional().default(0),
+    ram: z.number().min(0).optional().default(0),
+    cor: z.string().optional().default("n/a"),
     ultima_atualizacao: z.date().or(
         z.string().datetime({ offset: true }).transform(date => parseISO(date))
     ).default(new Date()),
@@ -26,9 +31,14 @@ export class ProdutoLojaController {
             codigo: "",
             loja: "",
             nome: "",
+            modelo: "",
             categoria: "",
             estoque: false,
             preco: 0,
+            rede: 0,
+            capacidade: 0,
+            ram: 0,
+            cor: "",
             ultima_atualizacao: new Date(),
             vinculos: []
         }

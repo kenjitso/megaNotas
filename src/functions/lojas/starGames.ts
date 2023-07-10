@@ -23,17 +23,22 @@ export function StarGamesFormat(idLoja: string, pdfArray: string[]): Array<IProd
             loja: idLoja,
             codigo: item.codigo,
             nome: item.descricao,
+            modelo: "n/a", // Inclua o novo campo modelo
             categoria: "",
             preco: parseFloat(item.preco),
             estoque: true,
+            rede: 0, // Inclua o novo campo rede
+            capacidade: 0, // Inclua o novo campo capacidade
+            ram: 0, // Inclua o novo campo ram
+            cor: "n/a", // Inclua o novo campo cor
             ultima_atualizacao: new Date(), // .toISOString() exemplo de data válida
             vinculos: [],
         }));
-
-
+        
         const itens: IProdutoLoja[] = z.array(lineValidation).parse(extractedItems);
-
+        
         return itens;
+        
     } catch (error) {
         toast.error(`Entre em contato com o desenvolvedor, parece que a estrutura fornecida pela loja mudou.`);
         return [];

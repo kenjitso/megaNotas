@@ -18,17 +18,22 @@ export function MegaFormat(idLoja: string, pdfArray: string[]): Array<IProdutoLo
             loja: idLoja,
             codigo: item.codigo,
             nome: item.descricao,
+            modelo: "n/a", // Incluir o novo campo modelo
             categoria: "",
             preco: parseFloat(item.preco),
             estoque: true,
+            rede: 0, // Incluir o novo campo rede
+            capacidade: 0, // Incluir o novo campo capacidade
+            ram: 0, // Incluir o novo campo ram
+            cor: "n/a", // Incluir o novo campo cor
             ultima_atualizacao: new Date(), // .toISOString() exemplo de data válida
             vinculos: [],
         }));
-
-
+        
         const itens: IProdutoLoja[] = z.array(lineValidation).parse(extractedItems);
-      
+        
         return itens;
+        
     } catch (error) {
         toast.error(`Entre em contato com o desenvolvedor, parece que a estrutura fornecida pela loja mudou.`);
         return [];

@@ -41,10 +41,83 @@ export function PageProdutoLoja() {
 
 
     const produtosLoja = useMemo(() => {
-
-
         let dados = data?.map((produtoLoja: IProdutoLoja) => {
-            return produtoLoja;
+
+            const ram =
+                /2RAM/i.test(produtoLoja.nome) ? 2 :
+                    /3RAM/i.test(produtoLoja.nome) ? 3 :
+                        /4RAM/i.test(produtoLoja.nome) ? 4 :
+                            /6RAM/i.test(produtoLoja.nome) ? 6 :
+                                /8RAM/i.test(produtoLoja.nome) ? 8 :
+                                    /12RAM/i.test(produtoLoja.nome) ? 12 :
+                                        /16RAM/i.test(produtoLoja.nome) ? 16 :
+                                            null;
+
+            const capacidade =
+                /32GB/i.test(produtoLoja.nome) ? 32 :
+                    /64GB/i.test(produtoLoja.nome) ? 64 :
+                        /128GB/i.test(produtoLoja.nome) ? 128 :
+                            /256GB/i.test(produtoLoja.nome) ? 256 :
+                                /512GB/i.test(produtoLoja.nome) ? 512 :
+                                    null;
+
+            const rede =
+                /\b5g\b/i.test(produtoLoja.nome) ? 5 :
+                    /\b4g\b/i.test(produtoLoja.nome) ? 4 :
+                        null;
+
+            const cor =
+                /BLACK/i.test(produtoLoja.nome) ? "BLACK" :
+                    /MINT GREEN/i.test(produtoLoja.nome) ? "MINT GREEN" :
+                        /MINT GREE/i.test(produtoLoja.nome) ? "MINT GREEN" :
+                            /PEPPY PURPLE/i.test(produtoLoja.nome) ? "PEPPY PURPLE" :
+                                /PURPLE/i.test(produtoLoja.nome) ? "PURPLE" :
+                                    /BLUE/i.test(produtoLoja.nome) ? "BLUE" :
+                                        /LITE PINK/i.test(produtoLoja.nome) ? "LITE PINK" :
+                                            /WHITE/i.test(produtoLoja.nome) ? "WHITE" :
+                                                /AURORA GREEN/i.test(produtoLoja.nome) ? "AURORA GREEN" :
+                                                    /AURORA/i.test(produtoLoja.nome) ? "AURORA GREEN" :
+                                                        /CORAL GREEN/i.test(produtoLoja.nome) ? "CORAL GREEN" :
+                                                            /CORAL/i.test(produtoLoja.nome) ? "CORAL" :
+                                                                /GREEN/i.test(produtoLoja.nome) ? "GREEN" :
+                                                                    /GREE/i.test(produtoLoja.nome) ? "GREEN" :
+                                                                        /GRAY/i.test(produtoLoja.nome) ? "GRAY" :
+                                                                            /GREY/i.test(produtoLoja.nome) ? "GREY" :
+                                                                                /LITE GREEN/i.test(produtoLoja.nome) ? "LITE GREEN" :
+                                                                                    /ORANGE/i.test(produtoLoja.nome) ? "ORANGE" :
+                                                                                        /CHARCOAL/i.test(produtoLoja.nome) ? "CHARCOAL" :
+                                                                                            /SILVER/i.test(produtoLoja.nome) ? "SILVER" :
+                                                                                                /LIGHT BLU/i.test(produtoLoja.nome) ? "LIGHT BLUE" :
+                                                                                                    /TWILIGHT/i.test(produtoLoja.nome) ? "TWILIGHT" :
+                                                                                                        /GRAPHITE G/i.test(produtoLoja.nome) ? "GRAPHITE" :
+                                                                                                            /GRAPHITE/i.test(produtoLoja.nome) ? "GRAPHITE" :
+                                                                                                                null;
+
+            const modelo =
+                /INDIA/i.test(produtoLoja.nome) ? "INDIA" :
+                    /GLOBAL/i.test(produtoLoja.nome) ? "GLOBAL" :
+                        /GLOB/i.test(produtoLoja.nome) ? "GLOBAL" :
+                            /INDONESIA/i.test(produtoLoja.nome) ? "INDONESIA" :
+
+                                null;
+
+
+            let novoNome = produtoLoja.nome;
+            if (modelo) novoNome = novoNome.replace(/INDIA|GLOBAL|INDONESIA|GLOB/gi, '');
+            if (cor) novoNome = novoNome.replace(/BLACK|MINT GREEN|PURPLE|BLUE|LITE PINK|WHITE|AURORA GREEN|AURORA|CORAL GREEN|GRAY|CORAL|LITE GREEN|GREY|GREEN|ORANGE|CHARCOAL|SILVER|LIGHT BLU|MINT GREE|TWILIGHT|GREE|GRAPHITE G|GRAPHITE|BLAC|PEPPY PURPLE/gi, '');
+            if (rede) novoNome = novoNome.replace(/\b4g\b|\b4G\b|\b5g\b|\b5G\b/gi, '');
+            if (capacidade) novoNome = novoNome.replace(new RegExp(/\b32GB\b|\b64GB\b|\b128GB\b|\b256GB\b|\b512GB\b/gi, 'i'), '');
+            if (ram) novoNome = novoNome.replace(new RegExp(/\b2RAM\b|\b3RAM\b|\b4RAM\b|\b6RAM\b|\b8RAM\b|\b12RAM\b|\b16RAM\b/gi, 'i'), '');
+
+            return {
+                ...produtoLoja,
+                nome: novoNome,
+                modelo: modelo || produtoLoja.modelo,
+                cor: cor || produtoLoja.cor,
+                rede: rede || produtoLoja.rede,
+                capacidade: capacidade || produtoLoja.capacidade,
+                ram: ram || produtoLoja.ram
+            };
         }) ?? []
 
         dados = dados.filter((_, index) => index >= minRange && index < maxRange);
@@ -55,7 +128,6 @@ export function PageProdutoLoja() {
 
         if (isFilteredVinculados) {
             dados = dados.filter(produto => produto.vinculos !== null && produto.vinculos.length > 0);
-
         }
 
         const sortedData = [...dados].sort(compareValues(sortBy, sortOrder));
@@ -66,6 +138,8 @@ export function PageProdutoLoja() {
             page, total, limit, items
         }
     }, [data, page, limit, sortBy, sortOrder, isFilteredDesvinculados, isFilteredVinculados, minRange, maxRange])
+
+
 
     const handlePageChange = (page: number) => {
         setParams(`?limit=${limit}&page=${page}`);
@@ -182,6 +256,46 @@ export function PageProdutoLoja() {
                                 </span>
                             </div>
                         </th>
+                        <th className="th250" onClick={() => handleSort('modelo')} >
+                            <div className="thArrow">
+                                <span>Modelo</span>
+                                <span>
+                                    {sortBy === "modelo" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
+                                </span>
+                            </div>
+                        </th>
+                        <th className="th250" onClick={() => handleSort('cor')} >
+                            <div className="thArrow">
+                                <span>Cor</span>
+                                <span>
+                                    {sortBy === "cor" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
+                                </span>
+                            </div>
+                        </th>
+                        <th className="th150" onClick={() => handleSort('rede')}>
+                            <div className="thArrow">
+                                <span>Rede</span>
+                                <span>
+                                    {sortBy === "rede" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
+                                </span>
+                            </div>
+                        </th>
+                        <th className="th150" onClick={() => handleSort('ram')}>
+                            <div className="thArrow">
+                                <span>Ram</span>
+                                <span>
+                                    {sortBy === "ram" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
+                                </span>
+                            </div>
+                        </th>
+                        <th className="th150" onClick={() => handleSort('capacidade')}>
+                            <div className="thArrow">
+                                <span>Capacidade</span>
+                                <span>
+                                    {sortBy === "capacidade" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
+                                </span>
+                            </div>
+                        </th>
                         <th className="th130" onClick={() => handleSort('preco')}>
                             <div className="thArrow">
                                 <span>Preço U$</span>
@@ -267,6 +381,21 @@ function ItemTable({ produtoLoja, onVinculo }: IPropsItensTable) {
                 </td>
                 <td>
                     {produtoLoja.nome}
+                </td>
+                <td>
+                    {produtoLoja.modelo}
+                </td>
+                <td>
+                    {produtoLoja.cor}
+                </td>
+                <td>
+                    {produtoLoja.rede}G
+                </td>
+                <td>
+                    {produtoLoja.ram}RAM
+                </td>
+                <td>
+                    {produtoLoja.capacidade}GB
                 </td>
                 <td>
                     U$: {formatCurrency(produtoLoja.preco)}
