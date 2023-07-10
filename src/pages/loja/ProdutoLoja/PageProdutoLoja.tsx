@@ -93,18 +93,25 @@ export function PageProdutoLoja() {
                                                                                                             /GRAPHITE/i.test(produtoLoja.nome) ? "GRAPHITE" :
                                                                                                                 null;
 
-            const modelo =
+
+            const origem =
                 /INDIA/i.test(produtoLoja.nome) ? "INDIA" :
                     /GLOBAL/i.test(produtoLoja.nome) ? "GLOBAL" :
                         /GLOB/i.test(produtoLoja.nome) ? "GLOBAL" :
                             /INDONESIA/i.test(produtoLoja.nome) ? "INDONESIA" :
+                                /INDI/i.test(produtoLoja.nome) ? "INDIA" :
 
-                                null;
+                                    null;
 
 
-            let novoNome = produtoLoja.nome;
-            if (modelo) novoNome = novoNome.replace(/INDIA|GLOBAL|INDONESIA|GLOB/gi, '');
-            if (cor) novoNome = novoNome.replace(/BLACK|MINT GREEN|PURPLE|BLUE|LITE PINK|WHITE|AURORA GREEN|AURORA|CORAL GREEN|GRAY|CORAL|LITE GREEN|GREY|GREEN|ORANGE|CHARCOAL|SILVER|LIGHT BLU|MINT GREE|TWILIGHT|GREE|GRAPHITE G|GRAPHITE|BLAC|PEPPY PURPLE/gi, '');
+
+
+            let posicaoUltimoDS = produtoLoja.nome.lastIndexOf("DS");
+            let novoNome = produtoLoja.nome.substring(0, posicaoUltimoDS + 2).trim(); // +2 para incluir o "DS"
+
+
+            if (origem) novoNome = novoNome.replace(/INDIA|GLOBAL|INDONESIA|GLOB/gi, '');
+            if (cor) novoNome = novoNome.replace(/BLACK|MINT GREEN|PURPLE|BLUE|LITE PINK|WHITE|AURORA GREEN|AURORA|CORAL GREEN|GRAY|CORAL|LITE GREEN|GREY|GREEN|ORANGE|CHARCOAL|SILVER|LIGHT BLU|MINT GREE|TWILIGHT|GREE|GRAPHITE G|GRAPHITE|BLAC|PEPPY PURPLE|INDI/gi, '');
             if (rede) novoNome = novoNome.replace(/\b4g\b|\b4G\b|\b5g\b|\b5G\b/gi, '');
             if (capacidade) novoNome = novoNome.replace(new RegExp(/\b32GB\b|\b64GB\b|\b128GB\b|\b256GB\b|\b512GB\b/gi, 'i'), '');
             if (ram) novoNome = novoNome.replace(new RegExp(/\b2RAM\b|\b3RAM\b|\b4RAM\b|\b6RAM\b|\b8RAM\b|\b12RAM\b|\b16RAM\b/gi, 'i'), '');
@@ -112,7 +119,7 @@ export function PageProdutoLoja() {
             return {
                 ...produtoLoja,
                 nome: novoNome,
-                modelo: modelo || produtoLoja.modelo,
+                origem: origem || produtoLoja.origem,
                 cor: cor || produtoLoja.cor,
                 rede: rede || produtoLoja.rede,
                 capacidade: capacidade || produtoLoja.capacidade,
@@ -250,17 +257,17 @@ export function PageProdutoLoja() {
                         </th>
                         <th className="th250" onClick={() => handleSort('nome')} >
                             <div className="thArrow">
-                                <span>Nome</span>
+                                <span>Modelo</span>
                                 <span>
                                     {sortBy === "nome" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
                                 </span>
                             </div>
                         </th>
-                        <th className="th250" onClick={() => handleSort('modelo')} >
+                        <th className="th250" onClick={() => handleSort('origem')} >
                             <div className="thArrow">
-                                <span>Modelo</span>
+                                <span>Origem</span>
                                 <span>
-                                    {sortBy === "modelo" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
+                                    {sortBy === "origem" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
                                 </span>
                             </div>
                         </th>
@@ -380,10 +387,19 @@ function ItemTable({ produtoLoja, onVinculo }: IPropsItensTable) {
                     {produtoLoja.codigo}
                 </td>
                 <td>
-                    {produtoLoja.nome}
+
+                    <a
+                        style={{ color: "blue" }}
+                        href={`https://atacadogames.com/lista-produtos/termo/${produtoLoja.codigo}/1`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={produtoLoja.codigo}
+                    >
+                        {produtoLoja.nome}
+                    </a>
                 </td>
                 <td>
-                    {produtoLoja.modelo}
+                    {produtoLoja.origem}
                 </td>
                 <td>
                     {produtoLoja.cor}
@@ -392,10 +408,10 @@ function ItemTable({ produtoLoja, onVinculo }: IPropsItensTable) {
                     {produtoLoja.rede}G
                 </td>
                 <td>
-                    {produtoLoja.ram}RAM
+                    {produtoLoja.ram}
                 </td>
                 <td>
-                    {produtoLoja.capacidade}GB
+                    {produtoLoja.capacidade}
                 </td>
                 <td>
                     U$: {formatCurrency(produtoLoja.preco)}
