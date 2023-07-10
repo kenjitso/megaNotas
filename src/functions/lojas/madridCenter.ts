@@ -19,7 +19,9 @@ export function MadridCenterFormat(idLoja: string, pdfArray: string[]): Array<IP
             loja: idLoja,
             codigo: item.codigo,
             nome: item.descricao,
+            marca: "",
             modelo: "n/a", // Incluir o novo campo modelo
+            origem: "",
             categoria: "",
             preco: parseFloat(item.preco),
             estoque: true,
