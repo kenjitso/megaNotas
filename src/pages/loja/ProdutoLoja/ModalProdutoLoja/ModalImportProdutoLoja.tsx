@@ -23,11 +23,12 @@ import { AlgoritmoPadraoFormat } from "@/functions/lojas/algoritmoPadrao";
 pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
 
 interface IProps {
+    produtoParaguay?: IProdutoLoja[];
     onHide: () => void,
     lojaId?: string,
 }
 
-export function ModalImportProdutoLoja({ onHide, lojaId }: IProps) {
+export function ModalImportProdutoLoja({ onHide, lojaId, produtoParaguay }: IProps) {
 
     const [formattedList, setFormattedList] = useState<IProdutoLoja[]>([]);
     const queryClient = useQueryClient();
@@ -93,7 +94,8 @@ export function ModalImportProdutoLoja({ onHide, lojaId }: IProps) {
                                 }
 
                                 if (data?.algoritmo === 1) {
-                                    setFormattedList(AtacadoGamesFormat(lojaId ?? "", allPagesText)); //ATACADO GAMES  FUNCIONANDO OK
+                                    setFormattedList(AtacadoGamesFormat(lojaId ?? "", allPagesText,produtoParaguay)); //ATACADO GAMES  FUNCIONANDO OK
+                                    
                                 }
 
                                 if (data?.algoritmo === 5) {

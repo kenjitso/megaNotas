@@ -100,7 +100,7 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
                                 }
 
                                 if (data?.algoritmo === 5) {
-                                    
+
                                     setFormattedList(MadridCenterFormat(lojaId ?? "", allPagesText)); //MADRID CENTER FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
                                 }
                                 if (data?.algoritmo === 6) {
@@ -112,11 +112,11 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
                                 }
 
                                 if (data?.algoritmo === 7) {
-                                    
+
                                     setFormattedList(MegaFormat(lojaId ?? "", allPagesText)); //MEGA FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
                                 }
 
-                         
+
 
                             });
                         } else {
@@ -136,7 +136,7 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
                                 setFormattedList(MobileZoneFormat(lojaId ?? "", dataList)); //CELLSHOP FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
                             }
 
-                            
+
                             if (data?.algoritmo === 9) {
                                 setFormattedList(AlgoritmoPadraoFormat(lojaId ?? "", dataList)); //AlgoritmoPadrao FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
                             }

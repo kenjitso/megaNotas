@@ -18,7 +18,6 @@ export function CellShopFormat(idLoja: string, excelArray: unknown[]): Array<IPr
             codigo: array[0],
             nome: array[1],
             marca: "",
-            modelo: "n/a", // Incluir o novo campo modelo
             origem: "",
             categoria: "",
             preco: parseFloat(array[2]),

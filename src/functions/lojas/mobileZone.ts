@@ -22,7 +22,6 @@ export function MobileZoneFormat(idLoja: string, excelArray: unknown[]): Array<I
             codigo: array[0],
             nome: array[1],
             marca: "",
-            modelo: "n/a", // Incluir o novo campo modelo
             origem: "",
             categoria: "",
             preco: parseFloat(array[2]),

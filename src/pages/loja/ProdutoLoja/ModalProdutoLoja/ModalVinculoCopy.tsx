@@ -13,7 +13,7 @@ interface IProps {
     produtoParaguay?: IProdutoLoja;
     onHide?: () => void;
     onOpenModalVinculoML?: () => void;
- 
+
 }
 
 export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
@@ -31,7 +31,15 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
                 <Modal.Title> Vincular Catálogo ao Produto</Modal.Title>
             </Modal.Header>
             <Modal.Body className="text-center">
-                {produtoParaguay?.nome ?? ""}
+
+                {produtoParaguay?.marca + " "}
+                {produtoParaguay?.nome + " "}
+                {produtoParaguay?.origem + " "}
+                {produtoParaguay?.cor + " "}
+                {produtoParaguay?.rede + "G "}
+                {produtoParaguay?.ram + "RAM "}
+                {produtoParaguay?.capacidade + "GB "}
+                <br />
                 <br /><br />
                 <Button className="mx-2" onClick={() => setSelectedTable('ML')}> Catalogos - Mercado Livre</Button>
                 <Button onClick={() => setSelectedTable('Manual')}>Catalogos - Manual</Button>
@@ -67,7 +75,7 @@ export function TableVinculoManual({ produtoParaguay, onHide }: IProps) {
     });
 
 
-    
+
 
 
 
@@ -121,23 +129,6 @@ export function TableVinculoManual({ produtoParaguay, onHide }: IProps) {
         }
     }
 
-    const formataDados = (nome: string | null): string[] => {
-        let tamanho: string;
-        let valores: string[];
-
-        const regex = /(64|128|256|512)/; // Expressão regular para detectar "64G" ou "128G"
-
-        if (!nome) return ['']; // Retorna um array vazio se o nome for nulo ou indefinido
-
-        if (regex.test(nome)) {
-            valores = nome.split(regex);
-            tamanho = valores[1]; // O segundo item será "64G" ou "128G"
-        } else {
-            return [nome]; // Retorna o nome original como um array se não houver "64G" ou "128G" no texto
-        }
-
-        return valores;
-    };
 
     return (
         <>
@@ -223,6 +214,25 @@ export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
     const [selectedUrl, setSelectedUrl] = useState<string>("");
     const [filtro, setFiltro] = useState("");
     const queryClient = useQueryClient();
+    const [checkMarca, setCheckMarca] = useState(false);
+    const [checkModelo, setCheckModelo] = useState(false);
+    const [checkOrigem, setCheckOrigem] = useState(false);
+    const [checkCor, setCheckCor] = useState(false);
+    const [checkRede, setCheckRede] = useState(false);
+    const [checkRam, setCheckRam] = useState(false);
+    const [checkCapacidade, setCheckCapacidade] = useState(false);
+
+    const resetForm = () => {
+        setFiltro("");
+        setCheckMarca(false);
+        setCheckModelo(false);
+        setCheckOrigem(false);
+        setCheckCor(false);
+        setCheckRede(false);
+        setCheckRam(false);
+        setCheckCapacidade(false);
+    }
+
 
     const { isFetching,
         data,
@@ -250,28 +260,135 @@ export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
 
 
 
-    const formataDados = (nome: string | null): string[] => {
-        let tamanho: string;
-        let valores: string[];
-
-        const regex = /(64|128|256|512)/; // Expressão regular para detectar "64G" ou "128G"
-
-        if (!nome) return ['']; // Retorna um array vazio se o nome for nulo ou indefinido
-
-        if (regex.test(nome)) {
-            valores = nome.split(regex);
-            tamanho = valores[1]; // O segundo item será "64G" ou "128G"
-        } else {
-            return [nome]; // Retorna o nome original como um array se não houver "64G" ou "128G" no texto
-        }
-
-        return valores;
-    };
-
-
     return (
         <>
+            <Row className="my-3">
+                <Col xs className="d-flex">
+                    <Form.Check
+                        type="checkbox"
+                        label="Marca"
+                        checked={checkMarca}
+                        onChange={(e) => {
+                            setCheckMarca(e.target.checked);
+                            if (e.target.checked) {
+                                setFiltro(filtro + " " + produtoParaguay?.marca);
+                            } else {
+                                setFiltro(filtro.replace(" " + produtoParaguay?.marca ?? "", ""))
+                                setFiltro(filtro.replace(produtoParaguay?.marca ?? "", ""))
+                            }
+                        }}
+                    />
 
+                </Col>
+
+                <Col xs className="d-flex">
+                    <Form.Check
+                        type="checkbox"
+                        label="Modelo"
+                        checked={checkModelo}
+                        onChange={(e) => {
+                            setCheckModelo(e.target.checked);
+                            if (e.target.checked) {
+                                setFiltro(filtro + " " + produtoParaguay?.nome);
+                            } else {
+                                setFiltro(filtro.replace(" " + produtoParaguay?.nome ?? "", ""))
+                                setFiltro(filtro.replace(produtoParaguay?.nome ?? "", ""))
+                            }
+                        }}
+                    />
+
+                </Col>
+
+                <Col xs className="d-flex">
+                    <Form.Check
+                        type="checkbox"
+                        label="Origem"
+                        checked={checkOrigem}
+                        onChange={(e) => {
+                            setCheckOrigem(e.target.checked);
+                            if (e.target.checked) {
+                                setFiltro(filtro + " " + produtoParaguay?.origem);
+                            } else {
+                                setFiltro(filtro.replace(" " + produtoParaguay?.origem ?? "", ""))
+                                setFiltro(filtro.replace(produtoParaguay?.origem ?? "", ""))
+                            }
+                        }}
+                    />
+
+                </Col>
+
+                <Col xs className="d-flex">
+                    <Form.Check
+                        type="checkbox"
+                        label="Cor"
+                        checked={checkCor}
+                        onChange={(e) => {
+                            setCheckCor(e.target.checked);
+                            if (e.target.checked) {
+                                setFiltro(filtro + " " + produtoParaguay?.cor);
+                            } else {
+                                setFiltro(filtro.replace(" " + produtoParaguay?.cor ?? "", ""))
+                                setFiltro(filtro.replace(produtoParaguay?.cor ?? "", ""))
+                            }
+                        }}
+                    />
+
+                </Col>
+
+                <Col xs className="d-flex">
+                    <Form.Check
+                        type="checkbox"
+                        label="Rede"
+                        checked={checkRede}
+                        onChange={(e) => {
+                            setCheckRede(e.target.checked);
+                            if (e.target.checked) {
+                                setFiltro(filtro + " " + produtoParaguay?.rede);
+                            } else {
+                                setFiltro(filtro.replace(" " + produtoParaguay?.rede.toString() ?? "", ""))
+                                setFiltro(filtro.replace(produtoParaguay?.rede.toString() ?? "", ""))
+                            }
+                        }}
+                    />
+
+                </Col>
+
+                <Col xs className="d-flex">
+                    <Form.Check
+                        type="checkbox"
+                        label="Ram"
+                        checked={checkRam}
+                        onChange={(e) => {
+                            setCheckRam(e.target.checked);
+                            if (e.target.checked) {
+                                setFiltro(filtro + " " + produtoParaguay?.ram);
+                            } else {
+                                setFiltro(filtro.replace(" " + produtoParaguay?.ram.toString() ?? "", ""))
+                                setFiltro(filtro.replace(produtoParaguay?.ram.toString() ?? "", ""))
+                            }
+                        }}
+                    />
+
+                </Col>
+
+                <Col xs className="d-flex">
+                    <Form.Check
+                        type="checkbox"
+                        label="Capacidade"
+                        checked={checkCapacidade}
+                        onChange={(e) => {
+                            setCheckCapacidade(e.target.checked);
+                            if (e.target.checked) {
+                                setFiltro(filtro + " " + produtoParaguay?.capacidade);
+                            } else {
+                                setFiltro(filtro.replace(" " + produtoParaguay?.capacidade.toString() ?? "", ""))
+                                setFiltro(filtro.replace(produtoParaguay?.capacidade.toString() ?? "", ""))
+                            }
+                        }}
+                    />
+
+                </Col>
+            </Row>
             <Row className="my-3">
                 <Col xs className="d-flex ">
                     <FloatingLabel className="w-100" label="Pesquisar">
@@ -281,7 +398,10 @@ export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
                             onUpdate={(value) => {
                                 setFiltro(value);
                                 refetch();
-                            }}
+                            }
+                            }
+                            externalValue={filtro.trimStart().trimEnd().replace(/\s+/g, ' ')}
+
                         />
                     </FloatingLabel>
 

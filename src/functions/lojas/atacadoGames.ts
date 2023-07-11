@@ -1,11 +1,8 @@
 import { toast } from "react-toastify";
-
 import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 import { z } from "zod";
 
-
-export function AtacadoGamesFormat(idLoja: string, pdfArray: string[]): Array<IProdutoLoja> {
-
+export function AtacadoGamesFormat(idLoja: string, pdfArray: string[], produtoParaguay?: IProdutoLoja[]): Array<IProdutoLoja> {
     try {
         const atacadoGamesString = "ATACADO GAMES";
         const atacadoGamesPdf = pdfArray.some(text => text.includes(atacadoGamesString));
@@ -15,10 +12,12 @@ export function AtacadoGamesFormat(idLoja: string, pdfArray: string[]): Array<IP
             return [];
         }
 
+        let extractedItems = processPdfArray(pdfArray);
 
-        const extractedItems = processPdfArray(pdfArray);
-
-
+        if (produtoParaguay) {
+            const produtoParaguayCodigos = new Set(produtoParaguay.map(item => item.codigo));
+            extractedItems = extractedItems.filter(item => produtoParaguayCodigos.has(item.codigo));
+        }
 
         const lineValidation = z.object({
             codigo: z.string(),
@@ -30,23 +29,23 @@ export function AtacadoGamesFormat(idLoja: string, pdfArray: string[]): Array<IP
             codigo: item.codigo,
             nome: item.descricao,
             marca: "",
-            modelo: "n/a", // Incluir o novo campo modelo
-            origem:"",
+            modelo: "n/a",
+            origem: "",
             categoria: "",
             preco: parseFloat(item.preco),
             estoque: true,
-            rede: 0, // Incluir o novo campo rede
-            capacidade: 0, // Incluir o novo campo capacidade
-            ram: 0, // Incluir o novo campo ram
-            cor: "n/a", // Incluir o novo campo cor
-            ultima_atualizacao: new Date(), // .toISOString() exemplo de data válida
+            rede: 0,
+            capacidade: 0,
+            ram: 0,
+            cor: "n/a",
+            ultima_atualizacao: new Date(),
             vinculos: [],
         }));
-        
+
         const itens: IProdutoLoja[] = z.array(lineValidation).parse(extractedItems);
-        
+
         return itens;
-        
+
     } catch (error) {
         toast.error("Entre em contato com o desenvolvedor, parece que a estrutura fornecida pela loja mudou.");
         return [];
@@ -67,13 +66,8 @@ function processPdfArray(
         const codigo = match[1];
         let descricao = match[2];
         let preco = match[3];
-   
-      
 
-        // Remove /, /D ou /EIG no final da descrição
         descricao = descricao.replace(/(\/|\/UNI|\/EIG|\"UN)$/, "");
-
-        // Remove a vírgula do preço antes de adicioná-lo ao resultado
         preco = preco.replace(",", "");
 
         result.push({

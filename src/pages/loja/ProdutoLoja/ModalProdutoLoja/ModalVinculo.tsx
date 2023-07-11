@@ -19,6 +19,27 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
     const [lastCheckedIndex, setLastCheckedIndex] = useState<number>(0);
     const queryClient = useQueryClient();
 
+    const [checkMarca, setCheckMarca] = useState(false);
+    const [checkModelo, setCheckModelo] = useState(false);
+    const [checkOrigem, setCheckOrigem] = useState(false);
+    const [checkCor, setCheckCor] = useState(false);
+    const [checkRede, setCheckRede] = useState(false);
+    const [checkRam, setCheckRam] = useState(false);
+    const [checkCapacidade, setCheckCapacidade] = useState(false);
+
+
+    const resetForm = () => {
+        setSelectedIds(new Set());
+        setFiltro("");
+        setCheckMarca(false);
+        setCheckModelo(false);
+        setCheckOrigem(false);
+        setCheckCor(false);
+        setCheckRede(false);
+        setCheckRam(false);
+        setCheckCapacidade(false);
+    }
+
 
 
     const {
@@ -41,6 +62,7 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
         return ProdutoLojaController.update(produtoParaguay);
     }, {
         onSuccess: () => {
+            resetForm();
             onHide();
             queryClient.invalidateQueries(["catalogosHome"]);
         }
@@ -85,23 +107,6 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
         }
     }
 
-    const formataDados = (nome: string | null): string[] => {
-        let tamanho: string;
-        let valores: string[];
-
-        const regex = /(64|128|256|512)/; // Expressão regular para detectar "64G" ou "128G"
-
-        if (!nome) return ['']; // Retorna um array vazio se o nome for nulo ou indefinido
-
-        if (regex.test(nome)) {
-            valores = nome.split(regex);
-            tamanho = valores[1]; // O segundo item será "64G" ou "128G"
-        } else {
-            return [nome]; // Retorna o nome original como um array se não houver "64G" ou "128G" no texto
-        }
-
-        return valores;
-    };
 
 
 
@@ -112,7 +117,10 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
             backdrop="static"
             keyboard={false}
             show={produtoParaguay?.id !== undefined}
-            onHide={onHide}
+            onHide={() => {
+                resetForm();
+                onHide();
+            }}
         >
 
             <Modal.Header closeButton>
@@ -122,14 +130,140 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
 
             <Modal.Body className="text-center">
 
-                {formataDados(produtoParaguay?.nome ?? "")[0]}
-        
-                    {formataDados(produtoParaguay?.nome ?? "")[1]}
-          
-                {formataDados(produtoParaguay?.nome ?? "")[2]}
-
+                {produtoParaguay?.marca}
+                {produtoParaguay?.nome}
+                {produtoParaguay?.capacidade}
+                {produtoParaguay?.cor}
                 <br />
-               
+
+
+                <Row className="my-3">
+                    <Col xs className="d-flex">
+                        <Form.Check
+                            type="checkbox"
+                            label="Marca"
+                            checked={checkMarca}
+                            onChange={(e) => {
+                                setCheckMarca(e.target.checked);
+                                if (e.target.checked) {
+                                    setFiltro(filtro + " " + produtoParaguay?.marca);
+                                } else {
+                                    setFiltro(filtro.replace(" " + produtoParaguay?.marca ?? "", ""))
+                                    setFiltro(filtro.replace(produtoParaguay?.marca ?? "", ""))
+                                }
+                            }}
+                        />
+
+                    </Col>
+
+                    <Col xs className="d-flex">
+                        <Form.Check
+                            type="checkbox"
+                            label="Modelo"
+                            checked={checkModelo}
+                            onChange={(e) => {
+                                setCheckModelo(e.target.checked);
+                                if (e.target.checked) {
+                                    setFiltro(filtro + " " + produtoParaguay?.nome);
+                                } else {
+                                    setFiltro(filtro.replace(" " + produtoParaguay?.nome ?? "", ""))
+                                    setFiltro(filtro.replace(produtoParaguay?.nome ?? "", ""))
+                                }
+                            }}
+                        />
+
+                    </Col>
+
+                    <Col xs className="d-flex">
+                        <Form.Check
+                            type="checkbox"
+                            label="Origem"
+                            checked={checkOrigem}
+                            onChange={(e) => {
+                                setCheckOrigem(e.target.checked);
+                                if (e.target.checked) {
+                                    setFiltro(filtro + " " + produtoParaguay?.origem);
+                                } else {
+                                    setFiltro(filtro.replace(" " + produtoParaguay?.origem ?? "", ""))
+                                    setFiltro(filtro.replace(produtoParaguay?.origem ?? "", ""))
+                                }
+                            }}
+                        />
+
+                    </Col>
+
+                    <Col xs className="d-flex">
+                        <Form.Check
+                            type="checkbox"
+                            label="Cor"
+                            checked={checkCor}
+                            onChange={(e) => {
+                                setCheckCor(e.target.checked);
+                                if (e.target.checked) {
+                                    setFiltro(filtro + " " + produtoParaguay?.cor);
+                                } else {
+                                    setFiltro(filtro.replace(" " + produtoParaguay?.cor ?? "", ""))
+                                    setFiltro(filtro.replace(produtoParaguay?.cor ?? "", ""))
+                                }
+                            }}
+                        />
+
+                    </Col>
+
+                    <Col xs className="d-flex">
+                        <Form.Check
+                            type="checkbox"
+                            label="Rede"
+                            checked={checkRede}
+                            onChange={(e) => {
+                                setCheckRede(e.target.checked);
+                                if (e.target.checked) {
+                                    setFiltro(filtro + " " + produtoParaguay?.rede);
+                                } else {
+                                    setFiltro(filtro.replace(" " + produtoParaguay?.rede.toString() ?? "", ""))
+                                    setFiltro(filtro.replace(produtoParaguay?.rede.toString() ?? "", ""))
+                                }
+                            }}
+                        />
+
+                    </Col>
+
+                    <Col xs className="d-flex">
+                        <Form.Check
+                            type="checkbox"
+                            label="Ram"
+                            checked={checkRam}
+                            onChange={(e) => {
+                                setCheckRam(e.target.checked);
+                                if (e.target.checked) {
+                                    setFiltro(filtro + " " + produtoParaguay?.ram);
+                                } else {
+                                    setFiltro(filtro.replace(" " + produtoParaguay?.ram.toString() ?? "", ""))
+                                    setFiltro(filtro.replace(produtoParaguay?.ram.toString() ?? "", ""))
+                                }
+                            }}
+                        />
+
+                    </Col>
+
+                    <Col xs className="d-flex">
+                        <Form.Check
+                            type="checkbox"
+                            label="Capacidade"
+                            checked={checkCapacidade}
+                            onChange={(e) => {
+                                setCheckCapacidade(e.target.checked);
+                                if (e.target.checked) {
+                                    setFiltro(filtro + " " + produtoParaguay?.capacidade);
+                                } else {
+                                    setFiltro(filtro.replace(" " + produtoParaguay?.capacidade.toString() ?? "", ""))
+                                    setFiltro(filtro.replace(produtoParaguay?.capacidade.toString() ?? "", ""))
+                                }
+                            }}
+                        />
+
+                    </Col>
+                </Row>
 
                 <Row className="my-3">
                     <Col xs className="d-flex ">
@@ -138,11 +272,14 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
                                 controlName="sku"
                                 placeholder="pesquisar"
                                 onUpdate={setFiltro}
+                                externalValue={filtro.trimStart().trimEnd().replace(/\s+/g, ' ')}
                             />
                         </FloatingLabel>
 
                     </Col>
                 </Row>
+
+
 
                 <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
 

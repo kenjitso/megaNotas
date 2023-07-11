@@ -10,7 +10,7 @@ import { PaginationComponent } from "@/datas/PaginationComponent";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
 import { ModalCadastroProdutoLoja } from "./ModalProdutoLoja/ModalCadastroProdutoLoja";
 import { ModalImportProdutoLoja } from "./ModalProdutoLoja/ModalImportProdutoLoja";
-import { ModalVinculo } from "./ModalProdutoLoja/ModalVinculo";
+import { ModalVinculo } from "./ModalProdutoLoja/ModalVinculoCopy";
 import { useQuery } from "@tanstack/react-query";
 import { compareValues, useSort } from "@/components/utils/FilterArrows";
 
@@ -127,8 +127,8 @@ export function PageProdutoLoja() {
 
 
 
-              let posicaoUltimoDS = produtoLoja.nome.lastIndexOf("DS");
-             let novoNome = produtoLoja.nome.substring(0, posicaoUltimoDS + 2).trim(); // +2 para incluir o "DS"
+            let posicaoUltimoDS = produtoLoja.nome.lastIndexOf("DS");
+            let novoNome = produtoLoja.nome.substring(0, posicaoUltimoDS + 2).trim().replace("DS",""); // +2 para incluir o "DS"
 
             //let novoNome = produtoLoja.nome;
 
@@ -138,7 +138,8 @@ export function PageProdutoLoja() {
             if (capacidade) novoNome = novoNome.replace(new RegExp(/\b32GB\b|\b64GB\b|\b128GB\b|\b256GB\b|\b512GB\b/gi, 'i'), '');
             if (ram) novoNome = novoNome.replace(new RegExp(/\b2RAM\b|\b3RAM\b|\b4RAM\b|\b6RAM\b|\b8RAM\b|\b12RAM\b|\b16RAM\b/gi, 'i'), '');
             if (marca) novoNome = novoNome.replace(/XIAOMI/gi, '');
-            novoNome = novoNome.replace(/CEL/gi, '')
+            novoNome = novoNome.replace(/CEL/gi, '').replace(/\s+/g, ' ').trimStart();
+
             return {
                 ...produtoLoja,
                 nome: novoNome,
@@ -195,7 +196,7 @@ export function PageProdutoLoja() {
     return (
         <React.Fragment>
 
-            <ModalImportProdutoLoja onHide={() => setImportProdutoLoja(undefined)} lojaId={importProdutoLoja} />
+            <ModalImportProdutoLoja onHide={() => setImportProdutoLoja(undefined)} lojaId={importProdutoLoja} produtoParaguay={produtosLoja.items} />
             <ModalCadastroProdutoLoja onHide={() => setCadastroProdutoLoja(undefined)} lojaId={cadastroProdutoLoja} />
             <ModalVinculo onHide={() => setVinculoProduto(undefined)} produtoParaguay={modalVinculoProduto} />
 

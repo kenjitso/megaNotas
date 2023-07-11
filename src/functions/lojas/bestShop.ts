@@ -25,7 +25,6 @@ export function BestShopFormat(idLoja: string, pdfArray: string[]): Array<IProdu
             codigo: item.codigo,
             nome: item.descricao,
             marca: "",
-            modelo: "n/a", // Incluir o novo campo modelo
             origem: "",
             categoria: "",
             preco: parseFloat(item.preco),
