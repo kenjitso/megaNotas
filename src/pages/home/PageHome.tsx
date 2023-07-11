@@ -42,10 +42,18 @@ export function PageHome() {
 
 
 
-    const { isFetching, data } = useQuery(["catalogoHome", filtro], () => {
-        const catalogo = CatalogoController.searchCompetidor(filtro);
+    const { isFetching, data } = useQuery(["catalogosHome", filtro], () => {
+        let catalogo;
+
+        if (freteiro) {
+            catalogo = CatalogoController.searchCompetidor(filtro, freteiro);
+        } else {
+            catalogo = CatalogoController.searchCompetidor(filtro);
+        }
+
         return catalogo;
     });
+
 
     const catalogos = useMemo(() => {
 

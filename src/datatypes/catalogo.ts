@@ -240,7 +240,7 @@ export class CatalogoController {
 
 
 
-    public static async searchCompetidor(q: string = "") {
+    public static async searchCompetidor(q: string = "",freteiro?: IFreteiro) {
 
         const params = new URLSearchParams();
         if (q) params.set("q", q);

@@ -133,7 +133,7 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
                             }
 
                             if (data?.algoritmo === 8) {
-                                setFormattedList(MobileZoneFormat(lojaId ?? "", dataList)); //CELLSHOP FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
+                                setFormattedList(MobileZoneFormat(lojaId ?? "", dataList)); //MobileZoneFormat FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
                             }
 
 

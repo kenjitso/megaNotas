@@ -17,6 +17,10 @@ export function AtacadoGamesFormat(idLoja: string, pdfArray: string[], produtoPa
         if (produtoParaguay) {
             const produtoParaguayCodigos = new Set(produtoParaguay.map(item => item.codigo));
             extractedItems = extractedItems.filter(item => produtoParaguayCodigos.has(item.codigo));
+
+            console.log(produtoParaguay);
+            console.log(extractedItems);
+            
         }
 
         const lineValidation = z.object({

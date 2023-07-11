@@ -15,6 +15,7 @@ interface Props {
     pageLink?: string;
 }
 
+
 export default function InputSearchDebounce({
     initial = "",
     delay = 1000,
@@ -22,22 +23,22 @@ export default function InputSearchDebounce({
     placeholder,
     onUpdate,
     pageLink,
-
 }: Props) {
-
     const [search, setSearch] = React.useState(initial);
     const debounce = useDebounce(search, delay);
     const navigate = useNavigate();
-    const [initialUpdate, setInitialUpdate] = React.useState(true);
 
     React.useEffect(() => {
-        if (!initialUpdate) {
-            onUpdate(debounce);
-            navigate(pageLink || "");
-        }
-        setInitialUpdate(false);
+        setSearch(initial);
+    }, [initial]);
+    
 
+    React.useEffect(() => {
+        onUpdate(debounce);
+        navigate(pageLink || "");
     }, [debounce]);
+    
+  
 
     return (
         <React.Fragment>
@@ -50,4 +51,5 @@ export default function InputSearchDebounce({
             {search !== debounce && <div className="position-absolute top-50 end-0 translate-middle-y me-2"><Spinner animation="border" /></div>}
         </React.Fragment>
     );
-} 
+}
+

@@ -9,6 +9,7 @@ import ratata from "../../../../assets/ratata.svg";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import useDataTypes from "@/hooks/useDataTypes";
 import { abreviaLink } from "@/components/utils/AbreviaLink";
+import InputSearchVinculoCatalogo from "@/components/inputs/InputSearchVinculoCatalogo";
 interface IProps {
     produtoParaguay?: IProdutoLoja;
     onHide?: () => void;
@@ -31,14 +32,24 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
                 <Modal.Title> Vincular Catálogo ao Produto</Modal.Title>
             </Modal.Header>
             <Modal.Body className="text-center">
+                <a
+                    style={{ color: "blue" }}
+                    href={`https://atacadogames.com/lista-produtos/termo/${produtoParaguay?.codigo}/1`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={produtoParaguay?.codigo}
+                >
+                    {produtoParaguay?.marca + " "}
+                    {produtoParaguay?.nome + " "}
+                    {produtoParaguay?.cor + " "}
+                    {produtoParaguay?.rede + "G "}
+                    {produtoParaguay?.ram + "RAM "}
+                    {produtoParaguay?.capacidade + "GB "}
+                    {"("+produtoParaguay?.origem+")"}
+                </a>
 
-                {produtoParaguay?.marca + " "}
-                {produtoParaguay?.nome + " "}
-                {produtoParaguay?.origem + " "}
-                {produtoParaguay?.cor + " "}
-                {produtoParaguay?.rede + "G "}
-                {produtoParaguay?.ram + "RAM "}
-                {produtoParaguay?.capacidade + "GB "}
+
+
                 <br />
                 <br /><br />
                 <Button className="mx-2" onClick={() => setSelectedTable('ML')}> Catalogos - Mercado Livre</Button>
@@ -214,24 +225,12 @@ export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
     const [selectedUrl, setSelectedUrl] = useState<string>("");
     const [filtro, setFiltro] = useState("");
     const queryClient = useQueryClient();
-    const [checkMarca, setCheckMarca] = useState(false);
-    const [checkModelo, setCheckModelo] = useState(false);
-    const [checkOrigem, setCheckOrigem] = useState(false);
-    const [checkCor, setCheckCor] = useState(false);
+    const [checkMarca, setCheckMarca] = useState(true);
+    const [checkModelo, setCheckModelo] = useState(true);
+    const [checkCor, setCheckCor] = useState(true);
     const [checkRede, setCheckRede] = useState(false);
-    const [checkRam, setCheckRam] = useState(false);
-    const [checkCapacidade, setCheckCapacidade] = useState(false);
-
-    const resetForm = () => {
-        setFiltro("");
-        setCheckMarca(false);
-        setCheckModelo(false);
-        setCheckOrigem(false);
-        setCheckCor(false);
-        setCheckRede(false);
-        setCheckRam(false);
-        setCheckCapacidade(false);
-    }
+    const [checkRam, setCheckRam] = useState(true);
+    const [checkCapacidade, setCheckCapacidade] = useState(true);
 
 
     const { isFetching,
@@ -256,8 +255,31 @@ export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
 
     useEffect(() => {
         setSelectedUrl(produtoParaguay?.vinculos ? produtoParaguay.vinculos[0] : "");
-    }, [produtoParaguay]);
 
+        let novoFiltro = "";
+
+        if (checkMarca && produtoParaguay?.marca) {
+            novoFiltro += produtoParaguay.marca + " ";
+        }
+
+        if (checkCapacidade && produtoParaguay?.capacidade) {
+            novoFiltro += produtoParaguay.capacidade + " ";
+        }
+
+        if (checkModelo && produtoParaguay?.nome) {
+            novoFiltro += produtoParaguay.nome + " ";
+        }
+
+        if (checkCor && produtoParaguay?.cor) {
+            novoFiltro += produtoParaguay.cor + " ";
+        }
+
+        if (checkRam && produtoParaguay?.ram) {
+            novoFiltro += produtoParaguay.ram + " ";
+        }
+
+        setFiltro(novoFiltro.trim());
+    }, [produtoParaguay, checkMarca, checkModelo, checkCor, checkRam]);
 
 
     return (
@@ -271,10 +293,9 @@ export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
                         onChange={(e) => {
                             setCheckMarca(e.target.checked);
                             if (e.target.checked) {
-                                setFiltro(filtro + " " + produtoParaguay?.marca);
+                                setFiltro(filtro + (filtro.length > 0 ? ' ' : '') + produtoParaguay?.marca);
                             } else {
-                                setFiltro(filtro.replace(" " + produtoParaguay?.marca ?? "", ""))
-                                setFiltro(filtro.replace(produtoParaguay?.marca ?? "", ""))
+                                setFiltro(filtro.split(' ').filter(word => word !== produtoParaguay?.marca).join(' '));
                             }
                         }}
                     />
@@ -289,33 +310,16 @@ export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
                         onChange={(e) => {
                             setCheckModelo(e.target.checked);
                             if (e.target.checked) {
-                                setFiltro(filtro + " " + produtoParaguay?.nome);
+                                setFiltro(filtro + (filtro.length > 0 ? ' ' : '') + produtoParaguay?.nome);
                             } else {
-                                setFiltro(filtro.replace(" " + produtoParaguay?.nome ?? "", ""))
-                                setFiltro(filtro.replace(produtoParaguay?.nome ?? "", ""))
+                                setFiltro(filtro.replace(produtoParaguay?.nome ?? "", "").trim());
+
                             }
                         }}
                     />
 
                 </Col>
 
-                <Col xs className="d-flex">
-                    <Form.Check
-                        type="checkbox"
-                        label="Origem"
-                        checked={checkOrigem}
-                        onChange={(e) => {
-                            setCheckOrigem(e.target.checked);
-                            if (e.target.checked) {
-                                setFiltro(filtro + " " + produtoParaguay?.origem);
-                            } else {
-                                setFiltro(filtro.replace(" " + produtoParaguay?.origem ?? "", ""))
-                                setFiltro(filtro.replace(produtoParaguay?.origem ?? "", ""))
-                            }
-                        }}
-                    />
-
-                </Col>
 
                 <Col xs className="d-flex">
                     <Form.Check
@@ -325,10 +329,9 @@ export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
                         onChange={(e) => {
                             setCheckCor(e.target.checked);
                             if (e.target.checked) {
-                                setFiltro(filtro + " " + produtoParaguay?.cor);
+                                setFiltro(filtro + (filtro.length > 0 ? ' ' : '') + produtoParaguay?.cor);
                             } else {
-                                setFiltro(filtro.replace(" " + produtoParaguay?.cor ?? "", ""))
-                                setFiltro(filtro.replace(produtoParaguay?.cor ?? "", ""))
+                                setFiltro(filtro.replace(produtoParaguay?.cor ?? "", "").trim());
                             }
                         }}
                     />
@@ -343,10 +346,10 @@ export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
                         onChange={(e) => {
                             setCheckRede(e.target.checked);
                             if (e.target.checked) {
-                                setFiltro(filtro + " " + produtoParaguay?.rede);
+                                setFiltro(filtro + (filtro.length > 0 ? ' ' : '') + produtoParaguay?.rede);
                             } else {
-                                setFiltro(filtro.replace(" " + produtoParaguay?.rede.toString() ?? "", ""))
-                                setFiltro(filtro.replace(produtoParaguay?.rede.toString() ?? "", ""))
+                                setFiltro(filtro.replace(produtoParaguay?.rede.toString() ?? "", "").trim());
+
                             }
                         }}
                     />
@@ -361,10 +364,10 @@ export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
                         onChange={(e) => {
                             setCheckRam(e.target.checked);
                             if (e.target.checked) {
-                                setFiltro(filtro + " " + produtoParaguay?.ram);
+                                setFiltro(filtro + (filtro.length > 0 ? ' ' : '') + produtoParaguay?.ram);
                             } else {
-                                setFiltro(filtro.replace(" " + produtoParaguay?.ram.toString() ?? "", ""))
-                                setFiltro(filtro.replace(produtoParaguay?.ram.toString() ?? "", ""))
+                                setFiltro(filtro.replace(produtoParaguay?.ram.toString() ?? "", "").trim());
+
                             }
                         }}
                     />
@@ -379,10 +382,9 @@ export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
                         onChange={(e) => {
                             setCheckCapacidade(e.target.checked);
                             if (e.target.checked) {
-                                setFiltro(filtro + " " + produtoParaguay?.capacidade);
+                                setFiltro(filtro + (filtro.length > 0 ? ' ' : '') + produtoParaguay?.capacidade);
                             } else {
-                                setFiltro(filtro.replace(" " + produtoParaguay?.capacidade.toString() ?? "", ""))
-                                setFiltro(filtro.replace(produtoParaguay?.capacidade.toString() ?? "", ""))
+                                setFiltro(filtro.replace(produtoParaguay?.capacidade.toString() ?? "", "").trim());
                             }
                         }}
                     />
@@ -392,15 +394,14 @@ export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
             <Row className="my-3">
                 <Col xs className="d-flex ">
                     <FloatingLabel className="w-100" label="Pesquisar">
-                        <InputSearchDebounce
+                        <InputSearchVinculoCatalogo
                             controlName="sku"
                             placeholder="pesquisar"
                             onUpdate={(value) => {
                                 setFiltro(value);
-                                refetch();
                             }
                             }
-                            externalValue={filtro.trimStart().trimEnd().replace(/\s+/g, ' ')}
+                            initial={filtro} // Aqui!
 
                         />
                     </FloatingLabel>

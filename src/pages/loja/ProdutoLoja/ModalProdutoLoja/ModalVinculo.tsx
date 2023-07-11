@@ -272,7 +272,7 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
                                 controlName="sku"
                                 placeholder="pesquisar"
                                 onUpdate={setFiltro}
-                                externalValue={filtro.trimStart().trimEnd().replace(/\s+/g, ' ')}
+                           
                             />
                         </FloatingLabel>
 
