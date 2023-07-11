@@ -7,7 +7,6 @@ import { MenuMega } from "../MenuMega"
 export default function PageUsuario() {
 
 
-
     return (
         <React.Fragment>
             <MenuMega/>

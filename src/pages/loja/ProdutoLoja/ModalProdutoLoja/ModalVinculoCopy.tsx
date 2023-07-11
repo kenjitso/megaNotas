@@ -2,7 +2,7 @@ import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
 import { CatalogoController, ICatalogo } from "@/datatypes/catalogo";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Button, Col, FloatingLabel, Form, Modal, Row, Table } from "react-bootstrap";
 import { useQuery } from "@tanstack/react-query";
 import ratata from "../../../../assets/ratata.svg";
@@ -10,6 +10,10 @@ import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import useDataTypes from "@/hooks/useDataTypes";
 import { abreviaLink } from "@/components/utils/AbreviaLink";
 import InputSearchVinculoCatalogo from "@/components/inputs/InputSearchVinculoCatalogo";
+import { compareValues, useSort } from "@/components/utils/FilterArrows";
+
+
+
 interface IProps {
     produtoParaguay?: IProdutoLoja;
     onHide?: () => void;
@@ -19,6 +23,8 @@ interface IProps {
 
 export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
     const [selectedTable, setSelectedTable] = useState<string | null>(null);
+
+
 
     return (
         <Modal
@@ -45,7 +51,7 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
                     {produtoParaguay?.rede + "G "}
                     {produtoParaguay?.ram + "RAM "}
                     {produtoParaguay?.capacidade + "GB "}
-                    {"("+produtoParaguay?.origem+")"}
+                    {"(" + produtoParaguay?.origem + ")"}
                 </a>
 
 
@@ -69,25 +75,49 @@ export function TableVinculoManual({ produtoParaguay, onHide }: IProps) {
     const [filtro, setFiltro] = useState("");
     const [lastCheckedIndex, setLastCheckedIndex] = useState<number>(0);
     const queryClient = useQueryClient();
+    const { sortOrder, sortBy, handleSort } = useSort<ICatalogo>('nome');
 
 
+    /*
+        const {
+            isLoading,
+            orderBy,
+            ordem,
+            ordenar,
+            data
+        } = useDataTypes<ICatalogo>({
+            queryKey: ["lojas"],
+            queryFn: async () => await CatalogoController.searchVinculo(1, 10, filtro, ordenar, ordem ? "crescente" : "descrescente", true),
+            filtro: filtro,
+            defaultOrder: "nome"
+        });
+    */
 
-    const {
-        isLoading,
-        orderBy,
-        ordem,
-        ordenar,
-        data
-    } = useDataTypes<ICatalogo>({
-        queryKey: ["lojas"],
-        queryFn: async () => await CatalogoController.searchVinculo(1, 10, filtro, ordenar, ordem ? "crescente" : "descrescente", true),
-        filtro: filtro,
-        defaultOrder: "nome"
+    const { isFetching, data } = useQuery(["lojamanual", filtro], () => {
+        const catalogoVinculos = CatalogoController.search(filtro);
+        return catalogoVinculos
     });
 
 
+    const catalogoVinculos = useMemo(() => {
+
+        let dados = data?.map((catalogo: ICatalogo) => {
+
+            return catalogo;
+        }) ?? []
+
+        dados = dados.filter(catalogo => catalogo.ativo === true);
+
+        const sortedData = [...dados].sort(compareValues(sortBy, sortOrder));
+
+        const total = sortedData.length;
+        const items = sortedData;
+        return {
+            total, items
+        }
 
 
+    }, [data, sortBy, sortOrder]);
 
 
     const mutation = useMutation(() => {
@@ -115,7 +145,7 @@ export function TableVinculoManual({ produtoParaguay, onHide }: IProps) {
         if (event.shiftKey && selectedIds.has(id) !== null) {
             const start = Math.min(lastCheckedIndex, index);
             const end = Math.max(lastCheckedIndex, index);
-            const idsToSelect = data?.items?.map((item) => item.id ?? "").slice(start, end + 1);
+            const idsToSelect = catalogoVinculos?.items?.map((item) => item.id ?? "").slice(start, end + 1);
 
             if (idsToSelect) {
                 const isSelecting = !selectedIds.has(id);
@@ -161,14 +191,14 @@ export function TableVinculoManual({ produtoParaguay, onHide }: IProps) {
 
 
 
-                <Table className={isLoading || mutation.isLoading ? "invisible" : ""}>
+                <Table className={isFetching || mutation.isLoading ? "invisible" : ""}>
                     <thead>
                         <tr>
-                            <th className="th200" onClick={() => orderBy("nome")}>
+                            <th className="th200" onClick={() => handleSort("nome")}>
                                 <div className="thArrow">
                                     <span>Nome</span>
                                     <span>
-                                        {ordenar === "nome" && (ordem ? "▼" : "▲")}
+                                        {sortBy === "nome" ? (sortOrder ? "▲" : "▼") : ""}
                                     </span>
                                 </div>
                             </th>
@@ -181,7 +211,7 @@ export function TableVinculoManual({ produtoParaguay, onHide }: IProps) {
                         </tr>
                     </thead>
                     <tbody>
-                        {data?.items?.map((catalogoProduto, index) => (
+                        {catalogoVinculos?.items?.map((catalogoProduto, index) => (
                             <tr key={index}>
                                 <td>
                                     {catalogoProduto.nome}
@@ -199,7 +229,7 @@ export function TableVinculoManual({ produtoParaguay, onHide }: IProps) {
                     </tbody>
 
                 </Table>
-                {isLoading || mutation.isLoading && <FragmentLoading />}
+                {isFetching || mutation.isLoading && <FragmentLoading />}
             </div><br />
             <Button
                 className="position mx-2"

@@ -16,6 +16,7 @@ export function CellShopFormat(idLoja: string, excelArray: unknown[]): Array<IPr
             id: "",
             loja: idLoja,
             codigo: array[0],
+            nome_original: "",
             nome: array[1],
             marca: "",
             origem: "",

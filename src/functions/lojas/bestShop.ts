@@ -23,6 +23,7 @@ export function BestShopFormat(idLoja: string, pdfArray: string[]): Array<IProdu
             id: "",
             loja: idLoja,
             codigo: item.codigo,
+            nome_original: "",
             nome: item.descricao,
             marca: "",
             origem: "",

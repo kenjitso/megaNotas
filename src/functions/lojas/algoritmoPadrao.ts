@@ -20,6 +20,7 @@ export function AlgoritmoPadraoFormat(idLoja: string, excelArray: unknown[]): Ar
             id: "",
             loja: idLoja,
             codigo: array[0],
+            nome_original: "",
             nome: array[1],
             marca:"",
             origem: "",

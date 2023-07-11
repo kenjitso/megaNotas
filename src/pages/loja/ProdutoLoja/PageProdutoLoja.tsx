@@ -43,6 +43,8 @@ export function PageProdutoLoja() {
     const produtosLoja = useMemo(() => {
         let dados = data?.map((produtoLoja: IProdutoLoja) => {
 
+            produtoLoja.nome_original = produtoLoja.nome;
+
             const ram =
                 /2RAM/i.test(produtoLoja.nome) ? 2 :
                     /3RAM/i.test(produtoLoja.nome) ? 3 :
@@ -128,9 +130,9 @@ export function PageProdutoLoja() {
 
 
             let posicaoUltimoDS = produtoLoja.nome.lastIndexOf("DS");
-            let novoNome = produtoLoja.nome.substring(0, posicaoUltimoDS + 2).trim().replace("DS",""); // +2 para incluir o "DS"
+            let novoNome = produtoLoja.nome.substring(0, posicaoUltimoDS + 2).trim().replace("DS", ""); // +2 para incluir o "DS"
 
-          //  let novoNome = produtoLoja.nome;
+            //  let novoNome = produtoLoja.nome;
 
             if (origem) novoNome = novoNome.replace(/INDIA|GLOBAL|INDONESIA|GLOB|GLO/gi, '');
             if (cor) novoNome = novoNome.replace(/BLACK|MINT GREEN|MINT REE|PURPLE|BLUE|LITE PINK|PEBBLE WHITE|WHITE|AURORA GREEN|AURORA|CORAL GREEN|GRAY|CORAL|LITE GREEN|LITE REEN|GREY|GREEN|ORANGE|CHARCOAL|SILVER|LIGHT BLU|MINT GREE|TWILIGHT|TWILIHT|GREE|GRAPHITE G|GRAPHITE|BLAC|PEPPY PURPLE|INDI|YE|BLAC|LAVENDER P|LIGHT GRE|BLU|STAR|GR|GLACIE|GRAPHI|MIDNIG|SKY BL|MID|ONYX|OCEAN|CARBON/gi, '');

@@ -18,6 +18,7 @@ export function MadridCenterFormat(idLoja: string, pdfArray: string[]): Array<IP
             id: "",
             loja: idLoja,
             codigo: item.codigo,
+            nome_original: "",
             nome: item.descricao,
             marca: "",
             origem: "",

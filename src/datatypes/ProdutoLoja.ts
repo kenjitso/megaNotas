@@ -6,6 +6,7 @@ export const schemaProdutoLoja = z.object({
     id: z.string().default(""),
     codigo: z.string().default(""),
     loja: z.string().default(""),
+    nome_original: z.string().default(""),
     nome: z.string().default(""),
     marca: z.string().default(""),
     origem: z.string().default("n/a"),
@@ -31,6 +32,7 @@ export class ProdutoLojaController {
             id: "",
             codigo: "",
             loja: "",
+            nome_original: "",
             nome: "",
             marca: "",
             origem: "",
@@ -105,7 +107,6 @@ export class ProdutoLojaController {
 
     public static async updateML(produtoLoja: IProdutoLoja, url_catalogoML: string) {
 
-
         const options: RequestInit = {
             method: "POST",
             headers: {
@@ -118,7 +119,7 @@ export class ProdutoLojaController {
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja/${produtoLoja.id}/vincular`, options);
         const responseData: unknown = await response.json();
 
-
+        console.log(responseData);
 
         const produtoLojaSchema = schemaProdutoLoja.parse(responseData);
         return produtoLojaSchema;
@@ -129,6 +130,9 @@ export class ProdutoLojaController {
 
     public static async update(produtoLoja: IProdutoLoja) {
 
+        produtoLoja.nome = produtoLoja.nome_original;
+
+        console.log(produtoLoja.nome);
         const options: RequestInit = {
             method: "PATCH",
             headers: {

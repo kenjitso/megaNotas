@@ -31,6 +31,7 @@ export function AtacadoGamesFormat(idLoja: string, pdfArray: string[], produtoPa
             id: "",
             loja: idLoja,
             codigo: item.codigo,
+            nome_original: "",
             nome: item.descricao,
             marca: "",
             modelo: "n/a",

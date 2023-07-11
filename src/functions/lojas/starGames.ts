@@ -22,6 +22,7 @@ export function StarGamesFormat(idLoja: string, pdfArray: string[]): Array<IProd
             id: "",
             loja: idLoja,
             codigo: item.codigo,
+            nome_original: "",
             nome: item.descricao,
             marca: "",
             origem: "",

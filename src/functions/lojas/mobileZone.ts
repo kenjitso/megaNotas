@@ -20,6 +20,7 @@ export function MobileZoneFormat(idLoja: string, excelArray: unknown[]): Array<I
             id: "",
             loja: idLoja,
             codigo: array[0],
+            nome_original: "",
             nome: array[1],
             marca: "",
             origem: "",

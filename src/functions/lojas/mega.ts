@@ -17,6 +17,7 @@ export function MegaFormat(idLoja: string, pdfArray: string[]): Array<IProdutoLo
             id: "",
             loja: idLoja,
             codigo: item.codigo,
+            nome_original: "",
             nome: item.descricao,
             marca: "",
             origem:"",

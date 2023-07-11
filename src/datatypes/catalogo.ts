@@ -184,10 +184,11 @@ export class CatalogoController {
     }
 
 
-    public static async search(q: string = "") {
+    public static async search(q: string = "", ativo: boolean | undefined = true) {
 
         const params = new URLSearchParams();
         if (q) params.set("q", q);
+        if (ativo !== undefined) params.set("ativo", ativo.toString());
         params.set("limit", "9999");
 
 
@@ -207,6 +208,9 @@ export class CatalogoController {
         }).transform(dados => dados.items).parse(responseData);
         return catalogosSchema;
     }
+
+
+
 
     public static async searchVinculo(page = 1, limit = 25, q: string = "", ordenar = "nome", ordem = "crescente", ativo: boolean | undefined = true) {
 
@@ -240,7 +244,7 @@ export class CatalogoController {
 
 
 
-    public static async searchCompetidor(q: string = "",freteiro?: IFreteiro) {
+    public static async searchCompetidor(q: string = "", freteiro?: IFreteiro) {
 
         const params = new URLSearchParams();
         if (q) params.set("q", q);
