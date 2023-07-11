@@ -58,7 +58,7 @@ export function ModalSincronismoUpdate({ onHide, catalogos, isVisible }: IProps)
       }
 
       queryClient.invalidateQueries(["catalogos"]);
-      queryClient.invalidateQueries(["catalogosHome"]);
+      queryClient.invalidateQueries(["catalogoshome"]);
       toast.success("Dados sincronizados com sucesso!");
     } catch (error) {
       toast.error("Erro ao sincronizar os dados.");

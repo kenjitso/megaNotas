@@ -94,7 +94,7 @@ export function TableVinculoManual({ produtoParaguay, onHide }: IProps) {
     */
 
     const { isFetching, data } = useQuery(["lojamanual", filtro], () => {
-        const catalogoVinculos = CatalogoController.search(filtro);
+        const catalogoVinculos = CatalogoController.search(filtro,true);
         return catalogoVinculos
     });
 
@@ -126,8 +126,9 @@ export function TableVinculoManual({ produtoParaguay, onHide }: IProps) {
         return ProdutoLojaController.update(produtoParaguay);
     }, {
         onSuccess: () => {
-            queryClient.invalidateQueries(["catalogosHome"]);
+            queryClient.invalidateQueries(["catalogoshome"]);
             queryClient.invalidateQueries(["produtosloja"]);
+            queryClient.invalidateQueries(["catalogos"]);
         }
     });
 
@@ -277,8 +278,9 @@ export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
         return ProdutoLojaController.updateML(produtoParaguay, url_catalogoML);
     }, {
         onSuccess: () => {
-            queryClient.invalidateQueries(["catalogosHome"]);
+            queryClient.invalidateQueries(["catalogoshome"]);
             queryClient.invalidateQueries(["produtosloja"]);
+            queryClient.invalidateQueries(["catalogos"]);
         }
     });
 

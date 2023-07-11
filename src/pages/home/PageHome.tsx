@@ -42,14 +42,8 @@ export function PageHome() {
 
 
 
-    const { isFetching, data } = useQuery(["catalogosHome", filtro], () => {
-        let catalogo;
-
-        if (freteiro) {
-            catalogo = CatalogoController.searchCompetidor(filtro, freteiro);
-        } else {
-            catalogo = CatalogoController.searchCompetidor(filtro);
-        }
+    const { isFetching, data } = useQuery(["catalogoshome", filtro], () => {
+        let catalogo = CatalogoController.searchCompetidor(filtro);
 
         return catalogo;
     });
@@ -62,7 +56,6 @@ export function PageHome() {
                 const frete = freteiro ? competidor.produto.preco * competidor.loja.cotacao * freteiro.percentual / 100 + freteiro.fixo : 0;
                 competidor.frete = frete;
             }
-
 
             let precoC = Number.MAX_SAFE_INTEGER;
             let precoP = Number.MAX_SAFE_INTEGER;
@@ -322,7 +315,9 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
                         alt="Descrição da imagem"
                     />
                 </td>
+
                 <td className="th200">
+
                     <a
                         style={{ color: "blue" }}
                         href={catalogo.url_catalogo}
@@ -330,6 +325,7 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
                         rel="noopener noreferrer"
                         title={catalogo.nome}
                     >
+
                         {catalogo.nome}
                     </a>
                 </td>
@@ -389,10 +385,23 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
                                                 <Card.Body>
                                                     <Row>
                                                         <Col xs={4} md={2} >
-                                                            <strong>Código:</strong> {competidor.produto.codigo}
+                                                            <strong>Código:</strong>
+                                                            {competidor.produto.codigo}
                                                         </Col>
                                                         <Col xs={8} md={10}>
-                                                            <strong>Produto:</strong> {competidor.produto.nome}
+                                                            <strong>Produto: </strong>
+                                                            <a
+                                                                style={{ color: "blue" }}
+                                                                href={`https://atacadogames.com/lista-produtos/termo/${competidor.produto.codigo}/1`}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                title={competidor.produto.nome}
+                                                            >
+
+                                                                {competidor.produto.nome}
+                                                            </a>
+
+
                                                         </Col>
                                                     </Row>
                                                     <Row >

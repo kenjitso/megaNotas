@@ -20,7 +20,7 @@ import { compareValues, useSort } from "@/components/utils/FilterArrows";
 
 
 export function PageCatalogo() {
-    const navigate = useNavigate();
+
     const [params, setParams] = useSearchParams();
     const page = parseInt(params.get("page") ?? "1");
     const limit = parseInt(params.get("limit") ?? "20");
@@ -32,7 +32,7 @@ export function PageCatalogo() {
 
 
     const { isFetching, data } = useQuery(["catalogos", filtro], () => {
-        const catalogos = CatalogoController.search(filtro);
+        const catalogos = CatalogoController.search(filtro,true);
         return catalogos;
     });
 

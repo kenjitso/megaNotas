@@ -122,10 +122,11 @@ export class LojaController {
         return await LojaController.create(loja);
     }
 
-    public static async search(q: string) {
+    public static async search(q: string,ativo: boolean | undefined = true) {
 
         const params = new URLSearchParams();
         if (q) params.set("q", q);
+        if (ativo !== undefined) params.set("ativo", ativo.toString());
         params.set("limit", "9999");
 
         const options: RequestInit = {
