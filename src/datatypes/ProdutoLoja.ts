@@ -132,7 +132,7 @@ export class ProdutoLojaController {
 
         produtoLoja.nome = produtoLoja.nome_original;
 
-        console.log(produtoLoja.nome);
+        console.log(produtoLoja);
         const options: RequestInit = {
             method: "PATCH",
             headers: {

@@ -181,12 +181,12 @@ export function PageProdutoLoja() {
 
     const handleFilterDesvinculados = () => {
         setIsFilteredDesvinculados(prevState => !prevState);
-     //   setParams({ page: '1', limit: params.get("limit") || '20' });
+        setParams({ page: '1', limit: params.get("limit") || '20' });
 
     }
     const handleFilterVinculados = () => {
         setIsFilteredVinculados(prevState => !prevState);
-      //  setParams({ page: '1', limit: params.get("limit") || '20' });
+        setParams({ page: '1', limit: params.get("limit") || '20' });
 
     }
 

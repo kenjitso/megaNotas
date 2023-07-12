@@ -8,6 +8,7 @@ import ratata from "../../assets/megaPreco.svg";
 import { isValidForm } from "@/components/utils/ValidForm";
 import { toast } from "react-toastify";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface IProps {
     catalogoId?: string,
@@ -16,7 +17,7 @@ interface IProps {
 
 export function ModalCadastroCatalogo({ onHide, catalogoId }: IProps) {
     const [isLoading, setIsLoading] = useState(false);
-
+    const queryClient = useQueryClient();
 
     const catalogoMutator = useQueryMutation(CatalogoController.createNew(), {
         queryEnabled: !!catalogoId && typeof onHide === 'function',
@@ -24,6 +25,9 @@ export function ModalCadastroCatalogo({ onHide, catalogoId }: IProps) {
         queryFn: async () => await CatalogoController.integrarML(await CatalogoController.get(catalogoId ?? "")),
         onSaveSuccess: () => {
             onHide();
+            queryClient.invalidateQueries(["catalogoshome"]);
+            queryClient.invalidateQueries(["lojamanual"]);
+            
             catalogoMutator.clear();
         },
         onQueryError: (error) => {
@@ -131,7 +135,7 @@ export function ModalCadastroCatalogo({ onHide, catalogoId }: IProps) {
                                                             type="number"
                                                             decimals={0}
                                                             max={100}
-                                                            value={(catalogoMutator.state.comissao * 100)??0}
+                                                            value={(catalogoMutator.state.comissao * 100) ?? 0}
                                                             onValueChange={(numero: number) => { catalogoMutator.update("comissao", numero) }}
                                                             placeholder="Insira a comissão"
                                                             readOnly={true}
@@ -150,7 +154,7 @@ export function ModalCadastroCatalogo({ onHide, catalogoId }: IProps) {
                                                             as={InputNumero}
                                                             type="number"
                                                             decimals={2}
-                                                            value={catalogoMutator.state.frete??0}
+                                                            value={catalogoMutator.state.frete ?? 0}
                                                             onValueChange={(numero: number) => { catalogoMutator.update("frete", numero) }}
                                                             placeholder="Insira o frete"
                                                             readOnly={true}
@@ -168,7 +172,7 @@ export function ModalCadastroCatalogo({ onHide, catalogoId }: IProps) {
                                                             as={InputNumero}
                                                             type="number"
                                                             decimals={2}
-                                                            value={catalogoMutator.state.preco??0}
+                                                            value={catalogoMutator.state.preco ?? 0}
                                                             onValueChange={(numero: number) => { catalogoMutator.update("preco", numero) }}
                                                             placeholder="Insira o preco"
                                                             readOnly={true}
@@ -185,7 +189,7 @@ export function ModalCadastroCatalogo({ onHide, catalogoId }: IProps) {
                                                         label="Nome produto">
                                                         <Form.Control
                                                             type="text"
-                                                            value={catalogoMutator.state.nome??""}
+                                                            value={catalogoMutator.state.nome ?? ""}
                                                             placeholder="Insira o nome do produto"
                                                             onChange={(event) => catalogoMutator.update("nome", event.target.value)}
                                                             readOnly={true}

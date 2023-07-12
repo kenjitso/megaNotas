@@ -76,20 +76,6 @@ export function TableVinculoManual({ produtoParaguay, onHide }: IProps) {
     const { sortOrder, sortBy, handleSort } = useSort<ICatalogo>('nome');
 
 
-    /*
-        const {
-            isLoading,
-            orderBy,
-            ordem,
-            ordenar,
-            data
-        } = useDataTypes<ICatalogo>({
-            queryKey: ["lojas"],
-            queryFn: async () => await CatalogoController.searchVinculo(1, 10, filtro, ordenar, ordem ? "crescente" : "descrescente", true),
-            filtro: filtro,
-            defaultOrder: "nome"
-        });
-    */
 
     const { isFetching, data } = useQuery(["lojamanual", filtro], () => {
         const catalogoVinculos = CatalogoController.search(filtro, true);
@@ -279,7 +265,7 @@ export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
             queryClient.invalidateQueries(["produtosloja"]);
             queryClient.invalidateQueries(["catalogos"]);
             queryClient.invalidateQueries(["lojamanual"]);
-           
+
         }
     });
 
@@ -302,7 +288,7 @@ export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
             novoFiltro += produtoParaguay.capacidade + " ";
         }
 
-  
+
         if (checkCor && produtoParaguay?.cor) {
             novoFiltro += produtoParaguay.cor + " ";
         }
