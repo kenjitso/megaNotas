@@ -9,7 +9,8 @@ import { formatCurrency } from "@/components/utils/FormatCurrency";
 import { PaginationComponent } from "@/datas/PaginationComponent";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
 import { ModalCadastroProdutoLoja } from "./ModalProdutoLoja/ModalCadastroProdutoLoja";
-import { ModalImportProdutoLoja } from "./ModalProdutoLoja/ModalImportProdutoLoja";
+import { ModalSyncVinculos } from "./ModalProdutoLoja/ModalSyncVinculos";
+import { ModalAtualizarProdutoLoja } from "./ModalProdutoLoja/ModalAtualizarProdutoLoja";
 import { ModalVinculo } from "./ModalProdutoLoja/ModalVinculoCopy";
 import { useQuery } from "@tanstack/react-query";
 import { compareValues, useSort } from "@/components/utils/FilterArrows";
@@ -22,6 +23,7 @@ export function PageProdutoLoja() {
     const [modalVinculoProduto, setVinculoProduto] = useState<IProdutoLoja | undefined>(undefined);
     const [importProdutoLoja, setImportProdutoLoja] = useState<string | undefined>(undefined);
     const [cadastroProdutoLoja, setCadastroProdutoLoja] = useState<string | undefined>(undefined);
+    const [modalSyncVinculos, setSyncVinculos] = useState<IProdutoLoja[] | undefined>(undefined);
     const [filtro, setFiltro] = useState("");
     const page = parseInt(params.get("page") ?? "1");
     const limit = parseInt(params.get("limit") ?? "20");
@@ -166,10 +168,13 @@ export function PageProdutoLoja() {
 
         const sortedData = [...dados].sort(compareValues(sortBy, sortOrder));
 
+        const allItems = sortedData;
         const total = sortedData.length;
         const items = sortedData.slice((page - 1) * limit, limit * page);
+
+
         return {
-            page, total, limit, items
+            page, total, limit, items, allItems
         }
     }, [data, page, limit, sortBy, sortOrder, isFilteredDesvinculados, isFilteredVinculados, minRange, maxRange])
 
@@ -198,8 +203,9 @@ export function PageProdutoLoja() {
     return (
         <React.Fragment>
 
-            <ModalImportProdutoLoja onHide={() => setImportProdutoLoja(undefined)} lojaId={importProdutoLoja} produtoParaguay={produtosLoja.items} />
+            <ModalAtualizarProdutoLoja onHide={() => setImportProdutoLoja(undefined)} lojaId={importProdutoLoja} produtoParaguay={produtosLoja.allItems} />
             <ModalCadastroProdutoLoja onHide={() => setCadastroProdutoLoja(undefined)} lojaId={cadastroProdutoLoja} />
+            <ModalSyncVinculos onHide={() => setSyncVinculos(undefined)} produtoParaguay={modalSyncVinculos} />
             <ModalVinculo onHide={() => setVinculoProduto(undefined)} produtoParaguay={modalVinculoProduto} />
 
             <Row className="my-3">
@@ -252,6 +258,14 @@ export function PageProdutoLoja() {
 
 
                 <Col xs className="d-flex justify-content-end">
+                    <Button
+                        onClick={() => setSyncVinculos(produtosLoja.items)}
+                        className="me-3 custom-btn"
+                    >
+
+                        <Icons tipo="update" tamanho={22} />  Sync
+
+                    </Button>
                     <Button
                         onClick={() => setCadastroProdutoLoja(lojaId)}
                         className="me-3 custom-btn"

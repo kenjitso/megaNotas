@@ -28,7 +28,7 @@ interface IProps {
     lojaId?: string,
 }
 
-export function ModalImportProdutoLoja({ onHide, lojaId, produtoParaguay }: IProps) {
+export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: IProps) {
 
     const [formattedList, setFormattedList] = useState<IProdutoLoja[]>([]);
     const queryClient = useQueryClient();

@@ -10,7 +10,6 @@ import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import { abreviaLink } from "@/components/utils/AbreviaLink";
 import InputSearchVinculoCatalogo from "@/components/inputs/InputSearchVinculoCatalogo";
 import { compareValues, useSort } from "@/components/utils/FilterArrows";
-import { useParams, useSearchParams } from "react-router-dom";
 
 
 
@@ -265,7 +264,7 @@ export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
             queryClient.invalidateQueries(["produtosloja"]);
             queryClient.invalidateQueries(["catalogos"]);
             queryClient.invalidateQueries(["lojamanual"]);
-
+           
         }
     });
 
@@ -288,7 +287,7 @@ export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
             novoFiltro += produtoParaguay.capacidade + " ";
         }
 
-
+  
         if (checkCor && produtoParaguay?.cor) {
             novoFiltro += produtoParaguay.cor + " ";
         }

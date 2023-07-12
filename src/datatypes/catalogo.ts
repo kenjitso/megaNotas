@@ -188,7 +188,7 @@ export class CatalogoController {
 
         const params = new URLSearchParams();
         if (q) params.set("q", q);
-        if (ativo !== undefined) params.set("ativo", ativo.toString());
+     //   if (ativo !== undefined) params.set("ativo", ativo.toString());
         params.set("limit", "9999");
 
 
@@ -240,48 +240,65 @@ console.log(responseData);
 
 
     public static async searchCatalogoML(q: string = "") {
-
         if (!q || q.trim() === "") return [];
-
+    
         const params = new URLSearchParams();
         params.set("q", q);
-        params.set("limit", "5");
-
+    
         const options: RequestInit = {
             method: "GET",
             headers: {
                 "Content-type": "application/json"
             }
         };
-
+    
         const response = await fetch(`https://us-central1-mega-notas.cloudfunctions.net/api/mercadolivre/catalogo/search?${params}`, options);
         const responseData: unknown = await response.json();
-        console.log(responseData);
-
+    
+        const attributeSchema = z.object({
+            name: z.string(),
+            value_name: z.string().optional(),
+        });
+    
         const schemaProduto = z.object({
             id: z.string(),
             name: z.string(),
             pictures: z.array(z.object({
                 url: z.string(),
-            }))
+            })),
+            attributes: z.array(attributeSchema).optional()
         });
-
+    
         const catalogos = z.object({
             results: z.array(schemaProduto)
         }).parse(responseData);
-
+    
         const produtos = catalogos.results.map(product => {
+            const marca = product.attributes?.find(attribute => attribute.name === "Marca")?.value_name;
+            const modelo = product.attributes?.find(attribute => attribute.name === "Modelo")?.value_name;
+            const cor = product.attributes?.find(attribute => attribute.name === "Cor")?.value_name;
+            const memoriaInterna = product.attributes?.find(attribute => attribute.name === "Memória interna")?.value_name;
+            const memoriaRam = product.attributes?.find(attribute => attribute.name === "Memória RAM")?.value_name;
+            const mobileNetwork = product.attributes?.find(attribute => attribute.name === "Rede")?.value_name;
+
             return {
                 codigo_catalogo: product.id,
                 nome: product.name,
-                url_Imagem: product.pictures.length > 0 ? product.pictures[0].url : null
+                url_Imagem: product.pictures.length > 0 ? product.pictures[0].url : null,
+                marca: marca,
+                modelo: modelo,
+                cor: cor,
+                memoriaInterna: memoriaInterna,
+                memoriaRam: memoriaRam,
+                mobileNetwork: mobileNetwork
             };
         });
-
-
+    
+console.log(produtos);
 
         return produtos;
     }
+    
 
 
 

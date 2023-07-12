@@ -107,6 +107,8 @@ export class ProdutoLojaController {
 
     public static async updateML(produtoLoja: IProdutoLoja, url_catalogoML: string) {
 
+console.log(produtoLoja.nome);
+
         const options: RequestInit = {
             method: "POST",
             headers: {

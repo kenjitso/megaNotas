@@ -40,6 +40,7 @@ export function PageCatalogo() {
     const catalogos = useMemo(() => {
 
         let dados = data?.map((catalogo: ICatalogo) => {
+            console.log(catalogo);
             return catalogo;
         }) ?? []
 
