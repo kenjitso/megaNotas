@@ -12,7 +12,7 @@ interface Props {
     controlName?: string,
     placeholder?: string,
     onUpdate: (search: string) => void,
-    pageLink?: string;
+
 }
 
 
@@ -22,11 +22,11 @@ export default function InputSearchDebounce({
     controlName,
     placeholder,
     onUpdate,
-    pageLink,
+
 }: Props) {
     const [search, setSearch] = React.useState(initial);
     const debounce = useDebounce(search, delay);
-    const navigate = useNavigate();
+
 
     React.useEffect(() => {
         setSearch(initial);
@@ -35,7 +35,7 @@ export default function InputSearchDebounce({
 
     React.useEffect(() => {
         onUpdate(debounce);
-        navigate(pageLink || "");
+
     }, [debounce]);
     
   

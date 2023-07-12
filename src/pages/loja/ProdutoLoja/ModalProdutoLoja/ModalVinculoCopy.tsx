@@ -7,10 +7,10 @@ import { Button, Col, FloatingLabel, Form, Modal, Row, Table } from "react-boots
 import { useQuery } from "@tanstack/react-query";
 import ratata from "../../../../assets/ratata.svg";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
-import useDataTypes from "@/hooks/useDataTypes";
 import { abreviaLink } from "@/components/utils/AbreviaLink";
 import InputSearchVinculoCatalogo from "@/components/inputs/InputSearchVinculoCatalogo";
 import { compareValues, useSort } from "@/components/utils/FilterArrows";
+import { useParams, useSearchParams } from "react-router-dom";
 
 
 
@@ -23,8 +23,6 @@ interface IProps {
 
 export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
     const [selectedTable, setSelectedTable] = useState<string | null>(null);
-
-
 
     return (
         <Modal
@@ -94,7 +92,7 @@ export function TableVinculoManual({ produtoParaguay, onHide }: IProps) {
     */
 
     const { isFetching, data } = useQuery(["lojamanual", filtro], () => {
-        const catalogoVinculos = CatalogoController.search(filtro,true);
+        const catalogoVinculos = CatalogoController.search(filtro, true);
         return catalogoVinculos
     });
 
@@ -252,7 +250,6 @@ export function TableVinculoManual({ produtoParaguay, onHide }: IProps) {
 
 export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
 
-
     const [selectedUrl, setSelectedUrl] = useState<string>("");
     const [filtro, setFiltro] = useState("");
     const queryClient = useQueryClient();
@@ -268,7 +265,7 @@ export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
         data,
         refetch,
 
-    } = useQuery(["lojas", filtro], () => {
+    } = useQuery(["catalogosML", filtro], () => {
         const catalogo = CatalogoController.searchCatalogoML(filtro);
         return catalogo;
     }, { enabled: filtro ? true : false });
@@ -281,6 +278,8 @@ export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
             queryClient.invalidateQueries(["catalogoshome"]);
             queryClient.invalidateQueries(["produtosloja"]);
             queryClient.invalidateQueries(["catalogos"]);
+            queryClient.invalidateQueries(["lojamanual"]);
+           
         }
     });
 
@@ -294,14 +293,16 @@ export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
             novoFiltro += produtoParaguay.marca + " ";
         }
 
-        if (checkCapacidade && produtoParaguay?.capacidade) {
-            novoFiltro += produtoParaguay.capacidade + " ";
-        }
-
         if (checkModelo && produtoParaguay?.nome) {
             novoFiltro += produtoParaguay.nome + " ";
         }
 
+
+        if (checkCapacidade && produtoParaguay?.capacidade) {
+            novoFiltro += produtoParaguay.capacidade + " ";
+        }
+
+  
         if (checkCor && produtoParaguay?.cor) {
             novoFiltro += produtoParaguay.cor + " ";
         }
@@ -432,7 +433,9 @@ export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
                             onUpdate={(value) => {
                                 setFiltro(value);
                             }
+
                             }
+
                             initial={filtro} // Aqui!
 
                         />
