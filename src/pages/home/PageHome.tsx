@@ -1,4 +1,4 @@
-import { PaginationComponent } from "@/datas/PaginationComponent";
+import { PaginationComponent } from "@/components/pagination/PaginationComponent";
 import { CatalogoController, ICatalogo, } from "@/datatypes/catalogo";
 import React, { useMemo, useState } from "react";
 import { Accordion, Card, Col, Dropdown, FloatingLabel, ListGroup, OverlayTrigger, Row, Table, Tooltip, } from "react-bootstrap";
@@ -6,7 +6,7 @@ import ratata from "../../assets/megaPreco.svg";
 import { useSearchParams } from "react-router-dom";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
-import { formatCurrency } from "@/components/utils/FormatCurrency";
+import { formatCurrency } from "@/features/FormatCurrency";
 import { FreteiroStore } from "@/context/FreteiroStore";
 import { ILoja } from "@/datatypes/loja";
 import { Icons } from "@/components/icons/icons";
@@ -104,8 +104,9 @@ export function PageHome() {
     }
 
 
-    const handlePageChange = (page: number) => {
-        setParams(`?limit=${limit}&page=${page}`);
+    const handlePageChange = (page: number, newLimit?: number) => {
+        const limitToUse = newLimit || limit;
+        setParams(`?limit=${limitToUse}&page=${page}`);
     };
 
 
@@ -141,23 +142,30 @@ export function PageHome() {
                 </Col>
 
             </Row>
-            <Row className="my-3">
-                <Dropdown >
-                    <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown limitPagination">
-                        Exibindo {catalogos.items.length} de {catalogos.total} com limite de {limit}
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu className="custom-dropdown-menu">
-                        <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=20&page=1"))}>20</Dropdown.Item>
-                        <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=50&page=1"))}>50</Dropdown.Item>
-                        <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=100&page=1"))}>100</Dropdown.Item>
-                        <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=200&page=1"))}>200</Dropdown.Item>
-                        <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=400&page=1"))}>400</Dropdown.Item>
-                        <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=800&page=1"))}>800</Dropdown.Item>
+            <Row className="my-2">
+                <Col xs={10}>
+                    <Dropdown >Exibir
+                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-1 limitPagination">
+                            {limit}
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu className="custom-dropdown-menu">
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 20)}>20</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 50)}>50</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 100)}>100</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 200)}>200</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 400)}>400</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 800)}>800</Dropdown.Item>
+                        </Dropdown.Menu>
+                        resultados por página
+                    </Dropdown>
+                </Col>
+                <Col xs={2} className="justify-content-end text-right">
+                    Mostrando de {catalogos.items.length} até {limit} de {catalogos.total}
+                </Col>
 
-                    </Dropdown.Menu>
-                </Dropdown>
 
             </Row>
+
             <Table striped bordered hover className="rounded-table">
                 <thead>
                     <tr>
@@ -273,22 +281,27 @@ export function PageHome() {
                         currentPage={catalogos.page ?? 1}
                     />
 
-                    <Dropdown >
-                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-3 limitPagination">
-                            Exibindo {catalogos.items.length} de {catalogos.total} com limite de {limit}
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu className="custom-dropdown-menu">
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=20&page=1"))}>20</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=50&page=1"))}>50</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=100&page=1"))}>100</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=200&page=1"))}>200</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=400&page=1"))}>400</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=800&page=1"))}>800</Dropdown.Item>
+                    <Col className="ml-auto mx-3">
+                        <Dropdown > Exibir
+                            <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-1 limitPagination">
+                                {limit}
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu className="custom-dropdown-menu">
+                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 20)}>20</Dropdown.Item>
+                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 50)}>50</Dropdown.Item>
+                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 100)}>100</Dropdown.Item>
+                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 200)}>200</Dropdown.Item>
+                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 400)}>400</Dropdown.Item>
+                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 800)}>800</Dropdown.Item>
+                            </Dropdown.Menu>
+                            resultados por página
+                        </Dropdown>
+                    </Col>
 
-                        </Dropdown.Menu>
-                    </Dropdown>
+                    <span className="ml-2">Mostrando de {catalogos.items.length} até {limit} de {catalogos.total}</span>
                 </Col>
             </Row>
+
         </React.Fragment>
     );
 }

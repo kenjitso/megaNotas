@@ -2,7 +2,7 @@ import { Col, FloatingLabel, Form, Row, Table } from "react-bootstrap";
 import "@/assets/style.css"
 import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 import React, { useState } from "react";
-import { formatCurrency } from "@/components/utils/FormatCurrency";
+import { formatCurrency } from "@/features/FormatCurrency";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 
 interface IProps {

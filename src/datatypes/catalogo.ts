@@ -203,7 +203,6 @@ export class CatalogoController {
 
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos?${params}`, options);
         const responseData: unknown = await response.json();
-        console.log(responseData);
         const catalogosSchema = z.object({
             items: z.array(schemaCatalogo),
         }).transform(dados => dados.items).parse(responseData);
@@ -228,7 +227,6 @@ export class CatalogoController {
 
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/competidores?${params}`, options);
         const responseData: unknown = await response.json();
-console.log(responseData);
         const catalogos = z.object({
             items: z.array(schemaCatalogo).transform(items => items.filter(item => item.competidores && item.competidores.length > 0)),
         }).transform(dados => dados.items).parse(responseData);
@@ -293,8 +291,6 @@ console.log(responseData);
                 mobileNetwork: mobileNetwork
             };
         });
-    
-console.log(produtos);
 
         return produtos;
     }

@@ -92,7 +92,6 @@ export function ModalSyncVinculos({ onHide, produtoParaguay }: IProps) {
                 const similarity = filtrosVinculos(produto, productML);
                 if (similarity === 6) {  // 9 é o máximo de similaridade
                     try {
-                        console.log(produto.nome);
                         await mutation.mutateAsync({ produto, url_catalogoML: `https://www.mercadolivre.com.br/p/${productML.codigo_catalogo}` });
 
                         linkCount++;
@@ -132,7 +131,7 @@ export function ModalSyncVinculos({ onHide, produtoParaguay }: IProps) {
                     <div>
                         <p><strong>Produto do Paraguai</strong></p>
                         <p>
-                        <strong>Codigo: </strong>
+                            <strong>Codigo: </strong>
                             <a
                                 style={{ color: "blue" }}
                                 href={data && data.mostSimilarProduct ? `https://atacadogames.com/lista-produtos/termo/${produtoAtualParaguay.codigo}/1` : '#'}

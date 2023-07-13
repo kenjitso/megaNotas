@@ -75,7 +75,6 @@ export function filtrosVinculos(produtoParaguay: IProdutoLoja, produtoML: any) {
         produtoParaguay.nome.toUpperCase().trim() === "POCO X5" &&
         (produtoML.modelo.toUpperCase().includes("POCO X5") || produtoML.modelo.toUpperCase().includes("POCO X5 5G"))
     ) {
-        console.log("??");
         similarity++;
     }
 

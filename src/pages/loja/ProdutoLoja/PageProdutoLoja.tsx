@@ -5,8 +5,8 @@ import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { Icons } from "@/components/icons/icons";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
-import { formatCurrency } from "@/components/utils/FormatCurrency";
-import { PaginationComponent } from "@/datas/PaginationComponent";
+import { formatCurrency } from "@/features/FormatCurrency";
+import { PaginationComponent } from "@/components/pagination/PaginationComponent";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
 import { ModalCadastroProdutoLoja } from "./ModalProdutoLoja/ModalCadastroProdutoLoja";
 import { ModalSyncVinculos } from "./ModalProdutoLoja/ModalSyncVinculos";
@@ -30,8 +30,6 @@ export function PageProdutoLoja() {
     const { sortOrder, sortBy, handleSort } = useSort<IProdutoLoja>('nome');
     const [isFilteredDesvinculados, setIsFilteredDesvinculados] = useState(false);
     const [isFilteredVinculados, setIsFilteredVinculados] = useState(false);
-    const [minRange, setMinRange] = useState(0);
-    const [maxRange, setMaxRange] = useState(9999);
 
 
 
@@ -156,7 +154,6 @@ export function PageProdutoLoja() {
             };
         }) ?? []
 
-        dados = dados.filter((_, index) => index >= minRange && index < maxRange);
 
         if (isFilteredDesvinculados) {
             dados = dados.filter(produto => produto.vinculos === null || produto.vinculos.length === 0);
@@ -176,12 +173,13 @@ export function PageProdutoLoja() {
         return {
             page, total, limit, items, allItems
         }
-    }, [data, page, limit, sortBy, sortOrder, isFilteredDesvinculados, isFilteredVinculados, minRange, maxRange])
+    }, [data, page, limit, sortBy, sortOrder, isFilteredDesvinculados, isFilteredVinculados])
 
 
 
-    const handlePageChange = (page: number) => {
-        setParams(`?limit=${limit}&page=${page}`);
+    const handlePageChange = (page: number, newLimit?: number) => {
+        const limitToUse = newLimit || limit;
+        setParams(`?limit=${limitToUse}&page=${page}`);
     };
 
     const handleFilterDesvinculados = () => {
@@ -194,11 +192,6 @@ export function PageProdutoLoja() {
         setParams({ page: '1', limit: params.get("limit") || '20' });
 
     }
-
-
-
-
-
 
     return (
         <React.Fragment>
@@ -283,7 +276,29 @@ export function PageProdutoLoja() {
                 </Col>
             </Row>
 
+            <Row className="my-2">
+                <Col xs={10}>
+                    <Dropdown >Exibir
+                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-1 limitPagination">
+                            {limit}
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu className="custom-dropdown-menu">
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 20)}>20</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 50)}>50</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 100)}>100</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 200)}>200</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 400)}>400</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 800)}>800</Dropdown.Item>
+                        </Dropdown.Menu>
+                        resultados por página
+                    </Dropdown>
+                </Col>
+                <Col xs={2} className="justify-content-end text-right">
+                    Mostrando de {produtosLoja.items.length} até {limit} de {produtosLoja.total}
+                </Col>
 
+
+            </Row>
             <Table striped bordered hover className="rounded-table">
 
                 <thead>
@@ -389,33 +404,24 @@ export function PageProdutoLoja() {
                         currentPage={produtosLoja.page ?? 1}
                     />
 
-                    <Dropdown>
-                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-3 limitPagination">
-                            Mostrando {produtosLoja.items.length} de {limit}
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu className="custom-dropdown-menu">
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=20&page=1"))}>20</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=50&page=1"))}>50</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=100&page=1"))}>100</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=200&page=1"))}>200</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=400&page=1"))}>400</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=800&page=1"))}>800</Dropdown.Item>
+                       <Col className="ml-auto mx-3">
+                        <Dropdown > Exibir
+                            <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-1 limitPagination">
+                                {limit}
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu className="custom-dropdown-menu">
+                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 20)}>20</Dropdown.Item>
+                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 50)}>50</Dropdown.Item>
+                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 100)}>100</Dropdown.Item>
+                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 200)}>200</Dropdown.Item>
+                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 400)}>400</Dropdown.Item>
+                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 800)}>800</Dropdown.Item>
+                            </Dropdown.Menu>
+                            resultados por página
+                        </Dropdown>
+                    </Col>
 
-                        </Dropdown.Menu>
-                    </Dropdown>
-                    { /*  <Row className="my-3">
-                        <Col xs>
-                            <FloatingLabel className="w-100" label="Min">
-                                <Form.Control type="number" min="0" value={minRange} onChange={(e) => setMinRange(parseInt(e.target.value))} />
-                            </FloatingLabel>
-                        </Col>
-                        <Col xs>
-                            <FloatingLabel className="w-100" label="Max">
-                                <Form.Control type="number" min="0" value={maxRange} onChange={(e) => setMaxRange(parseInt(e.target.value))} />
-                            </FloatingLabel>
-                        </Col>
-                    </Row>
-*/}
+                    <span className="ml-2">Mostrando de {produtosLoja.items.length} até {limit} de {produtosLoja.total}</span>
                 </Col>
             </Row>
         </React.Fragment>

@@ -7,7 +7,7 @@ import { Button, Col, FloatingLabel, Form, Modal, Row, Table } from "react-boots
 import { useQuery } from "@tanstack/react-query";
 import ratata from "../../../../assets/ratata.svg";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
-import { abreviaLink } from "@/components/utils/AbreviaLink";
+import { abreviaLink } from "@/features/AbreviaLink";
 import InputSearchVinculoCatalogo from "@/components/inputs/InputSearchVinculoCatalogo";
 import { compareValues, useSort } from "@/components/utils/FilterArrows";
 

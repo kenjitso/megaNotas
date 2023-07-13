@@ -1,4 +1,3 @@
-// abreviaLink.ts
 export function abreviaLink(link: string | undefined, maxLength: number): string {
     if (!link) {
         return '';

@@ -107,8 +107,6 @@ export class ProdutoLojaController {
 
     public static async updateML(produtoLoja: IProdutoLoja, url_catalogoML: string) {
 
-console.log(produtoLoja.nome);
-
         const options: RequestInit = {
             method: "POST",
             headers: {
@@ -120,9 +118,6 @@ console.log(produtoLoja.nome);
         };
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja/${produtoLoja.id}/vincular`, options);
         const responseData: unknown = await response.json();
-
-        console.log(responseData);
-
         const produtoLojaSchema = schemaProdutoLoja.parse(responseData);
         return produtoLojaSchema;
 
@@ -133,8 +128,6 @@ console.log(produtoLoja.nome);
     public static async update(produtoLoja: IProdutoLoja) {
 
         produtoLoja.nome = produtoLoja.nome_original;
-
-        console.log(produtoLoja);
         const options: RequestInit = {
             method: "PATCH",
             headers: {

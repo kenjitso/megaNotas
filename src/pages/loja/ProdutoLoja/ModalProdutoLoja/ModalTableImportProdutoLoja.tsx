@@ -60,7 +60,7 @@ import { Table } from "react-bootstrap";
 import "@/assets/style.css"
 import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 import React, { useEffect, useState } from "react";
-import { formatCurrency } from "@/components/utils/FormatCurrency";
+import { formatCurrency } from "@/features/FormatCurrency";
 
 interface IProps {
     listProdutoLoja?: IProdutoLoja[] | null;

@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Button, Col, Dropdown, FloatingLabel, Row, Table } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
-import { PaginationComponent } from "@/datas/PaginationComponent";
+import { PaginationComponent } from "@/components/pagination/PaginationComponent";
 import { FreteiroController, IFreteiro } from "@/datatypes/freteiro";
 import { ModalCadastroFreteiro } from "./ModalCadastroFreteiro";
 import React from "react";
@@ -10,7 +10,7 @@ import { Icons } from "@/components/icons/icons";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { ModalDesativaFreteiro } from "./ModalDesativaFreteiro";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
-import { formatCurrency } from "@/components/utils/FormatCurrency";
+import { formatCurrency } from "@/features/FormatCurrency";
 import { useQuery } from "@tanstack/react-query";
 import { compareValues, useSort } from "@/components/utils/FilterArrows";
 
@@ -20,7 +20,7 @@ export function PageFreteiro() {
     const [freteiroIdDelete, setDelete] = useState<string | undefined>("");
     const page = parseInt(params.get("page") ?? "1");
     const limit = parseInt(params.get("limit") ?? "20");
-    const [filtro, setFiltro] = useState("");
+    const [filtro, setFiltro] = useState<string>("");
     const { sortOrder, sortBy, handleSort } = useSort<IFreteiro>('nome');
 
 
@@ -29,7 +29,7 @@ export function PageFreteiro() {
         return loja;
     });
 
-    const freteiro = useMemo(() => {
+    const freteiros = useMemo(() => {
 
         let dados = data?.map((freteiro: IFreteiro) => {
 
@@ -49,8 +49,9 @@ export function PageFreteiro() {
 
     }, [data, page, limit, sortBy, sortOrder]);
 
-    const handlePageChange = (page: number) => {
-        setParams(`?limit=${limit}&page=${page}`);
+    const handlePageChange = (page: number, newLimit?: number) => {
+        const limitToUse = newLimit || limit;
+        setParams(`?limit=${limitToUse}&page=${page}`);
     };
 
     return (
@@ -77,6 +78,29 @@ export function PageFreteiro() {
                         <Icons tipo="cadastro" tamanho={23} /> Cadastro
                     </Button>
                 </Col>
+            </Row>
+            <Row className="my-2">
+                <Col xs={10}>
+                    <Dropdown >Exibir
+                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-1 limitPagination">
+                            {limit}
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu className="custom-dropdown-menu">
+                            <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 20)}>20</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 50)}>50</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 100)}>100</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 200)}>200</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 400)}>400</Dropdown.Item>
+                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 800)}>800</Dropdown.Item>
+                        </Dropdown.Menu>
+                        resultados por página
+                    </Dropdown>
+                </Col>
+                <Col xs={2} className="justify-content-end text-right">
+                    Mostrando de {freteiros.items.length} até {limit} de {freteiros.total}
+                </Col>
+
+
             </Row>
 
             <Table striped bordered hover className="rounded-table">
@@ -117,7 +141,7 @@ export function PageFreteiro() {
                 </thead>
                 <tbody>
                     {
-                        !isFetching && freteiro?.items?.map((freteiro, index) => <ItemTable key={index} freteiro={freteiro} onEdit={() => setEdit(freteiro.id)} onDelete={() => setDelete(freteiro.id)} />)
+                        !isFetching && freteiros?.items?.map((freteiro, index) => <ItemTable key={index} freteiro={freteiro} onEdit={() => setEdit(freteiro.id)} onDelete={() => setDelete(freteiro.id)} />)
                     }
                 </tbody>
             </Table>
@@ -125,26 +149,31 @@ export function PageFreteiro() {
             <Row className="my-3">
                 <Col xs className="d-flex">
                     <PaginationComponent<IFreteiro>
-                        items={freteiro.total}
-                        pageSize={freteiro.limit}
+                        items={freteiros.total}
+                        pageSize={freteiros.limit}
                         onPageChange={handlePageChange}
-                        currentPage={freteiro.page ?? 1}
+                        currentPage={freteiros.page ?? 1}
                     />
 
-                    <Dropdown >
-                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-3 limitPagination">
-                            Mostrando {freteiro.items.length} de {limit}
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu className="custom-dropdown-menu">
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=20&page=1"))}>20</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=50&page=1"))}>50</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=100&page=1"))}>100</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=200&page=1"))}>200</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=400&page=1"))}>400</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=800&page=1"))}>800</Dropdown.Item>
+                 
+<Col className="ml-auto mx-3">
+                        <Dropdown > Exibir
+                            <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-1 limitPagination">
+                                {limit}
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu className="custom-dropdown-menu">
+                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 20)}>20</Dropdown.Item>
+                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 50)}>50</Dropdown.Item>
+                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 100)}>100</Dropdown.Item>
+                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 200)}>200</Dropdown.Item>
+                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 400)}>400</Dropdown.Item>
+                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 800)}>800</Dropdown.Item>
+                            </Dropdown.Menu>
+                            resultados por página
+                        </Dropdown>
+                    </Col>
 
-                        </Dropdown.Menu>
-                    </Dropdown>
+                    <span className="ml-2">Mostrando de {freteiros.items.length} até {limit} de {freteiros.total}</span>
                 </Col>
             </Row>
         </React.Fragment>
