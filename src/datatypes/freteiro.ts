@@ -38,8 +38,6 @@ export class FreteiroController {
 
   public static async create(freteiro: IFreteiro) {
 
-
-
     const options: RequestInit = {
       method: "POST",
       headers: {
@@ -113,31 +111,5 @@ export class FreteiroController {
     return freteiroSchema;
   }
 
-  public static async searchFreteiro(page = 1, limit = 25, q: string, ordenar = "nome", ordem = "crescente", ativo: boolean | undefined = true) {
-
-    const params = new URLSearchParams();
-    if (q) params.set("q", q);
-    if (ativo !== undefined) params.set("ativo", ativo.toString());
-    params.set("limit", limit.toString());
-    params.set("page", page.toString());
-    params.set("ordenar", ordenar);
-    params.set("ordem", ordem);
-
-    const options: RequestInit = {
-      method: "GET",
-      headers: {
-        "Content-type": "application/json"
-      }
-    };
-    const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/freteiro?${params}`, options);
-    const responseData: unknown = await response.json();
-    console.log(responseData);
-    const freteiroSchema = z.object({
-      page: z.number().min(1),
-      limit: z.number().min(1),
-      items: z.array(schemaFreteiro),
-      total: z.number().min(1)
-    }).parse(responseData);
-    return freteiroSchema;
-  }
+ 
 }

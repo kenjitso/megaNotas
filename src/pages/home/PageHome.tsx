@@ -1,22 +1,7 @@
-import {
-    PaginationComponent,
-} from "@/datas/PaginationComponent";
-import {
-    CatalogoController, ICatalogo,
-} from "@/datatypes/catalogo";
+import { PaginationComponent } from "@/datas/PaginationComponent";
+import { CatalogoController, ICatalogo, } from "@/datatypes/catalogo";
 import React, { useMemo, useState } from "react";
-import {
-    Accordion,
-    Card,
-    Col,
-    Dropdown,
-    FloatingLabel,
-    ListGroup,
-    OverlayTrigger,
-    Row,
-    Table,
-    Tooltip,
-} from "react-bootstrap";
+import { Accordion, Card, Col, Dropdown, FloatingLabel, ListGroup, OverlayTrigger, Row, Table, Tooltip, } from "react-bootstrap";
 import ratata from "../../assets/megaPreco.svg";
 import { useSearchParams } from "react-router-dom";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
@@ -39,8 +24,6 @@ export function PageHome() {
     const page = parseInt(params.get("page") ?? "1");
     const limit = parseInt(params.get("limit") ?? "20");
     const { sortOrder, sortBy, handleSort } = useSort<ICatalogo>('nome');
-
-
 
     const { isFetching, data } = useQuery(["catalogoshome", filtro], () => {
         let catalogo = CatalogoController.searchCompetidor(filtro);
@@ -156,9 +139,25 @@ export function PageHome() {
                         </Dropdown.Toggle>
                     </OverlayTrigger>
                 </Col>
+
             </Row>
+            <Row className="my-3">
+                <Dropdown >
+                    <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown limitPagination">
+                        Exibindo {catalogos.items.length} de {catalogos.total} com limite de {limit}
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu className="custom-dropdown-menu">
+                        <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=20&page=1"))}>20</Dropdown.Item>
+                        <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=50&page=1"))}>50</Dropdown.Item>
+                        <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=100&page=1"))}>100</Dropdown.Item>
+                        <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=200&page=1"))}>200</Dropdown.Item>
+                        <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=400&page=1"))}>400</Dropdown.Item>
+                        <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=800&page=1"))}>800</Dropdown.Item>
 
+                    </Dropdown.Menu>
+                </Dropdown>
 
+            </Row>
             <Table striped bordered hover className="rounded-table">
                 <thead>
                     <tr>
@@ -276,7 +275,7 @@ export function PageHome() {
 
                     <Dropdown >
                         <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-3 limitPagination">
-                            Mostrando {catalogos.items.length} de {limit}
+                            Exibindo {catalogos.items.length} de {catalogos.total} com limite de {limit}
                         </Dropdown.Toggle>
                         <Dropdown.Menu className="custom-dropdown-menu">
                             <Dropdown.Item className="custom-dropdown-item" onClick={() => setParams(new URLSearchParams("limit=20&page=1"))}>20</Dropdown.Item>
@@ -385,7 +384,7 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
                                                 <Card.Body>
                                                     <Row>
                                                         <Col xs={4} md={2} >
-                                                            <strong>Código:</strong>
+                                                            <strong>Código: </strong>
                                                             {competidor.produto.codigo}
                                                         </Col>
                                                         <Col xs={8} md={10}>

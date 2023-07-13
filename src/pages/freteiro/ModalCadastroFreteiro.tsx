@@ -99,7 +99,7 @@ export function ModalCadastroFreteiro({ onHide, freteiroId }: props) {
                                                 className="mb-3">
                                                 <FloatingLabel
                                                     controlId="formValorMin"
-                                                    label="Perceltual">
+                                                    label="Percentual">
                                                     <Form.Control
                                                         as={InputNumero}
                                                         type="number"

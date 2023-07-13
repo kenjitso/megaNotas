@@ -1,12 +1,13 @@
 import { Icons } from "@/components/icons/icons";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Container, Form, Nav, Navbar } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ratata from "../assets/megaPreco.svg"
 import { ModalDolar } from "./ModalDolar";
-import useDataTypes from "@/hooks/useDataTypes";
 import { FreteiroController, IFreteiro } from "@/datatypes/freteiro";
 import { FreteiroStore } from "@/context/FreteiroStore";
+import { useQuery } from "@tanstack/react-query";
+
 
 interface CotacaoMoedas {
   [key: string]: {
@@ -32,18 +33,16 @@ export function MenuMega() {
   const { freteiro } = FreteiroStore.useStore();
   const dispatch = FreteiroStore.useDispatch();
 
-  const {
-    isLoading,
-    orderBy,
-    ordem,
-    ordenar,
-    data
-  } = useDataTypes<IFreteiro>({
-    queryKey: ["freteiros"],
-    queryFn: async () => await FreteiroController.searchFreteiro(1, 100, filtro, ordenar, ordem ? "crescente" : "descrescente", true),
-    filtro: filtro,
-    defaultOrder: "nome"
-  })
+
+  const { data: freteiros } = useQuery(["freteiros", filtro], async () => {
+    const result = await FreteiroController.search(filtro);
+    return result?.map(freteiro => {
+      return {
+        ...freteiro
+      };
+    });
+  });
+
 
   useEffect(() => {
     fetch("https://economia.awesomeapi.com.br/last/USD-BRL")
@@ -115,10 +114,10 @@ export function MenuMega() {
               <Form.Select
                 className="optionStyle"
                 value={freteiro?.id ?? ""}
-                onChange={(e) => dispatch(data?.items?.find(freteiro => freteiro.id === e.target.value) ?? null)}
+                onChange={(e) => dispatch(freteiros?.find(freteiro => freteiro.id === e.target.value) ?? null)}
               >
                 <option value="">Selecionar Freteiro</option>
-                {data?.items?.map((item) => (
+                {freteiros?.map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.nome}
                   </option>
