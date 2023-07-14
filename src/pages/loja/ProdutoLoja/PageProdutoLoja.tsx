@@ -46,101 +46,91 @@ export function PageProdutoLoja() {
             produtoLoja.nome_original = produtoLoja.nome;
 
             const ram =
-                /2RAM/i.test(produtoLoja.nome) ? 2 :
-                    /3RAM/i.test(produtoLoja.nome) ? 3 :
-                        /4RAM/i.test(produtoLoja.nome) ? 4 :
-                            /6RAM/i.test(produtoLoja.nome) ? 6 :
-                                /8RAM/i.test(produtoLoja.nome) ? 8 :
-                                    /12RAM/i.test(produtoLoja.nome) ? 12 :
-                                        /16RAM/i.test(produtoLoja.nome) ? 16 :
+                /16GB RAM/i.test(produtoLoja.nome) ? 16 :
+                    /12GB RAM/i.test(produtoLoja.nome) ? 12 :
+                        /2GB RAM/i.test(produtoLoja.nome) ? 2 :
+                            /3GB RAM/i.test(produtoLoja.nome) ? 3 :
+                                /4GB RAM/i.test(produtoLoja.nome) ? 4 :
+                                    /6GB RAM/i.test(produtoLoja.nome) ? 6 :
+                                        /8GB RAM/i.test(produtoLoja.nome) ? 8 :
+
                                             null;
 
             const capacidade =
-                /32GB/i.test(produtoLoja.nome) ? 32 :
-                    /64GB/i.test(produtoLoja.nome) ? 64 :
+                /512GB/i.test(produtoLoja.nome) ? 512 :
+                    /256GB/i.test(produtoLoja.nome) ? 256 :
                         /128GB/i.test(produtoLoja.nome) ? 128 :
-                            /256GB/i.test(produtoLoja.nome) ? 256 :
-                                /512GB/i.test(produtoLoja.nome) ? 512 :
+                            /64GB/i.test(produtoLoja.nome) ? 64 :
+                                /32GB/i.test(produtoLoja.nome) ? 32 :
+
+
+
+
                                     null;
 
             const rede =
-                /\b5g\b/i.test(produtoLoja.nome) ? 5 :
-                    /\b4g\b/i.test(produtoLoja.nome) ? 4 :
+                /\b5G\b/i.test(produtoLoja.nome) ? 5 :
+                    /\b4G\b/i.test(produtoLoja.nome) ? 4 :
                         null;
 
             const cor =
-                /BLACK/i.test(produtoLoja.nome) ? "BLACK" :
-                    /BLAC/i.test(produtoLoja.nome) ? "BLACK" :
-                        /MINT GREEN/i.test(produtoLoja.nome) ? "GREEN" :
-                            /MINT GREE/i.test(produtoLoja.nome) ? "GREEN" :
-                                /MINT REE/i.test(produtoLoja.nome) ? "GREEN" :
-                                    /PEPPY PURPLE/i.test(produtoLoja.nome) ? "PURPLE" :
-                                        /PURPLE/i.test(produtoLoja.nome) ? "PURPLE" :
-                                            /BLUE/i.test(produtoLoja.nome) ? "BLUE" :
-                                                /LITE PINK/i.test(produtoLoja.nome) ? "PINK" :
-                                                    /PEBBLE WHITE/i.test(produtoLoja.nome) ? "WHITE" :
-                                                        /GLACIE/i.test(produtoLoja.nome) ? "WHITE" :
-                                                            /WHITE/i.test(produtoLoja.nome) ? "WHITE" :
-                                                                /AURORA GREEN/i.test(produtoLoja.nome) ? "GREEN" :
-                                                                    /AURORA/i.test(produtoLoja.nome) ? "GREEN" :
-                                                                        /CORAL GREEN/i.test(produtoLoja.nome) ? "GREEN" :
-                                                                            /CORAL/i.test(produtoLoja.nome) ? "CORAL" :
-                                                                                /GREEN/i.test(produtoLoja.nome) ? "GREEN" :
-                                                                                    /GREE/i.test(produtoLoja.nome) ? "GREEN" :
-                                                                                        /GRAY/i.test(produtoLoja.nome) ? "GRAY" :
-                                                                                            /GREY/i.test(produtoLoja.nome) ? "GRAY" :
-                                                                                                /LITE GREEN/i.test(produtoLoja.nome) ? "GREEN" :
-                                                                                                    /LITE REEN/i.test(produtoLoja.nome) ? "GREEN" :
-                                                                                                        /ORANGE/i.test(produtoLoja.nome) ? "ORANGE" :
-                                                                                                            /CHARCOAL/i.test(produtoLoja.nome) ? "CHARCOAL" :
-                                                                                                                /SILVER/i.test(produtoLoja.nome) ? "SILVER" :
-                                                                                                                    /LIGHT BLU/i.test(produtoLoja.nome) ? "BLUE" :
-                                                                                                                        /TWILIGHT/i.test(produtoLoja.nome) ? "BLUE" :
-                                                                                                                            /GRAPHITE G/i.test(produtoLoja.nome) ? "GRAY" :
-                                                                                                                                /GRAPHITE/i.test(produtoLoja.nome) ? "GRAY" :
-                                                                                                                                    /YE/i.test(produtoLoja.nome) ? "YELLOW" :
-                                                                                                                                        /LAVENDER P/i.test(produtoLoja.nome) ? "PURPLE" :
-                                                                                                                                            /LIGHT GRE/i.test(produtoLoja.nome) ? "GRAY" :
-                                                                                                                                                /BLU/i.test(produtoLoja.nome) ? "BLUE" :
-                                                                                                                                                    /STAR/i.test(produtoLoja.nome) ? "BLUE" :
-                                                                                                                                                        /GR/i.test(produtoLoja.nome) ? "GRAY" :
-                                                                                                                                                            /GRAPHI/i.test(produtoLoja.nome) ? "GRAY" :
-                                                                                                                                                                /MIDNIG/i.test(produtoLoja.nome) ? "BLACK" :
-                                                                                                                                                                    /SKY BL/i.test(produtoLoja.nome) ? "BLUE" :
-                                                                                                                                                                        /MID/i.test(produtoLoja.nome) ? "BLACK" :
-                                                                                                                                                                            /ONYX/i.test(produtoLoja.nome) ? "GRAY" :
-                                                                                                                                                                                /OCEAN/i.test(produtoLoja.nome) ? "OCEAN" :
-                                                                                                                                                                                    /CARBON/i.test(produtoLoja.nome) ? "BLACK" :
-                                                                                                                                                                                        null;
+                /VERDE/i.test(produtoLoja.nome) ? "VERDE" :
+                    /MINT GREEN/i.test(produtoLoja.nome) ? "VERDE" :
+                        /LITE GREEN/i.test(produtoLoja.nome) ? "VERDE" :
+                            /AZUL/i.test(produtoLoja.nome) ? "AZUL" :
+                                /GLACIER BLUE/i.test(produtoLoja.nome) ? "AZUL" :
+                                    /ICE BLUE/i.test(produtoLoja.nome) ? "AZUL" :
+                                        /TWILIGHT BLUE/i.test(produtoLoja.nome) ? "AZUL" :
+                                            /STAR BLUE/i.test(produtoLoja.nome) ? "AZUL" :
+                                                /LIGHT BLUE/i.test(produtoLoja.nome) ? "AZUL" :
+                                                    /OCEAN BLUE/i.test(produtoLoja.nome) ? "AZUL" :
+                                                        /CINZA/i.test(produtoLoja.nome) ? "CINZA" :
+                                                            /PRETO/i.test(produtoLoja.nome) ? "PRETO" :
+                                                                /BLACK/i.test(produtoLoja.nome) ? "PRETO" :
+                                                                    /ONYX GRAY/i.test(produtoLoja.nome) ? "PRETO" :
+                                                                        /GRAPHITE GRAY/i.test(produtoLoja.nome) ? "PRETO" :
+                                                                            /ONYX BLACK/i.test(produtoLoja.nome) ? "PRETO" :
+                                                                                /BRANCO/i.test(produtoLoja.nome) ? "BRANCO" :
+                                                                                    /ROXO/i.test(produtoLoja.nome) ? "ROXO" :
+                                                                                        /COSMIC PURPLE/i.test(produtoLoja.nome) ? "ROXO" :
+                                                                                            /LAVANDER PURPLE/i.test(produtoLoja.nome) ? "ROXO" :
+                                                                                                /LAVENDER PURPLE/i.test(produtoLoja.nome) ? "ROXO" :
+                                                                                                    /PEPPY PURPLE/i.test(produtoLoja.nome) ? "ROXO" :
+                                                                                                        /BRONZE/i.test(produtoLoja.nome) ? "BRONZE" :
+                                                                                                            /PRATA/i.test(produtoLoja.nome) ? "PRATA" :
+                                                                                                                /AMARELO/i.test(produtoLoja.nome) ? "AMARELO" :
+                                                                                                                    /FOREST GREEN/i.test(produtoLoja.nome) ? "VERDE" :
+                                                                                                                        /PINK/i.test(produtoLoja.nome) ? "ROSA" :
+                                                                                                                            /ROSA/i.test(produtoLoja.nome) ? "ROSA" :
+
+                                                                                                                                null;
 
 
             const origem =
-                /INDIA/i.test(produtoLoja.nome) ? "INDIA" :
-                    /GLOBAL/i.test(produtoLoja.nome) ? "GLOBAL" :
-                        /GLOB/i.test(produtoLoja.nome) ? "GLOBAL" :
-                            /GLO/i.test(produtoLoja.nome) ? "GLOBAL" :
-                                /INDONESIA/i.test(produtoLoja.nome) ? "INDONESIA" :
-                                    /INDI/i.test(produtoLoja.nome) ? "INDIA" :
-                                        produtoLoja.nome.endsWith("G") ? "GLOBAL" :
-                                            null;
+                /ÍNDIA/i.test(produtoLoja.nome) ? "INDIA" :
+                    /INDIA/i.test(produtoLoja.nome) ? "INDIA" :
+                        /GLOBAL/i.test(produtoLoja.nome) ? "GLOBAL" :
+                            /INDONESIA/i.test(produtoLoja.nome) ? "INDONESIA" :
+                                null;
 
 
             const marca = /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" : null;
 
 
 
-            let posicaoUltimoDS = produtoLoja.nome.lastIndexOf("DS");
-            let novoNome = produtoLoja.nome.substring(0, posicaoUltimoDS + 2).trim().replace("DS", ""); // +2 para incluir o "DS"
+            let posicaoUltimoDS = produtoLoja.nome.indexOf("/");
+            let novoNome = posicaoUltimoDS !== -1 ? produtoLoja.nome.substring(0, posicaoUltimoDS) : produtoLoja.nome;
+
 
             //  let novoNome = produtoLoja.nome;
 
-            if (origem) novoNome = novoNome.replace(/INDIA|GLOBAL|INDONESIA|GLOB|GLO/gi, '');
-            if (cor) novoNome = novoNome.replace(/BLACK|MINT GREEN|MINT REE|PURPLE|BLUE|LITE PINK|PEBBLE WHITE|WHITE|AURORA GREEN|AURORA|CORAL GREEN|GRAY|CORAL|LITE GREEN|LITE REEN|GREY|GREEN|ORANGE|CHARCOAL|SILVER|LIGHT BLU|MINT GREE|TWILIGHT|TWILIHT|GREE|GRAPHITE G|GRAPHITE|BLAC|PEPPY PURPLE|INDI|YE|BLAC|LAVENDER P|LIGHT GRE|BLU|STAR|GR|GLACIE|GRAPHI|MIDNIG|SKY BL|MID|ONYX|OCEAN|CARBON/gi, '');
+            if (origem) novoNome = novoNome.replace(/INDIA|GLOBAL|INDONESIA/gi, '');
+            if (cor) novoNome = novoNome.replace(/VERDE|AZUL|CINZA|PRETO|LITE GREEN|BRANCO|ONYX BLACK|BLACK|GLACIER BLUE|MINT GREEN|ICE BLUE|TWILIGHT BLUE|STAR BLUE|COSMIC PURPLE|ONYX GRAY|BRONZE|LIGHT BLUE|LAVANDER PURPLE|GRAPHITE GRAY|OCEAN BLUE|LAVENDER PURPLE|PRATA|PEPPY PURPLE|AMARELO|FOREST GREEN|PINK|ROSA/gi, '');
             if (rede) novoNome = novoNome.replace(/\b4g\b|\b4G\b|\b5g\b|\b5G\b/gi, '');
             if (capacidade) novoNome = novoNome.replace(new RegExp(/\b32GB\b|\b64GB\b|\b128GB\b|\b256GB\b|\b512GB\b/gi, 'i'), '');
-            if (ram) novoNome = novoNome.replace(new RegExp(/\b2RAM\b|\b3RAM\b|\b4RAM\b|\b6RAM\b|\b8RAM\b|\b12RAM\b|\b16RAM\b/gi, 'i'), '');
+            if (ram) novoNome = novoNome.replace(new RegExp(/\b2GB RAM\b|\b3GB RAM\b|\b4GB RAM\b|\b6GB RAM\b|\b8GB RAM\b|\b12GB RAM\b|\b16GB RAM\b/gi, 'i'), '');
             if (marca) novoNome = novoNome.replace(/XIAOMI/gi, '');
-            novoNome = novoNome.replace(/CEL/gi, '').replace(/\s+/g, ' ').trimStart();
+            novoNome = novoNome.replace(/CELULAR|DUAL SIM/gi, '').replace(/\s+/g, ' ').trimStart();
 
             return {
                 ...produtoLoja,
@@ -404,7 +394,7 @@ export function PageProdutoLoja() {
                         currentPage={produtosLoja.page ?? 1}
                     />
 
-                       <Col className="ml-auto mx-3">
+                    <Col className="ml-auto mx-3">
                         <Dropdown > Exibir
                             <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-1 limitPagination">
                                 {limit}

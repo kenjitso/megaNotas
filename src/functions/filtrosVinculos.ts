@@ -13,12 +13,17 @@ export function filtrosVinculos(produtoParaguay: IProdutoLoja, produtoML: any) {
 
     // Aumenta a similaridade se o modelo for igual
 
+    if (produtoParaguay.nome.toUpperCase().trim() === "12" && produtoML.modelo.toUpperCase().trim() === "12") {
+        similarity++;
+    }
+
+
     if (produtoParaguay.nome.toUpperCase().includes("11 LITE") && produtoML.modelo.toUpperCase().includes("11 LITE")) {
 
         similarity++;
     }
 
-    if (produtoParaguay.nome.toUpperCase().includes("12 LITE") && produtoML.modelo.toUpperCase().includes("12")) {
+    if (produtoParaguay.nome.toUpperCase().includes("12 LITE") && produtoML.modelo.toUpperCase().includes("12 LITE")) {
 
         similarity++;
     }
@@ -36,7 +41,7 @@ export function filtrosVinculos(produtoParaguay: IProdutoLoja, produtoML: any) {
         similarity++;
     }
 
-    if (produtoParaguay.nome.toUpperCase().trim() === "13" && produtoML.modelo.toUpperCase().includes("13")) {
+    if (produtoParaguay.nome.toUpperCase().trim() === "13" && produtoML.modelo.toUpperCase().trim() === ("13")) {
 
         similarity++;
     }
@@ -49,9 +54,25 @@ export function filtrosVinculos(produtoParaguay: IProdutoLoja, produtoML: any) {
         similarity++;
     }
 
+    if (produtoParaguay.nome.toUpperCase().trim() === "13 PRO" && produtoML.modelo.toUpperCase().includes("13 PRO")) {
+
+        similarity++;
+    }
+
+
 
 
     if (produtoParaguay.nome.toUpperCase().trim() === "POCO C40" && produtoML.modelo.toUpperCase().includes("POCO C40")) {
+
+        similarity++;
+    }
+
+    if (produtoParaguay.nome.toUpperCase().trim() === "POCO C55" && produtoML.modelo.toUpperCase().includes("POCO C55")) {
+
+        similarity++;
+    }
+
+    if (produtoParaguay.nome.toUpperCase().trim() === "POCO F4 GT" && produtoML.modelo.toUpperCase().includes("POCO F4 GT")) {
 
         similarity++;
     }
@@ -61,15 +82,21 @@ export function filtrosVinculos(produtoParaguay: IProdutoLoja, produtoML: any) {
         similarity++;
     }
 
+    if (produtoParaguay.nome.toUpperCase().trim() === "POCO F5 PRO" && produtoML.modelo.toUpperCase().includes("POCO F5 PRO")) {
+
+        similarity++;
+    }
+    if (produtoParaguay.nome.toUpperCase().trim() === "POCO M5S" && produtoML.modelo.toUpperCase().includes("POCO M5S")) {
+
+        similarity++;
+    }
+
+
     if (produtoParaguay.nome.toUpperCase().trim() === "POCO M4 PRO" && produtoML.modelo.toUpperCase().includes("POCO M4 PRO")) {
 
         similarity++;
     }
 
-    if (produtoParaguay.nome.toUpperCase().trim() === "POCO M5S" && produtoML.modelo.toUpperCase().includes("POCO M5S")) {
-
-        similarity++;
-    }
 
     if (
         produtoParaguay.nome.toUpperCase().trim() === "POCO X5" &&
@@ -114,7 +141,7 @@ export function filtrosVinculos(produtoParaguay: IProdutoLoja, produtoML: any) {
         similarity++;
     }
 
-    if (produtoParaguay.nome.toUpperCase().trim() === "REDMI 12" && produtoML.modelo.toUpperCase().includes("12")) {
+    if (produtoParaguay.nome.toUpperCase().trim() === "REDMI 12" && produtoML.modelo.toUpperCase() === "12") {
 
         similarity++;
     }
@@ -143,7 +170,17 @@ export function filtrosVinculos(produtoParaguay: IProdutoLoja, produtoML: any) {
         similarity++;
     }
 
+    if (produtoParaguay.nome.toUpperCase().trim() === "REDMI A1" && produtoML.modelo.toUpperCase().includes("A1")) {
+
+        similarity++;
+    }
+
     if (produtoParaguay.nome.toUpperCase().trim() === "REDMI NOTE 10 LITE" && produtoML.modelo.toUpperCase().includes("REDMI NOTE 10 LITE")) {
+
+        similarity++;
+    }
+
+    if (produtoParaguay.nome.toUpperCase().trim() === "REDMI NOTE 10 PRO" && produtoML.modelo.toUpperCase().includes("NOTE 10 PRO")) {
 
         similarity++;
     }
@@ -161,12 +198,33 @@ export function filtrosVinculos(produtoParaguay: IProdutoLoja, produtoML: any) {
         similarity++;
     }
 
-    if (produtoParaguay.nome.toUpperCase().includes("NOTE 11 PRO+") && produtoML.modelo.toUpperCase().includes("NOTE 11 PRO+")) {
+    if (produtoParaguay.nome.toUpperCase().includes("Redmi Note 11S") && produtoML.modelo.toUpperCase().includes("REDMI NOTE 11S")) {
 
         similarity++;
     }
 
-    if (produtoParaguay.nome.toUpperCase().trim() === "NOTE 11S" && produtoML.modelo.toUpperCase().includes("Note 11S")) {
+    if (produtoParaguay.nome.toUpperCase().trim() === ("REDMI NOTE 11S") && produtoML.modelo.toUpperCase().trim() === "NOTE 11S") {
+
+        similarity++;
+    }
+
+
+
+    if (produtoParaguay.nome.toUpperCase().trim() === "NOTE 11S" && produtoML.modelo.toUpperCase().includes("NOTE 11S")) {
+
+        similarity++;
+    }
+
+    if (produtoParaguay.nome.toUpperCase().trim() === ("REDMI NOTE 11") && produtoML.modelo.toUpperCase() === "NOTE 11 (SNAPDRAGON)") {
+        similarity++;
+    }
+
+    if (produtoParaguay.nome.toUpperCase().includes("REDMI NOTE 11") && produtoML.modelo.toUpperCase() === "NOTE 11") {
+
+        similarity++;
+    }
+
+    if (produtoParaguay.nome.toUpperCase().includes("Redmi Note 11 Pro+") && produtoML.modelo.includes("Note 11 Pro+")) {
 
         similarity++;
     }
@@ -180,8 +238,24 @@ export function filtrosVinculos(produtoParaguay: IProdutoLoja, produtoML: any) {
     }
 
 
+    if (produtoParaguay.nome.toUpperCase().includes("REDMI NOTE 12S") && produtoML.modelo.toUpperCase().includes("REDMI NOTE 12S")) {
+        similarity++;
+    }
+
+   
+
+
+
+   
+
+
+
 
     // Aumenta a similaridade se a cor do produtoParaguay for azul e esta cor estiver no produtoML
+
+    if (produtoParaguay.cor.toUpperCase().includes("BRONZE") && produtoML.cor.toUpperCase().includes("BRONZE")) {
+        similarity++;
+    }
 
     if (produtoParaguay.cor.toUpperCase() === "BLUE" && (produtoML.cor.toUpperCase().includes("AZUL") || produtoML.cor.toUpperCase().includes("BLUE"))) {
         similarity++;
@@ -214,6 +288,11 @@ export function filtrosVinculos(produtoParaguay: IProdutoLoja, produtoML: any) {
         similarity++;
     }
 
+    if (produtoParaguay.cor.toUpperCase() === "CINZA" && (produtoML.cor.toUpperCase().includes("CINZA") || produtoML.cor.toUpperCase().includes("GRAY"))) {
+
+        similarity++;
+    }
+
     if (produtoParaguay.cor.toUpperCase() === "PINK" && (produtoML.cor.toUpperCase().includes("CINZA") || produtoML.cor.toUpperCase().includes("ROSA"))) {
 
         similarity++;
@@ -223,6 +302,91 @@ export function filtrosVinculos(produtoParaguay: IProdutoLoja, produtoML: any) {
 
         similarity++;
     }
+
+    if (produtoParaguay.cor.toUpperCase() === "VERDE" && (produtoML.cor.toUpperCase().includes("GREEN"))) {
+
+        similarity++;
+    }
+
+    if (produtoParaguay.cor.toUpperCase() === "VERDE" && (produtoML.cor.toUpperCase().includes("VERDE"))) {
+
+        similarity++;
+    }
+
+
+    if (produtoParaguay.cor.toUpperCase() === "AZUL" && (produtoML.cor.toUpperCase().includes("BLUE"))) {
+
+        similarity++;
+    }
+
+    if (produtoParaguay.cor.toUpperCase() === "AZUL" && (produtoML.cor.toUpperCase().includes("AZUL"))) {
+
+        similarity++;
+    }
+
+
+    if (produtoParaguay.cor.toUpperCase() === "PRETO" && (produtoML.cor.toUpperCase().includes("PRETO"))) {
+
+        similarity++;
+    }
+
+    if (produtoParaguay.cor.toUpperCase() === "PRETO" && (produtoML.cor.toUpperCase().includes("BLACK"))) {
+
+        similarity++;
+    }
+
+    if (produtoParaguay.cor.toUpperCase() === "ROSA" && (produtoML.cor.toUpperCase().includes("PINK"))) {
+
+        similarity++;
+    }
+
+    if (produtoParaguay.cor.toUpperCase() === "ROSA" && (produtoML.cor.toUpperCase().includes("ROSA"))) {
+
+        similarity++;
+    }
+
+    if (produtoParaguay.cor.toUpperCase() === "BRANCO" && (produtoML.cor.toUpperCase().includes("WHITE"))) {
+
+        similarity++;
+    }
+
+    if (produtoParaguay.cor.toUpperCase() === "CINZA" && (produtoML.cor.toUpperCase().includes("CINZA"))) {
+
+        similarity++;
+    }
+
+    if (produtoParaguay.cor.toUpperCase() === "CINZA" && (produtoML.cor.toUpperCase().includes("GREY"))) {
+
+        similarity++;
+    }
+
+    if (produtoParaguay.cor.toUpperCase() === "ROXO" && (produtoML.cor.toUpperCase().includes("PURPLE"))) {
+
+        similarity++;
+    }
+
+    if (produtoParaguay.cor.toUpperCase() === "PRATA" && (produtoML.cor.toUpperCase().includes("GRAY"))) {
+
+        similarity++;
+    }
+
+    if (produtoParaguay.cor.toUpperCase() === "PRETO" && (produtoML.cor.toUpperCase().includes("GRAY"))) {
+
+        similarity++;
+    }
+
+    if (produtoParaguay.cor.toUpperCase() === "ROXO" && (produtoML.cor.toUpperCase().includes("ROXO"))) {
+
+        similarity++;
+    }
+
+    if (produtoParaguay.cor.toUpperCase().includes("CINZA") && produtoML.cor.toUpperCase().includes("GRAFITE")) {
+        similarity++;
+    }
+
+
+
+
 
     // Aumenta a similaridade se a capacidade for igual
 
@@ -239,6 +403,11 @@ export function filtrosVinculos(produtoParaguay: IProdutoLoja, produtoML: any) {
         similarity++;
     }
     if (produtoParaguay.capacidade.toString().toUpperCase() === "256" && produtoML.memoriaInterna.toUpperCase().includes("256 GB")) {
+
+        similarity++;
+    }
+
+    if (produtoParaguay.capacidade.toString().toUpperCase() === "512" && produtoML.memoriaInterna.toUpperCase().includes("512 GB")) {
 
         similarity++;
     }

@@ -197,10 +197,25 @@ export function TableVinculoManual({ produtoParaguay, onHide }: IProps) {
                     <tbody>
                         {catalogoVinculos?.items?.map((catalogoProduto, index) => (
                             <tr key={index}>
+
+
                                 <td>
+
                                     {catalogoProduto.nome}
+
                                 </td>
-                                <td>{abreviaLink(catalogoProduto.url_catalogo, 50)}</td>
+
+                                <td>
+                                    <a
+                                        style={{ color: "blue" }}
+                                        href={`https://atacadogames.com/lista-produtos/termo/${produtoParaguay?.codigo}/1`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        title={produtoParaguay?.codigo}
+                                    >
+                                        {abreviaLink(catalogoProduto.url_catalogo, 50)}
+                                    </a>
+                                </td>
                                 <td className="td50">
                                     <Form.Check
                                         checked={selectedIds.has(catalogoProduto.id ?? "")}
@@ -264,7 +279,7 @@ export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
             queryClient.invalidateQueries(["produtosloja"]);
             queryClient.invalidateQueries(["catalogos"]);
             queryClient.invalidateQueries(["lojamanual"]);
-           
+
         }
     });
 
@@ -287,7 +302,7 @@ export function TableVinculoML({ produtoParaguay, onHide }: IProps) {
             novoFiltro += produtoParaguay.capacidade + " ";
         }
 
-  
+
         if (checkCor && produtoParaguay?.cor) {
             novoFiltro += produtoParaguay.cor + " ";
         }

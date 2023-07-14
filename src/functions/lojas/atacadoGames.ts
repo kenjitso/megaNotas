@@ -2,7 +2,8 @@ import { toast } from "react-toastify";
 import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 import { z } from "zod";
 
-export function AtacadoGamesFormat(idLoja: string, pdfArray: string[], produtoParaguay?: IProdutoLoja[]): Array<IProdutoLoja> {
+export function AtacadoGamesFormat(idLoja: string, pdfArray: string[], excelArray?: unknown[], produtoParaguay?: IProdutoLoja[]): Array<IProdutoLoja> {
+
     try {
         const atacadoGamesString = "ATACADO GAMES";
         const atacadoGamesPdf = pdfArray.some(text => text.includes(atacadoGamesString));
@@ -12,12 +13,12 @@ export function AtacadoGamesFormat(idLoja: string, pdfArray: string[], produtoPa
             return [];
         }
 
-        let extractedItems = processPdfArray(pdfArray);
+        let extractedItems = processPdfArray(excelArray ?? [], pdfArray);
 
         if (produtoParaguay) {
             const produtoParaguayCodigos = new Set(produtoParaguay.map(item => item.codigo));
             extractedItems = extractedItems.filter(item => produtoParaguayCodigos.has(item.codigo));
-            
+
         }
 
         const lineValidation = z.object({
@@ -55,6 +56,7 @@ export function AtacadoGamesFormat(idLoja: string, pdfArray: string[], produtoPa
 }
 
 function processPdfArray(
+    excelArray: unknown[],
     pdfArray: string[]
 ): Array<{ codigo: string; descricao: string; preco: string }> {
     const result = [];
@@ -64,10 +66,32 @@ function processPdfArray(
     const regex = /(\d{4,}-\d)\s+(.*?)\s+((?:\d{1,3},)?\d+\.\d+)\s+\|/g;
     let match;
 
+    // Ignorar o cabeçalho (primeira linha do excelArray)
+    const dataRows = excelArray.slice(1);
+
+    // Mapeia códigos para descrições do excelArray
+    const excelDataMap: { [codigo: string]: string } = {};
+
+    dataRows.forEach(row => {
+        if (Array.isArray(row)) {
+            const codigo = row[0].toString().trim();
+            const descricao = row[1].toString().trim();
+            excelDataMap[codigo] = descricao;
+        }
+    });
+
     while ((match = regex.exec(text)) !== null) {
-        const codigo = match[1];
+        let codigo = match[1];
         let descricao = match[2];
         let preco = match[3];
+
+        // Remove traço do código
+        codigo = codigo.replace("-", "");
+
+        // Se o código existir em excelDataMap, substitua a descrição
+        if (excelDataMap[codigo]) {
+            descricao = excelDataMap[codigo];
+        }
 
         descricao = descricao.replace(/(\/|\/UNI|\/EIG|\"UN)$/, "");
         preco = preco.replace(",", "");

@@ -11,14 +11,6 @@ import { Icons } from "@/components/icons/icons";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { ModalTableCadastroProdutoLoja } from "./ModalTableCadastroProdutoLoja";
 import * as pdfjsLib from "pdfjs-dist";
-import { StarGamesFormat } from "@/functions/lojas/starGames";
-import { BestShopFormat } from "@/functions/lojas/bestShop";
-import { AtlanticoFormat } from "@/functions/lojas/atlantico";
-import { CellShopFormat } from "@/functions/lojas/cellShop";
-import { MadridCenterFormat } from "@/functions/lojas/madridCenter";
-import { MegaFormat } from "@/functions/lojas/mega";
-import { MobileZoneFormat } from "@/functions/lojas/mobileZone";
-import { AlgoritmoPadraoFormat } from "@/functions/lojas/algoritmoPadrao";
 pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
 
 interface IProps {
@@ -28,10 +20,29 @@ interface IProps {
 
 export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
 
+
+
     const [formattedList, setFormattedList] = useState<IProdutoLoja[]>([]);
     const [listToSave, setListToSave] = useState<IProdutoLoja[]>([]);
     const queryClient = useQueryClient();
     const [isLoading, setIsLoading] = useState(false);
+    const [isFileImported, setIsFileImported] = useState(false);
+    const [isFileRenamed, setIsFileRenamed] = useState(false);
+    const [loadTable, setLoadTable] = useState(false);
+    const [processedImportData, setProcessedImportData] = useState<string[]>([]);
+    const [processedRenameData, setProcessedRenameData] = useState<unknown[]>([]);
+    const [isFileImportLoaded, setIsFileImportLoaded] = useState(false);
+    const [isFileRenameLoaded, setIsFileRenameLoaded] = useState(false);
+
+
+
+    const onCompareFiles = () => {
+        if(processedImportData && processedRenameData) {
+            setFormattedList(AtacadoGamesFormat(lojaId ?? "", processedImportData, processedRenameData));
+            setLoadTable(true);
+        }
+    };
+    
 
 
 
@@ -54,7 +65,7 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
 
     const { isLoading: cadastroIsLoading } = mutation;
 
-    const onDrop = useCallback((acceptedFiles: File[]) => {
+    const onDropImport = useCallback((acceptedFiles: File[]) => {
         setIsLoading(true);
         acceptedFiles.forEach((file) => {
             if (!file) return;
@@ -78,7 +89,7 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
                                 // Extract text and other information from the PDF file
 
                                 const numPages = pdf.numPages;
-                                const allPagesText: string[] = [];
+                                const pageImport: string[] = [];
 
                                 for (let pageIndex = 1; pageIndex <= numPages; pageIndex++) {
                                     const page = await pdf.getPage(pageIndex);
@@ -88,36 +99,13 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
                                         .filter((item) => 'str' in item)
                                         .map((item) => (item as any).str);
 
-                                    allPagesText.push(...dataList);
+                                    pageImport.push(...dataList);
                                 }
 
-                                if (data?.algoritmo === 3) {
-                                    setFormattedList(BestShopFormat(lojaId ?? "", allPagesText)); //BESTSHOP  FUNCIONANDO OK
-                                }
 
                                 if (data?.algoritmo === 1) {
-                                    setFormattedList(AtacadoGamesFormat(lojaId ?? "", allPagesText)); //ATACADO GAMES  FUNCIONANDO OK
-                                }
-
-                                if (data?.algoritmo === 5) {
-
-                                    setFormattedList(MadridCenterFormat(lojaId ?? "", allPagesText)); //MADRID CENTER FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
-                                }
-                                if (data?.algoritmo === 6) {
-                                    setFormattedList(StarGamesFormat(lojaId ?? "", allPagesText)); //STAR GAMES FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
-                                }
-
-                                if (data?.algoritmo === 2) {
-                                    setFormattedList(AtlanticoFormat(lojaId ?? "", allPagesText)); //ATLANTICO FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
-                                }
-
-                                if (data?.algoritmo === 7) {
-
-                                    setFormattedList(MegaFormat(lojaId ?? "", allPagesText)); //MEGA FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
-                                }
-
-
-
+                                    setProcessedImportData(pageImport);          
+                                   }
                             });
                         } else {
                             const workbook = XLSX.read(fileData, { type: "binary" });
@@ -126,21 +114,6 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
                             const dataList: unknown[][] = XLSX.utils.sheet_to_json(worksheet, {
                                 header: 1,
                             });
-
-                            if (data?.algoritmo === 4) {
-
-                                setFormattedList(CellShopFormat(lojaId ?? "", dataList)); //CELLSHOP FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
-                            }
-
-                            if (data?.algoritmo === 8) {
-                                setFormattedList(MobileZoneFormat(lojaId ?? "", dataList)); //MobileZoneFormat FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
-                            }
-
-
-                            if (data?.algoritmo === 9) {
-                                setFormattedList(AlgoritmoPadraoFormat(lojaId ?? "", dataList)); //AlgoritmoPadrao FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
-                            }
-
 
                         }
                     }
@@ -152,9 +125,84 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
                 setIsLoading(false);
             }
         });
+
+        setIsFileImported(true);
+        setIsFileImportLoaded(true);
+
     }, [onHide, data]);
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
+    const onDropRename = useCallback((acceptedFiles: File[]) => {
+        setIsLoading(true);
+        acceptedFiles.forEach((file) => {
+            if (!file) return;
+            if (
+                file.type === "text/plain" ||
+                file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+                file.type === "application/pdf" ||
+                file.name.endsWith(".xls") // Verificação adicional para o formato de arquivo antigo do Excel
+            ) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const fileData = reader.result;
+
+                    if (fileData) {
+
+                        if (file.type === "application/pdf") {
+                            // Use pdfjs-dist to parse the PDF file
+                            const arrayBuffer = reader.result as ArrayBuffer;
+                            const uint8Array = new Uint8Array(arrayBuffer);
+                            pdfjsLib.getDocument(uint8Array).promise.then(async (pdf) => {
+                                // Extract text and other information from the PDF file
+
+                                const numPages = pdf.numPages;
+                                const pageRename: string[] = [];
+
+                                for (let pageIndex = 1; pageIndex <= numPages; pageIndex++) {
+                                    const page = await pdf.getPage(pageIndex);
+                                    const textContent = await page.getTextContent();
+
+                                    const dataList = textContent.items
+                                        .filter((item) => 'str' in item)
+                                        .map((item) => (item as any).str);
+
+                                    pageRename.push(...dataList);
+                                }
+
+                                setProcessedRenameData(pageRename); // Saving the processed data
+
+                            });
+                        } else {
+                            const workbook = XLSX.read(fileData, { type: "binary" });
+                            const sheetName = workbook.SheetNames[0];
+                            const worksheet = workbook.Sheets[sheetName];
+                            const dataList: unknown[][] = XLSX.utils.sheet_to_json(worksheet, {
+                                header: 1,
+                            });
+                     //       const flattenedData = dataList.flat();
+                      //      const stringData = flattenedData.map((item) => String(item));
+                            setProcessedRenameData(dataList); // Ou setProcessedRenameData(stringData) dependendo do que você precisa
+                        }
+                    }
+                    setIsLoading(false);
+                };
+                reader.readAsArrayBuffer(file);
+            } else {
+                toast.info("Tipo de arquivo não suportado, precisa ser excel ou PDF");
+                setIsLoading(false);
+            }
+        });
+
+        setIsFileRenamed(true);
+        setIsFileRenameLoaded(true);
+
+
+    }, [data]);
+
+    const { getRootProps: getRootPropsImport, getInputProps: getInputPropsImport } = useDropzone({ onDrop: onDropImport });
+    const { getRootProps: getRootPropsRename, getInputProps: getInputPropsRename } = useDropzone({ onDrop: onDropRename });
+
+
 
     return (
         <Modal
@@ -173,25 +221,26 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
             <Modal.Body>
                 <Row>
 
-
                     <Col className="body text-center">
 
                         {
                             formattedList.length === 0 && (
-                                <div {...getRootProps()} className="dropzone">
-                                    <input {...getInputProps()} />
+                                <div {...getRootPropsImport()} className="dropzone">
+                                    <input {...getInputPropsImport()} />
                                     {isLoading ? (
                                         <div>
                                             <FragmentLoading />
                                         </div>
-                                    ) : isDragActive ? (
+                                    ) : isFileImported ? (
                                         <p style={{ cursor: "pointer" }}>
-                                            Solte o arquivo <b>pdf</b> ou <b>excel</b> aqui. <br /><br />
+                                            <b>Arquivo Import Carregado</b><br /><br />
+                                            Você pode arrastar e soltar um novo arquivo <b>pdf</b> ou <b>excel</b> para substituir o atual <br /><br />
 
                                             <Icons tipo="CiImport" tamanho={55} />
                                         </p>
                                     ) : (
                                         <p style={{ cursor: "pointer" }}>
+                                            <b> Arquivo Import </b><br /><br />
                                             Arraste e solte um arquivo <b>pdf</b> ou <b>excel</b> referente a loja ou clique para selecionar o arquivo <br /><br />
 
                                             <Icons tipo="CiImport" tamanho={55} />
@@ -217,10 +266,44 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
 
 
                     </Col>
+
+                    <Col className="body text-center">
+
+                        {
+                            formattedList.length === 0 && (
+                                <div {...getRootPropsRename()} className="dropzone">
+                                    <input {...getInputPropsRename()} />
+                                    {isLoading ? (
+                                        <div>
+                                            <FragmentLoading />
+                                        </div>
+                                    ) : isFileRenamed ? (
+                                        <p style={{ cursor: "pointer" }}>
+                                            <b>Arquivo Rename Carregado</b><br /><br />
+                                            Você pode arrastar e soltar um novo arquivo <b>excel</b> para substituir o atual <br /><br />
+
+                                            <Icons tipo="CiImport" tamanho={55} />
+                                        </p>
+                                    ) : (
+                                        <p style={{ cursor: "pointer" }}>
+                                            <b> Arquivo Rename </b><br /><br />
+                                            Arraste e solte um arquivo <b>excel</b> referente a loja ou clique para selecionar o arquivo <br /><br />
+
+                                            <Icons tipo="CiImport" tamanho={55} />
+                                        </p>
+                                    )}
+
+                                </div>
+                            )
+                        }
+                  
+                    </Col>
+
                 </Row>
 
             </Modal.Body>
             <Modal.Footer>
+
                 <Button className="position" variant="secondary" onClick={() => { onHide(); setFormattedList([]); }}>
                     Fechar
                 </Button>
@@ -248,6 +331,12 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
                         </>
                     ) : "Confirmar"}
                 </Button>
+                <Button onClick={onCompareFiles} disabled={!(isFileImportLoaded && isFileRenameLoaded)}>
+                    Comparar arquivos
+                </Button>
+
+
+
 
 
             </Modal.Footer>
