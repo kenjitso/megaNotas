@@ -7,7 +7,6 @@ import { Modal, Row, Col, Button, Spinner } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import { toast } from "react-toastify";
 import * as XLSX from 'xlsx';
-import { ModalTableImportProdutoLoja } from "./ModalTableImportProdutoLoja";
 import { Icons } from "@/components/icons/icons";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { AtlanticoFormat } from "@/functions/lojas/atlantico";
@@ -20,6 +19,7 @@ import { StarGamesFormat } from "@/functions/lojas/starGames";
 import { MegaFormat } from "@/functions/lojas/mega";
 import { MobileZoneFormat } from "@/functions/lojas/mobileZone";
 import { AlgoritmoPadraoFormat } from "@/functions/lojas/algoritmoPadrao";
+import { ModalTableAtualizarProdutoLoja } from "./ModalTableAtualizarProdutoLoja";
 pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
 
 interface IProps {
@@ -94,7 +94,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                                 }
 
                                 if (data?.algoritmo === 1) {
-                                    setFormattedList(AtacadoGamesFormat(lojaId ?? "", allPagesText,produtoParaguay)); //ATACADO GAMES  FUNCIONANDO OK
+                                    setFormattedList(AtacadoGamesFormat(lojaId ?? "", allPagesText,[],produtoParaguay)); //ATACADO GAMES  FUNCIONANDO OK
                                     
                                 }
 
@@ -195,7 +195,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
 
                         {
                             !importIsLoading && formattedList.length > 0 ? (
-                                <ModalTableImportProdutoLoja
+                                <ModalTableAtualizarProdutoLoja
                                     listProdutoLoja={formattedList}
                                 />
                             ) : importIsLoading ? (

@@ -63,6 +63,7 @@ export class ProdutoLojaController {
 
     public static async cadastro(produtos: IProdutoLoja[]) {
 
+
         for (const produto of produtos) {
             produto.codigo = produto.codigo.trim();
 
@@ -128,6 +129,7 @@ export class ProdutoLojaController {
     public static async update(produtoLoja: IProdutoLoja) {
 
         produtoLoja.nome = produtoLoja.nome_original;
+
         const options: RequestInit = {
             method: "PATCH",
             headers: {

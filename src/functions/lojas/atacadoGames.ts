@@ -5,22 +5,20 @@ import { z } from "zod";
 export function AtacadoGamesFormat(idLoja: string, pdfArray: string[], excelArray?: unknown[], produtoParaguay?: IProdutoLoja[]): Array<IProdutoLoja> {
 
     try {
-        const atacadoGamesString = "ATACADO GAMES";
-        const atacadoGamesPdf = pdfArray.some(text => text.includes(atacadoGamesString));
-
-        if (!atacadoGamesPdf || pdfArray.length === 0) {
-            toast.error("Verifique se o arquivo é de ATACADO GAMES e se não está vazio. Caso contrario entre em contato com o desenvolvedor.");
-            return [];
-        }
 
         let extractedItems = processPdfArray(excelArray ?? [], pdfArray);
 
-        if (produtoParaguay) {
-            const produtoParaguayCodigos = new Set(produtoParaguay.map(item => item.codigo));
-            extractedItems = extractedItems.filter(item => produtoParaguayCodigos.has(item.codigo));
-
+        if (produtoParaguay && excelArray?.length==0) {
+            const produtoParaguayCodigos = new Set(produtoParaguay.map(item => item.codigo.trim()));
+            extractedItems = extractedItems.filter(item => produtoParaguayCodigos.has(item.codigo.trim()));
         }
 
+       if (produtoParaguay && excelArray?.length !== 0) {
+            const produtoParaguayCodigos = new Set(produtoParaguay.map(item => item.codigo.trim()));
+          extractedItems = extractedItems.filter(item => !produtoParaguayCodigos.has(item.codigo.trim()));
+       }
+        
+    
         const lineValidation = z.object({
             codigo: z.string(),
             descricao: z.string(),
@@ -95,6 +93,12 @@ function processPdfArray(
 
         descricao = descricao.replace(/(\/|\/UNI|\/EIG|\"UN)$/, "");
         preco = preco.replace(",", "");
+
+        const precoNumero = parseFloat(preco);
+
+        if (precoNumero < 30 || /swap/i.test(descricao) || /swa/i.test(descricao)) {
+            continue;
+        }
 
         result.push({
             codigo: codigo.trim(),

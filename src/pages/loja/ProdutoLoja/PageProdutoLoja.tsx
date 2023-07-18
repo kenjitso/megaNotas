@@ -8,12 +8,14 @@ import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import { formatCurrency } from "@/features/FormatCurrency";
 import { PaginationComponent } from "@/components/pagination/PaginationComponent";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
-import { ModalCadastroProdutoLoja } from "./ModalProdutoLoja/ModalCadastroProdutoLoja";
+import { ModalImportarProdutoLoja } from "./ModalProdutoLoja/ModalImportarProdutoLoja";
 import { ModalSyncVinculos } from "./ModalProdutoLoja/ModalSyncVinculos";
 import { ModalAtualizarProdutoLoja } from "./ModalProdutoLoja/ModalAtualizarProdutoLoja";
 import { ModalVinculo } from "./ModalProdutoLoja/ModalVinculoCopy";
 import { useQuery } from "@tanstack/react-query";
 import { compareValues, useSort } from "@/components/utils/FilterArrows";
+import { filtraXiaomi } from "@/functions/filtrosProdutos/xiaomi/xiaomi";
+import { filtraIphone } from "@/functions/filtrosProdutos/apple/iphone";
 
 
 export function PageProdutoLoja() {
@@ -41,107 +43,35 @@ export function PageProdutoLoja() {
 
 
     const produtosLoja = useMemo(() => {
+
+
         let dados = data?.map((produtoLoja: IProdutoLoja) => {
 
-            produtoLoja.nome_original = produtoLoja.nome;
-
-            const ram =
-                /16GB RAM/i.test(produtoLoja.nome) ? 16 :
-                    /12GB RAM/i.test(produtoLoja.nome) ? 12 :
-                        /2GB RAM/i.test(produtoLoja.nome) ? 2 :
-                            /3GB RAM/i.test(produtoLoja.nome) ? 3 :
-                                /4GB RAM/i.test(produtoLoja.nome) ? 4 :
-                                    /6GB RAM/i.test(produtoLoja.nome) ? 6 :
-                                        /8GB RAM/i.test(produtoLoja.nome) ? 8 :
-
-                                            null;
-
-            const capacidade =
-                /512GB/i.test(produtoLoja.nome) ? 512 :
-                    /256GB/i.test(produtoLoja.nome) ? 256 :
-                        /128GB/i.test(produtoLoja.nome) ? 128 :
-                            /64GB/i.test(produtoLoja.nome) ? 64 :
-                                /32GB/i.test(produtoLoja.nome) ? 32 :
+            const produtoLojaAtualizado = {
+                ...produtoLoja,
+                nome_original: produtoLoja.nome,
+            };
 
 
-
-
-                                    null;
-
-            const rede =
-                /\b5G\b/i.test(produtoLoja.nome) ? 5 :
-                    /\b4G\b/i.test(produtoLoja.nome) ? 4 :
+            const marca =
+                /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
+                    /APPLE/i.test(produtoLoja.nome) ? "APPLE" :
                         null;
 
-            const cor =
-                /VERDE/i.test(produtoLoja.nome) ? "VERDE" :
-                    /MINT GREEN/i.test(produtoLoja.nome) ? "VERDE" :
-                        /LITE GREEN/i.test(produtoLoja.nome) ? "VERDE" :
-                            /AZUL/i.test(produtoLoja.nome) ? "AZUL" :
-                                /GLACIER BLUE/i.test(produtoLoja.nome) ? "AZUL" :
-                                    /ICE BLUE/i.test(produtoLoja.nome) ? "AZUL" :
-                                        /TWILIGHT BLUE/i.test(produtoLoja.nome) ? "AZUL" :
-                                            /STAR BLUE/i.test(produtoLoja.nome) ? "AZUL" :
-                                                /LIGHT BLUE/i.test(produtoLoja.nome) ? "AZUL" :
-                                                    /OCEAN BLUE/i.test(produtoLoja.nome) ? "AZUL" :
-                                                        /CINZA/i.test(produtoLoja.nome) ? "CINZA" :
-                                                            /PRETO/i.test(produtoLoja.nome) ? "PRETO" :
-                                                                /BLACK/i.test(produtoLoja.nome) ? "PRETO" :
-                                                                    /ONYX GRAY/i.test(produtoLoja.nome) ? "PRETO" :
-                                                                        /GRAPHITE GRAY/i.test(produtoLoja.nome) ? "PRETO" :
-                                                                            /ONYX BLACK/i.test(produtoLoja.nome) ? "PRETO" :
-                                                                                /BRANCO/i.test(produtoLoja.nome) ? "BRANCO" :
-                                                                                    /ROXO/i.test(produtoLoja.nome) ? "ROXO" :
-                                                                                        /COSMIC PURPLE/i.test(produtoLoja.nome) ? "ROXO" :
-                                                                                            /LAVANDER PURPLE/i.test(produtoLoja.nome) ? "ROXO" :
-                                                                                                /LAVENDER PURPLE/i.test(produtoLoja.nome) ? "ROXO" :
-                                                                                                    /PEPPY PURPLE/i.test(produtoLoja.nome) ? "ROXO" :
-                                                                                                        /BRONZE/i.test(produtoLoja.nome) ? "BRONZE" :
-                                                                                                            /PRATA/i.test(produtoLoja.nome) ? "PRATA" :
-                                                                                                                /AMARELO/i.test(produtoLoja.nome) ? "AMARELO" :
-                                                                                                                    /FOREST GREEN/i.test(produtoLoja.nome) ? "VERDE" :
-                                                                                                                        /PINK/i.test(produtoLoja.nome) ? "ROSA" :
-                                                                                                                            /ROSA/i.test(produtoLoja.nome) ? "ROSA" :
 
-                                                                                                                                null;
+            if (marca === "XIAOMI") {
+                filtraXiaomi(produtoLojaAtualizado);
 
+              
 
-            const origem =
-                /ÍNDIA/i.test(produtoLoja.nome) ? "INDIA" :
-                    /INDIA/i.test(produtoLoja.nome) ? "INDIA" :
-                        /GLOBAL/i.test(produtoLoja.nome) ? "GLOBAL" :
-                            /INDONESIA/i.test(produtoLoja.nome) ? "INDONESIA" :
-                                null;
+            }
 
+            if (marca === "APPLE") {
+                filtraIphone(produtoLojaAtualizado);
 
-            const marca = /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" : null;
+            }
 
-
-
-            let posicaoUltimoDS = produtoLoja.nome.indexOf("/");
-            let novoNome = posicaoUltimoDS !== -1 ? produtoLoja.nome.substring(0, posicaoUltimoDS) : produtoLoja.nome;
-
-
-            //  let novoNome = produtoLoja.nome;
-
-            if (origem) novoNome = novoNome.replace(/INDIA|GLOBAL|INDONESIA/gi, '');
-            if (cor) novoNome = novoNome.replace(/VERDE|AZUL|CINZA|PRETO|LITE GREEN|BRANCO|ONYX BLACK|BLACK|GLACIER BLUE|MINT GREEN|ICE BLUE|TWILIGHT BLUE|STAR BLUE|COSMIC PURPLE|ONYX GRAY|BRONZE|LIGHT BLUE|LAVANDER PURPLE|GRAPHITE GRAY|OCEAN BLUE|LAVENDER PURPLE|PRATA|PEPPY PURPLE|AMARELO|FOREST GREEN|PINK|ROSA/gi, '');
-            if (rede) novoNome = novoNome.replace(/\b4g\b|\b4G\b|\b5g\b|\b5G\b/gi, '');
-            if (capacidade) novoNome = novoNome.replace(new RegExp(/\b32GB\b|\b64GB\b|\b128GB\b|\b256GB\b|\b512GB\b/gi, 'i'), '');
-            if (ram) novoNome = novoNome.replace(new RegExp(/\b2GB RAM\b|\b3GB RAM\b|\b4GB RAM\b|\b6GB RAM\b|\b8GB RAM\b|\b12GB RAM\b|\b16GB RAM\b/gi, 'i'), '');
-            if (marca) novoNome = novoNome.replace(/XIAOMI/gi, '');
-            novoNome = novoNome.replace(/CELULAR|DUAL SIM/gi, '').replace(/\s+/g, ' ').trimStart();
-
-            return {
-                ...produtoLoja,
-                nome: novoNome,
-                marca: marca || produtoLoja.marca,
-                origem: origem || produtoLoja.origem,
-                cor: cor || produtoLoja.cor,
-                rede: rede || produtoLoja.rede,
-                capacidade: capacidade || produtoLoja.capacidade,
-                ram: ram || produtoLoja.ram
-            };
+            return produtoLojaAtualizado
         }) ?? []
 
 
@@ -187,7 +117,7 @@ export function PageProdutoLoja() {
         <React.Fragment>
 
             <ModalAtualizarProdutoLoja onHide={() => setImportProdutoLoja(undefined)} lojaId={importProdutoLoja} produtoParaguay={produtosLoja.allItems} />
-            <ModalCadastroProdutoLoja onHide={() => setCadastroProdutoLoja(undefined)} lojaId={cadastroProdutoLoja} />
+            <ModalImportarProdutoLoja onHide={() => setCadastroProdutoLoja(undefined)} lojaId={cadastroProdutoLoja} produtoParaguay={produtosLoja.allItems} />
             <ModalSyncVinculos onHide={() => setSyncVinculos(undefined)} produtoParaguay={modalSyncVinculos} />
             <ModalVinculo onHide={() => setVinculoProduto(undefined)} produtoParaguay={modalVinculoProduto} />
 
@@ -433,15 +363,9 @@ function ItemTable({ produtoLoja, onVinculo }: IPropsItensTable) {
                 </td>
                 <td>
 
-                    <a
-                        style={{ color: "blue" }}
-                        href={`https://atacadogames.com/lista-produtos/marca/xiaomi/302`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title={produtoLoja.codigo}
-                    >
-                        {produtoLoja.marca}
-                    </a>
+
+                    {produtoLoja.marca}
+
                 </td>
                 <td>
 

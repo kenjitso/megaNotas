@@ -1,3 +1,5 @@
+
+
 import { TypeOf, z } from "zod";
 
 export const schemaFreteiro = z.object({
@@ -89,6 +91,7 @@ export class FreteiroController {
     return await FreteiroController.create(freteiro);
 
   }
+  
 
   public static async search(q: string = "", ativo: boolean | undefined = true) {
     const params = new URLSearchParams();

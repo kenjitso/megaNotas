@@ -64,7 +64,15 @@
 }
 
 
-
+.th85 {
+  width: 85px;
+  min-width: 85px;
+  max-width: 85px;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  /* Esconde o conteúdo excedente */
+  
+}
 
 /* Define largura fixa de 110px para a célula da tabela e oculta o texto excedente */
 .th110 {

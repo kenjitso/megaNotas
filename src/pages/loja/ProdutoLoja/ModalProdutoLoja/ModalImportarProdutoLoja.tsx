@@ -9,16 +9,17 @@ import { toast } from "react-toastify";
 import * as XLSX from 'xlsx';
 import { Icons } from "@/components/icons/icons";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
-import { ModalTableCadastroProdutoLoja } from "./ModalTableCadastroProdutoLoja";
+import { ModalTableImportarProdutoLoja } from "./ModalTableImportarProdutoLoja";
 import * as pdfjsLib from "pdfjs-dist";
 pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
 
 interface IProps {
+    produtoParaguay?: IProdutoLoja[];
     onHide: () => void,
     lojaId?: string,
 }
 
-export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
+export function ModalImportarProdutoLoja({ onHide, lojaId, produtoParaguay }: IProps) {
 
 
 
@@ -33,16 +34,18 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
     const [processedRenameData, setProcessedRenameData] = useState<unknown[]>([]);
     const [isFileImportLoaded, setIsFileImportLoaded] = useState(false);
     const [isFileRenameLoaded, setIsFileRenameLoaded] = useState(false);
+    const [isCompareSuccessful, setIsCompareSuccessful] = useState(false);
 
 
 
     const onCompareFiles = () => {
-        if(processedImportData && processedRenameData) {
-            setFormattedList(AtacadoGamesFormat(lojaId ?? "", processedImportData, processedRenameData));
+        if (processedImportData && processedRenameData) {
+            setFormattedList(AtacadoGamesFormat(lojaId ?? "", processedImportData, processedRenameData, produtoParaguay));
             setLoadTable(true);
+            setIsCompareSuccessful(true);
         }
     };
-    
+
 
 
 
@@ -104,8 +107,8 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
 
 
                                 if (data?.algoritmo === 1) {
-                                    setProcessedImportData(pageImport);          
-                                   }
+                                    setProcessedImportData(pageImport);
+                                }
                             });
                         } else {
                             const workbook = XLSX.read(fileData, { type: "binary" });
@@ -179,8 +182,8 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
                             const dataList: unknown[][] = XLSX.utils.sheet_to_json(worksheet, {
                                 header: 1,
                             });
-                     //       const flattenedData = dataList.flat();
-                      //      const stringData = flattenedData.map((item) => String(item));
+                            //       const flattenedData = dataList.flat();
+                            //      const stringData = flattenedData.map((item) => String(item));
                             setProcessedRenameData(dataList); // Ou setProcessedRenameData(stringData) dependendo do que você precisa
                         }
                     }
@@ -233,7 +236,8 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
                                         </div>
                                     ) : isFileImported ? (
                                         <p style={{ cursor: "pointer" }}>
-                                            <b>Arquivo Import Carregado</b><br /><br />
+                                            <b>Arquivo Import <span style={{ color: 'red' }}>Carregado</span></b><br /><br />
+
                                             Você pode arrastar e soltar um novo arquivo <b>pdf</b> ou <b>excel</b> para substituir o atual <br /><br />
 
                                             <Icons tipo="CiImport" tamanho={55} />
@@ -252,7 +256,7 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
                         }
                         {
                             !cadastroIsLoading && formattedList.length > 0 ? (
-                                <ModalTableCadastroProdutoLoja
+                                <ModalTableImportarProdutoLoja
                                     listProdutoLoja={formattedList}
                                     onListProdutoLoja={setListToSave}
                                 />
@@ -279,7 +283,11 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
                                         </div>
                                     ) : isFileRenamed ? (
                                         <p style={{ cursor: "pointer" }}>
-                                            <b>Arquivo Rename Carregado</b><br /><br />
+                                            <b>Arquivo de {data?.nome} 
+                                            <br/>
+                                            <span style={{ color: 'red' }}>Carregado</span></b><br /><br />
+
+
                                             Você pode arrastar e soltar um novo arquivo <b>excel</b> para substituir o atual <br /><br />
 
                                             <Icons tipo="CiImport" tamanho={55} />
@@ -296,7 +304,7 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
                                 </div>
                             )
                         }
-                  
+
                     </Col>
 
                 </Row>
@@ -315,7 +323,7 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
                             ? mutation.mutate()
                             : toast.info("A lista está vazia, por favor adicione dados antes de confirmar.");
                     }}
-                    disabled={cadastroIsLoading}
+                    disabled={!isCompareSuccessful || cadastroIsLoading}
                 >
                     {cadastroIsLoading ? (
                         <>
@@ -331,7 +339,12 @@ export function ModalCadastroProdutoLoja({ onHide, lojaId }: IProps) {
                         </>
                     ) : "Confirmar"}
                 </Button>
-                <Button onClick={onCompareFiles} disabled={!(isFileImportLoaded && isFileRenameLoaded)}>
+
+                <Button
+                
+                  variant="secondary"
+                    onClick={onCompareFiles}
+                    disabled={!(isFileImportLoaded && isFileRenameLoaded)}>
                     Comparar arquivos
                 </Button>
 

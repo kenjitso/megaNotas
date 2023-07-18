@@ -10,7 +10,7 @@ interface IProps {
     onListProdutoLoja: (selectedItems: IProdutoLoja[]) => void;
 }
 
-export function ModalTableCadastroProdutoLoja({ listProdutoLoja, onListProdutoLoja }: IProps) {
+export function ModalTableImportarProdutoLoja({ listProdutoLoja, onListProdutoLoja }: IProps) {
     const [selectedProdutoLoja, setSelectedProdutoLoja] = useState<Set<IProdutoLoja>>(new Set());
     const [filtro, setFiltro] = useState("");
     const [lastCheckedIndex, setLastCheckedIndex] = useState<number | null>(null);
