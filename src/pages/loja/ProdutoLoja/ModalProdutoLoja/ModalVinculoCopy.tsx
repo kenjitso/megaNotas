@@ -208,7 +208,8 @@ export function TableVinculoManual({ produtoParaguay, onHide }: IProps) {
                                 <td>
                                     <a
                                         style={{ color: "blue" }}
-                                        href={`https://atacadogames.com/lista-produtos/termo/${produtoParaguay?.codigo}/1`}
+                                        
+                                        href={catalogoProduto.url_catalogo}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         title={produtoParaguay?.codigo}

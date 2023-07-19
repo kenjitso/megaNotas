@@ -37,6 +37,20 @@ export function ModalImportarProdutoLoja({ onHide, lojaId, produtoParaguay }: IP
     const [isCompareSuccessful, setIsCompareSuccessful] = useState(false);
 
 
+    function resetModal() {
+        setFormattedList([]);
+        setListToSave([]);
+        setIsLoading(false);
+        setIsFileImported(false);
+        setIsFileRenamed(false);
+        setLoadTable(false);
+        setProcessedImportData([]);
+        setProcessedRenameData([]);
+        setIsFileImportLoaded(false);
+        setIsFileRenameLoaded(false);
+        setIsCompareSuccessful(false);
+    }
+
 
     const onCompareFiles = () => {
         if (processedImportData && processedRenameData) {
@@ -45,6 +59,12 @@ export function ModalImportarProdutoLoja({ onHide, lojaId, produtoParaguay }: IP
             setIsCompareSuccessful(true);
         }
     };
+
+
+    const handleClose = () => {
+        onHide();
+        resetModal();
+    }
 
 
 
@@ -61,7 +81,6 @@ export function ModalImportarProdutoLoja({ onHide, lojaId, produtoParaguay }: IP
     }, {
         onSuccess: () => {
             onHide();
-            setFormattedList([]);
             queryClient.invalidateQueries(["produtosloja"]);
         }
     });
@@ -214,7 +233,8 @@ export function ModalImportarProdutoLoja({ onHide, lojaId, produtoParaguay }: IP
             backdrop="static"
             keyboard={false}
             show={lojaId !== undefined}
-            onHide={() => { onHide(); setFormattedList([]) }}
+            onHide={handleClose}
+
         >
             <Modal.Header closeButton>
                 <Modal.Title>{formattedList.length > 0
@@ -224,10 +244,9 @@ export function ModalImportarProdutoLoja({ onHide, lojaId, produtoParaguay }: IP
             <Modal.Body>
                 <Row>
 
-                    <Col className="body text-center">
-
-                        {
-                            formattedList.length === 0 && (
+                    {
+                        formattedList.length === 0 && (
+                            <Col className="body text-center" >
                                 <div {...getRootPropsImport()} className="dropzone">
                                     <input {...getInputPropsImport()} />
                                     {isLoading ? (
@@ -236,7 +255,9 @@ export function ModalImportarProdutoLoja({ onHide, lojaId, produtoParaguay }: IP
                                         </div>
                                     ) : isFileImported ? (
                                         <p style={{ cursor: "pointer" }}>
-                                            <b>Arquivo Import <span style={{ color: 'red' }}>Carregado</span></b><br /><br />
+                                            <b>Arquivo Import
+                                                <br />
+                                                <span style={{ color: 'red' }}>Carregado</span></b><br /><br />
 
                                             Você pode arrastar e soltar um novo arquivo <b>pdf</b> ou <b>excel</b> para substituir o atual <br /><br />
 
@@ -252,24 +273,28 @@ export function ModalImportarProdutoLoja({ onHide, lojaId, produtoParaguay }: IP
                                     )}
 
                                 </div>
-                            )
-                        }
-                        {
-                            !cadastroIsLoading && formattedList.length > 0 ? (
+                            </Col>)
+                    }
+
+
+                    {
+                        !cadastroIsLoading && formattedList.length > 0 ? (
+                            <Col xs={12} >
                                 <ModalTableImportarProdutoLoja
                                     listProdutoLoja={formattedList}
                                     onListProdutoLoja={setListToSave}
                                 />
-                            ) : cadastroIsLoading ? (
-                                <div>
-                                    <FragmentLoading />
-                                </div>
-                            ) : null
-                        }
+                            </Col>
+                        ) : cadastroIsLoading ? (
+                            <div>
+                                <FragmentLoading />
+                            </div>
+                        ) : null
+                    }
 
 
 
-                    </Col>
+
 
                     <Col className="body text-center">
 
@@ -283,9 +308,9 @@ export function ModalImportarProdutoLoja({ onHide, lojaId, produtoParaguay }: IP
                                         </div>
                                     ) : isFileRenamed ? (
                                         <p style={{ cursor: "pointer" }}>
-                                            <b>Arquivo de {data?.nome} 
-                                            <br/>
-                                            <span style={{ color: 'red' }}>Carregado</span></b><br /><br />
+                                            <b>Arquivo de {data?.nome}
+                                                <br />
+                                                <span style={{ color: 'red' }}>Carregado</span></b><br /><br />
 
 
                                             Você pode arrastar e soltar um novo arquivo <b>excel</b> para substituir o atual <br /><br />
@@ -294,7 +319,7 @@ export function ModalImportarProdutoLoja({ onHide, lojaId, produtoParaguay }: IP
                                         </p>
                                     ) : (
                                         <p style={{ cursor: "pointer" }}>
-                                            <b> Arquivo Rename </b><br /><br />
+                                            <b> Arquivo excel de {data?.nome} </b><br /><br />
                                             Arraste e solte um arquivo <b>excel</b> referente a loja ou clique para selecionar o arquivo <br /><br />
 
                                             <Icons tipo="CiImport" tamanho={55} />
@@ -312,9 +337,10 @@ export function ModalImportarProdutoLoja({ onHide, lojaId, produtoParaguay }: IP
             </Modal.Body>
             <Modal.Footer>
 
-                <Button className="position" variant="secondary" onClick={() => { onHide(); setFormattedList([]); }}>
+                <Button className="position" variant="secondary" onClick={handleClose}>
                     Fechar
                 </Button>
+
                 <Button
                     className="position"
                     variant="secondary"
@@ -339,15 +365,17 @@ export function ModalImportarProdutoLoja({ onHide, lojaId, produtoParaguay }: IP
                         </>
                     ) : "Confirmar"}
                 </Button>
+                {
+                    formattedList.length === 0 && (
+                        <Button
 
-                <Button
-                
-                  variant="secondary"
-                    onClick={onCompareFiles}
-                    disabled={!(isFileImportLoaded && isFileRenameLoaded)}>
-                    Comparar arquivos
-                </Button>
-
+                            variant="secondary"
+                            onClick={onCompareFiles}
+                            disabled={!(isFileImportLoaded && isFileRenameLoaded)}>
+                            Comparar arquivos
+                        </Button>
+                    )
+                }
 
 
 

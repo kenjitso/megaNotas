@@ -35,6 +35,7 @@ export function PageHome() {
     const catalogos = useMemo(() => {
 
         const dados = data?.map(catalogo => {
+        
             for (const competidor of catalogo.competidores) {
                 const frete = freteiro ? competidor.produto.preco * competidor.loja.cotacao * freteiro.percentual / 100 + freteiro.fixo : 0;
                 competidor.frete = frete;
@@ -327,11 +328,12 @@ function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTabl
                         alt="Descrição da imagem"
                     />
                 </td>
-
+         
                 <td className="th200">
 
                     <a
                         style={{ color: "blue" }}
+                        
                         href={catalogo.url_catalogo}
                         target="_blank"
                         rel="noopener noreferrer"

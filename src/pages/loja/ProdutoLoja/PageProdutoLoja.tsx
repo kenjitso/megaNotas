@@ -172,11 +172,13 @@ export function PageProdutoLoja() {
 
                 <Col xs className="d-flex justify-content-end">
                     <Button
-                        onClick={() => setSyncVinculos(produtosLoja.items)}
-                        className="me-3 custom-btn"
-                    >
-
-                        <Icons tipo="update" tamanho={22} />  Sync
+    onClick={() => {
+        const produtosSemVinculos = produtosLoja.items.filter(produto => produto.vinculos.length === 0);
+        setSyncVinculos(produtosSemVinculos);
+    }}
+    className="me-3 custom-btn"
+>
+<Icons tipo="update" tamanho={22} />  Sync
 
                     </Button>
                     <Button
