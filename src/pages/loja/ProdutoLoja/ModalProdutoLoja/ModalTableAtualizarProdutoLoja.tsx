@@ -6,8 +6,12 @@ import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 import React from "react";
 
 interface IProps {
-    listProdutoLoja?: IProdutoLoja[] | null;
+    listProdutoLoja?: {
+        cadastrados: IProdutoLoja[];
+        naoCadastrados: IProdutoLoja[];
+    } | null;
 }
+
 
 export function ModalTableAtualizarProdutoLoja({ listProdutoLoja }: IProps) {
 
@@ -24,7 +28,10 @@ export function ModalTableAtualizarProdutoLoja({ listProdutoLoja }: IProps) {
                     <tr>
                         <td>
                             <strong>Total de itens a serem atualizados:</strong>{" "}
-                            {listProdutoLoja?.length || 0}
+                            {listProdutoLoja?.cadastrados.length || 0}
+                        <br/>
+                            <strong>Total de itens a serem cadastrados:</strong>{" "}
+                            {listProdutoLoja?.naoCadastrados.length || 0}
                         </td>
                     </tr>
                 </tbody>

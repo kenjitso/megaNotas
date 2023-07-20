@@ -178,22 +178,15 @@ export function PageProdutoLoja() {
     }}
     className="me-3 custom-btn"
 >
-<Icons tipo="update" tamanho={22} />  Sync
+<Icons tipo="update" tamanho={22} />  Vinc. Catalogos
 
                     </Button>
-                    <Button
-                        onClick={() => setCadastroProdutoLoja(lojaId)}
-                        className="me-3 custom-btn"
-                    >
-
-                        <Icons tipo="import" tamanho={22} />  Importar
-
-                    </Button>
+       
                     <Button
                         className="custom-btn"
                         onClick={() => setImportProdutoLoja(lojaId)}
                     >
-                        <Icons tipo="update" tamanho={22} />  Atualizar
+                        <Icons tipo="update" tamanho={22} />  Atualizar/Cadastrar
                     </Button>
                 </Col>
             </Row>

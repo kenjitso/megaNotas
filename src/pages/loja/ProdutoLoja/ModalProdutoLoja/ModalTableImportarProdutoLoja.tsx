@@ -6,12 +6,15 @@ import { formatCurrency } from "@/features/FormatCurrency";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 
 interface IProps {
-    listProdutoLoja?: IProdutoLoja[] | null;
+    listProdutoLoja?: {
+        cadastrados: IProdutoLoja[];
+        naoCadastrados: IProdutoLoja[];
+    } | null;
     onListProdutoLoja: (selectedItems: IProdutoLoja[]) => void;
 }
 
 export function ModalTableImportarProdutoLoja({ listProdutoLoja, onListProdutoLoja }: IProps) {
-    
+
     const [selectedProdutoLoja, setSelectedProdutoLoja] = useState<Set<IProdutoLoja>>(new Set());
     const [filtro, setFiltro] = useState("");
     const [lastCheckedIndex, setLastCheckedIndex] = useState<number | null>(null);
@@ -19,22 +22,22 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, onListProdutoLo
 
     const handleCheckboxFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCheckboxFilter(event.target.checked);
-    
+
         if (event.target.checked) {
             const celularItems = new Set(selectedProdutoLoja);
-    
-            listProdutoLoja?.forEach(produtoLoja => {
+
+            listProdutoLoja?.naoCadastrados.forEach(produtoLoja => {
                 if (produtoLoja.nome.toLowerCase().includes('celular')) {
                     celularItems.add(produtoLoja);
                 }
             });
-    
+
             setSelectedProdutoLoja(celularItems);
             onListProdutoLoja(Array.from(celularItems));
         }
     };
 
-    const filteredProdutoLoja = listProdutoLoja?.filter(produtoLoja =>
+    const filteredProdutoLoja = listProdutoLoja?.naoCadastrados.filter(produtoLoja =>
         produtoLoja.nome.toLowerCase().includes(filtro.toLowerCase()) &&
         (!checkboxFilter || produtoLoja.nome.toLowerCase().includes('celular')) // Ajuste esta condição para a sua necessidade real.
     );

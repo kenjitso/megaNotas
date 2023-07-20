@@ -2,23 +2,16 @@ import { toast } from "react-toastify";
 import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 import { z } from "zod";
 
-export function AtacadoGamesFormat(idLoja: string, pdfArray: string[], excelArray?: unknown[], produtoParaguay?: IProdutoLoja[]): Array<IProdutoLoja> {
+export function AtacadoGamesFormat(
+    idLoja: string,
+    pdfArray: string[],
+    excelArray?: unknown[],
+    produtoParaguay?: IProdutoLoja[]
+): { cadastrados: IProdutoLoja[], naoCadastrados: IProdutoLoja[] } {
 
     try {
-
         let extractedItems = processPdfArray(excelArray ?? [], pdfArray);
 
-        if (produtoParaguay && excelArray?.length==0) {
-            const produtoParaguayCodigos = new Set(produtoParaguay.map(item => item.codigo.trim()));
-            extractedItems = extractedItems.filter(item => produtoParaguayCodigos.has(item.codigo.trim()));
-        }
-
-       if (produtoParaguay && excelArray?.length !== 0) {
-            const produtoParaguayCodigos = new Set(produtoParaguay.map(item => item.codigo.trim()));
-          extractedItems = extractedItems.filter(item => !produtoParaguayCodigos.has(item.codigo.trim()));
-       }
-        
-    
         const lineValidation = z.object({
             codigo: z.string(),
             descricao: z.string(),
@@ -43,15 +36,26 @@ export function AtacadoGamesFormat(idLoja: string, pdfArray: string[], excelArra
             vinculos: [],
         }));
 
-        const itens: IProdutoLoja[] = z.array(lineValidation).parse(extractedItems);
+        const itensFormatados: IProdutoLoja[] = z.array(lineValidation).parse(extractedItems);
 
-        return itens;
+        let cadastrados: IProdutoLoja[] = [];
+        let naoCadastrados: IProdutoLoja[] = [];
+
+        if (produtoParaguay) {
+            const produtoParaguayCodigos = new Set(produtoParaguay.map(item => item.codigo.trim()));
+
+            cadastrados = itensFormatados.filter(item => produtoParaguayCodigos.has(item.codigo.trim()));
+            naoCadastrados = itensFormatados.filter(item => !produtoParaguayCodigos.has(item.codigo.trim()));
+        }
+
+        return { cadastrados, naoCadastrados };
 
     } catch (error) {
         toast.error("Entre em contato com o desenvolvedor, parece que a estrutura fornecida pela loja mudou.");
-        return [];
+        return { cadastrados: [], naoCadastrados: [] };
     }
 }
+
 
 function processPdfArray(
     excelArray: unknown[],
@@ -108,4 +112,40 @@ function processPdfArray(
     }
 
     return result;
+}
+
+
+
+
+export function updateNaoCadastrados(
+    excelArray: unknown[],
+    naoCadastrados: IProdutoLoja[]
+): IProdutoLoja[] {
+    // Ignorar o cabeçalho (primeira linha do excelArray)
+    const dataRows = excelArray.slice(1);
+
+    // Mapeia códigos para descrições do excelArray
+    const excelDataMap: { [codigo: string]: string } = {};
+
+    dataRows.forEach(row => {
+        if (Array.isArray(row)) {
+            const codigo = row[0].toString().trim();
+            const descricao = row[1].toString().trim();
+            excelDataMap[codigo] = descricao;
+        }
+    });
+
+    // Atualiza o array 'naoCadastrados'
+    const updatedNaoCadastrados = naoCadastrados.reduce((accumulator, product) => {
+        // Se o código existir em excelDataMap, substitua o nome e adicione ao acumulador
+        if (excelDataMap[product.codigo]) {
+            accumulator.push({
+                ...product,
+                nome: excelDataMap[product.codigo],
+            });
+        }
+        return accumulator;
+    }, [] as IProdutoLoja[]);
+
+    return updatedNaoCadastrados;
 }

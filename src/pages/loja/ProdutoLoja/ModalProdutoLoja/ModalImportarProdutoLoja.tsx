@@ -23,7 +23,7 @@ export function ModalImportarProdutoLoja({ onHide, lojaId, produtoParaguay }: IP
 
 
 
-    const [formattedList, setFormattedList] = useState<IProdutoLoja[]>([]);
+    const [formattedList, setFormattedList] = useState<{ cadastrados: IProdutoLoja[], naoCadastrados: IProdutoLoja[] }>({ cadastrados: [], naoCadastrados: [] });
     const [listToSave, setListToSave] = useState<IProdutoLoja[]>([]);
     const queryClient = useQueryClient();
     const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +38,7 @@ export function ModalImportarProdutoLoja({ onHide, lojaId, produtoParaguay }: IP
 
 
     function resetModal() {
-        setFormattedList([]);
+        setFormattedList({ cadastrados: [], naoCadastrados: [] });
         setListToSave([]);
         setIsLoading(false);
         setIsFileImported(false);
@@ -237,7 +237,7 @@ export function ModalImportarProdutoLoja({ onHide, lojaId, produtoParaguay }: IP
 
         >
             <Modal.Header closeButton>
-                <Modal.Title>{formattedList.length > 0
+                <Modal.Title>{formattedList.naoCadastrados.length > 0
                     ? `Importar - ${data?.nome}`
                     : `Importar - Arraste um arquivo de ${data?.nome}`}</Modal.Title>
             </Modal.Header>
@@ -245,7 +245,7 @@ export function ModalImportarProdutoLoja({ onHide, lojaId, produtoParaguay }: IP
                 <Row>
 
                     {
-                        formattedList.length === 0 && (
+                        formattedList.naoCadastrados.length === 0 && (
                             <Col className="body text-center" >
                                 <div {...getRootPropsImport()} className="dropzone">
                                     <input {...getInputPropsImport()} />
@@ -278,7 +278,7 @@ export function ModalImportarProdutoLoja({ onHide, lojaId, produtoParaguay }: IP
 
 
                     {
-                        !cadastroIsLoading && formattedList.length > 0 ? (
+                        !cadastroIsLoading && formattedList.naoCadastrados.length > 0 ? (
                             <Col xs={12} >
                                 <ModalTableImportarProdutoLoja
                                     listProdutoLoja={formattedList}
@@ -299,7 +299,7 @@ export function ModalImportarProdutoLoja({ onHide, lojaId, produtoParaguay }: IP
                     <Col className="body text-center">
 
                         {
-                            formattedList.length === 0 && (
+                            formattedList.naoCadastrados.length === 0 && (
                                 <div {...getRootPropsRename()} className="dropzone">
                                     <input {...getInputPropsRename()} />
                                     {isLoading ? (
@@ -345,7 +345,7 @@ export function ModalImportarProdutoLoja({ onHide, lojaId, produtoParaguay }: IP
                     className="position"
                     variant="secondary"
                     onClick={() => {
-                        formattedList.length > 0
+                        formattedList.naoCadastrados.length > 0
                             ? mutation.mutate()
                             : toast.info("A lista está vazia, por favor adicione dados antes de confirmar.");
                     }}
@@ -366,13 +366,25 @@ export function ModalImportarProdutoLoja({ onHide, lojaId, produtoParaguay }: IP
                     ) : "Confirmar"}
                 </Button>
                 {
-                    formattedList.length === 0 && (
+                    formattedList.naoCadastrados.length === 0 && (
                         <Button
 
                             variant="secondary"
                             onClick={onCompareFiles}
                             disabled={!(isFileImportLoaded && isFileRenameLoaded)}>
                             Comparar arquivos
+                        </Button>
+                    )
+                }
+
+                {
+                    formattedList.naoCadastrados.length === 0 && (
+                        <Button
+
+                            variant="secondary"
+                            onClick={onCompareFiles}
+                            disabled={!(isFileImportLoaded && isFileRenameLoaded)}>
+                            Atualizar Valores do Paraguay
                         </Button>
                     )
                 }

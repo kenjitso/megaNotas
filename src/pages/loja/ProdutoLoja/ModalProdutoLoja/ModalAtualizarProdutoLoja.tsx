@@ -1,25 +1,17 @@
 import { LojaController } from "@/datatypes/loja";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
-import { AtacadoGamesFormat } from "@/functions/lojas/atacadoGames";
+import { AtacadoGamesFormat, updateNaoCadastrados } from "@/functions/lojas/atacadoGames";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Modal, Row, Col, Button, Spinner } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import { toast } from "react-toastify";
 import * as XLSX from 'xlsx';
 import { Icons } from "@/components/icons/icons";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
-import { AtlanticoFormat } from "@/functions/lojas/atlantico";
-import { BestShopFormat } from "@/functions/lojas/bestShop";
-import { CellShopFormat } from "@/functions/lojas/cellShop";
-import { MadridCenterFormat } from "@/functions/lojas/madridCenter";
 import * as pdfjsLib from "pdfjs-dist";
-
-import { StarGamesFormat } from "@/functions/lojas/starGames";
-import { MegaFormat } from "@/functions/lojas/mega";
-import { MobileZoneFormat } from "@/functions/lojas/mobileZone";
-import { AlgoritmoPadraoFormat } from "@/functions/lojas/algoritmoPadrao";
 import { ModalTableAtualizarProdutoLoja } from "./ModalTableAtualizarProdutoLoja";
+import { ModalTableImportarProdutoLoja } from "./ModalTableImportarProdutoLoja";
 pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
 
 interface IProps {
@@ -30,9 +22,28 @@ interface IProps {
 
 export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: IProps) {
 
-    const [formattedList, setFormattedList] = useState<IProdutoLoja[]>([]);
+    const [formattedList, setFormattedList] = useState<{ cadastrados: IProdutoLoja[], naoCadastrados: IProdutoLoja[] }>({ cadastrados: [], naoCadastrados: [] });
+    const [isModalImportVisible, setIsModalImportVisible] = useState(true);
+    const [isModalRenameVisible, setIsModalRenameVisible] = useState(false);
+    const [listToSave, setListToSave] = useState<IProdutoLoja[]>([]);
     const queryClient = useQueryClient();
     const [isLoading, setIsLoading] = useState(false);
+    const [excelData, setExcelData] = useState<unknown[]>([]);
+    const [isFileRenamed, setIsFileRenamed] = useState(false);
+    const [isItensNotRegistered, setIsItensNotRegistered] = useState(false);
+
+
+    const defaultSettings = () => {
+
+        setIsModalImportVisible(true);
+        setIsModalRenameVisible(false);
+        setIsItensNotRegistered(false);
+        setIsLoading(false);
+        setIsFileRenamed(false);
+        setFormattedList({ cadastrados: [], naoCadastrados: [] })
+
+    }
+
 
     const { data } = useQuery(["loja", lojaId], async () => {
         const data = await LojaController.get(lojaId ?? "");
@@ -40,20 +51,35 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
         return data;
     }, { enabled: !!lojaId && typeof onHide === 'function' }); // habilita a consulta somente quando lojaId estiver definido e onHide for uma função });
 
-    const mutation = useMutation(() => {
+    const mutationAtualizaCadastrados = useMutation(() => {
         if (!lojaId) throw new Error("Loja Indefinido");
-        return ProdutoLojaController.importar(formattedList);
+        return ProdutoLojaController.importar(formattedList.cadastrados);
     }, {
         onSuccess: () => {
             onHide();
-            setFormattedList([]);
+            setFormattedList({ cadastrados: [], naoCadastrados: [] })
             queryClient.invalidateQueries(["produtosloja"]);
+            defaultSettings();
         }
     });
 
-    const { isLoading: importIsLoading } = mutation;
 
-    const onDrop = useCallback((acceptedFiles: File[]) => {
+    const mutationCadastraNaoCadastrados = useMutation(() => {
+        if (!lojaId) throw new Error("Loja Indefinido");
+        return ProdutoLojaController.importar(listToSave);
+    }, {
+        onSuccess: () => {
+            onHide();
+            setFormattedList({ cadastrados: [], naoCadastrados: [] })
+            queryClient.invalidateQueries(["produtosloja"]);
+            defaultSettings();
+        }
+    });
+
+
+    const { isLoading: atualizaCadastradosIsLoading } = mutationAtualizaCadastrados;
+    const { isLoading: cadastraIsLoading } = mutationCadastraNaoCadastrados;
+    const onDropImport = useCallback((acceptedFiles: File[]) => {
         setIsLoading(true);
         acceptedFiles.forEach((file) => {
             if (!file) return;
@@ -89,30 +115,14 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                                     allPagesText.push(...dataList);
                                 }
 
-                                if (data?.algoritmo === 3) {
-                                    setFormattedList(BestShopFormat(lojaId ?? "", allPagesText)); //BESTSHOP  FUNCIONANDO OK
-                                }
 
                                 if (data?.algoritmo === 1) {
-                                    setFormattedList(AtacadoGamesFormat(lojaId ?? "", allPagesText,[],produtoParaguay)); //ATACADO GAMES  FUNCIONANDO OK
-                                    
+                                    setFormattedList(AtacadoGamesFormat(lojaId ?? "", allPagesText, [], produtoParaguay));
+
+
                                 }
 
-                                if (data?.algoritmo === 5) {
-                                    setFormattedList(MadridCenterFormat(lojaId ?? "", allPagesText)); //MADRID CENTER FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
-                                }
-                                if (data?.algoritmo === 6) {
-                                    setFormattedList(StarGamesFormat(lojaId ?? "", allPagesText)); //STAR GAMES FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
-                                }
 
-                                if (data?.algoritmo === 2) {
-                                    setFormattedList(AtlanticoFormat(lojaId ?? "", allPagesText)); //ATLANTICO FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
-                                }
-
-                                if (data?.algoritmo === 7) {
-
-                                    setFormattedList(MegaFormat(lojaId ?? "", allPagesText)); //MEGA FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
-                                }
 
                             });
                         } else {
@@ -123,17 +133,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                                 header: 1,
                             });
 
-                            if (data?.algoritmo === 4) {
-                                setFormattedList(CellShopFormat(lojaId ?? "", dataList)); //CELLSHOP FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
-                            }
-
-                            if (data?.algoritmo === 8) {
-                                setFormattedList(MobileZoneFormat(lojaId ?? "", dataList)); //CELLSHOP FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
-                            }
-
-                            if (data?.algoritmo === 9) {
-                                setFormattedList(AlgoritmoPadraoFormat(lojaId ?? "", dataList)); //AlgoritmoPadrao FUNCIONANDO OK NAO TEM NOME DA LOJA NO ARQUIVO
-                            }
+                            //////////////////////////////////////////////////////////////////////
 
                         }
                     }
@@ -147,7 +147,44 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
         });
     }, [onHide, data]);
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+    const { getRootProps: getRootPropsImport, getInputProps: getInputPropsImport } = useDropzone({ onDrop: onDropImport });
+
+    const onDropExcel = useCallback((acceptedFiles: File[]) => {
+
+        setIsLoading(true);
+        acceptedFiles.forEach((file) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const bstr = e.target?.result;
+                if (typeof bstr === "string") {
+                    const workbook = XLSX.read(bstr, { type: "binary" });
+                    const sheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[sheetName];
+                    const data = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                    // Aqui você chama a função updateNaoCadastrados
+                    const updatedNaoCadastrados = updateNaoCadastrados(data, formattedList.naoCadastrados);
+
+                    setFormattedList(prevState => ({
+                        ...prevState,
+                        naoCadastrados: updatedNaoCadastrados,
+                    }));
+
+                    setExcelData(data); // Atualizando o estado com os dados do Excel
+                    setIsModalRenameVisible(false);
+                    setIsItensNotRegistered(true);
+                    setIsLoading(false);
+                }
+            };
+            reader.readAsBinaryString(file);
+        });
+        setIsFileRenamed(true);
+    }, [formattedList.naoCadastrados]); // Adiciona a dependência aqui
+
+
+
+    const dropzone = useDropzone({ onDrop: onDropExcel });
+
 
     return (
         <Modal
@@ -156,91 +193,201 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
             backdrop="static"
             keyboard={false}
             show={lojaId !== undefined}
-            onHide={() => { onHide(); setFormattedList([]) }}
+            onHide={() => {
+                onHide();
+                defaultSettings();
+            }}
         >
             <Modal.Header closeButton>
-                <Modal.Title>{formattedList.length > 0
-                    ? `Atualizar - ${data?.nome}`
-                    : `Atualizar - Arraste um arquivo de ${data?.nome}`}</Modal.Title>
+                <Modal.Title>{
+                    <>
+                        {formattedList.cadastrados.length > 0
+                            ? `Atualizar - `
+                            : `Atualizar - Arraste um arquivo de
+                       `
+                        }
+                        <a
+                            style={{ color: "blue" }}
+                            href={`https://atacadogames.com/lista-produtos/1`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={data?.nome}
+                        >
+                            {" " + data?.nome.toLocaleUpperCase() + " "}
+                        </a>
+                    </>
+                }</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Row>
 
-                    <Col className="body text-center">
 
-                        {
-                            formattedList.length === 0 && (
-                                <div {...getRootProps()} className="dropzone">
-                                    <input {...getInputProps()} />
-                                    {isLoading ? (
-                                        <div>
-                                            <FragmentLoading />
-                                        </div>
-                                    ) : isDragActive ? (
-                                        <p style={{ cursor: "pointer" }}>
-                                            Solte o arquivo <b>pdf</b> ou <b>excel</b> aqui. <br /><br />
-
-                                            <Icons tipo="CiImport" tamanho={55} />
-                                        </p>
-                                    ) : (
-                                        <p style={{ cursor: "pointer" }}>
-                                            Arraste e solte um arquivo <b>pdf</b> ou <b>excel</b> referente a loja ou clique para selecionar o arquivo <br /><br />
-                                            <Icons tipo="CiImport" tamanho={55} />
-                                        </p>
-                                    )}
-
-                                </div>
-                            )
-                        }
-
-                        {
-                            !importIsLoading && formattedList.length > 0 ? (
-                                <ModalTableAtualizarProdutoLoja
-                                    listProdutoLoja={formattedList}
-                                />
-                            ) : importIsLoading ? (
-                                <div>
+                    {isModalImportVisible && formattedList.cadastrados.length === 0 && (
+                        <Col className="body text-center">
+                            <div {...getRootPropsImport()} className="dropzone">
+                                <input {...getInputPropsImport()} />
+                                {isLoading ? (
                                     <FragmentLoading />
-                                </div>
-                            ) : null
+                                ) : (
+                                    <p style={{ cursor: "pointer" }}>
+                                        <b> Arquivo do vendedor </b><br /><br />
+                                        Arraste e solte um arquivo <b>pdf</b> ou <b>excel</b> referente a loja ou clique para selecionar o arquivo <br /><br />
+                                        <Icons tipo="CiImport" tamanho={55} />
+                                    </p>
+                                )}
+                            </div>
+                        </Col>
+                    )}
 
-                        }
+                    {!isLoading && isModalImportVisible && formattedList.cadastrados.length > 0 && (
+                        <Col className="body text-center">
+                            <ModalTableAtualizarProdutoLoja listProdutoLoja={formattedList} />
+                        </Col>
+                    )}
 
 
-                    </Col>
+
+
+
+                    {isModalRenameVisible && (
+                        <Col className="body text-center">
+                            <div {...dropzone.getRootProps()} className="dropzone">
+                                <input {...dropzone.getInputProps()} />
+                                {isLoading ? (
+                                    <FragmentLoading />
+
+                                ) : (
+                                    <p style={{ cursor: "pointer" }}>
+                                        <b> Arquivo excel de
+
+
+                                            {" " + data?.nome + " "}
+
+
+                                            para arrumar os dados dos produtos</b>
+
+
+                                        <br /><br />
+                                        Arraste e solte um arquivo <b>excel</b> referente a loja ou clique para selecionar o arquivo <br /><br />
+
+                                        <Icons tipo="CiImport" tamanho={55} />
+
+                                    </p>
+
+                                )}
+                            </div>
+                        </Col>
+                    )}
+
+
+                    {!isLoading && isItensNotRegistered && formattedList.naoCadastrados.length > 0 && (
+                        <Col xs={12}>
+                            <ModalTableImportarProdutoLoja
+                                listProdutoLoja={formattedList}
+                                onListProdutoLoja={setListToSave}
+                            />
+                        </Col>
+                    )}
+
+
                 </Row>
-
             </Modal.Body>
+
             <Modal.Footer>
-                <Button className="position" variant="secondary" onClick={() => { onHide(); setFormattedList([]); }}>
+                <Button className="position" variant="secondary" onClick={() => 
+                { 
+                    onHide(); 
+                    setFormattedList({ cadastrados: [], naoCadastrados: [] });
+                    defaultSettings();
+                    }}>
                     Fechar
                 </Button>
-                <Button
-                    className="position"
-                    variant="secondary"
-                    onClick={() => {
-                        formattedList.length > 0
-                            ? mutation.mutate()
-                            : toast.info("A lista está vazia, por favor adicione dados antes de confirmar.");
-                    }}
-                    disabled={importIsLoading}
-                >
-                    {importIsLoading ? (
-                        <>
-                            <Spinner
-                                as="span"
-                                animation="border"
-                                size="sm"
-                                role="status"
-                                aria-hidden="true"
-                                style={{ marginRight: "5px" }}
-                            />
-                            Carregando...
-                        </>
-                    ) : "Confirmar"}
-                </Button>
+
+
+                {formattedList.cadastrados.length > 0 && isModalRenameVisible === false && isItensNotRegistered === false && (
+                    <Button
+                        className="position"
+                        variant="secondary"
+                        onClick={() => {
+                            mutationAtualizaCadastrados.mutate()
+                        }}
+                    >
+                        {atualizaCadastradosIsLoading ? (
+                            <>
+                                <Spinner
+                                    as="span"
+                                    animation="border"
+                                    size="sm"
+                                    role="status"
+                                    aria-hidden="true"
+                                    style={{ marginRight: "5px" }}
+                                />
+                                Carregando...
+                            </>
+                        ) : "Atualizar Valores"}
+                    </Button>
+                )}
+
+
+
+                {isItensNotRegistered && (
+                    <Button
+
+                        variant="secondary"
+                        onClick={() => {
+                            formattedList.naoCadastrados.length > 0
+                                ? mutationCadastraNaoCadastrados.mutate()
+                                : toast.info("A lista está vazia, por favor adicione dados antes de confirmar.");
+                        }}
+
+                    >
+                        {cadastraIsLoading ? (
+                            <>
+                                <Spinner
+                                    as="span"
+                                    animation="border"
+                                    size="sm"
+                                    role="status"
+                                    aria-hidden="true"
+                                    style={{ marginRight: "5px" }}
+                                />
+                                Carregando...
+                            </>
+                        ) : "Cadastrar Selecionados"}
+                    </Button>
+                )}
+
+
+
+                {isModalImportVisible &&formattedList.naoCadastrados.length > 0 && (
+                    <Button
+                        variant="secondary"
+                        onClick={() => {
+                            setIsModalRenameVisible(true);
+                            setIsModalImportVisible(false);
+                        }}
+                        disabled={atualizaCadastradosIsLoading}
+                    >
+                        {cadastraIsLoading ? (
+                            <>
+                                <Spinner
+                                    as="span"
+                                    animation="border"
+                                    size="sm"
+                                    role="status"
+                                    aria-hidden="true"
+                                    style={{ marginRight: "5px" }}
+                                />
+                                Carregando...
+                            </>
+                        ) : "Verificar não Cadastrados"}
+                    </Button>
+
+                )}
+
+
 
             </Modal.Footer>
-        </Modal>
+        </Modal >
     );
 }
