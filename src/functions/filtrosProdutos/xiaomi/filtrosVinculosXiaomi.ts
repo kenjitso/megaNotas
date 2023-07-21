@@ -11,7 +11,7 @@ export function filtrosVinculosXiaomi(produtoParaguay: IProdutoLoja, produtoML: 
     }
 
 
- 
+
 
     // Aumenta a similaridade se o modelo for igual
     if (produtoML.modelo) {
@@ -23,7 +23,7 @@ export function filtrosVinculosXiaomi(produtoParaguay: IProdutoLoja, produtoML: 
         if (produtoParaguay.nome.toUpperCase().trim() === "POCO F4 GT" && produtoML.modelo.toUpperCase().trim() === "POCO F4 GT") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "POCO F5" && produtoML.modelo.toUpperCase().trim() === "POCO F5") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "POCO M5S" && produtoML.modelo.toUpperCase().trim() === "POCO M5S") similarity++;
-        
+
         if (produtoParaguay.nome.toUpperCase().trim() === "POCO M4" && produtoML.modelo.toUpperCase().trim() === "POCO M4 5G") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "POCO M5" && produtoML.modelo.toUpperCase().trim() === "POCO M5") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "POCO X5" && produtoML.modelo.toUpperCase().trim() === "POCO X5 5G") similarity++;
@@ -53,8 +53,12 @@ export function filtrosVinculosXiaomi(produtoParaguay: IProdutoLoja, produtoML: 
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI NOTE 11S" && produtoML.modelo.toUpperCase().trim() === "NOTE 11S 5G") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI NOTE 12 PRO PLUS" && produtoML.modelo.toUpperCase().trim() === "NOTE 12 PRO+ 5G") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI NOTE 12 PRO" && produtoML.modelo.toUpperCase().trim() === "NOTE 12 PRO 5G") similarity++;
-        
+
+        if (produtoParaguay.nome.toUpperCase().trim() === "REDMI 9C" && produtoML.modelo.toUpperCase().trim() === "9C") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "REDMI 9AT" && produtoML.modelo.toUpperCase().trim() === "9A") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "POCO C55" && produtoML.modelo.toUpperCase().trim() === "POCO C55") similarity++;
+        
+        if (produtoParaguay.nome.toUpperCase().trim() === "REDMI A1" && produtoML.modelo.toUpperCase().trim() === "A1 2022") similarity++;
     }
     if (produtoParaguay.nome.toUpperCase().trim() === "POCO C40" && produtoML.modelo.toUpperCase().trim() === "POCO C40") similarity++;
 
@@ -72,9 +76,10 @@ export function filtrosVinculosXiaomi(produtoParaguay: IProdutoLoja, produtoML: 
         if (produtoParaguay.cor.toUpperCase().trim() === "PRETO" && produtoML.cor.toUpperCase().trim() === "MIDNIGHT BLACK") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "PRETO" && produtoML.cor.toUpperCase().trim() === "OBSIDIAN BLACK") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "PRETO" && produtoML.cor.toUpperCase().trim() === "POWER BLACK") similarity++;
-        
+
+        if (produtoParaguay.cor.toUpperCase().trim() === "PRETO" && produtoML.cor.toUpperCase().trim() === "ONYX GRAY") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "PRETO" && produtoML.cor.toUpperCase().trim() === "NIGHT BLACK") similarity++;
-        
+
         if (produtoParaguay.cor.toUpperCase().trim() === "CINZA" && produtoML.cor.toUpperCase().trim() === "GRAPHITE GRAY") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "CINZA" && produtoML.cor.toUpperCase().trim() === "ONYX GRAY") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "CINZA" && produtoML.cor.toUpperCase().trim() === "GREY") similarity++;
@@ -91,8 +96,9 @@ export function filtrosVinculosXiaomi(produtoParaguay: IProdutoLoja, produtoML: 
         if (produtoParaguay.cor.toUpperCase().trim() === "AZUL" && produtoML.cor.toUpperCase().trim() === "GLACIER BLUE") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "AZUL" && produtoML.cor.toUpperCase().trim() === "MYSTIQUE BLUE") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "AZUL" && produtoML.cor.toUpperCase().trim() === "ICEBERG BLUE") similarity++;
-        
-        
+
+        if (produtoParaguay.cor.toUpperCase().trim() === "AZUL" && produtoML.cor.toUpperCase().trim() === "LIGHT BLUE") similarity++;
+
         if (produtoParaguay.cor.toUpperCase().trim() === "AZUL" && produtoML.cor.toUpperCase().trim() === "COOL BLUE") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "ROXO" && produtoML.cor.toUpperCase().trim() === "PEPPY PURPLE") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "ROXO" && produtoML.cor.toUpperCase().trim() === "STARLIGHT PURPLE") similarity++;
@@ -104,15 +110,24 @@ export function filtrosVinculosXiaomi(produtoParaguay: IProdutoLoja, produtoML: 
         if (produtoParaguay.cor.toUpperCase().trim() === "VERDE" && produtoML.cor.toUpperCase().trim() === "GREEN") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "VERDE" && produtoML.cor.toUpperCase().trim() === "VERDE") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "VERDE" && produtoML.cor.toUpperCase().trim() === "NEBULA GREEN") similarity++;
-        
+
+        if (produtoParaguay.cor.toUpperCase().trim() === "VERDE" && produtoML.cor.toUpperCase().trim() === "VERDE-GRADIENTE") similarity++;
+
         if (produtoParaguay.cor.toUpperCase().trim() === "VERDE" && produtoML.cor.toUpperCase().trim() === "PLAYFUL GREEN") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "VERDE" && produtoML.cor.toUpperCase().trim() === "FROSTED GREEN") similarity++;
-        if (produtoParaguay.cor.toUpperCase().trim() === "AMARELO" && produtoML.cor.toUpperCase().trim() === "YELLOW") similarity++;
-        if (produtoParaguay.cor.toUpperCase().trim() === "AMARELO" && produtoML.cor.toUpperCase().trim() === "POCO YELLOW") similarity++;
+
+        if (produtoParaguay.cor.toUpperCase().trim() === "VERDE" && produtoML.cor.toUpperCase().trim() === "LIGHT GREEN") similarity++;
+
         if (produtoParaguay.cor.toUpperCase().trim() === "BRANCO" && produtoML.cor.toUpperCase().trim() === "BRANCO") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "BRANCO" && produtoML.cor.toUpperCase().trim() === "PEBBLE WHITE") similarity++;
-        
         if (produtoParaguay.cor.toUpperCase().trim() === "BRANCO" && produtoML.cor.toUpperCase().trim() === "WHITE") similarity++;
+
+        if (produtoParaguay.cor.toUpperCase().trim() === "LARANJA" && produtoML.cor.toUpperCase().trim() === "LARANJA") similarity++;
+
+
+        if (produtoParaguay.cor.toUpperCase().trim() === "AMARELO" && produtoML.cor.toUpperCase().trim() === "YELLOW") similarity++;
+        if (produtoParaguay.cor.toUpperCase().trim() === "AMARELO" && produtoML.cor.toUpperCase().trim() === "POCO YELLOW") similarity++;
+
     }
 
 

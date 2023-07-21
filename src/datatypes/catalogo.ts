@@ -204,7 +204,6 @@ export class CatalogoController {
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos?${params}`, options);
         const responseData: unknown = await response.json();
 
-        console.log(responseData)
 
         const catalogosSchema = z.object({
             items: z.array(schemaCatalogo),
@@ -229,10 +228,8 @@ export class CatalogoController {
         };
 
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/competidores?${params}`, options);
-       
+      
         const responseData: unknown = await response.json();
-
-        console.log(responseData)
 
         const catalogos = z.object({
             items: z.array(schemaCatalogo).transform(items => items.filter(item => item.competidores && item.competidores.length > 0)),
@@ -259,11 +256,13 @@ export class CatalogoController {
     
         const response = await fetch(`https://us-central1-mega-notas.cloudfunctions.net/api/mercadolivre/catalogo/search?${params}`, options);
         const responseData: unknown = await response.json();
-    
+
         const attributeSchema = z.object({
             name: z.string(),
             value_name: z.string().optional(),
         });
+
+      
     
         const schemaProduto = z.object({
             id: z.string(),
@@ -273,6 +272,8 @@ export class CatalogoController {
             })),
             attributes: z.array(attributeSchema).optional()
         });
+
+     
     
         const catalogos = z.object({
             results: z.array(schemaProduto)
@@ -286,6 +287,8 @@ export class CatalogoController {
             const memoriaRam = product.attributes?.find(attribute => attribute.name === "Memória RAM")?.value_name;
             const mobileNetwork = product.attributes?.find(attribute => attribute.name === "Rede")?.value_name;
 
+          
+  
             return {
                 codigo_catalogo: product.id,
                 nome: product.name,

@@ -2,7 +2,7 @@ import { LojaController } from "@/datatypes/loja";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
 import { AtacadoGamesFormat, updateNaoCadastrados } from "@/functions/lojas/atacadoGames";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { Modal, Row, Col, Button, Spinner } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import { toast } from "react-toastify";
@@ -25,23 +25,28 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
     const [formattedList, setFormattedList] = useState<{ cadastrados: IProdutoLoja[], naoCadastrados: IProdutoLoja[] }>({ cadastrados: [], naoCadastrados: [] });
     const [isModalImportVisible, setIsModalImportVisible] = useState(true);
     const [isModalRenameVisible, setIsModalRenameVisible] = useState(false);
+    const [isModalStatusBar, setIsModalStatusBar] = useState(false);
+    const [isModalTotalItens, setIsModalTotalItens] = useState(false);
     const [listToSave, setListToSave] = useState<IProdutoLoja[]>([]);
     const queryClient = useQueryClient();
     const [isLoading, setIsLoading] = useState(false);
     const [excelData, setExcelData] = useState<unknown[]>([]);
     const [isFileRenamed, setIsFileRenamed] = useState(false);
     const [isItensNotRegistered, setIsItensNotRegistered] = useState(false);
+    const [statusAtualizacao, setStatusAtualizacao] = useState(0);
 
 
     const defaultSettings = () => {
-
-        setIsModalImportVisible(true);
+      
+    
+        setIsModalTotalItens(false);
         setIsModalRenameVisible(false);
         setIsItensNotRegistered(false);
         setIsLoading(false);
         setIsFileRenamed(false);
         setFormattedList({ cadastrados: [], naoCadastrados: [] })
-
+        setStatusAtualizacao(0);
+        setIsModalImportVisible(true);
     }
 
 
@@ -53,20 +58,34 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
 
     const mutationAtualizaCadastrados = useMutation(() => {
         if (!lojaId) throw new Error("Loja Indefinido");
-        return ProdutoLojaController.importar(formattedList.cadastrados);
+        return atualizarProdutosEmBlocos(formattedList.cadastrados);
     }, {
         onSuccess: () => {
             onHide();
             setFormattedList({ cadastrados: [], naoCadastrados: [] })
             queryClient.invalidateQueries(["produtosloja"]);
+            toast.success("Valores dos produtos atualizados com sucesso!");
             defaultSettings();
         }
     });
 
 
+
+    async function atualizarProdutosEmBlocos(produtos: IProdutoLoja[]) {
+        const totalProdutos = produtos.length;
+        for (let i = 0; i < totalProdutos; i += 15) {
+            const blocos = produtos.slice(i, i + 15);
+            await ProdutoLojaController.importar(blocos);
+            setStatusAtualizacao(Math.min(i + 15, totalProdutos));
+        }
+    }
+
+
+
     const mutationCadastraNaoCadastrados = useMutation(() => {
         if (!lojaId) throw new Error("Loja Indefinido");
-        return ProdutoLojaController.importar(listToSave);
+
+        return ProdutoLojaController.cadastro(listToSave);
     }, {
         onSuccess: () => {
             onHide();
@@ -122,8 +141,6 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
 
                                 }
 
-
-
                             });
                         } else {
                             const workbook = XLSX.read(fileData, { type: "binary" });
@@ -137,7 +154,10 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
 
                         }
                     }
+                    setIsModalImportVisible(false);
+                    setIsModalTotalItens(true);
                     setIsLoading(false);
+
                 };
                 reader.readAsArrayBuffer(file);
             } else {
@@ -239,7 +259,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                         </Col>
                     )}
 
-                    {!isLoading && isModalImportVisible && formattedList.cadastrados.length > 0 && (
+                    {!isLoading && isModalTotalItens && (
                         <Col className="body text-center">
                             <ModalTableAtualizarProdutoLoja listProdutoLoja={formattedList} />
                         </Col>
@@ -279,7 +299,6 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                         </Col>
                     )}
 
-
                     {!isLoading && isItensNotRegistered && formattedList.naoCadastrados.length > 0 && (
                         <Col xs={12}>
                             <ModalTableImportarProdutoLoja
@@ -290,16 +309,22 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                     )}
 
 
+                    {atualizaCadastradosIsLoading && isModalStatusBar ? (
+                        <Col className="body text-center">
+                            Atualizando {statusAtualizacao} de {formattedList.cadastrados.length} produtos...
+                        </Col>
+                    ) : null}
+
+
                 </Row>
             </Modal.Body>
 
             <Modal.Footer>
-                <Button className="position" variant="secondary" onClick={() => 
-                { 
-                    onHide(); 
+                <Button className="position" variant="secondary" onClick={() => {
+                    onHide();
                     setFormattedList({ cadastrados: [], naoCadastrados: [] });
                     defaultSettings();
-                    }}>
+                }}>
                     Fechar
                 </Button>
 
@@ -309,6 +334,9 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                         className="position"
                         variant="secondary"
                         onClick={() => {
+                            setIsModalImportVisible(false);
+                            setIsModalTotalItens(false);
+                            setIsModalStatusBar(true);
                             mutationAtualizaCadastrados.mutate()
                         }}
                     >
@@ -359,12 +387,12 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
 
 
 
-                {isModalImportVisible &&formattedList.naoCadastrados.length > 0 && (
+                {isModalTotalItens && formattedList.naoCadastrados.length > 0 && (
                     <Button
                         variant="secondary"
                         onClick={() => {
                             setIsModalRenameVisible(true);
-                            setIsModalImportVisible(false);
+                            setIsModalTotalItens(false);
                         }}
                         disabled={atualizaCadastradosIsLoading}
                     >

@@ -12,7 +12,7 @@ export function filtrosVinculosIphone(produtoParaguay: IProdutoLoja, produtoML: 
 
     if (produtoML.modelo.trim().toUpperCase() === "IPHONE 14" && produtoML.memoriaRam.trim().toUpperCase()=== "4 GB") produtoML.memoriaRam = "6 GB";
     if (produtoML.modelo.trim().toUpperCase() === "IPHONE 14 PLUS" && produtoML.memoriaRam.trim().toUpperCase() === "4 GB") produtoML.memoriaRam = "6 GB";
-    if (produtoML.modelo.trim().toUpperCase() === "IPHONE 14 PLUS" && produtoML.mobileNetwork.trim().toUpperCase() === "4G") produtoML.memoriaRam = "5G";
+    if (produtoML.modelo.trim().toUpperCase() === "IPHONE 14 PLUS" && produtoML.mobileNetwork.trim().toUpperCase() === "4G") produtoML.mobileNetwork = "5G";
 
 
 

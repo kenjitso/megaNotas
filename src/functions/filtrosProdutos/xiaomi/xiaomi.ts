@@ -99,7 +99,8 @@ export const filtraXiaomi = (produtoLoja: IProdutoLoja): IProdutoLoja | null => 
                                                                                                                                                             /BLUE/i.test(produtoLoja.nome) ? "AZUL" :
                                                                                                                                                                 /YELLOW/i.test(produtoLoja.nome) ? "AMARELO" :
                                                                                                                                                                     /DOURADO/i.test(produtoLoja.nome) ? "DOURADO" :
-                                                                                                                                                                        null;
+                                                                                                                                                                        /ORANGE/i.test(produtoLoja.nome) ? "LARANJA" :
+                                                                                                                                                                            null;
 
     if (cor !== null) {
         produtoLoja.cor = cor;
@@ -122,7 +123,7 @@ export const filtraXiaomi = (produtoLoja: IProdutoLoja): IProdutoLoja | null => 
 
 
     if (origem) novoNome = novoNome.replace(/INDIA|GLOBAL|INDONESIA/gi, '');
-    if (cor) novoNome = novoNome.replace(/VERDE|AZUL|CINZA|PRETO|LITE GREEN|BRANCO|ONYX BLACK|BLACK|GLACIER BLUE|MINT GREEN|ICE BLUE|TWILIGHT BLUE|STAR BLUE|COSMIC PURPLE|ONYX GRAY|BRONZE|LIGHT BLUE|LAVANDER PURPLE|GRAPHITE GRAY|OCEAN BLUE|LAVENDER PURPLE|PRATA|PEPPY PURPLE|AMARELO|FOREST GREEN|PINK|ROSA|BLUE|GOLD|VERMELHO|GRAPHITE|YELLOW|MIDNIGHT|DOURADO/gi, '');
+    if (cor) novoNome = novoNome.replace(/VERDE|AZUL|CINZA|PRETO|LITE GREEN|BRANCO|ONYX BLACK|BLACK|GLACIER BLUE|MINT GREEN|ICE BLUE|TWILIGHT BLUE|STAR BLUE|COSMIC PURPLE|ONYX GRAY|BRONZE|LIGHT BLUE|LAVANDER PURPLE|GRAPHITE GRAY|OCEAN BLUE|LAVENDER PURPLE|PRATA|PEPPY PURPLE|ORANGE|AMARELO|FOREST GREEN|PINK|ROSA|BLUE|GOLD|VERMELHO|GRAPHITE|YELLOW|MIDNIGHT|DOURADO/gi, '');
     if (rede) novoNome = novoNome.replace(/\b4g\b|\b4G\b|\b5g\b|\b5G\b/gi, '');
     if (capacidade) novoNome = novoNome.replace(new RegExp(/\b32GB\b|\b64GB\b|\b128GB\b|\b256GB\b|\b512GB\b/gi, 'i'), '');
     if (ram) novoNome = novoNome.replace(new RegExp(/\b2GB RAM\b|\b3GB RAM\b|\b4GB RAM\b|\b6GB RAM\b|\b8GB RAM\b|\b12GB RAM\b|\b16GB RAM\b/gi, 'i'), '');
@@ -132,8 +133,11 @@ export const filtraXiaomi = (produtoLoja: IProdutoLoja): IProdutoLoja | null => 
 
 
     if (novoNome.trim().toUpperCase() === "REDMI 12") produtoLoja.rede = 5;
-    if (novoNome.trim().toUpperCase() ===  "REDMI 10A SPORT" && produtoLoja.cor.trim().toLocaleUpperCase() === "PRETO") produtoLoja.cor = "CINZA";
+    if (novoNome.trim().toUpperCase() === "REDMI 10A SPORT" && produtoLoja.cor.trim().toLocaleUpperCase() === "PRETO") produtoLoja.cor = "CINZA";
     if (novoNome.trim().toUpperCase() === "REDMI NOTE 12" && produtoLoja.cor.trim().toLocaleUpperCase() === "CINZA") produtoLoja.cor = "PRETO";
+
+
+    if (novoNome.trim().toUpperCase() === "REDMI 9C" && produtoLoja.cor.trim().toLocaleUpperCase() === "PRETO") produtoLoja.cor = "CINZA";
     if (novoNome.trim().toUpperCase() === "REDMI 12C") produtoLoja.rede = 4;
 
     produtoLoja.nome = novoNome;

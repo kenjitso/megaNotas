@@ -116,7 +116,7 @@ export function PageProdutoLoja() {
     return (
         <React.Fragment>
 
-            <ModalAtualizarProdutoLoja onHide={() => setImportProdutoLoja(undefined)} lojaId={importProdutoLoja} produtoParaguay={produtosLoja.allItems} />
+            <ModalAtualizarProdutoLoja onHide={() => setImportProdutoLoja(undefined)} lojaId={importProdutoLoja} produtoParaguay={data} />
             <ModalImportarProdutoLoja onHide={() => setCadastroProdutoLoja(undefined)} lojaId={cadastroProdutoLoja} produtoParaguay={produtosLoja.allItems} />
             <ModalSyncVinculos onHide={() => setSyncVinculos(undefined)} produtoParaguay={modalSyncVinculos} />
             <ModalVinculo onHide={() => setVinculoProduto(undefined)} produtoParaguay={modalVinculoProduto} />
