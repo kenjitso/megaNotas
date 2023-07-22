@@ -1,8 +1,8 @@
 import { LojaController } from "@/datatypes/loja";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
-import { AtacadoGamesFormat, updateNaoCadastrados } from "@/functions/lojas/atacadoGames";
+import { AtacadoGamesFormat, updateFiltro } from "@/functions/lojas/atacadoGames";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { Modal, Row, Col, Button, Spinner } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import { toast } from "react-toastify";
@@ -22,7 +22,7 @@ interface IProps {
 
 export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: IProps) {
 
-    const [formattedList, setFormattedList] = useState<{ cadastrados: IProdutoLoja[], naoCadastrados: IProdutoLoja[] }>({ cadastrados: [], naoCadastrados: [] });
+    const [formattedList, setFormattedList] = useState<{ cadastrados: IProdutoLoja[], naoCadastrados: IProdutoLoja[], naoEncontrados: IProdutoLoja[] }>({ cadastrados: [], naoCadastrados: [], naoEncontrados: [] });
     const [isModalImportVisible, setIsModalImportVisible] = useState(true);
     const [isModalRenameVisible, setIsModalRenameVisible] = useState(false);
     const [isModalStatusBar, setIsModalStatusBar] = useState(false);
@@ -37,14 +37,14 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
 
 
     const defaultSettings = () => {
-      
-    
+
+
         setIsModalTotalItens(false);
         setIsModalRenameVisible(false);
         setIsItensNotRegistered(false);
         setIsLoading(false);
         setIsFileRenamed(false);
-        setFormattedList({ cadastrados: [], naoCadastrados: [] })
+        setFormattedList({ cadastrados: [], naoCadastrados: [], naoEncontrados: [] })
         setStatusAtualizacao(0);
         setIsModalImportVisible(true);
     }
@@ -56,16 +56,15 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
         return data;
     }, { enabled: !!lojaId && typeof onHide === 'function' }); // habilita a consulta somente quando lojaId estiver definido e onHide for uma função });
 
-    const mutationAtualizaCadastrados = useMutation(() => {
+    const mutationAtualizaCadastrados = useMutation((produtos: IProdutoLoja[]) => {
         if (!lojaId) throw new Error("Loja Indefinido");
-        return atualizarProdutosEmBlocos(formattedList.cadastrados);
+        return atualizarProdutosEmBlocos(produtos);
     }, {
         onSuccess: () => {
-            onHide();
-            setFormattedList({ cadastrados: [], naoCadastrados: [] })
+            setIsModalTotalItens(true);
             queryClient.invalidateQueries(["produtosloja"]);
             toast.success("Valores dos produtos atualizados com sucesso!");
-            defaultSettings();
+
         }
     });
 
@@ -78,6 +77,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
             await ProdutoLojaController.importar(blocos);
             setStatusAtualizacao(Math.min(i + 15, totalProdutos));
         }
+
     }
 
 
@@ -89,7 +89,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
     }, {
         onSuccess: () => {
             onHide();
-            setFormattedList({ cadastrados: [], naoCadastrados: [] })
+            setFormattedList({ cadastrados: [], naoCadastrados: [], naoEncontrados: [] })
             queryClient.invalidateQueries(["produtosloja"]);
             defaultSettings();
         }
@@ -134,14 +134,20 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                                     allPagesText.push(...dataList);
                                 }
 
-
                                 if (data?.algoritmo === 1) {
-                                    setFormattedList(AtacadoGamesFormat(lojaId ?? "", allPagesText, [], produtoParaguay));
 
+                                    setFormattedList(AtacadoGamesFormat(lojaId ?? "", allPagesText, [], produtoParaguay));
+                                    mutationAtualizaCadastrados.mutate(AtacadoGamesFormat(lojaId ?? "", allPagesText, [], produtoParaguay).cadastrados);
+
+
+                                    setIsModalImportVisible(false);
+                                    setIsLoading(false);
+                                    setIsModalStatusBar(true);
 
                                 }
-
                             });
+
+
                         } else {
                             const workbook = XLSX.read(fileData, { type: "binary" });
                             const sheetName = workbook.SheetNames[0];
@@ -154,9 +160,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
 
                         }
                     }
-                    setIsModalImportVisible(false);
-                    setIsModalTotalItens(true);
-                    setIsLoading(false);
+
 
                 };
                 reader.readAsArrayBuffer(file);
@@ -166,6 +170,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
             }
         });
     }, [onHide, data]);
+
 
     const { getRootProps: getRootPropsImport, getInputProps: getInputPropsImport } = useDropzone({ onDrop: onDropImport });
 
@@ -183,11 +188,13 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                     const data = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
                     // Aqui você chama a função updateNaoCadastrados
-                    const updatedNaoCadastrados = updateNaoCadastrados(data, formattedList.naoCadastrados);
+                    const { updatedNaoCadastrados, updatedNaoEncontrados } = updateFiltro(data, formattedList.naoCadastrados, formattedList.naoEncontrados);
+
 
                     setFormattedList(prevState => ({
                         ...prevState,
                         naoCadastrados: updatedNaoCadastrados,
+                        naoEncontrados: updatedNaoEncontrados
                     }));
 
                     setExcelData(data); // Atualizando o estado com os dados do Excel
@@ -322,39 +329,14 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
             <Modal.Footer>
                 <Button className="position" variant="secondary" onClick={() => {
                     onHide();
-                    setFormattedList({ cadastrados: [], naoCadastrados: [] });
+                    setFormattedList({ cadastrados: [], naoCadastrados: [], naoEncontrados: [] });
                     defaultSettings();
                 }}>
                     Fechar
                 </Button>
 
 
-                {formattedList.cadastrados.length > 0 && isModalRenameVisible === false && isItensNotRegistered === false && (
-                    <Button
-                        className="position"
-                        variant="secondary"
-                        onClick={() => {
-                            setIsModalImportVisible(false);
-                            setIsModalTotalItens(false);
-                            setIsModalStatusBar(true);
-                            mutationAtualizaCadastrados.mutate()
-                        }}
-                    >
-                        {atualizaCadastradosIsLoading ? (
-                            <>
-                                <Spinner
-                                    as="span"
-                                    animation="border"
-                                    size="sm"
-                                    role="status"
-                                    aria-hidden="true"
-                                    style={{ marginRight: "5px" }}
-                                />
-                                Carregando...
-                            </>
-                        ) : "Atualizar Valores"}
-                    </Button>
-                )}
+
 
 
 

@@ -21,17 +21,18 @@ export function ModalTableAtualizarProdutoLoja({ listProdutoLoja }: IProps) {
             <Table bordered hover>
                 <thead>
                     <tr>
-                        <th>Arquivo carregado com sucesso</th>
+                        <th>Valores atualizado com sucesso!</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>
-                            <strong>Total de itens a serem atualizados:</strong>{" "}
+                            <strong>Total de itens atualizados com sucesso:</strong>{" "}
                             {listProdutoLoja?.cadastrados.length || 0}
-                        <br/>
+                            <br />
                             <strong>Total de itens a serem cadastrados:</strong>{" "}
                             {listProdutoLoja?.naoCadastrados.length || 0}
+                            <br />
                         </td>
                     </tr>
                 </tbody>

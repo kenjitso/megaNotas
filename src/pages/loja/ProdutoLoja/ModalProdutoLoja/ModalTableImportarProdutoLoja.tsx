@@ -9,6 +9,7 @@ interface IProps {
     listProdutoLoja?: {
         cadastrados: IProdutoLoja[];
         naoCadastrados: IProdutoLoja[];
+        naoEncontrados: IProdutoLoja[];
     } | null;
     onListProdutoLoja: (selectedItems: IProdutoLoja[]) => void;
 }
@@ -19,8 +20,9 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, onListProdutoLo
     const [filtro, setFiltro] = useState("");
     const [lastCheckedIndex, setLastCheckedIndex] = useState<number | null>(null);
     const [checkboxFilter, setCheckboxFilter] = useState(false);
+    const [checkboxFilterNaoEncontrados, setCheckboxFilterNaoEncontrados] = useState(false);
 
-    const handleCheckboxFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleCheckboxFilterChangeCelular = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCheckboxFilter(event.target.checked);
 
         if (event.target.checked) {
@@ -37,11 +39,22 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, onListProdutoLo
         }
     };
 
-    const filteredProdutoLoja = listProdutoLoja?.naoCadastrados.filter(produtoLoja =>
-        produtoLoja.nome.toLowerCase().includes(filtro.toLowerCase()) &&
-        (!checkboxFilter || produtoLoja.nome.toLowerCase().includes('celular')) // Ajuste esta condição para a sua necessidade real.
-    );
+    const handleCheckboxFilterChangeNaoEncontrados = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCheckboxFilterNaoEncontrados(event.target.checked);
+    };
 
+    let filteredProdutos: IProdutoLoja[] = [];
+
+    if (checkboxFilterNaoEncontrados) {
+        filteredProdutos = (listProdutoLoja?.naoEncontrados || []).filter(produtoLoja =>
+            (!checkboxFilter || produtoLoja.nome.toLowerCase().includes('celular'))
+        );
+    } else {
+        filteredProdutos = (listProdutoLoja?.naoCadastrados || []).filter(produtoLoja =>
+            produtoLoja.nome.toLowerCase().includes(filtro.toLowerCase()) &&
+            (!checkboxFilter || produtoLoja.nome.toLowerCase().includes('celular'))
+        );
+    }
 
     const handleCheckboxChange = (
         produtoLoja: IProdutoLoja,
@@ -53,7 +66,7 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, onListProdutoLo
         if (event.shiftKey && lastCheckedIndex !== null) {
             const start = Math.min(lastCheckedIndex, index);
             const end = Math.max(lastCheckedIndex, index);
-            const itemsToSelect = filteredProdutoLoja?.slice(start, end + 1);
+            const itemsToSelect = filteredProdutos.slice(start, end + 1);
 
             if (itemsToSelect) {
                 const isSelecting = !selectedProdutoLoja.has(produtoLoja);
@@ -81,7 +94,6 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, onListProdutoLo
 
 
 
-
     return (
         <React.Fragment>
 
@@ -91,11 +103,19 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, onListProdutoLo
                         label="Celular"
                         id="checkbox-celular"
                         checked={checkboxFilter}
-                        onChange={handleCheckboxFilterChange}
+                        onChange={handleCheckboxFilterChangeCelular}
                         className="mr-2"
                     />
                 </Col>
-
+                <Col className="mx-3" >
+                    <Form.Check
+                        label="Não encontrados"
+                        id="checkbox-nao-encontrados"
+                        checked={checkboxFilterNaoEncontrados}
+                        onChange={handleCheckboxFilterChangeNaoEncontrados}
+                        className="mr-2"
+                    />
+                </Col>
             </Row>
 
 
@@ -114,6 +134,12 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, onListProdutoLo
                 <Col></Col>
                 <Col xs="auto">
                     <span className="selected-items">{selectedProdutoLoja.size}: Item selecionado's</span>
+                </Col>
+                <Col xs="auto">
+                    <span className="selected-items">{listProdutoLoja?.naoCadastrados.length}: Item não Cadastrado's</span>
+                </Col>
+                <Col xs="auto">
+                    <span className="selected-items">{listProdutoLoja?.naoEncontrados.length}: Item não Encontrado's</span>
                 </Col>
             </Row>
 
@@ -147,8 +173,8 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, onListProdutoLo
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredProdutoLoja?.map((produtoLoja, index) => (
-                            <tr key={index} >
+                    {filteredProdutos.map((produtoLoja, index) => (
+                        <tr key={index} >
                                 <td style={{ textAlign: 'left' }}>
                                     {produtoLoja.codigo}
                                 </td>
@@ -170,6 +196,8 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, onListProdutoLo
                             </tr>
                         ))
                         }
+
+                  
                     </tbody>
                 </Table>
             </div>

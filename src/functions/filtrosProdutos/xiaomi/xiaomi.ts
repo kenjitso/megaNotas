@@ -22,6 +22,7 @@ export const filtraXiaomi = (produtoLoja: IProdutoLoja): IProdutoLoja | null => 
                                 /6GB RAM/i.test(produtoLoja.nome) ? 6 :
                                     /6RAM/i.test(produtoLoja.nome) ? 6 :
                                         /4GB RAM/i.test(produtoLoja.nome) ? 4 :
+                                        / 4GB/i.test(produtoLoja.nome) ? 4:
                                             /4RAM/i.test(produtoLoja.nome) ? 4 :
                                                 /3GB RAM/i.test(produtoLoja.nome) ? 3 :
                                                     /3RAM/i.test(produtoLoja.nome) ? 3 :
@@ -75,32 +76,33 @@ export const filtraXiaomi = (produtoLoja: IProdutoLoja): IProdutoLoja | null => 
                                                             /BLACK/i.test(produtoLoja.nome) ? "PRETO" :
                                                                 /ONYX GRAY/i.test(produtoLoja.nome) ? "PRETO" :
                                                                     /GRAPHITE GRAY/i.test(produtoLoja.nome) ? "PRETO" :
-                                                                        /GRAPHITE/i.test(produtoLoja.nome) ? "PRETO" :
-                                                                            /ONYX BLACK/i.test(produtoLoja.nome) ? "PRETO" :
-                                                                                /MIDNIGHT/i.test(produtoLoja.nome) ? "PRETO" :
-                                                                                    /BRANCO/i.test(produtoLoja.nome) ? "BRANCO" :
-                                                                                        /ROXO/i.test(produtoLoja.nome) ? "ROXO" :
-                                                                                            /COSMIC PURPLE/i.test(produtoLoja.nome) ? "ROXO" :
-                                                                                                /LAVANDER PURPLE/i.test(produtoLoja.nome) ? "ROXO" :
-                                                                                                    /LAVENDER PURPLE/i.test(produtoLoja.nome) ? "ROXO" :
-                                                                                                        /PEPPY PURPLE/i.test(produtoLoja.nome) ? "ROXO" :
-                                                                                                            /BRONZE/i.test(produtoLoja.nome) ? "BRONZE" :
-                                                                                                                /PRATA/i.test(produtoLoja.nome) ? "PRATA" :
-                                                                                                                    /AMARELO/i.test(produtoLoja.nome) ? "AMARELO" :
-                                                                                                                        /FOREST GREEN/i.test(produtoLoja.nome) ? "VERDE" :
-                                                                                                                            /GREEN/i.test(produtoLoja.nome) ? "VERDE" :
-                                                                                                                                /PINK/i.test(produtoLoja.nome) ? "ROSA" :
-                                                                                                                                    /ROSA/i.test(produtoLoja.nome) ? "ROSA" :
-                                                                                                                                        /VERMELHO/i.test(produtoLoja.nome) ? "VERMELHO" :
-                                                                                                                                            /ESTELAR/i.test(produtoLoja.nome) ? "BRANCO" :
-                                                                                                                                                /STARLIGHT/i.test(produtoLoja.nome) ? "BRANCO" :
-                                                                                                                                                    /GOLD/i.test(produtoLoja.nome) ? "GOLD" :
-                                                                                                                                                        /PURPLE/i.test(produtoLoja.nome) ? "ROXO" :
-                                                                                                                                                            /BLUE/i.test(produtoLoja.nome) ? "AZUL" :
-                                                                                                                                                                /YELLOW/i.test(produtoLoja.nome) ? "AMARELO" :
-                                                                                                                                                                    /DOURADO/i.test(produtoLoja.nome) ? "DOURADO" :
-                                                                                                                                                                        /ORANGE/i.test(produtoLoja.nome) ? "LARANJA" :
-                                                                                                                                                                            null;
+                                                                        /GRANITE GREY/i.test(produtoLoja.nome) ? "CINZA" :
+                                                                            /GRAPHITE/i.test(produtoLoja.nome) ? "PRETO" :
+                                                                                /ONYX BLACK/i.test(produtoLoja.nome) ? "PRETO" :
+                                                                                    /MIDNIGHT/i.test(produtoLoja.nome) ? "PRETO" :
+                                                                                        /BRANCO/i.test(produtoLoja.nome) ? "BRANCO" :
+                                                                                            /ROXO/i.test(produtoLoja.nome) ? "ROXO" :
+                                                                                                /COSMIC PURPLE/i.test(produtoLoja.nome) ? "ROXO" :
+                                                                                                    /LAVANDER PURPLE/i.test(produtoLoja.nome) ? "ROXO" :
+                                                                                                        /LAVENDER PURPLE/i.test(produtoLoja.nome) ? "ROXO" :
+                                                                                                            /PEPPY PURPLE/i.test(produtoLoja.nome) ? "ROXO" :
+                                                                                                                /BRONZE/i.test(produtoLoja.nome) ? "BRONZE" :
+                                                                                                                    /PRATA/i.test(produtoLoja.nome) ? "PRATA" :
+                                                                                                                        /AMARELO/i.test(produtoLoja.nome) ? "AMARELO" :
+                                                                                                                            /FOREST GREEN/i.test(produtoLoja.nome) ? "VERDE" :
+                                                                                                                                /GREEN/i.test(produtoLoja.nome) ? "VERDE" :
+                                                                                                                                    /PINK/i.test(produtoLoja.nome) ? "ROSA" :
+                                                                                                                                        /ROSA/i.test(produtoLoja.nome) ? "ROSA" :
+                                                                                                                                            /VERMELHO/i.test(produtoLoja.nome) ? "VERMELHO" :
+                                                                                                                                                /ESTELAR/i.test(produtoLoja.nome) ? "BRANCO" :
+                                                                                                                                                    /STARLIGHT/i.test(produtoLoja.nome) ? "BRANCO" :
+                                                                                                                                                        /GOLD/i.test(produtoLoja.nome) ? "GOLD" :
+                                                                                                                                                            /PURPLE/i.test(produtoLoja.nome) ? "ROXO" :
+                                                                                                                                                                /BLUE/i.test(produtoLoja.nome) ? "AZUL" :
+                                                                                                                                                                    /YELLOW/i.test(produtoLoja.nome) ? "AMARELO" :
+                                                                                                                                                                        /DOURADO/i.test(produtoLoja.nome) ? "DOURADO" :
+                                                                                                                                                                            /ORANGE/i.test(produtoLoja.nome) ? "LARANJA" :
+                                                                                                                                                                                null;
 
     if (cor !== null) {
         produtoLoja.cor = cor;
@@ -123,7 +125,7 @@ export const filtraXiaomi = (produtoLoja: IProdutoLoja): IProdutoLoja | null => 
 
 
     if (origem) novoNome = novoNome.replace(/INDIA|GLOBAL|INDONESIA/gi, '');
-    if (cor) novoNome = novoNome.replace(/VERDE|AZUL|CINZA|PRETO|LITE GREEN|BRANCO|ONYX BLACK|BLACK|GLACIER BLUE|MINT GREEN|ICE BLUE|TWILIGHT BLUE|STAR BLUE|COSMIC PURPLE|ONYX GRAY|BRONZE|LIGHT BLUE|LAVANDER PURPLE|GRAPHITE GRAY|OCEAN BLUE|LAVENDER PURPLE|PRATA|PEPPY PURPLE|ORANGE|AMARELO|FOREST GREEN|PINK|ROSA|BLUE|GOLD|VERMELHO|GRAPHITE|YELLOW|MIDNIGHT|DOURADO/gi, '');
+    if (cor) novoNome = novoNome.replace(/VERDE|AZUL|CINZA|PRETO|LITE GREEN|BRANCO|ONYX BLACK|BLACK|GLACIER BLUE|MINT GREEN|ICE BLUE|GRANITE GREY|TWILIGHT BLUE|STAR BLUE|COSMIC PURPLE|ONYX GRAY|BRONZE|LIGHT BLUE|LAVANDER PURPLE|GRAPHITE GRAY|OCEAN BLUE|LAVENDER PURPLE|PRATA|PEPPY PURPLE|ORANGE|AMARELO|FOREST GREEN|PINK|ROSA|BLUE|GOLD|VERMELHO|GRAPHITE|YELLOW|MIDNIGHT|DOURADO/gi, '');
     if (rede) novoNome = novoNome.replace(/\b4g\b|\b4G\b|\b5g\b|\b5G\b/gi, '');
     if (capacidade) novoNome = novoNome.replace(new RegExp(/\b32GB\b|\b64GB\b|\b128GB\b|\b256GB\b|\b512GB\b/gi, 'i'), '');
     if (ram) novoNome = novoNome.replace(new RegExp(/\b2GB RAM\b|\b3GB RAM\b|\b4GB RAM\b|\b6GB RAM\b|\b8GB RAM\b|\b12GB RAM\b|\b16GB RAM\b/gi, 'i'), '');
@@ -131,12 +133,14 @@ export const filtraXiaomi = (produtoLoja: IProdutoLoja): IProdutoLoja | null => 
     novoNome = novoNome.replace(/CELULAR|DUAL SIM|CEL/gi, '').replace(/\s+/g, ' ').trimStart();
 
 
-
     if (novoNome.trim().toUpperCase() === "REDMI 12") produtoLoja.rede = 5;
     if (novoNome.trim().toUpperCase() === "REDMI 10A SPORT" && produtoLoja.cor.trim().toLocaleUpperCase() === "PRETO") produtoLoja.cor = "CINZA";
     if (novoNome.trim().toUpperCase() === "REDMI NOTE 12" && produtoLoja.cor.trim().toLocaleUpperCase() === "CINZA") produtoLoja.cor = "PRETO";
 
+    if (novoNome.trim().toUpperCase() === "REDMI NOTE 11 PRO+" && produtoLoja.cor.trim().toLocaleUpperCase() === "CINZA") produtoLoja.cor = "PRETO";
 
+
+    if (novoNome.trim().toUpperCase() === "REDMI 10C" && produtoLoja.cor.trim().toLocaleUpperCase() === "PRETO") produtoLoja.cor = "CINZA";
     if (novoNome.trim().toUpperCase() === "REDMI 9C" && produtoLoja.cor.trim().toLocaleUpperCase() === "PRETO") produtoLoja.cor = "CINZA";
     if (novoNome.trim().toUpperCase() === "REDMI 12C") produtoLoja.rede = 4;
 

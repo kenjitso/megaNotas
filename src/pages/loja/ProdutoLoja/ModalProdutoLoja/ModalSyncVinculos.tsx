@@ -5,7 +5,7 @@ import { CatalogoController, ICatalogo } from "@/datatypes/catalogo";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
 import { filtrosVinculosXiaomi } from "@/functions/filtrosProdutos/xiaomi/filtrosVinculosXiaomi";
 import { filtrosVinculosIphone } from "@/functions/filtrosProdutos/apple/filtrosVinculosIphone";
-
+import { toast } from "react-toastify";
 
 interface IProps {
     produtoParaguay?: IProdutoLoja[];
@@ -101,6 +101,13 @@ export function ModalSyncVinculos({ onHide, produtoParaguay }: IProps) {
             queryClient.invalidateQueries(["produtosloja"]);
             queryClient.invalidateQueries(["catalogos"]);
             queryClient.invalidateQueries(["lojamanual"]);
+            toast.success(`Produto vinculado com sucesso!`);
+        },
+        onError: (error) => {
+            toast.error(`Não foi possivel vincular!`);
+        },
+        onSettled:()=>{
+            nextProduct();
         }
     });
 
@@ -116,7 +123,12 @@ export function ModalSyncVinculos({ onHide, produtoParaguay }: IProps) {
     }, [produtoParaguay, refetch]);
 
 
-
+    const previousProduct = useCallback(() => {
+        if (currentIndex > 0) {
+            setCurrentIndex(currentIndex - 1);
+        }
+    }, [currentIndex, setCurrentIndex]);
+    
 
     const nextProduct = useCallback(() => {
         if (produtoParaguay && currentIndex < produtoParaguay.length - 1) {
@@ -271,6 +283,7 @@ export function ModalSyncVinculos({ onHide, produtoParaguay }: IProps) {
 
             </Modal.Body>
             <Modal.Footer>
+            <Button onClick={previousProduct}>Anterior</Button>
                 <Button onClick={nextProduct}>Próximo</Button>
                 {data && data.mostSimilarProduct && (
                     <Button
@@ -330,6 +343,8 @@ async function otherSerachs(produto: IProdutoLoja) {
     if (produto.nome.trim().toUpperCase() === "REDMI NOTE 10 LITE") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi note 10 lite Dual SIM");
     if (produto.nome.trim().toUpperCase() === "REDMI NOTE 10 PRO") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi Note 10 Pro");
     if (produto.nome.trim().toUpperCase() === "REDMI NOTE 11 PRO+" && produto.cor.toUpperCase() === "VERDE") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi Note 11 Pro+ 5G (MediaTek) Dual SIM 256 GB verde 8 GB RAM");
+    if (produto.nome.trim().toUpperCase() === "REDMI NOTE 11 PRO+" && produto.cor.toUpperCase() === "PRETO") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi Note 11 Pro+ 5G (MediaTek) Dual SIM 256 GB preto 8 GB RAM");
+   
     if (produto.nome.trim().toUpperCase() === "REDMI NOTE 11S" && produto.rede === 5) catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi Note 11S 5G Dual SIM");
     if (produto.nome.trim().toUpperCase() === "REDMI NOTE 11S" && produto.rede === 4) catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi Note 11S Dual SIM");
     if (produto.nome.trim().toUpperCase() === "REDMI NOTE 12" && produto.rede === 5) catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi Note 12 5G Dual SIM");
@@ -337,6 +352,7 @@ async function otherSerachs(produto: IProdutoLoja) {
     if (produto.nome.trim().toUpperCase() === "POCO C40") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Pocophone Poco C40 Dual SIM");
     if (produto.nome.trim().toUpperCase() === "REDMI A1") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi A1 2022 Dual SIM " + produto.capacidade + " GB" + produto.ram + " GB");
     if (produto.nome.trim().toUpperCase() === "REDMI NOTE 12 PRO") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi Note 12 Pro 5G Dual SIM "+produto.capacidade+"GB "+produto.ram+"GB ");
+    if (produto.nome.trim().toUpperCase() === "POCO F3") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Poco F3 5G Dual SIM "+produto.capacidade+"GB "+produto.ram+"GB ");
 
     if (produto.nome.trim().toUpperCase() === "REDMI NOTE 12 PRO PLUS" && produto.rede === 5 && produto.capacidade === 256 && produto.cor === "AZUL") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi Note 12 Pro+ 5G Dual SIM 256 GB iceberg blue 8 GB RAM");
 

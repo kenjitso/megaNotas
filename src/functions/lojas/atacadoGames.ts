@@ -7,7 +7,7 @@ export function AtacadoGamesFormat(
     pdfArray: string[],
     excelArray?: unknown[],
     produtoParaguay?: IProdutoLoja[]
-): { cadastrados: IProdutoLoja[], naoCadastrados: IProdutoLoja[] } {
+): { cadastrados: IProdutoLoja[], naoCadastrados: IProdutoLoja[], naoEncontrados: IProdutoLoja[] } {
 
     try {
         let extractedItems = processPdfArray(excelArray ?? [], pdfArray);
@@ -40,19 +40,22 @@ export function AtacadoGamesFormat(
 
         let cadastrados: IProdutoLoja[] = [];
         let naoCadastrados: IProdutoLoja[] = [];
+        let naoEncontrados: IProdutoLoja[] = [];
 
         if (produtoParaguay) {
             const produtoParaguayCodigos = new Set(produtoParaguay.map(item => item.codigo.trim()));
 
             cadastrados = itensFormatados.filter(item => produtoParaguayCodigos.has(item.codigo.trim()));
             naoCadastrados = itensFormatados.filter(item => !produtoParaguayCodigos.has(item.codigo.trim()));
+            naoEncontrados = naoCadastrados.filter(item => !produtoParaguayCodigos.has(item.codigo));
+
         }
 
-        return { cadastrados, naoCadastrados };
+        return { cadastrados, naoCadastrados, naoEncontrados };
 
     } catch (error) {
         toast.error("Entre em contato com o desenvolvedor, parece que a estrutura fornecida pela loja mudou.");
-        return { cadastrados: [], naoCadastrados: [] };
+        return { cadastrados: [], naoCadastrados: [], naoEncontrados:[] };
     }
 }
 
@@ -116,11 +119,11 @@ function processPdfArray(
 
 
 
-
-export function updateNaoCadastrados(
+export function updateFiltro(
     excelArray: unknown[],
-    naoCadastrados: IProdutoLoja[]
-): IProdutoLoja[] {
+    naoCadastrados: IProdutoLoja[],
+    naoEncontrados: IProdutoLoja[]
+): { updatedNaoCadastrados: IProdutoLoja[], updatedNaoEncontrados: IProdutoLoja[] } {
     // Ignorar o cabeçalho (primeira linha do excelArray)
     const dataRows = excelArray.slice(1);
 
@@ -135,6 +138,8 @@ export function updateNaoCadastrados(
         }
     });
 
+    const updatedNaoEncontrados: IProdutoLoja[] = [];
+
     // Atualiza o array 'naoCadastrados'
     const updatedNaoCadastrados = naoCadastrados.reduce((accumulator, product) => {
         // Se o código existir em excelDataMap, substitua o nome e adicione ao acumulador
@@ -143,9 +148,11 @@ export function updateNaoCadastrados(
                 ...product,
                 nome: excelDataMap[product.codigo],
             });
+        } else {
+            updatedNaoEncontrados.push(product);
         }
         return accumulator;
     }, [] as IProdutoLoja[]);
 
-    return updatedNaoCadastrados;
+    return { updatedNaoCadastrados, updatedNaoEncontrados };
 }

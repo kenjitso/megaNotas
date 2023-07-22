@@ -8,7 +8,6 @@ import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import { formatCurrency } from "@/features/FormatCurrency";
 import { PaginationComponent } from "@/components/pagination/PaginationComponent";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
-import { ModalImportarProdutoLoja } from "./ModalProdutoLoja/ModalImportarProdutoLoja";
 import { ModalSyncVinculos } from "./ModalProdutoLoja/ModalSyncVinculos";
 import { ModalAtualizarProdutoLoja } from "./ModalProdutoLoja/ModalAtualizarProdutoLoja";
 import { ModalVinculo } from "./ModalProdutoLoja/ModalVinculoCopy";
@@ -117,7 +116,6 @@ export function PageProdutoLoja() {
         <React.Fragment>
 
             <ModalAtualizarProdutoLoja onHide={() => setImportProdutoLoja(undefined)} lojaId={importProdutoLoja} produtoParaguay={data} />
-            <ModalImportarProdutoLoja onHide={() => setCadastroProdutoLoja(undefined)} lojaId={cadastroProdutoLoja} produtoParaguay={produtosLoja.allItems} />
             <ModalSyncVinculos onHide={() => setSyncVinculos(undefined)} produtoParaguay={modalSyncVinculos} />
             <ModalVinculo onHide={() => setVinculoProduto(undefined)} produtoParaguay={modalVinculoProduto} />
 
