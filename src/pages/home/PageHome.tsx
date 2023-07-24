@@ -1,18 +1,17 @@
 import { PaginationComponent } from "@/components/pagination/PaginationComponent";
 import { CatalogoController, ICatalogo, } from "@/datatypes/catalogo";
-import React, { useMemo, useState } from "react";
-import { Accordion, Card, Col, Dropdown, FloatingLabel, ListGroup, OverlayTrigger, Row, Table, Tooltip, } from "react-bootstrap";
-import ratata from "../../assets/megaPreco.svg";
+import React, { useEffect, useMemo, useState } from "react";
+import { Col, Dropdown, FloatingLabel, OverlayTrigger, Row, Table, Tooltip, } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
-import { formatCurrency } from "@/features/FormatCurrency";
 import { FreteiroStore } from "@/context/FreteiroStore";
 import { ILoja } from "@/datatypes/loja";
 import { Icons } from "@/components/icons/icons";
 import * as XLSX from 'xlsx';
 import { useQuery } from "@tanstack/react-query";
 import { compareValues, useSort } from "@/components/utils/FilterArrows";
+import { ItemTable } from "./TablePageHome";
 
 
 
@@ -24,18 +23,25 @@ export function PageHome() {
     const page = parseInt(params.get("page") ?? "1");
     const limit = parseInt(params.get("limit") ?? "20");
     const { sortOrder, sortBy, handleSort } = useSort<ICatalogo>('nome');
+    const [globalFilter, setGlobalFilter] = useState(false);
+    const [indiaFilter, setIndiaFilter] = useState(false);
 
-    const { isFetching, data } = useQuery(["catalogoshome", filtro], () => {
-        let catalogo = CatalogoController.searchCompetidor(filtro);
 
+
+    const { isFetching, data } = useQuery(["catalogoshome", filtro], async () => {
+        let catalogo = await CatalogoController.searchCompetidor(filtro);
         return catalogo;
     });
 
 
+
+
+
+
     const catalogos = useMemo(() => {
 
-        const dados = data?.map(catalogo => {
-        
+        let dados = data?.map(catalogo => {
+
             for (const competidor of catalogo.competidores) {
                 const frete = freteiro ? competidor.produto.preco * competidor.loja.cotacao * freteiro.percentual / 100 + freteiro.fixo : 0;
                 competidor.frete = frete;
@@ -52,6 +58,9 @@ export function PageHome() {
                 precoC = Math.min(competidor.preco, precoC);
             }
 
+
+
+
             catalogo.precoC = precoC !== Number.MAX_SAFE_INTEGER ? precoC : 0;
             catalogo.precoP = precoP !== Number.MAX_SAFE_INTEGER ? precoP : 0;
 
@@ -65,8 +74,6 @@ export function PageHome() {
                 catalogo.lucroP = (catalogo.precoP !== 0) ? (catalogo.precoP - (catalogo.precoP * 0.16) - catalogo.frete - catalogo.custoTotal) : 0;
                 catalogo.margemC = (catalogo.precoC !== 0) ? (catalogo.lucroC / catalogo.precoC) * 100 : 0;
                 catalogo.margemP = (catalogo.precoP !== 0) ? (catalogo.lucroP / catalogo.precoP) * 100 : 0;
-
-
             }
 
             return catalogo;
@@ -74,14 +81,31 @@ export function PageHome() {
         }) ?? []
 
 
+
+        if (indiaFilter) {
+            dados = dados.filter(catalogo =>
+                catalogo.competidores.every(competidor => 
+                    competidor.produto.nome.toUpperCase().replace(/[^a-zA-Z0-9 ]/g, '').split(' ').includes("INDIA"))
+            );
+        }
+        if (globalFilter) {
+            dados = dados.filter(catalogo =>
+                catalogo.competidores.every(competidor =>
+                    competidor.produto.nome.toUpperCase().replace(/[^a-zA-Z0-9 ]/g, '').split(' ').includes("GLOBAL"))
+            );
+        }
+    
+
+
         const sortedData = [...dados].sort(compareValues(sortBy, sortOrder));
+
 
         const total = sortedData.length;
         const items = sortedData.slice((page - 1) * limit, limit * page);
         return {
             page, total, limit, items
         }
-    }, [data, freteiro, page, limit, sortBy, sortOrder])
+    }, [data, freteiro, page, limit, sortBy, sortOrder, indiaFilter, globalFilter])
 
     function exportCatalogoExcel(catalogos: ICatalogo[]) {
         const filteredCatalogos = catalogos.map(({
@@ -104,15 +128,16 @@ export function PageHome() {
         XLSX.writeFile(wb, "catalogo.xlsx");
     }
 
-
     const handlePageChange = (page: number, newLimit?: number) => {
         const limitToUse = newLimit || limit;
         setParams(`?limit=${limitToUse}&page=${page}`);
     };
 
-
-
-
+    function handleCheckboxChange(e: React.ChangeEvent<HTMLInputElement>, checkboxSetter: React.Dispatch<React.SetStateAction<boolean>>) {
+        checkboxSetter(e.target.checked);
+        setParams(`?limit=${limit}&page=1`);
+    }
+    
 
     return (
         <React.Fragment>
@@ -129,8 +154,15 @@ export function PageHome() {
                         />
 
                     </FloatingLabel>
+                    <div className="mx-2">
+                        <input type="checkbox" id="globalFilter" checked={globalFilter} onChange={(e) => handleCheckboxChange(e, setGlobalFilter)} />
+                        <label htmlFor="globalFilter">Global</label>
+                    </div>
 
-
+                    <div className="mx-2">
+                        <input type="checkbox" id="indiaFilter" checked={indiaFilter} onChange={(e) => handleCheckboxChange(e, setIndiaFilter)} />
+                        <label htmlFor="indiaFilter">India</label>
+                    </div>
 
                     <OverlayTrigger
                         placement="top"
@@ -303,145 +335,6 @@ export function PageHome() {
                 </Col>
             </Row>
 
-        </React.Fragment>
-    );
-}
-
-
-interface IPropItensTable {
-    catalogo: ICatalogo;
-    eventKey: string;
-    onToggle: (key: string | null) => void;
-    expandedKey: string | null;
-}
-
-
-function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropItensTable) {
-
-    return (
-        <React.Fragment>
-            <tr onClick={() => onToggle(expandedKey === eventKey ? null : eventKey)}>
-                <td className="acordionStyle">
-                    <img
-                        className="responsive-image"
-                        src={catalogo.url_thumbnail || ratata}
-                        alt="Descrição da imagem"
-                    />
-                </td>
-         
-                <td className="th200">
-
-                    <a
-                        style={{ color: "blue" }}
-                        
-                        href={catalogo.url_catalogo}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title={catalogo.nome}
-                    >
-
-                        {catalogo.nome}
-                    </a>
-                </td>
-
-                <td className="th110" style={{ textAlign: "center" }}>
-                    U${" "}
-                    {formatCurrency(catalogo.competidores[0]?.produto.preco ?? 0)}
-                </td>
-                <td className="th130" style={{ textAlign: "center" }}>
-                    R$ {" "}
-                    {formatCurrency(catalogo.custoTotal)}
-                </td>
-                <td className="th130" style={{ textAlign: "center" }}>
-                    R$ {" "}
-                    {formatCurrency(catalogo.precoC)}
-                </td>
-                <td className="th110" style={{ textAlign: "center" }}>
-                    R${" "}
-                    {formatCurrency(catalogo.precoP)}
-                </td>
-                <td className="th110" style={{ textAlign: "center", color: catalogo.lucroC < 0 ? "red" : catalogo.lucroC > 0 ? "green" : "black" }}>
-                    R${" "}
-                    {formatCurrency(catalogo.lucroC)}
-                </td>
-
-                <td className="th110" style={{ textAlign: "center", color: catalogo.lucroP < 0 ? "red" : catalogo.lucroP > 0 ? "green" : "black" }}>
-                    R${" "}
-                    {formatCurrency(catalogo.lucroP)}
-                </td>
-                <td className="th130" style={{ textAlign: "center", color: catalogo.margemC < 0 ? "red" : catalogo.margemC > 0 ? "green" : "black" }}>
-                    {catalogo.margemC.toFixed(2)}%
-                </td>
-
-                <td className="th130" style={{ textAlign: "center", color: catalogo.margemP < 0 ? "red" : catalogo.margemP > 0 ? "green" : "black" }}>
-                    {catalogo.margemP.toFixed(2)}%
-                </td>
-                <td className="th110" >
-                    {catalogo.competidores[0]?.loja.nome ?? ""}
-                    <br />
-                    {catalogo.competidores[0]?.produto.codigo ?? ""}
-                </td>
-            </tr>
-            <tr >
-                <td colSpan={11} style={{ height: 0, padding: 0 }}>
-                    <Accordion activeKey={expandedKey} >
-                        <Accordion.Item eventKey={eventKey} >
-                            <Accordion.Header ></Accordion.Header>
-                            <Accordion.Body>
-                                <ListGroup >
-                                    {catalogo.competidores.map((competidor, i) => (
-                                        <ListGroup.Item key={i}>
-
-                                            <Card >
-                                                <Card.Header >
-                                                    <strong>Loja:</strong> {competidor.loja.nome}
-                                                </Card.Header>
-                                                <Card.Body>
-                                                    <Row>
-                                                        <Col xs={4} md={2} >
-                                                            <strong>Código: </strong>
-                                                            {competidor.produto.codigo}
-                                                        </Col>
-                                                        <Col xs={8} md={10}>
-                                                            <strong>Produto: </strong>
-                                                            <a
-                                                                style={{ color: "blue" }}
-                                                                href={`https://atacadogames.com/lista-produtos/termo/${competidor.produto.codigo}/1`}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                title={competidor.produto.nome}
-                                                            >
-
-                                                                {competidor.produto.nome}
-                                                            </a>
-
-
-                                                        </Col>
-                                                    </Row>
-                                                    <Row >
-                                                        <Col xs={4} md={4}>
-                                                            <strong>Frete: </strong>
-                                                            {formatCurrency(competidor.frete)}
-                                                        </Col>
-                                                        <Col xs={4} md={4}>
-                                                            <strong>Preço U$: </strong>
-                                                            {formatCurrency(competidor.produto.preco)}
-                                                        </Col>
-                                                        <Col xs={4} md={4} >
-                                                            <strong>Preço R$: </strong>
-                                                            {formatCurrency(competidor.produto.preco * competidor.loja.cotacao)}
-                                                        </Col>
-                                                    </Row>
-                                                </Card.Body>
-                                            </Card>
-                                        </ListGroup.Item>
-                                    ))}
-                                </ListGroup>
-                            </Accordion.Body>
-                        </Accordion.Item>
-                    </Accordion>
-                </td>
-            </tr>
         </React.Fragment>
     );
 }

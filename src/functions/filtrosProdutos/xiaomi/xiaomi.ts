@@ -102,6 +102,8 @@ export const filtraXiaomi = (produtoLoja: IProdutoLoja): IProdutoLoja | null => 
                                                                                                                                                                     /YELLOW/i.test(produtoLoja.nome) ? "AMARELO" :
                                                                                                                                                                         /DOURADO/i.test(produtoLoja.nome) ? "DOURADO" :
                                                                                                                                                                             /ORANGE/i.test(produtoLoja.nome) ? "LARANJA" :
+                                                                                                                                                                            /GRAY/i.test(produtoLoja.nome) ? "CINZA":
+                                                                                                                                                                            /GREY/i.test(produtoLoja.nome)?"CINZA":
                                                                                                                                                                                 null;
 
     if (cor !== null) {

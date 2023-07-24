@@ -24,20 +24,30 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, onListProdutoLo
 
     const handleCheckboxFilterChangeCelular = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCheckboxFilter(event.target.checked);
-
+    
+        const celularItems = new Set(selectedProdutoLoja);
+    
         if (event.target.checked) {
-            const celularItems = new Set(selectedProdutoLoja);
-
             listProdutoLoja?.naoCadastrados.forEach(produtoLoja => {
                 if (produtoLoja.nome.toLowerCase().includes('celular')) {
                     celularItems.add(produtoLoja);
                 }
+                if (produtoLoja.nome.toLowerCase().includes('cel')) {
+                    celularItems.add(produtoLoja);
+                }
             });
-
-            setSelectedProdutoLoja(celularItems);
-            onListProdutoLoja(Array.from(celularItems));
+        } else {
+            for (let item of celularItems) {
+                if (item.nome.toLowerCase().includes('celular') || item.nome.toLowerCase().includes('cel')) {
+                    celularItems.delete(item);
+                }
+            }
         }
+    
+        setSelectedProdutoLoja(celularItems);
+        onListProdutoLoja(Array.from(celularItems));
     };
+    
 
     const handleCheckboxFilterChangeNaoEncontrados = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCheckboxFilterNaoEncontrados(event.target.checked);
@@ -179,7 +189,17 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, onListProdutoLo
                                     {produtoLoja.codigo}
                                 </td>
                                 <td>
-                                    {produtoLoja.nome}
+
+                                <a
+                                                                style={{ color: "blue" }}
+                                                                href={`https://atacadogames.com/lista-produtos/termo/${produtoLoja.codigo}/1`}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                title={produtoLoja.nome}
+                                                            >
+                                   {produtoLoja.nome}</a>
+                                
+                                
                                 </td>
                                 <td >
                                     U$: {formatCurrency(produtoLoja.preco)}
