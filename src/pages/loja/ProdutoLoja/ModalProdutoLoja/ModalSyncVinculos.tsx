@@ -3,16 +3,20 @@ import { Modal, Button, Spinner } from "react-bootstrap";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CatalogoController, ICatalogo } from "@/datatypes/catalogo";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
-import { filtrosVinculosXiaomi } from "@/functions/filtrosProdutos/xiaomi/filtrosVinculosXiaomi";
-import { filtrosVinculosIphone } from "@/functions/filtrosProdutos/apple/filtrosVinculosIphone";
 import { toast } from "react-toastify";
+import { filtrosVinculosXiaomiAtacadoGames } from "@/functions/lojas/atacadoGames/filtrosProdutos/xiaomi/filtrosVinculosXiaomi";
+import { filtrosVinculosIphoneAtacadoGames } from "@/functions/lojas/atacadoGames/filtrosProdutos/apple/filtrosVinculosIphone";
+
+import { otherSearchAtacadoGames } from "@/functions/lojas/atacadoGames/filtrosProdutos/otherSearchAtacadoGames";
+import { ILoja } from "@/datatypes/loja";
 
 interface IProps {
     produtoParaguay?: IProdutoLoja[];
+    lojaId?: ILoja;
     onHide: () => void;
 }
 
-export function ModalSyncVinculos({ onHide, produtoParaguay }: IProps) {
+export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const produtoAtualParaguay = produtoParaguay ? produtoParaguay[currentIndex] : null;
     const queryClient = useQueryClient();
@@ -30,7 +34,7 @@ export function ModalSyncVinculos({ onHide, produtoParaguay }: IProps) {
                 let catalogo;
 
 
-                catalogo = otherSerachs(produto);
+                catalogo = otherSearchAtacadoGames(produto);
 
 
 
@@ -44,11 +48,11 @@ export function ModalSyncVinculos({ onHide, produtoParaguay }: IProps) {
                         productML.mobileNetwork = "4G"
                     }
                     if (produto.marca === "XIAOMI") {
-                        similarity = filtrosVinculosXiaomi(produto, productML);
+                        similarity = filtrosVinculosXiaomiAtacadoGames(produto, productML);
                     }
 
                     if (produto.marca === "APPLE") {
-                        similarity = filtrosVinculosIphone(produto, productML);
+                        similarity = filtrosVinculosIphoneAtacadoGames(produto, productML);
                     }
 
 
@@ -67,11 +71,11 @@ export function ModalSyncVinculos({ onHide, produtoParaguay }: IProps) {
                             productML.mobileNetwork = "4G"
                         }
                         if (produto.marca === "XIAOMI") {
-                            similarity = filtrosVinculosXiaomi(produto, productML);
+                            similarity = filtrosVinculosXiaomiAtacadoGames(produto, productML);
                         }
 
                         if (produto.marca === "APPLE") {
-                            similarity = filtrosVinculosIphone(produto, productML);
+                            similarity = filtrosVinculosIphoneAtacadoGames(produto, productML);
                         }
 
 
@@ -106,7 +110,7 @@ export function ModalSyncVinculos({ onHide, produtoParaguay }: IProps) {
         onError: (error) => {
             toast.error(`Não foi possivel vincular!`);
         },
-        onSettled:()=>{
+        onSettled: () => {
             nextProduct();
         }
     });
@@ -128,7 +132,7 @@ export function ModalSyncVinculos({ onHide, produtoParaguay }: IProps) {
             setCurrentIndex(currentIndex - 1);
         }
     }, [currentIndex, setCurrentIndex]);
-    
+
 
     const nextProduct = useCallback(() => {
         if (produtoParaguay && currentIndex < produtoParaguay.length - 1) {
@@ -147,7 +151,7 @@ export function ModalSyncVinculos({ onHide, produtoParaguay }: IProps) {
         for (let i = 0; i < produtoParaguay.length; i++) {
             const produto = produtoParaguay[i];
 
-            let catalogo = await otherSerachs(produto);
+            let catalogo = await otherSearchAtacadoGames(produto);
             catalogo = [...catalogo, ...(await CatalogoController.searchCatalogoML(produto.marca + " " + produto.nome + " Dual SIM"))];
 
 
@@ -159,11 +163,11 @@ export function ModalSyncVinculos({ onHide, produtoParaguay }: IProps) {
                     productML.mobileNetwork = "4G"
                 }
                 if (produto.marca === "XIAOMI") {
-                    similarity = filtrosVinculosXiaomi(produto, productML);
+                    similarity = filtrosVinculosXiaomiAtacadoGames(produto, productML);
                 }
 
                 if (produto.marca === "APPLE") {
-                    similarity = filtrosVinculosIphone(produto, productML);
+                    similarity = filtrosVinculosIphoneAtacadoGames(produto, productML);
                 }
 
                 if (similarity > highestSimilarity) {
@@ -224,13 +228,18 @@ export function ModalSyncVinculos({ onHide, produtoParaguay }: IProps) {
                         <p>
                             <strong>Codigo: </strong>
                             <a
-                                style={{ color: "blue" }}
-                                href={data && data.mostSimilarProduct ? `https://atacadogames.com/lista-produtos/termo/${produtoAtualParaguay.codigo}/1` : '#'}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                {produtoAtualParaguay.codigo}
-                            </a>
+                        style={{ color: "blue" }}
+                        href={lojaId?.algoritmo === 1
+                            ? `https://atacadogames.com/lista-produtos/termo/${produtoAtualParaguay.codigo}/1`
+                            : (lojaId?.algoritmo === 7
+                                ? `https://www.megaeletro.com.py/br/p/${produtoAtualParaguay.codigo}/1`
+                                : '#')}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={produtoAtualParaguay.codigo}
+                    >
+                        {produtoAtualParaguay.codigo}
+                    </a>
                         </p>
 
                         {/* Agrupando informações semelhantes */}
@@ -283,7 +292,7 @@ export function ModalSyncVinculos({ onHide, produtoParaguay }: IProps) {
 
             </Modal.Body>
             <Modal.Footer>
-            <Button onClick={previousProduct}>Anterior</Button>
+                <Button onClick={previousProduct}>Anterior</Button>
                 <Button onClick={nextProduct}>Próximo</Button>
                 {data && data.mostSimilarProduct && (
                     <Button
@@ -315,48 +324,3 @@ export function ModalSyncVinculos({ onHide, produtoParaguay }: IProps) {
     );
 }
 
-
-async function otherSerachs(produto: IProdutoLoja) {
-
-    let catalogo;
-
-    //IPHONE
-    if (produto.nome.trim().toUpperCase() === "IPHONE 12 A2402 3J") catalogo = await CatalogoController.searchCatalogoML("Apple iPhone 12 " + produto.capacidade + " " + produto.cor);
-    if (produto.nome.trim().toUpperCase() === "IPHONE 12 A2403 LE" && produto.cor.trim().toUpperCase() === "ROXO") catalogo = await CatalogoController.searchCatalogoML("Apple iPhone 12 (128 GB) - Roxo");
-    if (produto.nome.trim().toUpperCase() === "IPHONE 14 A2882 HN" && produto.cor.trim().toUpperCase() === "BRANCO") catalogo = await CatalogoController.searchCatalogoML("Apple iPhone 14 (128 GB) - Estelar");
-    if (produto.nome.trim().toUpperCase() === "IPHONE 14 PLUS A2886 AA") catalogo = await CatalogoController.searchCatalogoML("Apple iPhone 14 Plus " + " " + produto.capacidade + " " + produto.cor);
-    if (produto.nome.trim().toUpperCase() === "IPHONE 14 PLUS A2886 BE" && produto.cor.trim().toUpperCase() === "AMARELO" && produto.capacidade === 256) catalogo = await CatalogoController.searchCatalogoML("Apple iPhone 14 Plus "+ produto.cor);
-    if (produto.nome.trim().toUpperCase() === "IPHONE 14 PLUS A2886 BE" && produto.cor.trim().toUpperCase() === "AMARELO" && produto.capacidade === 128) catalogo = await CatalogoController.searchCatalogoML("Apple iPhone 14 Plus "+ produto.cor);
-    if (produto.nome.trim().toUpperCase() === "IPHONE 14 PLUS A2886 HN") catalogo = await CatalogoController.searchCatalogoML("Apple iPhone 14 Plus " + produto.capacidade + produto.cor);
-    if (produto.nome.trim().toUpperCase() === "IPHONE 14 PRO A2892 CH") catalogo = await CatalogoController.searchCatalogoML("Apple iPhone 14 Pro " + produto.capacidade + produto.cor);
-    if (produto.nome.trim().toUpperCase() === "IPHONE 14 PRO MAX A2651") catalogo = await CatalogoController.searchCatalogoML("Apple iPhone 14 Pro Max " + produto.capacidade + produto.cor);
-    if (produto.nome.trim().toUpperCase() === "IPHONE 14 PRO MAX A2651" && produto.cor.trim().toUpperCase() === "PRATA") catalogo = await CatalogoController.searchCatalogoML("Apple iPhone 14 Pro Max " + produto.capacidade + "PRATEADO");
-    if (produto.nome.trim().toUpperCase() === "IPHONE 14 PRO MAX A2893 3J" && produto.cor.trim().toUpperCase() === "PRATA") catalogo = await CatalogoController.searchCatalogoML("Apple iPhone 14 Pro Max " + produto.capacidade + "PRATEADO");
-    if (produto.nome.trim().toUpperCase() === "IPHONE 14 PRO MAX A2896 CH" && produto.cor.trim().toUpperCase() === "PRATA") catalogo = await CatalogoController.searchCatalogoML("Apple iPhone 14 Pro Max " + produto.capacidade + "PRATEADO");
-
-    //XIAOMI
-    if (produto.nome.trim().toUpperCase() === "POCO M5") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Pocophone Poco M5 (5 Mpx) Dual SIM");
-    if (produto.nome.trim().toUpperCase() === "POCO X5") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Pocophone Poco X5 5G Dual SIM");
-    if (produto.nome.trim().toUpperCase() === "POCO X5 PRO") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Pocophone Poco X5 Pro 5G Dual SIM");
-    if (produto.nome.trim().toUpperCase() === "REDMI 12") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi 12");
-    if (produto.nome.trim().toUpperCase() === "REDMI 12C") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi 12C Dual SIM 128 GB ocean blue 6 GB RAM");
-    if (produto.nome.trim().toUpperCase() === "REDMI NOTE 10 LITE") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi note 10 lite Dual SIM");
-    if (produto.nome.trim().toUpperCase() === "REDMI NOTE 10 PRO") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi Note 10 Pro");
-    if (produto.nome.trim().toUpperCase() === "REDMI NOTE 11 PRO+" && produto.cor.toUpperCase() === "VERDE") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi Note 11 Pro+ 5G (MediaTek) Dual SIM 256 GB verde 8 GB RAM");
-    if (produto.nome.trim().toUpperCase() === "REDMI NOTE 11 PRO+" && produto.cor.toUpperCase() === "PRETO") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi Note 11 Pro+ 5G (MediaTek) Dual SIM 256 GB preto 8 GB RAM");
-   
-    if (produto.nome.trim().toUpperCase() === "REDMI NOTE 11S" && produto.rede === 5) catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi Note 11S 5G Dual SIM");
-    if (produto.nome.trim().toUpperCase() === "REDMI NOTE 11S" && produto.rede === 4) catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi Note 11S Dual SIM");
-    if (produto.nome.trim().toUpperCase() === "REDMI NOTE 12" && produto.rede === 5) catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi Note 12 5G Dual SIM");
-    if (produto.nome.trim().toUpperCase() === "REDMI NOTE 12" && produto.rede === 4) catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi Note 12 4G Dual SIM "+produto.capacidade+"GB "+produto.cor);
-    if (produto.nome.trim().toUpperCase() === "POCO C40") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Pocophone Poco C40 Dual SIM");
-    if (produto.nome.trim().toUpperCase() === "REDMI A1") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi A1 2022 Dual SIM " + produto.capacidade + " GB" + produto.ram + " GB");
-    if (produto.nome.trim().toUpperCase() === "REDMI NOTE 12 PRO") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi Note 12 Pro 5G Dual SIM "+produto.capacidade+"GB "+produto.ram+"GB ");
-    if (produto.nome.trim().toUpperCase() === "POCO F3") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Poco F3 5G Dual SIM "+produto.capacidade+"GB "+produto.ram+"GB ");
-
-    if (produto.nome.trim().toUpperCase() === "REDMI NOTE 12 PRO PLUS" && produto.rede === 5 && produto.capacidade === 256 && produto.cor === "AZUL") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi Note 12 Pro+ 5G Dual SIM 256 GB iceberg blue 8 GB RAM");
-
-    if (!catalogo) catalogo = await CatalogoController.searchCatalogoML(produto.marca + " " + produto.nome + " " + produto.cor + " " + produto.ram + " " + produto.capacidade);
-
-    return catalogo;
-}

@@ -13,8 +13,11 @@ import { ModalAtualizarProdutoLoja } from "./ModalProdutoLoja/ModalAtualizarProd
 import { ModalVinculo } from "./ModalProdutoLoja/ModalVinculoCopy";
 import { useQuery } from "@tanstack/react-query";
 import { compareValues, useSort } from "@/components/utils/FilterArrows";
-import { filtraXiaomi } from "@/functions/filtrosProdutos/xiaomi/xiaomi";
-import { filtraIphone } from "@/functions/filtrosProdutos/apple/iphone";
+import { ILoja, LojaController } from "@/datatypes/loja";
+import { filtraXiaomiAtacadoGames } from "@/functions/lojas/atacadoGames/filtrosProdutos/xiaomi/xiaomi";
+import { filtraIphoneAtacadoGames } from "@/functions/lojas/atacadoGames/filtrosProdutos/apple/iphone";
+import { filtraXiaomiMega } from "@/functions/lojas/mega/filtrosProdutos/xiaomi/xiaomi";
+import { filtraIphoneMega } from "@/functions/lojas/mega/filtrosProdutos/apple/iphone";
 
 
 export function PageProdutoLoja() {
@@ -22,8 +25,7 @@ export function PageProdutoLoja() {
     const { lojaId } = useParams();
     const navigate = useNavigate();
     const [modalVinculoProduto, setVinculoProduto] = useState<IProdutoLoja | undefined>(undefined);
-    const [importProdutoLoja, setImportProdutoLoja] = useState<string | undefined>(undefined);
-    const [cadastroProdutoLoja, setCadastroProdutoLoja] = useState<string | undefined>(undefined);
+    const [importProdutoLoja, setImportProdutoLoja] = useState<ILoja | undefined>(undefined);
     const [modalSyncVinculos, setSyncVinculos] = useState<IProdutoLoja[] | undefined>(undefined);
     const [filtro, setFiltro] = useState("");
     const page = parseInt(params.get("page") ?? "1");
@@ -33,18 +35,22 @@ export function PageProdutoLoja() {
     const [isFilteredVinculados, setIsFilteredVinculados] = useState(false);
 
 
-
-    const { isFetching, data } = useQuery(["produtosloja", lojaId, filtro], () => {
+    const { isFetching, data: produtosData } = useQuery(["produtosloja", lojaId, filtro], () => {
         const produtoLoja = ProdutoLojaController.search(lojaId ?? "", filtro);
         return produtoLoja;
     });
+
+    const { data: lojaData } = useQuery(["loja", lojaId], async () => {
+        const data = await LojaController.get(lojaId ?? "");
+
+        return data;
+    }, { enabled: !!lojaId }); // habilita a consulta somente quando lojaId estiver definido e onHide for uma função });
 
 
 
     const produtosLoja = useMemo(() => {
 
-
-        let dados = data?.map((produtoLoja: IProdutoLoja) => {
+        let dados = produtosData?.map((produtoLoja: IProdutoLoja) => {
 
             const produtoLojaAtualizado = {
                 ...produtoLoja,
@@ -52,23 +58,37 @@ export function PageProdutoLoja() {
             };
 
 
-            const marca =
-                /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
-                    /APPLE/i.test(produtoLoja.nome) ? "APPLE" :
-                        null;
+            if (lojaData?.algoritmo === 1) {
+                const marca =
+                    /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
+                        /APPLE/i.test(produtoLoja.nome) ? "APPLE" :
+                            null;
 
+                if (marca === "XIAOMI") {
+                    filtraXiaomiAtacadoGames(produtoLojaAtualizado);
+                }
 
-            if (marca === "XIAOMI") {
-                filtraXiaomi(produtoLojaAtualizado);
+                if (marca === "APPLE") {
+                    filtraIphoneAtacadoGames(produtoLojaAtualizado);
+                }
+            }
+            if (lojaData?.algoritmo === 7) {
+                const marca =
+                    /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
+                        /APPLE/i.test(produtoLoja.nome) ? "APPLE" :
+                            null;
 
-              
+                if (marca === "XIAOMI") {
+                    filtraXiaomiMega(produtoLojaAtualizado);
+                }
 
+                if (marca === "APPLE") {
+                    filtraIphoneMega(produtoLojaAtualizado);
+                }
             }
 
-            if (marca === "APPLE") {
-                filtraIphone(produtoLojaAtualizado);
 
-            }
+
 
             return produtoLojaAtualizado
         }) ?? []
@@ -92,7 +112,7 @@ export function PageProdutoLoja() {
         return {
             page, total, limit, items, allItems
         }
-    }, [data, page, limit, sortBy, sortOrder, isFilteredDesvinculados, isFilteredVinculados])
+    }, [produtosData, page, limit, sortBy, sortOrder, isFilteredDesvinculados, isFilteredVinculados])
 
 
 
@@ -115,8 +135,8 @@ export function PageProdutoLoja() {
     return (
         <React.Fragment>
 
-            <ModalAtualizarProdutoLoja onHide={() => setImportProdutoLoja(undefined)} lojaId={importProdutoLoja} produtoParaguay={data} />
-            <ModalSyncVinculos onHide={() => setSyncVinculos(undefined)} produtoParaguay={modalSyncVinculos} />
+            <ModalAtualizarProdutoLoja onHide={() => setImportProdutoLoja(undefined)} lojaId={importProdutoLoja} produtoParaguay={produtosData} />
+            <ModalSyncVinculos onHide={() => setSyncVinculos(undefined)} lojaId={lojaData} produtoParaguay={modalSyncVinculos} />
             <ModalVinculo onHide={() => setVinculoProduto(undefined)} produtoParaguay={modalVinculoProduto} />
 
             <Row className="my-3">
@@ -170,19 +190,19 @@ export function PageProdutoLoja() {
 
                 <Col xs className="d-flex justify-content-end">
                     <Button
-    onClick={() => {
-        const produtosSemVinculos = produtosLoja.items.filter(produto => produto.vinculos.length === 0);
-        setSyncVinculos(produtosSemVinculos);
-    }}
-    className="me-3 custom-btn"
->
-<Icons tipo="update" tamanho={22} />  Vinc. Catalogos
+                        onClick={() => {
+                            const produtosSemVinculos = produtosLoja.items.filter(produto => produto.vinculos.length === 0);
+                            setSyncVinculos(produtosSemVinculos);
+                        }}
+                        className="me-3 custom-btn"
+                    >
+                        <Icons tipo="update" tamanho={22} />  Vinc. Catalogos
 
                     </Button>
-       
+
                     <Button
                         className="custom-btn"
-                        onClick={() => setImportProdutoLoja(lojaId)}
+                        onClick={() => setImportProdutoLoja(lojaData)}
                     >
                         <Icons tipo="update" tamanho={22} />  Atualizar/Cadastrar
                     </Button>
@@ -303,7 +323,7 @@ export function PageProdutoLoja() {
                 </thead>
                 <tbody>
                     {
-                        !isFetching && produtosLoja?.items?.map((produtoLoja, index) => <ItemTable key={index} produtoLoja={produtoLoja} onVinculo={setVinculoProduto} />)
+                        !isFetching && produtosLoja?.items?.map((produtoLoja, index) => <ItemTable key={index} produtoLoja={produtoLoja} onVinculo={setVinculoProduto} lojaData={lojaData} />)
                     }
                 </tbody>
             </Table>
@@ -343,10 +363,11 @@ export function PageProdutoLoja() {
 
 interface IPropsItensTable {
     produtoLoja: IProdutoLoja,
+    lojaData?: ILoja,
     onVinculo: (idProdutoParaguay: IProdutoLoja) => void,
 }
 
-function ItemTable({ produtoLoja, onVinculo }: IPropsItensTable) {
+function ItemTable({ produtoLoja, onVinculo, lojaData  }: IPropsItensTable) {
     return (
 
         <React.Fragment>
@@ -364,13 +385,18 @@ function ItemTable({ produtoLoja, onVinculo }: IPropsItensTable) {
 
                     <a
                         style={{ color: "blue" }}
-                        href={`https://atacadogames.com/lista-produtos/termo/${produtoLoja.codigo}/1`}
+                        href={lojaData?.algoritmo === 1
+                            ? `https://atacadogames.com/lista-produtos/termo/${produtoLoja.codigo}/1`
+                            : (lojaData?.algoritmo === 7
+                                ? `https://www.megaeletro.com.py/br/p/${produtoLoja.codigo}/1`
+                                : '#')}
                         target="_blank"
                         rel="noopener noreferrer"
                         title={produtoLoja.codigo}
                     >
                         {produtoLoja.nome}
                     </a>
+
                 </td>
                 <td>
                     {produtoLoja.origem}

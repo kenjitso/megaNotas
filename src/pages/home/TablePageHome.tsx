@@ -24,12 +24,12 @@ export function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropIt
                         alt="Descrição da imagem"
                     />
                 </td>
-         
+
                 <td className="th200">
 
                     <a
                         style={{ color: "blue" }}
-                        
+
                         href={catalogo.url_catalogo}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -100,16 +100,22 @@ export function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropIt
                                                         </Col>
                                                         <Col xs={8} md={10}>
                                                             <strong>Produto: </strong>
+
                                                             <a
                                                                 style={{ color: "blue" }}
-                                                                href={`https://atacadogames.com/lista-produtos/termo/${competidor.produto.codigo}/1`}
+                                                                href={competidor.loja.algoritmo === 1
+                                                                    ? `https://atacadogames.com/lista-produtos/termo/${competidor.produto.codigo}/1`
+                                                                    : (competidor.loja.algoritmo === 7
+                                                                        ? `https://www.megaeletro.com.py/br/p/${competidor.produto.codigo}/1`
+                                                                        : '#')}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
-                                                                title={competidor.produto.nome}
+                                                                title={competidor.produto.codigo}
                                                             >
-
                                                                 {competidor.produto.nome}
                                                             </a>
+
+
 
 
                                                         </Col>
@@ -129,7 +135,7 @@ export function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropIt
                                                         </Col>
                                                         <Col xs={3} md={3} >
                                                             <strong>Custo Total R$: </strong>
-                                                            {formatCurrency(competidor.frete+(competidor.produto.preco * competidor.loja.cotacao))}
+                                                            {formatCurrency(competidor.frete + (competidor.produto.preco * competidor.loja.cotacao))}
                                                         </Col>
                                                     </Row>
                                                 </Card.Body>

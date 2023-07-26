@@ -1,6 +1,6 @@
-import { LojaController } from "@/datatypes/loja";
+import { ILoja, LojaController } from "@/datatypes/loja";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
-import { AtacadoGamesFormat, updateFiltro } from "@/functions/lojas/atacadoGames";
+import { AtacadoGamesFormat, updateFiltro } from "@/functions/lojas/atacadoGames/atacadoGames";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useState, useEffect } from "react";
 import { Modal, Row, Col, Button, Spinner } from "react-bootstrap";
@@ -12,12 +12,13 @@ import FragmentLoading from "@/components/fragments/FragmentLoading";
 import * as pdfjsLib from "pdfjs-dist";
 import { ModalTableAtualizarProdutoLoja } from "./ModalTableAtualizarProdutoLoja";
 import { ModalTableImportarProdutoLoja } from "./ModalTableImportarProdutoLoja";
+import { MegaFormat } from "@/functions/lojas/mega/mega";
 pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
 
 interface IProps {
     produtoParaguay?: IProdutoLoja[];
     onHide: () => void,
-    lojaId?: string,
+    lojaId?: ILoja,
 }
 
 export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: IProps) {
@@ -37,8 +38,6 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
 
 
     const defaultSettings = () => {
-
-
         setIsModalTotalItens(false);
         setIsModalRenameVisible(false);
         setIsItensNotRegistered(false);
@@ -50,13 +49,8 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
     }
 
 
-    const { data } = useQuery(["loja", lojaId], async () => {
-        const data = await LojaController.get(lojaId ?? "");
-
-        return data;
-    }, { enabled: !!lojaId && typeof onHide === 'function' }); // habilita a consulta somente quando lojaId estiver definido e onHide for uma função });
-
     const mutationAtualizaCadastrados = useMutation((produtos: IProdutoLoja[]) => {
+     
         if (!lojaId) throw new Error("Loja Indefinido");
         return atualizarProdutosEmBlocos(produtos);
     }, {
@@ -68,8 +62,6 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
         }
     });
 
-
-
     async function atualizarProdutosEmBlocos(produtos: IProdutoLoja[]) {
         const totalProdutos = produtos.length;
         for (let i = 0; i < totalProdutos; i += 15) {
@@ -80,9 +72,8 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
 
     }
 
-
-
     const mutationCadastraNaoCadastrados = useMutation(() => {
+   
         if (!lojaId) throw new Error("Loja Indefinido");
 
         return ProdutoLojaController.cadastro(listToSave);
@@ -94,7 +85,6 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
             defaultSettings();
         }
     });
-
 
     const { isLoading: atualizaCadastradosIsLoading } = mutationAtualizaCadastrados;
     const { isLoading: cadastraIsLoading } = mutationCadastraNaoCadastrados;
@@ -134,16 +124,21 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                                     allPagesText.push(...dataList);
                                 }
 
-                                if (data?.algoritmo === 1) {
+                                if (lojaId?.algoritmo === 1) {
 
-                                    setFormattedList(AtacadoGamesFormat(lojaId ?? "", allPagesText, [], produtoParaguay));
-                                    mutationAtualizaCadastrados.mutate(AtacadoGamesFormat(lojaId ?? "", allPagesText, [], produtoParaguay).cadastrados);
-
-
+                                    setFormattedList(AtacadoGamesFormat(lojaId?.id ?? "", allPagesText, [], produtoParaguay));
+                                    mutationAtualizaCadastrados.mutate(AtacadoGamesFormat(lojaId.id ?? "", allPagesText, [], produtoParaguay).cadastrados);
                                     setIsModalImportVisible(false);
                                     setIsLoading(false);
                                     setIsModalStatusBar(true);
+                                }
+                                if (lojaId?.algoritmo === 7) {
 
+                                    setFormattedList(MegaFormat(lojaId.id ?? "", allPagesText, [], produtoParaguay));
+                                    mutationAtualizaCadastrados.mutate(MegaFormat(lojaId.id ?? "", allPagesText, [], produtoParaguay).cadastrados);
+                                    setIsModalImportVisible(false);
+                                    setIsLoading(false);
+                                    setIsModalStatusBar(true);
                                 }
                             });
 
@@ -169,7 +164,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                 setIsLoading(false);
             }
         });
-    }, [onHide, data]);
+    }, [onHide, lojaId]);
 
 
     const { getRootProps: getRootPropsImport, getInputProps: getInputPropsImport } = useDropzone({ onDrop: onDropImport });
@@ -238,9 +233,9 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                             href={`https://atacadogames.com/lista-produtos/1`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            title={data?.nome}
+                            title={lojaId?.nome}
                         >
-                            {" " + data?.nome.toLocaleUpperCase() + " "}
+                            {" " + lojaId?.nome.toLocaleUpperCase() + " "}
                         </a>
                     </>
                 }</Modal.Title>
@@ -288,7 +283,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                                         <b> Arquivo excel de
 
 
-                                            {" " + data?.nome + " "}
+                                            {" " + lojaId?.nome + " "}
 
 
                                             para arrumar os dados dos produtos</b>
@@ -335,11 +330,6 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                     Fechar
                 </Button>
 
-
-
-
-
-
                 {isItensNotRegistered && (
                     <Button
 
@@ -367,13 +357,16 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                     </Button>
                 )}
 
-
-
                 {isModalTotalItens && formattedList.naoCadastrados.length > 0 && (
+
                     <Button
                         variant="secondary"
                         onClick={() => {
-                            setIsModalRenameVisible(true);
+                            if (lojaId?.algoritmo === 7) {
+                                setIsItensNotRegistered(true);
+                            } else if (lojaId?.algoritmo === 1) {
+                                setIsModalRenameVisible(true);
+                            }
                             setIsModalTotalItens(false);
                         }}
                         disabled={atualizaCadastradosIsLoading}
@@ -393,9 +386,8 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                         ) : "Verificar não Cadastrados"}
                     </Button>
 
+
                 )}
-
-
 
             </Modal.Footer>
         </Modal >

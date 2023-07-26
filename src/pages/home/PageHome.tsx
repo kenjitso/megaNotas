@@ -1,7 +1,7 @@
 import { PaginationComponent } from "@/components/pagination/PaginationComponent";
 import { CatalogoController, ICatalogo, } from "@/datatypes/catalogo";
-import React, { useEffect, useMemo, useState } from "react";
-import { Col, Dropdown, FloatingLabel, OverlayTrigger, Row, Table, Tooltip, } from "react-bootstrap";
+import React, { useMemo, useState } from "react";
+import { Button, Col, Dropdown, FloatingLabel, Form, OverlayTrigger, Row, Table, Tooltip, } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
@@ -12,7 +12,6 @@ import * as XLSX from 'xlsx';
 import { useQuery } from "@tanstack/react-query";
 import { compareValues, useSort } from "@/components/utils/FilterArrows";
 import { ItemTable } from "./TablePageHome";
-
 
 
 export function PageHome() {
@@ -26,17 +25,10 @@ export function PageHome() {
     const [globalFilter, setGlobalFilter] = useState(false);
     const [indiaFilter, setIndiaFilter] = useState(false);
 
-
-
     const { isFetching, data } = useQuery(["catalogoshome", filtro], async () => {
         let catalogo = await CatalogoController.searchCompetidor(filtro);
         return catalogo;
     });
-
-
-
-
-
 
     const catalogos = useMemo(() => {
 
@@ -58,9 +50,6 @@ export function PageHome() {
                 precoC = Math.min(competidor.preco, precoC);
             }
 
-
-
-
             catalogo.precoC = precoC !== Number.MAX_SAFE_INTEGER ? precoC : 0;
             catalogo.precoP = precoP !== Number.MAX_SAFE_INTEGER ? precoP : 0;
 
@@ -80,22 +69,24 @@ export function PageHome() {
 
         }) ?? []
 
-
-
-        if (indiaFilter) {
-            dados = dados.filter(catalogo =>
-                catalogo.competidores.every(competidor => 
-                    competidor.produto.nome.toUpperCase().replace(/[^a-zA-Z0-9 ]/g, '').split(' ').includes("INDIA"))
-            );
-        }
-        if (globalFilter) {
-            dados = dados.filter(catalogo =>
-                catalogo.competidores.every(competidor =>
-                    competidor.produto.nome.toUpperCase().replace(/[^a-zA-Z0-9 ]/g, '').split(' ').includes("GLOBAL"))
-            );
-        }
+  
+        dados = dados
+        .map(catalogo => ({
+            ...catalogo,
+            competidores: catalogo.competidores.filter(competidor => {
+                const nome = competidor.produto.nome.toUpperCase().replace(/[^a-zA-Z0-9 ]/g, '');
+                if (indiaFilter && nome.includes("INDIA")) {
+                    return false; // Se o filtro India estiver ativado e o nome incluir "INDIA", remova este competidor.
+                }
+                if (globalFilter && nome.includes("GLOBAL")) {
+                    return false; // Se o filtro Global estiver ativado e o nome incluir "GLOBAL", remova este competidor.
+                }
+                return true; // Se nenhum dos filtros corresponder, mantenha o competidor.
+            }),
+        }))
+        .filter(catalogo => catalogo.competidores.length > 0); // Remove catálogos que agora estão sem competidores.
     
-
+        
 
         const sortedData = [...dados].sort(compareValues(sortBy, sortOrder));
 
@@ -137,44 +128,61 @@ export function PageHome() {
         checkboxSetter(e.target.checked);
         setParams(`?limit=${limit}&page=1`);
     }
-    
+
 
     return (
         <React.Fragment>
 
             <Row className="my-3">
-                <Col xs={12} className="d-flex">
+                <Col xs={12} className="d-flex align-items-center">
 
-                    <FloatingLabel className="w-100 mr-custom" label="Pesquisar" >
+                    <FloatingLabel className="w-100 mr-custom" label="Pesquisar">
                         <InputSearchDebounce
                             controlName="sku"
                             placeholder="pesquisar"
                             onUpdate={setFiltro}
                             pageLink={`?limit=20&page=1`}
                         />
-
                     </FloatingLabel>
-                    <div className="mx-2">
-                        <input type="checkbox" id="globalFilter" checked={globalFilter} onChange={(e) => handleCheckboxChange(e, setGlobalFilter)} />
-                        <label htmlFor="globalFilter">Global</label>
-                    </div>
 
-                    <div className="mx-2">
-                        <input type="checkbox" id="indiaFilter" checked={indiaFilter} onChange={(e) => handleCheckboxChange(e, setIndiaFilter)} />
-                        <label htmlFor="indiaFilter">India</label>
-                    </div>
+                    <Dropdown>
+                        <Dropdown.Toggle id="dropdown-basic" className="no-caret mx-2 custom-dropdown">
+                            <Icons tipo="filtro" tamanho={20} />
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu>
+                            <Dropdown.Item as='div' onClick={(e) => e.stopPropagation()}>
+                                <Form.Check
+                                    type="checkbox"
+                                    id="globalFilter"
+                                    checked={globalFilter}
+                                    onChange={(e) => handleCheckboxChange(e, setGlobalFilter)}
+                                    label="Global"
+                                />
+                            </Dropdown.Item>
+                            <Dropdown.Item as='div' onClick={(e) => e.stopPropagation()}>
+                                <Form.Check
+                                    type="checkbox"
+                                    id="indiaFilter"
+                                    checked={indiaFilter}
+                                    onChange={(e) => handleCheckboxChange(e, setIndiaFilter)}
+                                    label="India"
+                                />
+                            </Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
 
                     <OverlayTrigger
                         placement="top"
                         overlay={<Tooltip id="download-tooltip">Exportar para Excel</Tooltip>}
                     >
-                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown justify-content-end my-1" onClick={() => exportCatalogoExcel(catalogos.items)}>
+                        <Button id="dropdown-basic" className="custom-dropdown" onClick={() => exportCatalogoExcel(catalogos.items)}>
                             <Icons tipo="downloadXLSX" tamanho={20} />
-                        </Dropdown.Toggle>
+                        </Button>
                     </OverlayTrigger>
                 </Col>
-
             </Row>
+
             <Row className="my-2">
                 <Col xs={10}>
                     <Dropdown >Exibir

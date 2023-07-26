@@ -87,7 +87,7 @@ function processPdfArray(
 
     while ((match = regex.exec(text)) !== null) {
         let codigo = match[1];
-        let descricao = match[2];
+        let descricao = match[2].replace(/CEL/g, 'CELULAR');
         let preco = match[3];
 
         // Remove traço do código
@@ -133,7 +133,8 @@ export function updateFiltro(
     dataRows.forEach(row => {
         if (Array.isArray(row)) {
             const codigo = row[0].toString().trim();
-            const descricao = row[1].toString().trim();
+            const descricao = row[1] ? row[1].replace(/CEL/g, 'CELULAR').toString().trim() : '';
+
             excelDataMap[codigo] = descricao;
         }
     });

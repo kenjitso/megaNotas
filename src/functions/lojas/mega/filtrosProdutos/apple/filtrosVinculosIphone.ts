@@ -1,7 +1,7 @@
 import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 
 
-export function filtrosVinculosIphone(produtoParaguay: IProdutoLoja, produtoML: any) {
+export function filtrosVinculosIphoneMega(produtoParaguay: IProdutoLoja, produtoML: any) {
 
     // Aumenta a similaridade se a marca for igual
 
