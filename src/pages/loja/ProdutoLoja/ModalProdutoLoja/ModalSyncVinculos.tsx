@@ -4,11 +4,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CatalogoController, ICatalogo } from "@/datatypes/catalogo";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
 import { toast } from "react-toastify";
-import { filtrosVinculosXiaomiAtacadoGames } from "@/functions/lojas/atacadoGames/filtrosProdutos/xiaomi/filtrosVinculosXiaomi";
-import { filtrosVinculosIphoneAtacadoGames } from "@/functions/lojas/atacadoGames/filtrosProdutos/apple/filtrosVinculosIphone";
 
-import { otherSearchAtacadoGames } from "@/functions/lojas/atacadoGames/filtrosProdutos/otherSearchAtacadoGames";
+import { filtrosVinculosIphoneAtacadoGames } from "@/functions/produtos/apple/filtrosVinculosIphone";
+
+import { otherSearchAtacadoGames } from "@/functions/produtos/otherSearchAtacadoGames";
 import { ILoja } from "@/datatypes/loja";
+import { filtrosVinculosXiaomiAtacadoGames } from "@/functions/produtos/xiaomi/filtrosVinculosXiaomi";
 
 interface IProps {
     produtoParaguay?: IProdutoLoja[];

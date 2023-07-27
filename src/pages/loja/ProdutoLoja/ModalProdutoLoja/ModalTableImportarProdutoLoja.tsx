@@ -4,6 +4,7 @@ import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 import React, { useState } from "react";
 import { formatCurrency } from "@/features/FormatCurrency";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
+import { ILoja } from "@/datatypes/loja";
 
 interface IProps {
     listProdutoLoja?: {
@@ -11,10 +12,11 @@ interface IProps {
         naoCadastrados: IProdutoLoja[];
         naoEncontrados: IProdutoLoja[];
     } | null;
+    lojaId?: ILoja;
     onListProdutoLoja: (selectedItems: IProdutoLoja[]) => void;
 }
 
-export function ModalTableImportarProdutoLoja({ listProdutoLoja, onListProdutoLoja }: IProps) {
+export function ModalTableImportarProdutoLoja({ listProdutoLoja,lojaId, onListProdutoLoja }: IProps) {
 
     const [selectedProdutoLoja, setSelectedProdutoLoja] = useState<Set<IProdutoLoja>>(new Set());
     const [filtro, setFiltro] = useState("");
@@ -24,9 +26,9 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, onListProdutoLo
 
     const handleCheckboxFilterChangeCelular = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCheckboxFilter(event.target.checked);
-    
+
         const celularItems = new Set(selectedProdutoLoja);
-    
+
         if (event.target.checked) {
             listProdutoLoja?.naoCadastrados.forEach(produtoLoja => {
                 if (produtoLoja.nome.toLowerCase().includes('celular')) {
@@ -43,11 +45,11 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, onListProdutoLo
                 }
             }
         }
-    
+
         setSelectedProdutoLoja(celularItems);
         onListProdutoLoja(Array.from(celularItems));
     };
-    
+
 
     const handleCheckboxFilterChangeNaoEncontrados = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCheckboxFilterNaoEncontrados(event.target.checked);
@@ -183,23 +185,28 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, onListProdutoLo
                         </tr>
                     </thead>
                     <tbody>
-                    {filteredProdutos.map((produtoLoja, index) => (
-                        <tr key={index} >
+                        {filteredProdutos.map((produtoLoja, index) => (
+                            <tr key={index} >
                                 <td style={{ textAlign: 'left' }}>
                                     {produtoLoja.codigo}
                                 </td>
                                 <td>
 
-                                <a
-                                                                style={{ color: "blue" }}
-                                                                href={`https://atacadogames.com/lista-produtos/termo/${produtoLoja.codigo}/1`}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                title={produtoLoja.nome}
-                                                            >
-                                   {produtoLoja.nome}</a>
-                                
-                                
+                                    <a
+                                        style={{ color: "blue" }}
+                                        href={lojaId?.algoritmo === 1
+                                            ? `https://atacadogames.com/lista-produtos/termo/${produtoLoja.codigo}/1`
+                                            : (lojaId?.algoritmo === 7
+                                                ? `https://www.megaeletro.com.py/br/p/${produtoLoja.codigo}/1`
+                                                : '#')}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        title={produtoLoja.nome}
+                                    >
+                                        {produtoLoja.nome}
+                                    </a>
+
+
                                 </td>
                                 <td >
                                     U$: {formatCurrency(produtoLoja.preco)}
@@ -217,7 +224,7 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, onListProdutoLo
                         ))
                         }
 
-                  
+
                     </tbody>
                 </Table>
             </div>

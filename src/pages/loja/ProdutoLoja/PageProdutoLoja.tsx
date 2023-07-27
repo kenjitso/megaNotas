@@ -17,7 +17,7 @@ import { ILoja, LojaController } from "@/datatypes/loja";
 import { filtraXiaomiAtacadoGames } from "@/functions/lojas/atacadoGames/filtrosProdutos/xiaomi/xiaomi";
 import { filtraIphoneAtacadoGames } from "@/functions/lojas/atacadoGames/filtrosProdutos/apple/iphone";
 import { filtraXiaomiMega } from "@/functions/lojas/mega/filtrosProdutos/xiaomi/xiaomi";
-import { filtraIphoneMega } from "@/functions/lojas/mega/filtrosProdutos/apple/iphone";
+
 
 
 export function PageProdutoLoja() {
@@ -82,9 +82,7 @@ export function PageProdutoLoja() {
                     filtraXiaomiMega(produtoLojaAtualizado);
                 }
 
-                if (marca === "APPLE") {
-                    filtraIphoneMega(produtoLojaAtualizado);
-                }
+           
             }
 
 

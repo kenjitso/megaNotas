@@ -237,6 +237,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                         >
                             {" " + lojaId?.nome.toLocaleUpperCase() + " "}
                         </a>
+                        
                     </>
                 }</Modal.Title>
             </Modal.Header>
@@ -306,6 +307,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                             <ModalTableImportarProdutoLoja
                                 listProdutoLoja={formattedList}
                                 onListProdutoLoja={setListToSave}
+                                lojaId={lojaId}
                             />
                         </Col>
                     )}

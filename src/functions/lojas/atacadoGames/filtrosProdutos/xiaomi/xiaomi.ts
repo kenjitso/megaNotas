@@ -25,6 +25,7 @@ export const filtraXiaomiAtacadoGames = (produtoLoja: IProdutoLoja): IProdutoLoj
                                         / 4GB/i.test(produtoLoja.nome) ? 4:
                                             /4RAM/i.test(produtoLoja.nome) ? 4 :
                                                 /3GB RAM/i.test(produtoLoja.nome) ? 3 :
+                                                / 3GB/i.test(produtoLoja.nome) ? 3 :
                                                     /3RAM/i.test(produtoLoja.nome) ? 3 :
                                                         /2GB RAM/i.test(produtoLoja.nome) ? 2 :
                                                             /2RAM/i.test(produtoLoja.nome) ? 2 :
@@ -104,6 +105,7 @@ export const filtraXiaomiAtacadoGames = (produtoLoja: IProdutoLoja): IProdutoLoj
                                                                                                                                                                             /ORANGE/i.test(produtoLoja.nome) ? "LARANJA" :
                                                                                                                                                                             /GRAY/i.test(produtoLoja.nome) ? "CINZA":
                                                                                                                                                                             /GREY/i.test(produtoLoja.nome)?"CINZA":
+                                                                                                                                                                            /WHITE/i.test(produtoLoja.nome)?"BRANCO":
                                                                                                                                                                                 null;
 
     if (cor !== null) {

@@ -167,7 +167,9 @@ function processPdfArray(
             .replace(/ -TEMP3/g, ' BRANCO')
             .replace(/ C$/g, ' CINZA')
             .replace(/ P$/g, ' PRETO')
+            .replace(/ NOTE 11PR /g, ' NOTE 11 PRO ')
             .replace(/ X5 PRETO /g, ' X5 PRO ')
+            .replace(/ NOTE 10 PRETO /g, ' NOTE 10 PRO ')
 
         if (!/(INDONESIA|INDIA|CHINA)/gi.test(descricao)) {
             descricao = descricao + " GLOBAL";
