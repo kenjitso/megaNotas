@@ -1,6 +1,6 @@
 import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 
-export const filtraIphoneAtacadoGames = (produtoLoja: IProdutoLoja): IProdutoLoja | null => {
+export const formataIphoneAtacadoGames = (produtoLoja: IProdutoLoja): IProdutoLoja | null => {
     const marca =
         /APPLE/i.test(produtoLoja.nome) ? "APPLE" :
             null;

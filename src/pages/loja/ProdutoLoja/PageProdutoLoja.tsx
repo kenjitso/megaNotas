@@ -1,12 +1,10 @@
-import React, { useMemo, useState } from "react";
+import React, { Suspense, useMemo, useState } from "react";
 import { Row, Col, Table, Button, FloatingLabel, Form, Dropdown } from "react-bootstrap";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
-
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { Icons } from "@/components/icons/icons";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import { formatCurrency } from "@/features/FormatCurrency";
-import { PaginationComponent } from "@/components/pagination/PaginationComponent";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
 import { ModalSyncVinculos } from "./ModalProdutoLoja/ModalSyncVinculos";
 import { ModalAtualizarProdutoLoja } from "./ModalProdutoLoja/ModalAtualizarProdutoLoja";
@@ -14,9 +12,12 @@ import { ModalVinculo } from "./ModalProdutoLoja/ModalVinculoCopy";
 import { useQuery } from "@tanstack/react-query";
 import { compareValues, useSort } from "@/components/utils/FilterArrows";
 import { ILoja, LojaController } from "@/datatypes/loja";
-import { filtraXiaomiAtacadoGames } from "@/functions/lojas/atacadoGames/filtrosProdutos/xiaomi/xiaomi";
-import { filtraIphoneAtacadoGames } from "@/functions/lojas/atacadoGames/filtrosProdutos/apple/iphone";
-import { filtraXiaomiMega } from "@/functions/lojas/mega/filtrosProdutos/xiaomi/xiaomi";
+import { formataXiaomiAtacadoGames } from "@/functions/lojas/atacadoGames/formataProdutos/xiaomi/xiaomi";
+import { formataIphoneAtacadoGames } from "@/functions/lojas/atacadoGames/formataProdutos/apple/iphone";
+import { formataXiaomiMega } from "@/functions/lojas/mega/formataProdutos/xiaomi/xiaomi";
+import { PaginationDown } from "@/components/pagination/PaginationDown";
+import { PaginationUp } from "@/components/pagination/PaginationUp";
+import { SortableTableHeader } from "@/components/pagination/SortableTableHeader";
 
 
 
@@ -34,42 +35,33 @@ export function PageProdutoLoja() {
     const [isFilteredDesvinculados, setIsFilteredDesvinculados] = useState(false);
     const [isFilteredVinculados, setIsFilteredVinculados] = useState(false);
 
-
-    const { isFetching, data: produtosData } = useQuery(["produtosloja", lojaId, filtro], () => {
-        const produtoLoja = ProdutoLojaController.search(lojaId ?? "", filtro);
-        return produtoLoja;
-    });
-
-    const { data: lojaData } = useQuery(["loja", lojaId], async () => {
-        const data = await LojaController.get(lojaId ?? "");
-
+    const { isLoading: isLojaLoading, data: lojaData } = useQuery(["loja", lojaId], () => {
+        const data = LojaController.get(lojaId ?? "");
         return data;
-    }, { enabled: !!lojaId }); // habilita a consulta somente quando lojaId estiver definido e onHide for uma função });
+    }, { enabled: !!lojaId });
 
+    const { isFetching, isLoading: isProdutoLoading, data: produtosData } = useQuery(["produtosloja", lojaData, filtro], async () => {
+        const produtosLoja = await ProdutoLojaController.search(lojaId ?? "", filtro);
 
-
-    const produtosLoja = useMemo(() => {
-
-        let dados = produtosData?.map((produtoLoja: IProdutoLoja) => {
-
+        return produtosLoja?.map((produtoLoja: IProdutoLoja) => {
             const produtoLojaAtualizado = {
                 ...produtoLoja,
                 nome_original: produtoLoja.nome,
             };
 
-
             if (lojaData?.algoritmo === 1) {
+                console.log("??");
                 const marca =
                     /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
                         /APPLE/i.test(produtoLoja.nome) ? "APPLE" :
                             null;
 
                 if (marca === "XIAOMI") {
-                    filtraXiaomiAtacadoGames(produtoLojaAtualizado);
+                    formataXiaomiAtacadoGames(produtoLojaAtualizado);
                 }
 
                 if (marca === "APPLE") {
-                    filtraIphoneAtacadoGames(produtoLojaAtualizado);
+                    formataIphoneAtacadoGames(produtoLojaAtualizado);
                 }
             }
             if (lojaData?.algoritmo === 7) {
@@ -79,18 +71,19 @@ export function PageProdutoLoja() {
                             null;
 
                 if (marca === "XIAOMI") {
-                    filtraXiaomiMega(produtoLojaAtualizado);
+                    formataXiaomiMega(produtoLojaAtualizado);
                 }
-
-           
             }
 
+            return produtoLojaAtualizado;
+        }) ?? [];
+    });
 
 
+    const produtosLoja = useMemo(() => {
 
-            return produtoLojaAtualizado
-        }) ?? []
 
+        let dados = produtosData ?? [];
 
         if (isFilteredDesvinculados) {
             dados = dados.filter(produto => produto.vinculos === null || produto.vinculos.length === 0);
@@ -110,7 +103,8 @@ export function PageProdutoLoja() {
         return {
             page, total, limit, items, allItems
         }
-    }, [produtosData, page, limit, sortBy, sortOrder, isFilteredDesvinculados, isFilteredVinculados])
+    }, [produtosData, page, limit, sortBy, sortOrder, isFilteredDesvinculados, isFilteredVinculados]);
+
 
 
 
@@ -132,7 +126,6 @@ export function PageProdutoLoja() {
 
     return (
         <React.Fragment>
-
             <ModalAtualizarProdutoLoja onHide={() => setImportProdutoLoja(undefined)} lojaId={importProdutoLoja} produtoParaguay={produtosData} />
             <ModalSyncVinculos onHide={() => setSyncVinculos(undefined)} lojaId={lojaData} produtoParaguay={modalSyncVinculos} />
             <ModalVinculo onHide={() => setVinculoProduto(undefined)} produtoParaguay={modalVinculoProduto} />
@@ -207,154 +200,58 @@ export function PageProdutoLoja() {
                 </Col>
             </Row>
 
-            <Row className="my-2">
-                <Col xs={10}>
-                    <Dropdown >Exibir
-                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-1 limitPagination">
-                            {limit}
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu className="custom-dropdown-menu">
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 20)}>20</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 50)}>50</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 100)}>100</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 200)}>200</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 400)}>400</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 800)}>800</Dropdown.Item>
-                        </Dropdown.Menu>
-                        resultados por página
-                    </Dropdown>
-                </Col>
-                <Col xs={2} className="justify-content-end text-right">
-                    Mostrando de {produtosLoja.items.length} até {limit} de {produtosLoja.total}
-                </Col>
+            <PaginationUp
+                pageLimitSize={produtosLoja.limit}
+                handlePageChange={handlePageChange}
+                itemsTotal={produtosLoja.total}
+                itemsLength={produtosLoja.items.length}
+            />
 
 
-            </Row>
-            <Table striped bordered hover className="rounded-table">
 
-                <thead>
-                    <tr>
-                        <th className="th150" onClick={() => handleSort('codigo')} >
-                            <div className="thArrow">
-                                <span>Codigo</span>
-                                <span>
-                                    {sortBy === "codigo" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
-                                </span>
-                            </div>
-                        </th>
-                        <th className="th250" onClick={() => handleSort('marca')} >
-                            <div className="thArrow">
-                                <span>Marca</span>
-                                <span>
-                                    {sortBy === "marca" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
-                                </span>
-                            </div>
-                        </th>
-                        <th className="th250" onClick={() => handleSort('nome')} >
-                            <div className="thArrow">
-                                <span>Modelo</span>
-                                <span>
-                                    {sortBy === "nome" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
-                                </span>
-                            </div>
-                        </th>
-                        <th className="th250" onClick={() => handleSort('origem')} >
-                            <div className="thArrow">
-                                <span>Origem</span>
-                                <span>
-                                    {sortBy === "origem" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
-                                </span>
-                            </div>
-                        </th>
-                        <th className="th250" onClick={() => handleSort('cor')} >
-                            <div className="thArrow">
-                                <span>Cor</span>
-                                <span>
-                                    {sortBy === "cor" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
-                                </span>
-                            </div>
-                        </th>
-                        <th className="th150" onClick={() => handleSort('rede')}>
-                            <div className="thArrow">
-                                <span>Rede</span>
-                                <span>
-                                    {sortBy === "rede" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
-                                </span>
-                            </div>
-                        </th>
-                        <th className="th150" onClick={() => handleSort('ram')}>
-                            <div className="thArrow">
-                                <span>Ram</span>
-                                <span>
-                                    {sortBy === "ram" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
-                                </span>
-                            </div>
-                        </th>
-                        <th className="th150" onClick={() => handleSort('capacidade')}>
-                            <div className="thArrow">
-                                <span>Capacidade</span>
-                                <span>
-                                    {sortBy === "capacidade" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
-                                </span>
-                            </div>
-                        </th>
-                        <th className="th130" onClick={() => handleSort('preco')}>
-                            <div className="thArrow">
-                                <span>Preço U$</span>
-                                <span>
-                                    {sortBy === "preco" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
-                                </span>
-                            </div>
-                        </th>
-                        <th className="th70" onClick={() => handleSort('vinculos')}>
-                            <div className="thArrow">
-                                <span>Vinc.</span>
-                                <span>
-                                    {sortBy === "vinculos" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
-                                </span>
-                            </div>
-                        </th>
-                        <th className="th70">
-                            <span>Est.</span>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        !isFetching && produtosLoja?.items?.map((produtoLoja, index) => <ItemTable key={index} produtoLoja={produtoLoja} onVinculo={setVinculoProduto} lojaData={lojaData} />)
-                    }
-                </tbody>
-            </Table>
-            {isFetching && <FragmentLoading />}
-            <Row className="my-3">
-                <Col xs className="d-flex">
-                    <PaginationComponent<IProdutoLoja>
-                        items={produtosLoja?.total}
-                        pageSize={produtosLoja.limit}
-                        onPageChange={handlePageChange}
-                        currentPage={produtosLoja.page ?? 1}
-                    />
+            {(isProdutoLoading && isLojaLoading) && <FragmentLoading />}
 
-                    <Col className="ml-auto mx-3">
-                        <Dropdown > Exibir
-                            <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-1 limitPagination">
-                                {limit}
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu className="custom-dropdown-menu">
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 20)}>20</Dropdown.Item>
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 50)}>50</Dropdown.Item>
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 100)}>100</Dropdown.Item>
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 200)}>200</Dropdown.Item>
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 400)}>400</Dropdown.Item>
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 800)}>800</Dropdown.Item>
-                            </Dropdown.Menu>
-                            resultados por página
-                        </Dropdown>
-                    </Col>
 
-                    <span className="ml-2">Mostrando de {produtosLoja.items.length} até {limit} de {produtosLoja.total}</span>
-                </Col>
-            </Row>
+            {!isProdutoLoading && !isLojaLoading &&
+
+
+
+                <Table striped bordered hover className="rounded-table">
+
+
+                    <thead>
+                        <tr>
+                            <SortableTableHeader css="th150" displayText="Codigo" sortKey="codigo" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                            <SortableTableHeader css="th250" displayText="Marca" sortKey="marca" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                            <SortableTableHeader css="th250" displayText="Modelo" sortKey="nome" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                            <SortableTableHeader css="th250" displayText="Origem" sortKey="origem" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                            <SortableTableHeader css="th250" displayText="Cor" sortKey="cor" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                            <SortableTableHeader css="th150" displayText="Rede" sortKey="rede" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                            <SortableTableHeader css="th150" displayText="Ram" sortKey="ram" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                            <SortableTableHeader css="th150" displayText="Capacidade" sortKey="capacidade" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                            <SortableTableHeader css="th130" displayText="Preço U$" sortKey="preco" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                            <SortableTableHeader css="th70" displayText="Vinc." sortKey="vinculos" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                            <th className="th70">
+                                <span>Est.</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {!isFetching && produtosLoja?.items?.map((produtoLoja, index) => <ItemTable key={index} produtoLoja={produtoLoja} onVinculo={setVinculoProduto} lojaData={lojaData} />)}
+                    </tbody>
+                </Table>
+
+            }
+
+
+            <PaginationDown
+                handlePageChange={handlePageChange}
+                itemsTotal={produtosLoja.total}
+                pageLimitSize={produtosLoja.limit}
+                currentPage={produtosLoja.page ?? 1}
+                itemsLength={produtosLoja.items.length}
+            />
+
         </React.Fragment>
     );
 }
@@ -365,7 +262,7 @@ interface IPropsItensTable {
     onVinculo: (idProdutoParaguay: IProdutoLoja) => void,
 }
 
-function ItemTable({ produtoLoja, onVinculo, lojaData  }: IPropsItensTable) {
+function ItemTable({ produtoLoja, onVinculo, lojaData }: IPropsItensTable) {
     return (
 
         <React.Fragment>
@@ -421,8 +318,9 @@ function ItemTable({ produtoLoja, onVinculo, lojaData  }: IPropsItensTable) {
                     }}
                     onClick={() => { onVinculo(produtoLoja); }}
                     role="button"
-                    aria-label="Vincular Produto"
+                    aria-label={`Vinculos: ${produtoLoja.vinculos.length}`}
                 >
+
                     <Icons tipo="link" />
                 </td>
                 <td className="centralize-icon">

@@ -24,6 +24,8 @@ export function PageHome() {
     const { sortOrder, sortBy, handleSort } = useSort<ICatalogo>('nome');
     const [globalFilter, setGlobalFilter] = useState(false);
     const [indiaFilter, setIndiaFilter] = useState(false);
+    const [chinaFilter, setChinaFilter] = useState(false);
+    const [indonesiaFilter, setIndonesiaFilter] = useState(false);
 
     const { isFetching, data } = useQuery(["catalogoshome", filtro], async () => {
         let catalogo = await CatalogoController.searchCompetidor(filtro);
@@ -69,24 +71,30 @@ export function PageHome() {
 
         }) ?? []
 
-  
+
         dados = dados
-        .map(catalogo => ({
-            ...catalogo,
-            competidores: catalogo.competidores.filter(competidor => {
-                const nome = competidor.produto.nome.toUpperCase().replace(/[^a-zA-Z0-9 ]/g, '');
-                if (indiaFilter && nome.includes("INDIA")) {
-                    return false; // Se o filtro India estiver ativado e o nome incluir "INDIA", remova este competidor.
-                }
-                if (globalFilter && nome.includes("GLOBAL")) {
-                    return false; // Se o filtro Global estiver ativado e o nome incluir "GLOBAL", remova este competidor.
-                }
-                return true; // Se nenhum dos filtros corresponder, mantenha o competidor.
-            }),
-        }))
-        .filter(catalogo => catalogo.competidores.length > 0); // Remove catálogos que agora estão sem competidores.
-    
-        
+            .map(catalogo => ({
+                ...catalogo,
+                competidores: catalogo.competidores.filter(competidor => {
+                    const nome = competidor.produto.nome.toUpperCase().replace(/[^a-zA-Z0-9 ]/g, '');
+                    if (indiaFilter && nome.includes("INDIA")) {
+                        return false; // Se o filtro India estiver ativado e o nome incluir "INDIA", remova este competidor.
+                    }
+                    if (globalFilter && nome.includes("GLOBAL")) {
+                        return false; // Se o filtro Global estiver ativado e o nome incluir "GLOBAL", remova este competidor.
+                    }
+                    if (chinaFilter && nome.includes("CHINA")) {
+                        return false; // Se o filtro CHINA estiver ativado e o nome incluir "GLOBAL", remova este competidor.
+                    }
+                    if (indonesiaFilter && nome.includes("INDONESIA")) {
+                        return false; // Se o filtro INDONESIA estiver ativado e o nome incluir "GLOBAL", remova este competidor.
+                    }
+                    return true; // Se nenhum dos filtros corresponder, mantenha o competidor.
+                }),
+            }))
+            .filter(catalogo => catalogo.competidores.length > 0); // Remove catálogos que agora estão sem competidores.
+
+
 
         const sortedData = [...dados].sort(compareValues(sortBy, sortOrder));
 
@@ -96,7 +104,7 @@ export function PageHome() {
         return {
             page, total, limit, items
         }
-    }, [data, freteiro, page, limit, sortBy, sortOrder, indiaFilter, globalFilter])
+    }, [data, freteiro, page, limit, sortBy, sortOrder, indiaFilter, globalFilter, chinaFilter,indonesiaFilter])
 
     function exportCatalogoExcel(catalogos: ICatalogo[]) {
         const filteredCatalogos = catalogos.map(({
@@ -169,6 +177,24 @@ export function PageHome() {
                                     label="India"
                                 />
                             </Dropdown.Item>
+                            <Dropdown.Item as='div' onClick={(e) => e.stopPropagation()}>
+                                <Form.Check
+                                    type="checkbox"
+                                    id="chinaFilter"
+                                    checked={chinaFilter}
+                                    onChange={(e) => handleCheckboxChange(e, setChinaFilter)}
+                                    label="China"
+                                />
+                            </Dropdown.Item>
+                            <Dropdown.Item as='div' onClick={(e) => e.stopPropagation()}>
+                                <Form.Check
+                                    type="checkbox"
+                                    id="indonesiaFilter"
+                                    checked={indonesiaFilter}
+                                    onChange={(e) => handleCheckboxChange(e, setIndonesiaFilter)}
+                                    label="Indonesia"
+                                />
+                            </Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
 
@@ -203,8 +229,6 @@ export function PageHome() {
                 <Col xs={2} className="justify-content-end text-right">
                     Mostrando de {catalogos.items.length} até {limit} de {catalogos.total}
                 </Col>
-
-
             </Row>
 
             <Table striped bordered hover className="rounded-table">
@@ -256,8 +280,6 @@ export function PageHome() {
                                 </span>
                             </div>
                         </th>
-
-
                         <th className="th110" onClick={() => handleSort('lucroC')}>
                             <div className="thArrow">
                                 <span>Lucro C</span>
@@ -302,7 +324,6 @@ export function PageHome() {
                         catalogos.items
                             .sort(compareValues(sortBy, sortOrder))
                             .map((catalogo, index) => {
-
 
                                 return (
                                     <ItemTable key={index} catalogo={catalogo} eventKey={index.toString()} onToggle={setExpandedKey} expandedKey={expandedKey} />

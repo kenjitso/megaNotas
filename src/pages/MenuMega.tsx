@@ -94,9 +94,11 @@ export function MenuMega() {
                 onSelect={(eventKey) => navigate(eventKey ?? "/")}
               >
 
+                {/*    
                 <Nav.Item>
                   <Nav.Link eventKey="/" title="Home">Home</Nav.Link>
                 </Nav.Item>
+                */}
                 <Nav.Item>
                   <Nav.Link eventKey="/lojas" title="Lojas">Lojas</Nav.Link>
                 </Nav.Item>

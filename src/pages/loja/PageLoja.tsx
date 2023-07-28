@@ -12,6 +12,7 @@ import { ModalDesativaLoja } from "./ModalDesativaLoja";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatCurrency } from "@/features/FormatCurrency";
 import { compareValues, useSort } from "@/components/utils/FilterArrows";
+import { PaginationDown } from "@/components/pagination/PaginationDown";
 
 
 export function PageLoja() {
@@ -147,41 +148,18 @@ export function PageLoja() {
                 </tbody>
             </Table>
             {isFetching && <FragmentLoading />}
-            <Row className="my-3">
-                <Col xs className="d-flex">
-                    <PaginationComponent<ILoja>
-                        items={lojas.total}
-                        pageSize={lojas.limit}
-                        onPageChange={handlePageChange}
-                        currentPage={lojas.page ?? 1}
-                    />
 
-
-                    <Col className="ml-auto mx-3">
-                        <Dropdown > Exibir
-                            <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-1 limitPagination">
-                                {limit}
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu className="custom-dropdown-menu">
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 20)}>20</Dropdown.Item>
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 50)}>50</Dropdown.Item>
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 100)}>100</Dropdown.Item>
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 200)}>200</Dropdown.Item>
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 400)}>400</Dropdown.Item>
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 800)}>800</Dropdown.Item>
-                            </Dropdown.Menu>
-                            resultados por página
-                        </Dropdown>
-                    </Col>
-
-                    <span className="ml-2">Mostrando de {lojas.items.length} até {limit} de {lojas.total}</span>
-                </Col>
-            </Row>
+            <PaginationDown
+                handlePageChange={handlePageChange}
+                itemsTotal={lojas.total}
+                pageLimitSize={lojas.limit}
+                currentPage={lojas.page ?? 1}
+                itemsLength={lojas.items.length}
+            />
 
         </React.Fragment>
     );
 }
-
 
 
 interface IPropsItensTable {

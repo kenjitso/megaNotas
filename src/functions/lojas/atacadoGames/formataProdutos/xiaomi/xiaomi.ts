@@ -1,6 +1,6 @@
 import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 
-export const filtraXiaomiAtacadoGames = (produtoLoja: IProdutoLoja): IProdutoLoja | null => {
+export const formataXiaomiAtacadoGames = (produtoLoja: IProdutoLoja): IProdutoLoja | null => {
 
     const marca =
         /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
@@ -29,7 +29,6 @@ export const filtraXiaomiAtacadoGames = (produtoLoja: IProdutoLoja): IProdutoLoj
                                                     /3RAM/i.test(produtoLoja.nome) ? 3 :
                                                         /2GB RAM/i.test(produtoLoja.nome) ? 2 :
                                                             /2RAM/i.test(produtoLoja.nome) ? 2 :
-
                                                                 null;
 
     if (ram !== null) {

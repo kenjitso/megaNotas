@@ -1,6 +1,6 @@
 import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 
-export const filtraXiaomiMega = (produtoLoja: IProdutoLoja): IProdutoLoja | null => {
+export const formataXiaomiMega = (produtoLoja: IProdutoLoja): IProdutoLoja | null => {
 
     const marca =
         /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
