@@ -13,6 +13,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { formatCurrency } from "@/features/FormatCurrency";
 import { compareValues, useSort } from "@/components/utils/FilterArrows";
 import { PaginationDown } from "@/components/pagination/PaginationDown";
+import { PaginationUp } from "@/components/pagination/PaginationUp";
 
 
 export function PageLoja() {
@@ -90,29 +91,13 @@ export function PageLoja() {
                 </Col>
             </Row>
 
-            <Row className="my-2">
-                <Col xs={10}>
-                    <Dropdown >Exibir
-                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-1 limitPagination">
-                            {limit}
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu className="custom-dropdown-menu">
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 20)}>20</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 50)}>50</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 100)}>100</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 200)}>200</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 400)}>400</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 800)}>800</Dropdown.Item>
-                        </Dropdown.Menu>
-                        resultados por página
-                    </Dropdown>
-                </Col>
-                <Col xs={2} className="justify-content-end text-right">
-                    Mostrando de {lojas.items.length} até {limit} de {lojas.total}
-                </Col>
 
-
-            </Row>
+            <PaginationUp
+                pageLimitSize={lojas.limit}
+                handlePageChange={handlePageChange}
+                itemsTotal={lojas.total}
+                itemsLength={lojas.items.length}
+            />
 
 
             <Table striped bordered hover className="rounded-table">

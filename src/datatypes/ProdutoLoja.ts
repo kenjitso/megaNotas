@@ -147,28 +147,6 @@ export class ProdutoLojaController {
         return produtoLojaSchema;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
     public static async search(idLoja: string, q: string = "") {
 
         const params = new URLSearchParams();

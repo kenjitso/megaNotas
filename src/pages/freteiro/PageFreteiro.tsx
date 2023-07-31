@@ -13,6 +13,8 @@ import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import { formatCurrency } from "@/features/FormatCurrency";
 import { useQuery } from "@tanstack/react-query";
 import { compareValues, useSort } from "@/components/utils/FilterArrows";
+import { PaginationUp } from "@/components/pagination/PaginationUp";
+import { PaginationDown } from "@/components/pagination/PaginationDown";
 
 export function PageFreteiro() {
     const [params, setParams] = useSearchParams();
@@ -79,29 +81,13 @@ export function PageFreteiro() {
                     </Button>
                 </Col>
             </Row>
-            <Row className="my-2">
-                <Col xs={10}>
-                    <Dropdown >Exibir
-                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-1 limitPagination">
-                            {limit}
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu className="custom-dropdown-menu">
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 20)}>20</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 50)}>50</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 100)}>100</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 200)}>200</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 400)}>400</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 800)}>800</Dropdown.Item>
-                        </Dropdown.Menu>
-                        resultados por página
-                    </Dropdown>
-                </Col>
-                <Col xs={2} className="justify-content-end text-right">
-                    Mostrando de {freteiros.items.length} até {limit} de {freteiros.total}
-                </Col>
 
-
-            </Row>
+            <PaginationUp
+                pageLimitSize={freteiros.limit}
+                handlePageChange={handlePageChange}
+                itemsTotal={freteiros.total}
+                itemsLength={freteiros.items.length}
+            />
 
             <Table striped bordered hover className="rounded-table">
                 <thead>
@@ -146,36 +132,15 @@ export function PageFreteiro() {
                 </tbody>
             </Table>
             {isFetching && <FragmentLoading />}
-            <Row className="my-3">
-                <Col xs className="d-flex">
-                    <PaginationComponent<IFreteiro>
-                        items={freteiros.total}
-                        pageSize={freteiros.limit}
-                        onPageChange={handlePageChange}
-                        currentPage={freteiros.page ?? 1}
-                    />
 
-                 
-<Col className="ml-auto mx-3">
-                        <Dropdown > Exibir
-                            <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-1 limitPagination">
-                                {limit}
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu className="custom-dropdown-menu">
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 20)}>20</Dropdown.Item>
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 50)}>50</Dropdown.Item>
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 100)}>100</Dropdown.Item>
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 200)}>200</Dropdown.Item>
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 400)}>400</Dropdown.Item>
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 800)}>800</Dropdown.Item>
-                            </Dropdown.Menu>
-                            resultados por página
-                        </Dropdown>
-                    </Col>
+            <PaginationDown
+                pageLimitSize={freteiros.limit}
+                handlePageChange={handlePageChange}
+                itemsTotal={freteiros.total}
+                currentPage={freteiros.page ?? 1}
+                itemsLength={freteiros.items.length}
+            />
 
-                    <span className="ml-2">Mostrando de {freteiros.items.length} até {limit} de {freteiros.total}</span>
-                </Col>
-            </Row>
         </React.Fragment>
     );
 }

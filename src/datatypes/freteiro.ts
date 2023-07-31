@@ -113,6 +113,4 @@ export class FreteiroController {
     }).transform(dados => dados.items).parse(responseData);
     return freteiroSchema;
   }
-
- 
 }

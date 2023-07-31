@@ -1,4 +1,3 @@
-import { PaginationComponent } from "@/components/pagination/PaginationComponent";
 import { CatalogoController, ICatalogo, } from "@/datatypes/catalogo";
 import React, { useMemo, useState } from "react";
 import { Button, Col, Dropdown, FloatingLabel, Form, OverlayTrigger, Row, Table, Tooltip, } from "react-bootstrap";
@@ -6,12 +5,15 @@ import { useSearchParams } from "react-router-dom";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { FreteiroStore } from "@/context/FreteiroStore";
-import { ILoja } from "@/datatypes/loja";
 import { Icons } from "@/components/icons/icons";
 import * as XLSX from 'xlsx';
 import { useQuery } from "@tanstack/react-query";
 import { compareValues, useSort } from "@/components/utils/FilterArrows";
 import { ItemTable } from "./TablePageHome";
+import { PaginationUp } from "@/components/pagination/PaginationUp";
+import { PaginationDown } from "@/components/pagination/PaginationDown";
+import { SortableTableHeader } from "@/components/pagination/SortableTableHeader";
+import { ModalSincronismoUpdate } from "../catalogo/ModalSincronismoUpdate";
 
 
 export function PageHome() {
@@ -26,6 +28,7 @@ export function PageHome() {
     const [indiaFilter, setIndiaFilter] = useState(false);
     const [chinaFilter, setChinaFilter] = useState(false);
     const [indonesiaFilter, setIndonesiaFilter] = useState(false);
+    const [catalogoSincronismoUpdate, setSincronismoUpdate] = useState<boolean>(false);
 
     const { isFetching, data } = useQuery(["catalogoshome", filtro], async () => {
         let catalogo = await CatalogoController.searchCompetidor(filtro);
@@ -104,7 +107,7 @@ export function PageHome() {
         return {
             page, total, limit, items
         }
-    }, [data, freteiro, page, limit, sortBy, sortOrder, indiaFilter, globalFilter, chinaFilter,indonesiaFilter])
+    }, [data, freteiro, page, limit, sortBy, sortOrder, indiaFilter, globalFilter, chinaFilter, indonesiaFilter])
 
     function exportCatalogoExcel(catalogos: ICatalogo[]) {
         const filteredCatalogos = catalogos.map(({
@@ -140,6 +143,7 @@ export function PageHome() {
 
     return (
         <React.Fragment>
+    <ModalSincronismoUpdate onHide={() => setSincronismoUpdate(false)} isVisible={catalogoSincronismoUpdate} catalogos={catalogos?.total} />
 
             <Row className="my-3">
                 <Col xs={12} className="d-flex align-items-center">
@@ -152,7 +156,10 @@ export function PageHome() {
                             pageLink={`?limit=20&page=1`}
                         />
                     </FloatingLabel>
-
+                    <OverlayTrigger
+                        placement="top"
+                        overlay={<Tooltip id="download-tooltip">Filtros</Tooltip>}
+                    >
                     <Dropdown>
                         <Dropdown.Toggle id="dropdown-basic" className="no-caret mx-2 custom-dropdown">
                             <Icons tipo="filtro" tamanho={20} />
@@ -197,127 +204,58 @@ export function PageHome() {
                             </Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
+                    </OverlayTrigger>
 
                     <OverlayTrigger
                         placement="top"
                         overlay={<Tooltip id="download-tooltip">Exportar para Excel</Tooltip>}
                     >
-                        <Button id="dropdown-basic" className="custom-dropdown" onClick={() => exportCatalogoExcel(catalogos.items)}>
+                        <Button id="dropdown-basic" className="custom-dropdown me-2" onClick={() => exportCatalogoExcel(catalogos.items)}>
                             <Icons tipo="downloadXLSX" tamanho={20} />
                         </Button>
                     </OverlayTrigger>
+
+                    <OverlayTrigger
+                        placement="top"
+                        overlay={<Tooltip id="download-tooltip">Sincronizar Catalogos</Tooltip>}
+                    >
+                    <Button id="dropdown-basic" className="custom-dropdown" onClick={() => setSincronismoUpdate(true)}
+                     
+                    >
+                        <Icons tipo="update" tamanho={23} />
+                    </Button>
+                    </OverlayTrigger>
+
                 </Col>
             </Row>
 
-            <Row className="my-2">
-                <Col xs={10}>
-                    <Dropdown >Exibir
-                        <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-1 limitPagination">
-                            {limit}
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu className="custom-dropdown-menu">
-                            <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 20)}>20</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 50)}>50</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 100)}>100</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 200)}>200</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 400)}>400</Dropdown.Item>
-                            <Dropdown.Item className="custom-dropdown-item " onClick={() => handlePageChange(1, 800)}>800</Dropdown.Item>
-                        </Dropdown.Menu>
-                        resultados por página
-                    </Dropdown>
-                </Col>
-                <Col xs={2} className="justify-content-end text-right">
-                    Mostrando de {catalogos.items.length} até {limit} de {catalogos.total}
-                </Col>
-            </Row>
+
+            <PaginationUp
+                pageLimitSize={catalogos.limit}
+                handlePageChange={handlePageChange}
+                itemsTotal={catalogos.total}
+                itemsLength={catalogos.items.length}
+            />
 
             <Table striped bordered hover className="rounded-table">
+
+
                 <thead>
                     <tr>
-                        <th className="th70" >
-                            <div className="thArrow">
-                                <span></span>
-                            </div>
-                        </th>
-                        <th className="th200" onClick={() => handleSort('nome')}>
-                            <div className="thArrow">
-                                <span>Nome</span>
-                                <span>
-                                    {sortBy === "nome" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
-                                </span>
-                            </div>
-                        </th>
-
-                        <th className="th110" onClick={() => handleSort('competidores[0].produto.preco')} >
-                            <div className="thArrow">
-                                <span>Preço U$</span>
-                                <span>
-                                    {sortBy === "competidores[0].produto.preco" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
-                                </span>
-                            </div>
-                        </th>
-                        <th className="th130" onClick={() => handleSort('custoTotal')} >
-                            <div className="thArrow">
-                                <span>Custo Total R$</span>
-                                <span>
-                                    {sortBy === "custoTotal" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
-                                </span>
-                            </div>
-                        </th>
-                        <th className="th110" onClick={() => handleSort('precoC')} >
-                            <div className="thArrow">
-                                <span>Preço ML C</span>
-                                <span>
-                                    {sortBy === "precoC" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
-                                </span>
-                            </div>
-                        </th>
-                        <th className="th110" onClick={() => handleSort('precoP')}>
-                            <div className="thArrow">
-                                <span>Preço ML P</span>
-                                <span>
-                                    {sortBy === "precoP" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
-                                </span>
-                            </div>
-                        </th>
-                        <th className="th110" onClick={() => handleSort('lucroC')}>
-                            <div className="thArrow">
-                                <span>Lucro C</span>
-                                <span>
-                                    {sortBy === "lucroC" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
-                                </span>
-                            </div>
-                        </th>
-                        <th className="th110" onClick={() => handleSort('lucroP')}>
-                            <div className="thArrow">
-                                <span>Lucro P</span>
-                                <span>
-                                    {sortBy === "lucroP" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
-                                </span>
-                            </div>
-                        </th>
-
-                        <th className="th130" onClick={() => handleSort('margemC')}>
-                            <div className="thArrow">
-                                <span>Margem Liq. C</span>
-                                <span>
-                                    {sortBy === "margemC" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
-                                </span>
-                            </div>
-                        </th>
-                        <th className="th130" onClick={() => handleSort('margemP')}>
-                            <div className="thArrow">
-                                <span >Margem Liq. P</span>
-                                <span>
-                                    {sortBy === "margemP" ? (sortOrder === "desc" ? "▲" : "▼") : ""}
-                                </span>
-                            </div>
-                        </th>
-                        <th className="th110" >
-                            <span>Vencedor</span>
-                        </th>
+                        <SortableTableHeader css="th70" />
+                        <SortableTableHeader css="th200" displayText="Nome" sortKey="nome" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                        <SortableTableHeader css="th110" displayText="Preço U$" sortKey="competidores[0].produto.preco" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                        <SortableTableHeader css="th130" displayText="Custo Total" sortKey="custoTotal" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                        <SortableTableHeader css="th110" displayText="Preço ML C" sortKey="precoC" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                        <SortableTableHeader css="th110" displayText="Preco ML P" sortKey="precoP" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                        <SortableTableHeader css="th110" displayText="Lucro C" sortKey="lucroC" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                        <SortableTableHeader css="th110" displayText="Lucro P" sortKey="lucroP" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                        <SortableTableHeader css="th130" displayText="Margem Liq. C" sortKey="margemC" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                        <SortableTableHeader css="th130" displayText="Margem Liq. P" sortKey="margemP" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                        <SortableTableHeader css="th110" displayText="Vencedor" />
                     </tr>
                 </thead>
+
 
                 <tbody>
                     {!isFetching &&
@@ -334,35 +272,14 @@ export function PageHome() {
 
             </Table>
             {isFetching && <FragmentLoading />}
-            <Row className="my-3">
-                <Col xs className="d-flex">
-                    <PaginationComponent<ILoja>
-                        items={catalogos.total}
-                        pageSize={catalogos.limit}
-                        onPageChange={handlePageChange}
-                        currentPage={catalogos.page ?? 1}
-                    />
 
-                    <Col className="ml-auto mx-3">
-                        <Dropdown > Exibir
-                            <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-1 limitPagination">
-                                {limit}
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu className="custom-dropdown-menu">
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 20)}>20</Dropdown.Item>
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 50)}>50</Dropdown.Item>
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 100)}>100</Dropdown.Item>
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 200)}>200</Dropdown.Item>
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 400)}>400</Dropdown.Item>
-                                <Dropdown.Item className="custom-dropdown-item" onClick={() => handlePageChange(1, 800)}>800</Dropdown.Item>
-                            </Dropdown.Menu>
-                            resultados por página
-                        </Dropdown>
-                    </Col>
-
-                    <span className="ml-2">Mostrando de {catalogos.items.length} até {limit} de {catalogos.total}</span>
-                </Col>
-            </Row>
+            <PaginationDown
+                handlePageChange={handlePageChange}
+                itemsTotal={catalogos.total}
+                pageLimitSize={catalogos.limit}
+                currentPage={catalogos.page ?? 1}
+                itemsLength={catalogos.items.length}
+            />
 
         </React.Fragment>
     );
