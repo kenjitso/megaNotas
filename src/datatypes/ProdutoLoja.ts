@@ -62,7 +62,7 @@ export class ProdutoLojaController {
     }
 
     public static async cadastro(produtos: IProdutoLoja[]) {
-        console.log(produtos);
+
 
         for (const produto of produtos) {
             produto.codigo = produto.codigo.trim();
@@ -80,7 +80,7 @@ export class ProdutoLojaController {
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja`, options);
 
         const responseData: unknown = await response.json();
-        console.log(responseData);
+
         const produtosLojaSchema = z.array(schemaProdutoLoja).parse(responseData);
         return produtosLojaSchema;
     }

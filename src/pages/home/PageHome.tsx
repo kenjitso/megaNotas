@@ -143,6 +143,8 @@ export function PageHome() {
 
     return (
         <React.Fragment>
+
+          
     <ModalSincronismoUpdate onHide={() => setSincronismoUpdate(false)} isVisible={catalogoSincronismoUpdate} catalogos={catalogos?.total} />
 
             <Row className="my-3">

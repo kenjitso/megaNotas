@@ -16,7 +16,7 @@ interface IProps {
     onListProdutoLoja: (selectedItems: IProdutoLoja[]) => void;
 }
 
-export function ModalTableImportarProdutoLoja({ listProdutoLoja,lojaId, onListProdutoLoja }: IProps) {
+export function ModalTableImportarProdutoLoja({ listProdutoLoja, lojaId, onListProdutoLoja }: IProps) {
 
     const [selectedProdutoLoja, setSelectedProdutoLoja] = useState<Set<IProdutoLoja>>(new Set());
     const [filtro, setFiltro] = useState("");
@@ -31,24 +31,44 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja,lojaId, onListPr
 
         if (event.target.checked) {
             listProdutoLoja?.naoCadastrados.forEach(produtoLoja => {
-                if (produtoLoja.nome.toLowerCase().includes('celular')) {
-                    celularItems.add(produtoLoja);
-                }
-                if (produtoLoja.nome.toLowerCase().includes('cel')) {
+                const nomeProdutoLower = produtoLoja.nome.toLowerCase();
+                /* Se o nome incluir 'microfone', ele não será adicionado.
+                if (nomeProdutoLower.includes('microfone')||nomeProdutoLower.includes('tel')) {
+                    return;
+                }*/
+                // Se o nome incluir 'celular' ou 'cel', ele será adicionado.
+                if (nomeProdutoLower.includes('xiaomi') && nomeProdutoLower.includes('cel') ||
+                    nomeProdutoLower.includes('xiaomi') && nomeProdutoLower.includes('celular') ||
+                    nomeProdutoLower.includes('iphone') ||
+                    nomeProdutoLower.includes('samsung') && nomeProdutoLower.includes('cel') ||
+                    nomeProdutoLower.includes('samsung') && nomeProdutoLower.includes('celular')
+                ) {
                     celularItems.add(produtoLoja);
                 }
             });
         } else {
+            const itemsToDelete = [];
             for (let item of celularItems) {
-                if (item.nome.toLowerCase().includes('celular') || item.nome.toLowerCase().includes('cel')) {
-                    celularItems.delete(item);
+                const nomeProdutoLower = item.nome.toLowerCase();
+                if (
+                    nomeProdutoLower.includes('xiaomi') && nomeProdutoLower.includes('cel') ||
+                    nomeProdutoLower.includes('xiaomi') && nomeProdutoLower.includes('celular') ||
+                    nomeProdutoLower.includes('iphone') ||
+                    nomeProdutoLower.includes('samsung') && nomeProdutoLower.includes('cel') ||
+                    nomeProdutoLower.includes('samsung') && nomeProdutoLower.includes('celular')
+                ) {
+                    itemsToDelete.push(item);
                 }
             }
+            // remove os itens em uma segunda passagem
+            itemsToDelete.forEach(item => celularItems.delete(item));
         }
 
         setSelectedProdutoLoja(celularItems);
         onListProdutoLoja(Array.from(celularItems));
     };
+
+
 
 
     const handleCheckboxFilterChangeNaoEncontrados = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,16 +77,20 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja,lojaId, onListPr
 
     let filteredProdutos: IProdutoLoja[] = [];
 
+
     if (checkboxFilterNaoEncontrados) {
         filteredProdutos = (listProdutoLoja?.naoEncontrados || []).filter(produtoLoja =>
-            (!checkboxFilter || produtoLoja.nome.toLowerCase().includes('celular'))
+            (!checkboxFilter || produtoLoja.nome.toLowerCase().includes('celular')) &&
+            (!produtoLoja.nome.toLowerCase().includes('microfone'))
         );
     } else {
         filteredProdutos = (listProdutoLoja?.naoCadastrados || []).filter(produtoLoja =>
-            produtoLoja.nome.toLowerCase().includes(filtro.toLowerCase()) &&
-            (!checkboxFilter || produtoLoja.nome.toLowerCase().includes('celular'))
+            produtoLoja.nome.toLowerCase().includes(filtro.toLowerCase()) ||
+            (checkboxFilter && (produtoLoja.nome.toLowerCase().includes('celular') || produtoLoja.nome.toLowerCase().includes(' cel '))) &&
+            (!produtoLoja.nome.toLowerCase().includes('microfone'))
         );
     }
+
 
     const handleCheckboxChange = (
         produtoLoja: IProdutoLoja,

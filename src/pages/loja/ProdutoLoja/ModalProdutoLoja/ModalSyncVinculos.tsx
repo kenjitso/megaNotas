@@ -1,15 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { Modal, Button, Spinner } from "react-bootstrap";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CatalogoController, ICatalogo } from "@/datatypes/catalogo";
+import { CatalogoController } from "@/datatypes/catalogo";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
 import { toast } from "react-toastify";
-
 import { filtrosVinculosIphoneAtacadoGames } from "@/functions/produtos/apple/filtrosVinculosIphone";
-
 import { otherSearchAtacadoGames } from "@/functions/produtos/otherSearchAtacadoGames";
 import { ILoja } from "@/datatypes/loja";
 import { filtrosVinculosXiaomiAtacadoGames } from "@/functions/produtos/xiaomi/filtrosVinculosXiaomi";
+import { filtrosVinculosSamsungAtacadoGames } from "@/functions/produtos/samsung/filtroVinculosSamsung";
 
 interface IProps {
     produtoParaguay?: IProdutoLoja[];
@@ -51,9 +50,11 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
                     if (produto.marca === "XIAOMI") {
                         similarity = filtrosVinculosXiaomiAtacadoGames(produto, productML);
                     }
-
                     if (produto.marca === "APPLE") {
                         similarity = filtrosVinculosIphoneAtacadoGames(produto, productML);
+                    }
+                    if (produto.marca === "SAMSUNG") {
+                        similarity = filtrosVinculosSamsungAtacadoGames(produto, productML);
                     }
 
 
@@ -77,6 +78,9 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
 
                         if (produto.marca === "APPLE") {
                             similarity = filtrosVinculosIphoneAtacadoGames(produto, productML);
+                        }
+                        if (produto.marca === "SAMSUNG") {
+                            similarity = filtrosVinculosSamsungAtacadoGames(produto, productML);
                         }
 
 
@@ -171,6 +175,10 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
                     similarity = filtrosVinculosIphoneAtacadoGames(produto, productML);
                 }
 
+                if (produto.marca === "SAMSUNG") {
+                    similarity = filtrosVinculosSamsungAtacadoGames(produto, productML);
+                }
+
                 if (similarity > highestSimilarity) {
                     highestSimilarity = similarity;
 
@@ -234,7 +242,9 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
                             ? `https://atacadogames.com/lista-produtos/termo/${produtoAtualParaguay.codigo}/1`
                             : (lojaId?.algoritmo === 7
                                 ? `https://www.megaeletro.com.py/br/p/${produtoAtualParaguay.codigo}/1`
-                                : '#')}
+                                : (lojaId?.algoritmo === 5
+                                    ? `https://www.madridcenter.com/produtos?q=${produtoAtualParaguay.codigo}`
+                                    : '#'))}
                         target="_blank"
                         rel="noopener noreferrer"
                         title={produtoAtualParaguay.codigo}
@@ -243,7 +253,6 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
                     </a>
                         </p>
 
-                        {/* Agrupando informações semelhantes */}
                         <p><strong>Detalhes do Produto:</strong></p>
                         <ul>
                             <li><strong>Nome:</strong> {produtoAtualParaguay.nome_original}</li>

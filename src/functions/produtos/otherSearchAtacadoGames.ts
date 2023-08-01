@@ -53,6 +53,9 @@ export async function otherSearchAtacadoGames(produto: IProdutoLoja) {
     if (produto.nome.trim().toUpperCase() === "POCO X4 PRO") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Poco X4 Pro Dual Sim"); 
     if (produto.nome.trim().toUpperCase() === "13 PRO" && produto.cor === "PRETO") catalogo = await CatalogoController.searchCatalogoML("Xiaomi 13 Pro ceramic black 12 GB RAM");
     
+
+    //SAMSUNG
+    if (produto.nome.trim().toUpperCase() === "A54 SM-A546E") catalogo = await CatalogoController.searchCatalogoML("Samsung Galaxy A54 5G"+ produto.cor);
     
     if (!catalogo) catalogo = await CatalogoController.searchCatalogoML(produto.marca + " " + produto.nome + " " + produto.cor + " " + produto.ram + " " + produto.capacidade);
 

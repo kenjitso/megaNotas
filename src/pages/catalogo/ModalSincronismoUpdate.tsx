@@ -48,7 +48,7 @@ export function ModalSincronismoUpdate({ onHide, catalogos, isVisible }: IProps)
       for (let i = 0; i < totalCatalogos; i += chunkSize) {
         const currentChunk = Math.min(chunkSize, totalCatalogos - i);
         const result = await CatalogoController.sync(isoDate, currentChunk);
-  
+
         setSyncStatus(prevStatus => ({
           total: result.total,
           sucesso: prevStatus.sucesso + result.sucesso,
@@ -106,7 +106,7 @@ export function ModalSincronismoUpdate({ onHide, catalogos, isVisible }: IProps)
                 <div className="text-center">
                   <Spinner animation="border" size="sm" />
                   <b>&nbsp;&nbsp;Sincronizando...</b>
-                  <Row className= "d-flex justify-content-center my-3">
+                  <Row className="d-flex justify-content-center my-3">
                     <Col sm={6} md={3}>
                       <Card body>
                         <BsListCheck className="mr-2" />
@@ -142,10 +142,7 @@ export function ModalSincronismoUpdate({ onHide, catalogos, isVisible }: IProps)
               )}
             </Col>
           </Row>
-
         </Modal.Body>
-
-
       </Modal>
     </React.Fragment>
   );

@@ -20,7 +20,7 @@ export function MegaFormat(
     try {
 
         const extractedItems = processPdfArray(pdfArray);
-        console.log(extractedItems);
+
 
         const lineValidation = z.object({
             codigo: z.string(),
@@ -78,7 +78,8 @@ function processPdfArray(
 
     const text = pdfArray.join(' ').replace(/\\/g, '');
 
-    const regex = /\|\s*(\d+-\d+)\|\s*\d+\|\s*(.*?)\s*\|\s*([\d.]+)\|\s*([\d.]+)\|/g;
+    const regex = /\|\s*(\d+-\d+)\|\s*\d+\|\s*(.*?)\s*\|\s*([\d.,]+)\|\s*([\d.,]+)\|/g;
+
 
     let match;
 
@@ -98,6 +99,7 @@ function processPdfArray(
             .replace(/6.53\"/g, '')
             .replace(/6.79\"/g, '')
             .replace(/6.7\"/g, '')
+            .replace(/6.73\"/g, '')
             .replace(/6.52\"/g, '')
             .replace(/6.6\"/g, '')
             .replace(/6.58\"/g, '')
@@ -175,15 +177,8 @@ function processPdfArray(
             descricao = descricao + " GLOBAL";
         }
 
-        if (descricao.includes('POCO X5 PRETO')) {
-            console.log('Found "POCO X5 PRETO"');
-          } else {
-            console.log('Did not find "POCO X5 PRETO"');
-          }
-          
 
-
-        let preco = match[3];
+          let preco = match[4];
 
 
 

@@ -13,6 +13,7 @@ import * as pdfjsLib from "pdfjs-dist";
 import { ModalTableAtualizarProdutoLoja } from "./ModalTableAtualizarProdutoLoja";
 import { ModalTableImportarProdutoLoja } from "./ModalTableImportarProdutoLoja";
 import { MegaFormat } from "@/functions/lojas/mega/mega";
+import { MadridFormat } from "@/functions/lojas/madridCenter/madridCenter";
 pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
 
 interface IProps {
@@ -50,7 +51,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
 
 
     const mutationAtualizaCadastrados = useMutation((produtos: IProdutoLoja[]) => {
-     
+
         if (!lojaId) throw new Error("Loja Indefinido");
         return atualizarProdutosEmBlocos(produtos);
     }, {
@@ -73,7 +74,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
     }
 
     const mutationCadastraNaoCadastrados = useMutation(() => {
-   
+
         if (!lojaId) throw new Error("Loja Indefinido");
 
         return ProdutoLojaController.cadastro(listToSave);
@@ -131,15 +132,33 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                                     setIsModalImportVisible(false);
                                     setIsLoading(false);
                                     setIsModalStatusBar(true);
-                                }
-                                if (lojaId?.algoritmo === 7) {
+                                } else if (lojaId?.algoritmo === 7) {
 
                                     setFormattedList(MegaFormat(lojaId.id ?? "", allPagesText, [], produtoParaguay));
                                     mutationAtualizaCadastrados.mutate(MegaFormat(lojaId.id ?? "", allPagesText, [], produtoParaguay).cadastrados);
                                     setIsModalImportVisible(false);
                                     setIsLoading(false);
                                     setIsModalStatusBar(true);
+                                } else if (lojaId?.algoritmo === 5) {
+
+                                    setFormattedList(MadridFormat(lojaId.id ?? "", allPagesText, [], produtoParaguay));
+                                    mutationAtualizaCadastrados.mutate(MadridFormat(lojaId.id ?? "", allPagesText, [], produtoParaguay).cadastrados);
+                                    setIsModalImportVisible(false);
+                                    setIsLoading(false);
+                                    setIsModalStatusBar(true);
+
+                                } else {
+                                    toast.info("Loja não formatada!");
+
                                 }
+
+
+
+
+
+
+
+
                             });
 
 
@@ -237,7 +256,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                         >
                             {" " + lojaId?.nome.toLocaleUpperCase() + " "}
                         </a>
-                        
+
                     </>
                 }</Modal.Title>
             </Modal.Header>
@@ -364,7 +383,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                     <Button
                         variant="secondary"
                         onClick={() => {
-                            if (lojaId?.algoritmo === 7) {
+                            if (lojaId?.algoritmo === 7 || lojaId?.algoritmo === 5) {
                                 setIsItensNotRegistered(true);
                             } else if (lojaId?.algoritmo === 1) {
                                 setIsModalRenameVisible(true);

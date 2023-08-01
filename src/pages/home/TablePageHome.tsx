@@ -101,13 +101,16 @@ export function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropIt
                                                         <Col xs={8} md={10}>
                                                             <strong>Produto: </strong>
 
+
                                                             <a
                                                                 style={{ color: "blue" }}
                                                                 href={competidor.loja.algoritmo === 1
                                                                     ? `https://atacadogames.com/lista-produtos/termo/${competidor.produto.codigo}/1`
                                                                     : (competidor.loja.algoritmo === 7
                                                                         ? `https://www.megaeletro.com.py/br/p/${competidor.produto.codigo}/1`
-                                                                        : '#')}
+                                                                        : (competidor.loja.algoritmo === 5
+                                                                            ? `https://www.madridcenter.com/produtos?q=${competidor.produto.codigo}`
+                                                                            : '#'))}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
                                                                 title={competidor.produto.codigo}

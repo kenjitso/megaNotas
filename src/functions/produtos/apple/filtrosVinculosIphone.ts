@@ -53,7 +53,7 @@ export function filtrosVinculosIphoneAtacadoGames(produtoParaguay: IProdutoLoja,
     if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 14 PRO MAX A2651" && produtoML.modelo.toUpperCase().trim() === "IPHONE 14 PRO MAX") similarity++;
     if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 14 PRO MAX A2893 3J" && produtoML.modelo.toUpperCase().trim() === "IPHONE 14 PRO MAX") similarity++;
     if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 14 PRO MAX A2896 CH" && produtoML.modelo.toUpperCase().trim() === "IPHONE 14 PRO MAX") similarity++;
-
+    if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 11 LZ A2221" && produtoML.modelo.toUpperCase().trim() === "IPHONE 11") similarity++;
     if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 14 PRO A2890 LE" && produtoML.modelo.toUpperCase().trim() === "IPHONE 14 PRO") similarity++;
 
 

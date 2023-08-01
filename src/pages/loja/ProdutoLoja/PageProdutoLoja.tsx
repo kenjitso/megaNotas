@@ -18,6 +18,9 @@ import { formataXiaomiMega } from "@/functions/lojas/mega/formataProdutos/xiaomi
 import { PaginationDown } from "@/components/pagination/PaginationDown";
 import { PaginationUp } from "@/components/pagination/PaginationUp";
 import { SortableTableHeader } from "@/components/pagination/SortableTableHeader";
+import { formataXiaomiMadrid } from "@/functions/lojas/madridCenter/formataProdutos/xiaomi/formataXiaomiMadrid";
+import { formataIphoneMadrid } from "@/functions/lojas/madridCenter/formataProdutos/apple/formataIphoneMadrid";
+import { formataSamsungMadrid } from "@/functions/lojas/madridCenter/formataProdutos/samsung/formataSamsungMadrid";
 
 
 
@@ -50,7 +53,7 @@ export function PageProdutoLoja() {
             };
 
             if (lojaData?.algoritmo === 1) {
-                console.log("??");
+
                 const marca =
                     /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
                         /APPLE/i.test(produtoLoja.nome) ? "APPLE" :
@@ -72,6 +75,23 @@ export function PageProdutoLoja() {
 
                 if (marca === "XIAOMI") {
                     formataXiaomiMega(produtoLojaAtualizado);
+                }
+            }
+            if (lojaData?.algoritmo === 5) {
+                const marca =
+                    /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
+                        /APPLE/i.test(produtoLoja.nome) ? "APPLE" :
+                            /SAMSUNG/i.test(produtoLoja.nome) ? "SAMSUNG" :
+                                null;
+
+                if (marca === "XIAOMI") {
+                    formataXiaomiMadrid(produtoLojaAtualizado);
+                }
+                if (marca === "APPLE") {
+                    formataIphoneMadrid(produtoLojaAtualizado);
+                }
+                if (marca === "SAMSUNG") {
+                    formataSamsungMadrid(produtoLojaAtualizado);
                 }
             }
 
@@ -277,14 +297,16 @@ function ItemTable({ produtoLoja, onVinculo, lojaData }: IPropsItensTable) {
 
                 </td>
                 <td>
-
                     <a
                         style={{ color: "blue" }}
-                        href={lojaData?.algoritmo === 1
-                            ? `https://atacadogames.com/lista-produtos/termo/${produtoLoja.codigo}/1`
-                            : (lojaData?.algoritmo === 7
-                                ? `https://www.megaeletro.com.py/br/p/${produtoLoja.codigo}/1`
-                                : '#')}
+                        href={
+                            lojaData?.algoritmo === 1
+                                ? `https://atacadogames.com/lista-produtos/termo/${produtoLoja.codigo}/1`
+                                : (lojaData?.algoritmo === 7
+                                    ? `https://www.megaeletro.com.py/br/p/${produtoLoja.codigo}/1`
+                                    : (lojaData?.algoritmo === 5
+                                        ? `https://www.madridcenter.com/produtos?q=${produtoLoja.codigo}`
+                                        : '#'))}
                         target="_blank"
                         rel="noopener noreferrer"
                         title={produtoLoja.codigo}
