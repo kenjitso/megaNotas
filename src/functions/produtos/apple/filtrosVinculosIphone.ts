@@ -55,7 +55,7 @@ export function filtrosVinculosIphoneAtacadoGames(produtoParaguay: IProdutoLoja,
     if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 14 PRO MAX A2896 CH" && produtoML.modelo.toUpperCase().trim() === "IPHONE 14 PRO MAX") similarity++;
     if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 11 LZ A2221" && produtoML.modelo.toUpperCase().trim() === "IPHONE 11") similarity++;
     if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 14 PRO A2890 LE" && produtoML.modelo.toUpperCase().trim() === "IPHONE 14 PRO") similarity++;
-
+    if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 13 MLPH3LZ A2633" && produtoML.modelo.toUpperCase().trim() === "IPHONE 13") similarity++;
 
 
 
@@ -112,7 +112,7 @@ export function filtrosVinculosIphoneAtacadoGames(produtoParaguay: IProdutoLoja,
     if (produtoParaguay.cor.trim().toUpperCase() === "AMARELO" && produtoML.cor.trim().toUpperCase() === "AMARELO") similarity++;
     if (produtoParaguay.cor.trim().toUpperCase() === "AMARELO" && produtoML.cor.trim().toUpperCase() === "YELLOW") similarity++;
     if (produtoParaguay.cor.trim().toUpperCase() === "PRATA" && produtoML.cor.trim().toUpperCase() === "PRATEADO") similarity++;
-
+    if (produtoParaguay.cor.trim().toUpperCase() === "ROSA" && produtoML.cor.trim().toUpperCase() === "ROSA") similarity++;
 
     return similarity;
 }

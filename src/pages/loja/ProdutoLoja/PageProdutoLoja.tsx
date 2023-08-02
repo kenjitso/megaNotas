@@ -21,6 +21,9 @@ import { SortableTableHeader } from "@/components/pagination/SortableTableHeader
 import { formataXiaomiMadrid } from "@/functions/lojas/madridCenter/formataProdutos/xiaomi/formataXiaomiMadrid";
 import { formataIphoneMadrid } from "@/functions/lojas/madridCenter/formataProdutos/apple/formataIphoneMadrid";
 import { formataSamsungMadrid } from "@/functions/lojas/madridCenter/formataProdutos/samsung/formataSamsungMadrid";
+import { formataXiaomiCellShop } from "@/functions/lojas/cellShop/formataProdutos/xiaomi/formataXiaomiCellShop";
+import { formataIphoneCellShop } from "@/functions/lojas/cellShop/formataProdutos/apple/formataIphoneCellShop";
+import { formataSamsungCellShop } from "@/functions/lojas/cellShop/formataProdutos/samsung/formataSamsungCellShop";
 
 
 
@@ -95,6 +98,24 @@ export function PageProdutoLoja() {
                 }
             }
 
+            if (lojaData?.algoritmo === 4) {
+                const marca =
+                    /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
+                        /APPLE/i.test(produtoLoja.nome) ? "APPLE" :
+                            /SAMSUNG/i.test(produtoLoja.nome) ? "SAMSUNG" :
+                                null;
+
+                if (marca === "XIAOMI") {
+                    formataXiaomiCellShop(produtoLojaAtualizado);
+                }
+                if (marca === "APPLE") {
+                    formataIphoneCellShop(produtoLojaAtualizado);
+                }
+                if (marca === "SAMSUNG") {
+                    formataSamsungCellShop(produtoLojaAtualizado);
+                }
+            }
+
             return produtoLojaAtualizado;
         }) ?? [];
     });
@@ -148,7 +169,7 @@ export function PageProdutoLoja() {
         <React.Fragment>
             <ModalAtualizarProdutoLoja onHide={() => setImportProdutoLoja(undefined)} lojaId={importProdutoLoja} produtoParaguay={produtosData} />
             <ModalSyncVinculos onHide={() => setSyncVinculos(undefined)} lojaId={lojaData} produtoParaguay={modalSyncVinculos} />
-            <ModalVinculo onHide={() => setVinculoProduto(undefined)} produtoParaguay={modalVinculoProduto} />
+            <ModalVinculo onHide={() => setVinculoProduto(undefined)} lojaId={lojaData} produtoParaguay={modalVinculoProduto} />
 
             <Row className="my-3">
                 <Col xs={6} className="d-flex">
@@ -306,7 +327,10 @@ function ItemTable({ produtoLoja, onVinculo, lojaData }: IPropsItensTable) {
                                     ? `https://www.megaeletro.com.py/br/p/${produtoLoja.codigo}/1`
                                     : (lojaData?.algoritmo === 5
                                         ? `https://www.madridcenter.com/produtos?q=${produtoLoja.codigo}`
-                                        : '#'))}
+                                        : (lojaData?.algoritmo === 4
+                                            ? `https://cellshop.com/catalogsearch/result/?q=${produtoLoja.codigo}`
+                                        : '#')))}
+                                        
                         target="_blank"
                         rel="noopener noreferrer"
                         title={produtoLoja.codigo}

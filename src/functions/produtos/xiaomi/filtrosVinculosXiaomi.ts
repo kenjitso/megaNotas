@@ -75,6 +75,7 @@ export function filtrosVinculosXiaomiAtacadoGames(produtoParaguay: IProdutoLoja,
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI 10 (2022) LTE" && produtoML.modelo.toUpperCase().trim() === "10 2022") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI NOTE 11 CHINA" && produtoML.modelo.toUpperCase().trim() === "NOTE 11 (MEDIATEK)") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "13 PRO DS" && produtoML.modelo.toUpperCase().trim() === "13 PRO") similarity++;
+    
   
     }
 

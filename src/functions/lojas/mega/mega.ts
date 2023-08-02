@@ -177,11 +177,7 @@ function processPdfArray(
             descricao = descricao + " GLOBAL";
         }
 
-
-          let preco = match[4];
-
-
-
+        let preco = match[4];
 
         // Remove a vírgula do preço antes de adicioná-lo ao resultado
         preco = preco.replace(/,/g, '');

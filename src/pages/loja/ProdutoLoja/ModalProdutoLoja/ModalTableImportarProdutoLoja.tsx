@@ -218,11 +218,16 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, lojaId, onListP
 
                                     <a
                                         style={{ color: "blue" }}
-                                        href={lojaId?.algoritmo === 1
-                                            ? `https://atacadogames.com/lista-produtos/termo/${produtoLoja.codigo}/1`
-                                            : (lojaId?.algoritmo === 7
-                                                ? `https://www.megaeletro.com.py/br/p/${produtoLoja.codigo}/1`
-                                                : '#')}
+                                        href={
+                                            lojaId?.algoritmo === 1
+                                                ? `https://atacadogames.com/lista-produtos/termo/${produtoLoja.codigo}/1`
+                                                : (lojaId?.algoritmo === 7
+                                                    ? `https://www.megaeletro.com.py/br/p/${produtoLoja.codigo}/1`
+                                                    : (lojaId?.algoritmo === 5
+                                                        ? `https://www.madridcenter.com/produtos?q=${produtoLoja.codigo}`
+                                                        : (lojaId?.algoritmo === 4
+                                                            ? `https://cellshop.com/catalogsearch/result/?q=${produtoLoja.codigo}`
+                                                        : '#')))}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         title={produtoLoja.nome}

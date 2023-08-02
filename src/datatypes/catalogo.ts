@@ -256,6 +256,7 @@ export class CatalogoController {
     
         const response = await fetch(`https://us-central1-mega-notas.cloudfunctions.net/api/mercadolivre/catalogo/search?${params}`, options);
         const responseData: unknown = await response.json();
+    
         const attributeSchema = z.object({
             name: z.string(),
             value_name: z.string().optional(),

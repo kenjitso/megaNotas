@@ -1,8 +1,8 @@
-import { ILoja, LojaController } from "@/datatypes/loja";
+import { ILoja } from "@/datatypes/loja";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
 import { AtacadoGamesFormat, updateFiltro } from "@/functions/lojas/atacadoGames/atacadoGames";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCallback, useState, useEffect } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useState } from "react";
 import { Modal, Row, Col, Button, Spinner } from "react-bootstrap";
 import { useDropzone } from "react-dropzone";
 import { toast } from "react-toastify";
@@ -14,6 +14,7 @@ import { ModalTableAtualizarProdutoLoja } from "./ModalTableAtualizarProdutoLoja
 import { ModalTableImportarProdutoLoja } from "./ModalTableImportarProdutoLoja";
 import { MegaFormat } from "@/functions/lojas/mega/mega";
 import { MadridFormat } from "@/functions/lojas/madridCenter/madridCenter";
+import { CellShopFormat } from "@/functions/lojas/cellShop/cellShop";
 pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
 
 interface IProps {
@@ -104,6 +105,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                     const fileData = reader.result;
 
                     if (fileData) {
+
                         if (file.type === "application/pdf") {
                             // Use pdfjs-dist to parse the PDF file
                             const arrayBuffer = reader.result as ArrayBuffer;
@@ -139,6 +141,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                                     setIsModalImportVisible(false);
                                     setIsLoading(false);
                                     setIsModalStatusBar(true);
+
                                 } else if (lojaId?.algoritmo === 5) {
 
                                     setFormattedList(MadridFormat(lojaId.id ?? "", allPagesText, [], produtoParaguay));
@@ -153,12 +156,6 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                                 }
 
 
-
-
-
-
-
-
                             });
 
 
@@ -170,8 +167,16 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                                 header: 1,
                             });
 
-                            //////////////////////////////////////////////////////////////////////
+                            
 
+                            if (lojaId?.algoritmo === 4) {
+
+                                setFormattedList(CellShopFormat(lojaId.id ?? "", dataList, produtoParaguay));
+                                mutationAtualizaCadastrados.mutate(CellShopFormat(lojaId.id ?? "", dataList, produtoParaguay).cadastrados);
+                                setIsModalImportVisible(false);
+                                setIsLoading(false);
+                                setIsModalStatusBar(true);
+                            }
                         }
                     }
 
@@ -383,7 +388,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                     <Button
                         variant="secondary"
                         onClick={() => {
-                            if (lojaId?.algoritmo === 7 || lojaId?.algoritmo === 5) {
+                            if (lojaId?.algoritmo === 7 || lojaId?.algoritmo === 5 || lojaId?.algoritmo === 4) {
                                 setIsItensNotRegistered(true);
                             } else if (lojaId?.algoritmo === 1) {
                                 setIsModalRenameVisible(true);

@@ -10,17 +10,19 @@ import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import { abreviaLink } from "@/features/AbreviaLink";
 import InputSearchVinculoCatalogo from "@/components/inputs/InputSearchVinculoCatalogo";
 import { compareValues, useSort } from "@/components/utils/FilterArrows";
+import { ILoja } from "@/datatypes/loja";
 
 
 
 interface IProps {
+    lojaId?: ILoja;
     produtoParaguay?: IProdutoLoja;
     onHide?: () => void;
     onOpenModalVinculoML?: () => void;
 
 }
 
-export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
+export function ModalVinculo({ onHide, produtoParaguay, lojaId }: IProps) {
     const [selectedTable, setSelectedTable] = useState<string | null>(null);
 
     return (
@@ -37,7 +39,16 @@ export function ModalVinculo({ onHide, produtoParaguay }: IProps) {
             <Modal.Body className="text-center">
                 <a
                     style={{ color: "blue" }}
-                    href={`https://atacadogames.com/lista-produtos/termo/${produtoParaguay?.codigo}/1`}
+                    href={
+                        lojaId?.algoritmo === 1
+                            ? `https://atacadogames.com/lista-produtos/termo/${produtoParaguay?.codigo}/1`
+                            : (lojaId?.algoritmo === 7
+                                ? `https://www.megaeletro.com.py/br/p/${produtoParaguay?.codigo}/1`
+                                : (lojaId?.algoritmo === 5
+                                    ? `https://www.madridcenter.com/produtos?q=${produtoParaguay?.codigo}`
+                                    : (lojaId?.algoritmo === 4
+                                        ? `https://cellshop.com/catalogsearch/result/?q=${produtoParaguay?.codigo}`
+                                        : '#')))}
                     target="_blank"
                     rel="noopener noreferrer"
                     title={produtoParaguay?.codigo}
@@ -208,7 +219,7 @@ export function TableVinculoManual({ produtoParaguay, onHide }: IProps) {
                                 <td>
                                     <a
                                         style={{ color: "blue" }}
-                                        
+
                                         href={catalogoProduto.url_catalogo}
                                         target="_blank"
                                         rel="noopener noreferrer"

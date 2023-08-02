@@ -244,7 +244,9 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
                                 ? `https://www.megaeletro.com.py/br/p/${produtoAtualParaguay.codigo}/1`
                                 : (lojaId?.algoritmo === 5
                                     ? `https://www.madridcenter.com/produtos?q=${produtoAtualParaguay.codigo}`
-                                    : '#'))}
+                                    : (lojaId?.algoritmo === 4
+                                        ? `https://cellshop.com/catalogsearch/result/?q=${produtoAtualParaguay.codigo}`
+                                    : '#')))}
                         target="_blank"
                         rel="noopener noreferrer"
                         title={produtoAtualParaguay.codigo}

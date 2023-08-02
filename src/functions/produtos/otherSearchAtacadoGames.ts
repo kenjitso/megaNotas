@@ -56,7 +56,7 @@ export async function otherSearchAtacadoGames(produto: IProdutoLoja) {
 
     //SAMSUNG
     if (produto.nome.trim().toUpperCase() === "A54 SM-A546E") catalogo = await CatalogoController.searchCatalogoML("Samsung Galaxy A54 5G"+ produto.cor);
-    
+
     if (!catalogo) catalogo = await CatalogoController.searchCatalogoML(produto.marca + " " + produto.nome + " " + produto.cor + " " + produto.ram + " " + produto.capacidade);
 
     return catalogo;

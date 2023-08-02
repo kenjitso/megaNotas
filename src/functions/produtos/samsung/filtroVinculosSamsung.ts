@@ -22,12 +22,27 @@ export function filtrosVinculosSamsungAtacadoGames(produtoParaguay: IProdutoLoja
         if (produtoParaguay.nome.toUpperCase().trim() === "A34 SM-A346M" && produtoML.modelo.toUpperCase().trim() === "A34") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "A34 SM-A346M" && produtoML.modelo.toUpperCase().trim() === "A34 5G") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "A54 SM-A546E" && produtoML.modelo.toUpperCase().trim() === "A54 5G") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A03 A035M" && produtoML.modelo.toUpperCase().trim() === "A03 CORE") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A03S A037M" && produtoML.modelo.toUpperCase().trim() === "A03S DUAL SIM") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A03 CORE A032F" && produtoML.modelo.toUpperCase().trim() === "A03 DUAL SIM") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A04E A042M" && produtoML.modelo.toUpperCase().trim() === "A04E") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A04E A042M" && produtoML.modelo.toUpperCase().trim() === "A04E DUAL SIM") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A04S A047M" && produtoML.modelo.toUpperCase().trim() === "A04S") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A10S A107M RDF" && produtoML.modelo.toUpperCase().trim() === "A10S DUOS") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A14 A145M" && produtoML.modelo.toUpperCase().trim() === "GALAXY A14") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A14 A146M" && produtoML.modelo.toUpperCase().trim() === "GALAXY A14") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A24 A245M" && produtoML.modelo.toUpperCase().trim() === "A24") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY S21 FE G990E" && produtoML.modelo.toUpperCase().trim() === "SM-G990EZARZTO") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY S21 FE G990E" && produtoML.modelo.toUpperCase().trim() === "S21 FE 5G DUAL SIM (EXYNOS)") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY S23 ULTRA S918B" && produtoML.modelo.toUpperCase().trim() === "GALAXY S23 ULTRA") similarity++;
+        
     }
 
     // Aumenta a similaridade se a cor do produtoParaguay for azul e esta cor estiver no produtoML
     if (produtoML.cor) {
 
         if (produtoParaguay.cor.toUpperCase().trim() === "PRATA" && produtoML.cor.toUpperCase().trim() === "PRATA") similarity++;
+        if (produtoParaguay.cor.toUpperCase().trim() === "PRATA" && produtoML.cor.toUpperCase().trim() === "PRATEADO") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "SILVER" && produtoML.cor.toUpperCase().trim() === "PRATA") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "SILVER" && produtoML.cor.toUpperCase().trim() === "AWESOME SILVER") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "PRETO" && produtoML.cor.toUpperCase().trim() === "PRETO") similarity++;
@@ -111,6 +126,8 @@ export function filtrosVinculosSamsungAtacadoGames(produtoParaguay: IProdutoLoja
         if (produtoParaguay.cor.toUpperCase().trim() === "CORAL" && produtoML.cor.toUpperCase().trim() === "CORAL") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "BRONZE" && produtoML.cor.toUpperCase().trim() === "BRONZE") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "COPPER" && produtoML.cor.toUpperCase().trim() === "COPPER") similarity++;
+        if (produtoParaguay.cor.toUpperCase().trim() === "VERMELHO" && produtoML.cor.toUpperCase().trim() === "VERMELHO") similarity++;
+
     }
 
     // Aumenta a similaridade se a capacidade for igual
