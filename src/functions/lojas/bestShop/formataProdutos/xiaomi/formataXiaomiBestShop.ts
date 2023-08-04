@@ -1,6 +1,6 @@
 import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 
-export const formataXiaomiCellShop = (produtoLoja: IProdutoLoja): IProdutoLoja | null => {
+export const formataXiaomiBestShop = (produtoLoja: IProdutoLoja): IProdutoLoja | null => {
 
     const marca =
         /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
@@ -64,6 +64,7 @@ export const formataXiaomiCellShop = (produtoLoja: IProdutoLoja): IProdutoLoja |
                                 /SPACE BLAC/i.test(produtoLoja.nome) ? "PRETO" :
                                 /SPACE BLACK/i.test(produtoLoja.nome) ? "PRETO" :
                                 /SPACE/i.test(produtoLoja.nome) ? "PRETO" :
+                                /ICE AZUL/i.test(produtoLoja.nome) ? "AZUL" :
                                     /AZUL/i.test(produtoLoja.nome) ? "AZUL" :
                                         /GLACIER BLUE/i.test(produtoLoja.nome) ? "AZUL" :
                                             /ICE BLUE/i.test(produtoLoja.nome) ? "AZUL" :
@@ -125,6 +126,8 @@ export const formataXiaomiCellShop = (produtoLoja: IProdutoLoja): IProdutoLoja |
                                                                                                                                                                                                             /MOONSHADOW/i.test(produtoLoja.nome) ? "CINZA" :
                                                                                                                                                                                                             /STARSCAPE/i.test(produtoLoja.nome) ? "AZUL" :
                                                                                                                                                                                                             /GRANITE/i.test(produtoLoja.nome) ? "CINZA" :
+                                                                                                                                                                                                            /AMARILLO/i.test(produtoLoja.nome) ? "AMARELO" :
+                                                                                                                                                                                                            
                                                                                                                                                                                                                 null;
 
     if (cor !== null) {
@@ -146,13 +149,13 @@ export const formataXiaomiCellShop = (produtoLoja: IProdutoLoja): IProdutoLoja |
 
     let novoNome = produtoLoja.nome;
 
-    if (origem) novoNome = novoNome.replace(/GLOBAL|INDIA|INDONESIA|CHINA/gi, '').trim();
-    if (cor) novoNome = novoNome.replace(/VERDE|AZUL|ROXO|CINZA|PRETO|LITE GREEN|BRANCO|ONYX BLACK|BLACK|GLACIER BLUE|MINT GREEN|ICE BLUE|TWILIGHT BLUE|STAR BLUE|COSMIC PURPLE|ONYX GRAY|BRONZE|SPACE BLAC|NEPTUNE|MOONLIGHT|SPACE BLACK|SPACE|LIGHT BLUE|MOONSHADOW|SILVER|GRANITE|LAVANDER PURPLE|GRAPHITE GRAY|OCEAN BLUE|ONIX|DARK NIGHT|TWILIGHT|PEBBLE|POLAR|LAVENDER PURPLE|SUNSET|CARBON|MATE|PRATA|PEPPY PURPLE|AMARELO|AURORA|FOREST GREEN|PINK|ROSA|BLUE|GOLD|VERMELHO|GRAPHITE|YELLOW|MIDNIGHT|DOURADO|DEEP PURPLE|STARLIGHT|PURPLE|GREEN|COPPER|STARSCAPE|PEARL WHITE|PEARL|WHITE|VIOLET|GRAY|GREY|CORAL|MIRAGE|SEA|SKY/gi, '');
+    if (origem) novoNome = novoNome.replace(/GLOBAL|INDIA|INDONESIA|CHINA|OLBAL/gi, '').trim();
+    if (cor) novoNome = novoNome.replace(/VERDE|AZUL|ROXO|CINZA|PRETO|LITE GREEN|HORIZON BLUE|CHROME SILVER|STARDUST WHITE|NEBULA GREEN|ICE AZUL|BRANCO|ONYX BLACK|BLACK|GLACIER BLUE|MINT GREEN|ICE BLUE|TWILIGHT BLUE|STAR BLUE|CHARCOAL|COSMIC PURPLE|SLATE|ONYX GRAY|BRONZE|SPACE BLAC|AMARILLO|NEPTUNE|MOONLIGHT|SPACE BLACK|SPACE|LIGHT BLUE|MOONSHADOW|SILVER|GRANITE|LAVANDER PURPLE|GRAPHITE GRAY|OCEAN BLUE|ONIX|DARK NIGHT|TWILIGHT|PEBBLE|POLAR|LAVENDER PURPLE|SUNSET|CARBON|MATE|PRATA|PEPPY PURPLE|AMARELO|AURORA|FOREST GREEN|PINK|ROSA|BLUE|GOLD|VERMELHO|GRAPHITE|YELLOW|MIDNIGHT|DOURADO|DEEP PURPLE|STARLIGHT|PURPLE|GREEN|COPPER|STARSCAPE|PEARL WHITE|PEARL|WHITE|VIOLET|GRAY|GREY|CORAL|MIRAGE|ONYX|SEA|SKY/gi, '');
     if (rede) novoNome = novoNome.replace(/ 4G\b| 5G\b/gi, '');
     if (capacidade) novoNome = novoNome.replace(new RegExp(/C1024GB|C512GB|C256GB|C128GB|C64GB|C32GB|C16GB/gi, 'i'), '');
     if (ram) novoNome = novoNome.replace(/R12GB|R8GB|R6GB|R4GB|R3GB|R2GB|R1GB/gi, '');
     novoNome = novoNome.replace(/XIAOMI|APPLE|SAMSUNG/gi, '');
-    novoNome = novoNome.replace(/CELULAR|CEL|DUAL SIM|ESCURO|SEM LACRE|S LACRE|S CX S ACS| S LA| S L|\(C.F.\)|\(C.F\)|DP(?!.*DP)|MP(?!.*MP)|K(?!.*K)|DG(?!.*DG)|NFC(?!.*NFC)|\s\+(?!.*\s\+)|\.(?!.*\.)/gi, '').replace(/CAM13\+2\+2 5|CAM13\+2\+2MP 5|\s+/g, ' ').trim();
+    novoNome = novoNome.replace(/CELULAR|CEL|DUAL SIM|ADAPTADOR|C ROTA|LTE|ATLA|\(VITRINA\)|\*\*(?!.*\*\*)|\S L(?!.*\S L)|C FEA(?!.*C FEA)|\-(?!.*\-)|US(?!.*US)|DP(?!.*DP)|K(?!.*K)|DG(?!.*DG)|NFC(?!.*NFC)|L P-(?!.*L P-)|L P(?!.*L P)|G(?!.*G)|\.(?!.*\.)|\S CAPA(?!.*\S CAPA)|\s\+(?!.*\s\+)/gi, '').replace(/\s+/g, ' ').trim();
     
 
     produtoLoja.nome = novoNome;

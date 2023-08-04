@@ -137,13 +137,13 @@ export const formataSamsungMadrid = (produtoLoja: IProdutoLoja): IProdutoLoja | 
     if (rede) novoNome = novoNome.replace(/\b4g\b|\b4G\b|\b5g\b|\b5G\b/gi, '');
     if (capacidade) novoNome = novoNome.replace(new RegExp(/\b32GB\b|\b64GB\b|\b128GB\b|\b256GB\b|\b512GB\b|\b1TB\b|\b512\/\b|\b256\/\b|\b128\/\b/gi, 'i'), '');
     if (ram) novoNome = novoNome.replace(new RegExp(/\b2GB RAM\b|\b3GB RAM\b|\b4GB RAM\b|\b6GB RAM\b|\b8GB RAM\b|\b8GB\b|\b12GB RAM\b|\b16GB RAM\b|\b12GB\b|\b12\/|\b8\//gi, 'i'), '');
-    novoNome = novoNome.replace(/XIAOMI|APPLE|SAMSUNG/gi, '');
-    novoNome = novoNome.replace(/CELULAR|DUAL SIM|CEL/gi, '').replace(/\s+/g, ' ').trimStart();
-  
+    novoNome = novoNome.replace(/CELULAR|CEL|DUAL SIM|ADAPTADOR|CORE|GARANTIA|GARANTI|CARREGADOR PADRAO ARG|SO PAR|ASIL|DESLACRADO S TIGO PERSONA|ATLA|\(VITRINA\)|\*\*(?!.*\*\*)|\S L(?!.*\S L)|C FEA(?!.*C FEA)|GAR(?!.*GAR)|BR(?!.*BR)|PY AR(?!.*PY AR)|RDF(?!.*RDF)|\-(?!.*\-)|US(?!.*US)|DP(?!.*DP)|K(?!.*K)|DG(?!.*DG)|NFC(?!.*NFC)|L P-(?!.*L P-)|L P(?!.*L P)|\.(?!.*\.)|\S CAPA(?!.*\S CAPA)|(?!.*\S CAPA)|\s\+(?!.*\s\+)/gi, '').replace(/\s+/g, ' ').trim();
+
+    novoNome = novoNome.replace(/CELULAR|DUAL SIM|CEL|SS(?!.*SS)/gi, '').replace(/\s+/g, ' ').trimStart();
+
 
 
     //MODELOS ML
-
 
 
     //MODELOS

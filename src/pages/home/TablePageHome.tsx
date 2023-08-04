@@ -110,9 +110,15 @@ export function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropIt
                                                                         ? `https://www.megaeletro.com.py/br/p/${competidor.produto.codigo}/1`
                                                                         : (competidor.loja.algoritmo === 5
                                                                             ? `https://www.madridcenter.com/produtos?q=${competidor.produto.codigo}`
-                                                                            : (competidor.loja?.algoritmo === 4
+                                                                            : (competidor.loja.algoritmo === 4
                                                                                 ? `https://cellshop.com/catalogsearch/result/?q=${competidor.produto.codigo}`
-                                                                            : '#')))}
+                                                                                : (competidor.loja.algoritmo === 8
+                                                                                    ? `https://www.mobilezone.com.br/search/q?search=${competidor.produto.codigo}`
+                                                                                    : (competidor.loja.algoritmo === 3
+                                                                                        ? `https://www.bestshop.com.py/buscar/${competidor.produto.codigo}`
+                                                                                        : (competidor.loja.algoritmo === 6
+                                                                                            ? ` https://stargamesparaguay.com/?s=${competidor.produto.codigo}`
+                                                                                            : '#'))))))}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
                                                                 title={competidor.produto.codigo}

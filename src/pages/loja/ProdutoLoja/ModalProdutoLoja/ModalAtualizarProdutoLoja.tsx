@@ -15,6 +15,10 @@ import { ModalTableImportarProdutoLoja } from "./ModalTableImportarProdutoLoja";
 import { MegaFormat } from "@/functions/lojas/mega/mega";
 import { MadridFormat } from "@/functions/lojas/madridCenter/madridCenter";
 import { CellShopFormat } from "@/functions/lojas/cellShop/cellShop";
+import { MobileZoneFormat } from "@/functions/lojas/mobileZone/mobileZone";
+import { StarGamesFormat } from "@/functions/lojas/starGames/starGames";
+import { BestShopFormat } from "@/functions/lojas/bestShop/bestShop";
+
 pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
 
 interface IProps {
@@ -150,6 +154,20 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                                     setIsLoading(false);
                                     setIsModalStatusBar(true);
 
+                                } else if (lojaId?.algoritmo === 6) {
+
+                                    setFormattedList(StarGamesFormat(lojaId.id ?? "", allPagesText, [], produtoParaguay));
+                                    mutationAtualizaCadastrados.mutate(StarGamesFormat(lojaId.id ?? "", allPagesText, [], produtoParaguay).cadastrados);
+                                    setIsModalImportVisible(false);
+                                    setIsLoading(false);
+                                    setIsModalStatusBar(true);
+                                } else if (lojaId?.algoritmo === 3) {
+
+                                    setFormattedList(BestShopFormat(lojaId.id ?? "", allPagesText, [], produtoParaguay));
+                                    mutationAtualizaCadastrados.mutate(BestShopFormat(lojaId.id ?? "", allPagesText, [], produtoParaguay).cadastrados);
+                                    setIsModalImportVisible(false);
+                                    setIsLoading(false);
+                                    setIsModalStatusBar(true);
                                 } else {
                                     toast.info("Loja não formatada!");
 
@@ -167,11 +185,20 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                                 header: 1,
                             });
 
-                            
+
 
                             if (lojaId?.algoritmo === 4) {
 
                                 setFormattedList(CellShopFormat(lojaId.id ?? "", dataList, produtoParaguay));
+                                mutationAtualizaCadastrados.mutate(CellShopFormat(lojaId.id ?? "", dataList, produtoParaguay).cadastrados);
+                                setIsModalImportVisible(false);
+                                setIsLoading(false);
+                                setIsModalStatusBar(true);
+                            }
+
+                            if (lojaId?.algoritmo === 8) {
+
+                                setFormattedList(MobileZoneFormat(lojaId.id ?? "", dataList, produtoParaguay));
                                 mutationAtualizaCadastrados.mutate(CellShopFormat(lojaId.id ?? "", dataList, produtoParaguay).cadastrados);
                                 setIsModalImportVisible(false);
                                 setIsLoading(false);
@@ -388,7 +415,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                     <Button
                         variant="secondary"
                         onClick={() => {
-                            if (lojaId?.algoritmo === 7 || lojaId?.algoritmo === 5 || lojaId?.algoritmo === 4) {
+                            if (lojaId?.algoritmo === 7 || lojaId?.algoritmo === 5 || lojaId?.algoritmo === 4 || lojaId?.algoritmo === 8 || lojaId?.algoritmo === 6 || lojaId?.algoritmo === 3) {
                                 setIsItensNotRegistered(true);
                             } else if (lojaId?.algoritmo === 1) {
                                 setIsModalRenameVisible(true);

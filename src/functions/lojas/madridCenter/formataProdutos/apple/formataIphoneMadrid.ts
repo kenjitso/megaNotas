@@ -93,7 +93,7 @@ export const formataIphoneMadrid = (produtoLoja: IProdutoLoja): IProdutoLoja | n
                                                                                                                                                                         /BLUE/i.test(produtoLoja.nome) ? "AZUL" :
                                                                                                                                                                             /YELLOW/i.test(produtoLoja.nome) ? "AMARELO" :
                                                                                                                                                                                 /DOURADO/i.test(produtoLoja.nome) ? "DOURADO" :
-
+                                                                                                                                                                                /GREEN/i.test(produtoLoja.nome) ? "VERDE" :
 
                                                                                                                                                                                     null;
 
@@ -119,12 +119,14 @@ export const formataIphoneMadrid = (produtoLoja: IProdutoLoja): IProdutoLoja | n
 
 
     if (origem) novoNome = novoNome.replace(/INDIA|GLOBAL|INDONESIA/gi, '');
-    if (cor) novoNome = novoNome.replace(/VERDE|AZUL|CINZA|PRETO|LITE GREEN|BRANCO|ONYX BLACK|BLACK|GLACIER BLUE|MINT GREEN|ICE BLUE|TWILIGHT BLUE|STAR BLUE|COSMIC PURPLE|ONYX GRAY|BRONZE|LIGHT BLUE|LAVANDER PURPLE|GRAPHITE GRAY|OCEAN BLUE|LAVENDER PURPLE|PRATA|PEPPY PURPLE|AMARELO|FOREST GREEN|PINK|ROSA|BLUE|GOLD|VERMELHO|GRAPHITE|YELLOW|MIDNIGHT|DOURADO|DEEP PURPLE|STARLIGHT|PURPLE|SILVER|SPACE/gi, '');
+    if (cor) novoNome = novoNome.replace(/VERDE|AZUL|CINZA|PRETO|LITE GREEN|BRANCO|ONYX BLACK|BLACK|GLACIER BLUE|MINT GREEN|ICE BLUE|TWILIGHT BLUE|STAR BLUE|COSMIC PURPLE|ONYX GRAY|GREEN|BRONZE|LIGHT BLUE|LAVANDER PURPLE|GRAPHITE GRAY|OCEAN BLUE|LAVENDER PURPLE|PRATA|PEPPY PURPLE|AMARELO|FOREST GREEN|PINK|ROSA|BLUE|GOLD|VERMELHO|GRAPHITE|YELLOW|MIDNIGHT|DOURADO|DEEP PURPLE|STARLIGHT|PURPLE|SILVER|SPACE/gi, '');
     if (rede) novoNome = novoNome.replace(/\b4g\b|\b4G\b|\b5g\b|\b5G\b/gi, '');
     if (capacidade) novoNome = novoNome.replace(new RegExp(/\b32GB\b|\b64GB\b|\b128GB\b|\b256GB\b|\b512GB\b|\b1TB\b/gi, 'i'), '');
     if (ram) novoNome = novoNome.replace(new RegExp(/\b2GB RAM\b|\b3GB RAM\b|\b4GB RAM\b|\b6GB RAM\b|\b8GB RAM\b|\b12GB RAM\b|\b16GB RAM\b|\b6\/|\b4\//gi, 'i'), '');
     novoNome = novoNome.replace(/XIAOMI|APPLE/gi, '');
-    novoNome = novoNome.replace(/CELULAR|DUAL SIM|CEL|OLED|LCD/gi, '').replace(/\s+/g, ' ').trimStart();
+    novoNome = novoNome.replace(/CELULAR|DUAL SIM|CEL|OLED|LCD|\(SIM\)/gi, '').replace(/\s+/g, ' ').trimStart();
+    novoNome = novoNome.replace(/CELULAR|DUAL SIM|CEL|OLED|LCD|WHITE JP|\(SIM\)| LZ | LL | BE | VC |CPO(?!.*CPO)|SLIM BOX(?!.*SLIM BOX)|\(ANATEL\)(?!.*\(ANATEL\))/gi, '').replace(/\s+/g, ' ').trimStart();
+   
     novoNome = novoNome.split("-")[0].trim();
 
 

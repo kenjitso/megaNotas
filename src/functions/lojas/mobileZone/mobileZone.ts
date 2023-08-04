@@ -4,7 +4,7 @@ import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 import { z } from "zod";
 
 
-export function CellShopFormat(
+export function MobileZoneFormat(
     idLoja: string,
     excelArray: unknown[][],
     produtoParaguay?: IProdutoLoja[]
@@ -17,11 +17,7 @@ export function CellShopFormat(
 
     try {
 
-
-        const priceColumn = identifyPriceColumn(excelArray);
-        const extractedItems = processExcelArray(excelArray, priceColumn);
-        
-
+        const extractedItems = processExcelArray(excelArray);
 
         const lineValidation = z.object({
             codigo: z.string(),
@@ -71,28 +67,8 @@ export function CellShopFormat(
 }
 
 
-function identifyPriceColumn(
-    excelArray: Array<Array<any>>,
-    sampleSize: number = 10
-): number {
-    let counts = [0, 0];  // Contadores para item[2] e item[3]
-    for (let i = 2; i < excelArray.length && i < 2 + sampleSize; i++) {
-        if (isNumber(String(excelArray[i][2]))) counts[0]++;
-        if (isNumber(String(excelArray[i][3]))) counts[1]++;
-    }
-    return counts[0] > counts[1] ? 2 : 3;
-}
-
-function isNumber(str: string) {
-    return /^\d+(\.\d+)?$/.test(str.replace(',', '.'));
-}
-
-
-
-
 function processExcelArray(
-    excelArray: Array<Array<any>>,
-    priceColumn: number
+    excelArray: Array<Array<any>>
 ): Array<{ codigo: string; descricao: string; preco: string }> {
 
     const sliceArray = excelArray.slice(2);
@@ -101,6 +77,7 @@ function processExcelArray(
         const codigo = String(item[0]).trim().replace(/-/g, '')
         let descricao = String(item[1]).toLocaleUpperCase().trim()
             .replace(/(\b\d\.\d{2}\"|\b\d\.\d\"|\b\d\"|\b\d\d\.\d\"|\b\d\d\.\d{2}\")/g, '')
+            .replace(/ ULTR /g, ' ULTRA ')
             .replace(/ 128G /g, ' 128GB ')
             .replace(/\b128G\b/g, '128GB')
             .replace(/ 12\+/g, ' 12GB ')
@@ -124,6 +101,7 @@ function processExcelArray(
             .replace(/ 2\//g, ' 2GB ')
             .replace(/\(CHINA\)/g, 'CHINA')
             .replace(/\(INDIA\)/g, 'INDIA')
+            .replace(/INDU/g, 'INDIA')
             .replace(/\(INDONESIA\)/g, 'INDONESIA')
             .replace(/\(GLOBAL\)/g, 'GLOBAL')
             .replace(/ SAMS /g, ' SAMSUNG ')
@@ -160,7 +138,7 @@ function processExcelArray(
             descricao = descricao + " GLOBAL";
         }
 
-         const preco = String(item[priceColumn]);
+        const preco = String(item[2]);
         // assegurando que o preço é tratado como um número
 
         return {
@@ -170,8 +148,8 @@ function processExcelArray(
         };
     });
 
-
-    const filteredArray = processedArray.filter(item => parseFloat(item.preco) >= 40);
+    const processedArrayWithoutSwap = processedArray.filter(item => !item.descricao.includes('SWAP'));
+    const filteredArray = processedArrayWithoutSwap.filter(item => parseFloat(item.preco) >= 40);
 
     return filteredArray;
 }

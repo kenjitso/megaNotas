@@ -121,8 +121,9 @@ export const formataXiaomiMega = (produtoLoja: IProdutoLoja): IProdutoLoja | nul
 
     if (ram) novoNome = novoNome.replace(/16\+|12\+|8G\+|8\+|6G\+|6\+|4\+|3\+|2GB\+/gi, '');
     novoNome = novoNome.replace(/XIAOMI|APPLE/gi, '');
-    novoNome = novoNome.replace(/CELULAR/gi, '').replace(/\s+/g, ' ').trimStart();
-
+    novoNome = novoNome.replace(/CELULAR|CEL|DUAL SIM|ADAPTADOR|C ROTA|ATLA|LTE|\(VITRINA\)|\*\*(?!.*\*\*)|\S L(?!.*\S L)|C FEA(?!.*C FEA)|\-(?!.*\-)|US(?!.*US)|DP(?!.*DP)|K(?!.*K)|DG(?!.*DG)|NFC(?!.*NFC)|L P-(?!.*L P-)|PL(?!.*PL)|L P(?!.*L P)|G(?!.*G)|\"(?!.*\")|\.(?!.*\.)|\S CAPA(?!.*\S CAPA)|\s\+(?!.*\s\+)/gi, '').replace(/\s+/g, ' ').trim();
+    novoNome = novoNome.replace(/LTE/gi, '');
+    novoNome = novoNome.replace(/ LT/gi, '').trim();
     produtoLoja.nome = novoNome;
 
     return produtoLoja;

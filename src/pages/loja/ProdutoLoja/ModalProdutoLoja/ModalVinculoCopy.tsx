@@ -48,7 +48,13 @@ export function ModalVinculo({ onHide, produtoParaguay, lojaId }: IProps) {
                                     ? `https://www.madridcenter.com/produtos?q=${produtoParaguay?.codigo}`
                                     : (lojaId?.algoritmo === 4
                                         ? `https://cellshop.com/catalogsearch/result/?q=${produtoParaguay?.codigo}`
-                                        : '#')))}
+                                        : (lojaId?.algoritmo === 8
+                                            ? `https://www.mobilezone.com.br/search/q?search=${produtoParaguay?.codigo}`
+                                            : (lojaId?.algoritmo === 3
+                                                ? `https://www.bestshop.com.py/buscar/${produtoParaguay?.codigo}`
+                                                : (lojaId?.algoritmo === 6
+                                                    ? ` https://stargamesparaguay.com/?s=${produtoParaguay?.codigo}`
+                                            : '#'))))))}
                     target="_blank"
                     rel="noopener noreferrer"
                     title={produtoParaguay?.codigo}

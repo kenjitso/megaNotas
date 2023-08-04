@@ -237,22 +237,29 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
                         <p>
                             <strong>Codigo: </strong>
                             <a
-                        style={{ color: "blue" }}
-                        href={lojaId?.algoritmo === 1
-                            ? `https://atacadogames.com/lista-produtos/termo/${produtoAtualParaguay.codigo}/1`
-                            : (lojaId?.algoritmo === 7
-                                ? `https://www.megaeletro.com.py/br/p/${produtoAtualParaguay.codigo}/1`
-                                : (lojaId?.algoritmo === 5
-                                    ? `https://www.madridcenter.com/produtos?q=${produtoAtualParaguay.codigo}`
-                                    : (lojaId?.algoritmo === 4
-                                        ? `https://cellshop.com/catalogsearch/result/?q=${produtoAtualParaguay.codigo}`
-                                    : '#')))}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title={produtoAtualParaguay.codigo}
-                    >
-                        {produtoAtualParaguay.codigo}
-                    </a>
+                                style={{ color: "blue" }}
+                                href={lojaId?.algoritmo === 1
+                                    ? `https://atacadogames.com/lista-produtos/termo/${produtoAtualParaguay.codigo}/1`
+                                    : (lojaId?.algoritmo === 7
+                                        ? `https://www.megaeletro.com.py/br/p/${produtoAtualParaguay.codigo}/1`
+                                        : (lojaId?.algoritmo === 5
+                                            ? `https://www.madridcenter.com/produtos?q=${produtoAtualParaguay.codigo}`
+                                            : (lojaId?.algoritmo === 4
+                                                ? `https://cellshop.com/catalogsearch/result/?q=${produtoAtualParaguay.codigo}`
+                                                : (lojaId?.algoritmo === 8
+                                                    ? `https://www.mobilezone.com.br/search/q?search=${produtoAtualParaguay.codigo}`
+                                                    : (lojaId?.algoritmo === 3
+                                                        ? `https://www.bestshop.com.py/buscar/${produtoAtualParaguay.codigo}`
+                                                        : (lojaId?.algoritmo === 6
+                                                            ? ` https://stargamesparaguay.com/?s=${produtoAtualParaguay.codigo}`
+                                                            : '#'))))))}
+
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title={produtoAtualParaguay.codigo}
+                            >
+                                {produtoAtualParaguay.codigo}
+                            </a>
                         </p>
 
                         <p><strong>Detalhes do Produto:</strong></p>

@@ -58,9 +58,6 @@ export function filtrosVinculosIphoneAtacadoGames(produtoParaguay: IProdutoLoja,
     if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 13 MLPH3LZ A2633" && produtoML.modelo.toUpperCase().trim() === "IPHONE 13") similarity++;
 
 
-
-
-
     // Aumenta a similaridade se a capacidade for igual
 
 

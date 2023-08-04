@@ -4,11 +4,11 @@ import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 import { z } from "zod";
 
 
-export function CellShopFormat(
+export function StarGamesFormat(
     idLoja: string,
-    excelArray: unknown[][],
+    pdfArray: string[],
+    excelArray: unknown[],
     produtoParaguay?: IProdutoLoja[]
-
 ): {
     cadastrados: IProdutoLoja[],
     naoCadastrados: IProdutoLoja[],
@@ -18,9 +18,7 @@ export function CellShopFormat(
     try {
 
 
-        const priceColumn = identifyPriceColumn(excelArray);
-        const extractedItems = processExcelArray(excelArray, priceColumn);
-        
+        const extractedItems = processPdfArray(pdfArray);
 
 
         const lineValidation = z.object({
@@ -71,69 +69,40 @@ export function CellShopFormat(
 }
 
 
-function identifyPriceColumn(
-    excelArray: Array<Array<any>>,
-    sampleSize: number = 10
-): number {
-    let counts = [0, 0];  // Contadores para item[2] e item[3]
-    for (let i = 2; i < excelArray.length && i < 2 + sampleSize; i++) {
-        if (isNumber(String(excelArray[i][2]))) counts[0]++;
-        if (isNumber(String(excelArray[i][3]))) counts[1]++;
-    }
-    return counts[0] > counts[1] ? 2 : 3;
-}
-
-function isNumber(str: string) {
-    return /^\d+(\.\d+)?$/.test(str.replace(',', '.'));
-}
-
-
-
-
-function processExcelArray(
-    excelArray: Array<Array<any>>,
-    priceColumn: number
+function processPdfArray(
+    pdfArray: string[]
 ): Array<{ codigo: string; descricao: string; preco: string }> {
+    let result = [];
 
-    const sliceArray = excelArray.slice(2);
+    const text = pdfArray.join(' ');
 
-    const processedArray = sliceArray.map(item => {
-        const codigo = String(item[0]).trim().replace(/-/g, '')
-        let descricao = String(item[1]).toLocaleUpperCase().trim()
+    const regex = /(\d+-\d+)\s+(.*?)\s+(\d+)\s+(\d+\.\d+)/g;
+    let match;
+
+    while ((match = regex.exec(text)) !== null) {
+        const codigo = match[3];
+        let descricao = match[2].toLocaleUpperCase().trim()
             .replace(/(\b\d\.\d{2}\"|\b\d\.\d\"|\b\d\"|\b\d\d\.\d\"|\b\d\d\.\d{2}\")/g, '')
-            .replace(/ 128G /g, ' 128GB ')
-            .replace(/\b128G\b/g, '128GB')
-            .replace(/ 12\+/g, ' 12GB ')
-            .replace(/ 8\+/g, ' 8GB ')
-            .replace(/ 6\+/g, ' 6GB ')
-            .replace(/ 4\+/g, ' 4GB ')
-            .replace(/ 3\+/g, ' 3GB ')
-            .replace(/ 2\+/g, ' 2GB ')
-            .replace(/\+12 /g, ' 12GB ')
-            .replace(/\+8 /g, ' 8GB ')
-            .replace(/\+6 /g, ' 6GB ')
-            .replace(/\+4 /g, ' 4GB ')
-            .replace(/\+3 /g, ' 3GB ')
-            .replace(/\+2 /g, ' 2GB ')
-            .replace(/ 12\//g, ' 12GB ')
-            .replace(/ 8\//g, ' 8GB ')
-            .replace(/ 6\//g, ' 6GB ')
-            .replace(/ 4\//g, ' 4GB ')
-            .replace(/ 3\//g, ' 3GB ')
-            .replace(/ 2\//g, ' 2GB ')
-            .replace(/ 2\//g, ' 2GB ')
-            .replace(/\(CHINA\)/g, 'CHINA')
-            .replace(/\(INDIA\)/g, 'INDIA')
-            .replace(/\(INDONESIA\)/g, 'INDONESIA')
-            .replace(/\(GLOBAL\)/g, 'GLOBAL')
-            .replace(/ SAMS /g, ' SAMSUNG ')
-            .replace(/ LTE /g, ' ')
-            .replace(/ DPJ /g, ' ')
-            .replace(/ DPJ\b/g, ' ')
-            .replace(/ DS /g, ' DUAL SIM ')
-            .replace(/ DP /g, ' ')
-            .replace(/ 128 /g, ' 128GB ')
-            .replace(/\//g, ' ')
+            .replace(/XMI RDM/g, ' XIAOMI REDMI ')
+            .replace(/XMI NT/g, ' XIAOMI NOTE ')
+            .replace(/XMI POCO/g, ' XIAOMI POCO ')
+            .replace(/XMI 13/g, ' XIAOMI 13 ')
+            .replace(/ 32GB\//g, ' 32GB ')
+            .replace(/ 32G\//g, ' 32GB ')
+            .replace(/ 32\//g, ' 32GB ')
+            .replace(/ 64GB\//g, ' 64GB ')
+            .replace(/ 64G\//g, ' 64GB ')
+            .replace(/ 64\//g, ' 64GB ')
+            .replace(/ 128GB\//g, ' 128GB ')
+            .replace(/ 128G\//g, ' 128GB ')
+            .replace(/ 128\//g, ' 128GB ')
+            .replace(/ 256GB\//g, ' 256GB ')
+            .replace(/ 256G\//g, ' 256GB ')
+            .replace(/ 256\//g, ' 256GB ')
+            .replace(/ 2R/g, ' 2GB ')
+            .replace(/ 4R/g, ' 4GB ')
+            .replace(/ 6R/g, ' 6GB ')
+            .replace(/ 8R/g, ' 8GB ')
 
         let memoryValues = descricao.match(/(\b\d+GB\b)/g);  // encontra todos os valores de memória na descrição
 
@@ -160,19 +129,18 @@ function processExcelArray(
             descricao = descricao + " GLOBAL";
         }
 
-         const preco = String(item[priceColumn]);
+        const preco = String(match[4]);
         // assegurando que o preço é tratado como um número
 
-        return {
+        result.push({
             codigo,
             descricao,
             preco
-        };
-    });
+        });
+    }
+
+    result = result.filter(item => parseFloat(item.preco) >= 40); // Filtre itens cujo preço é maior ou igual a 40
 
 
-    const filteredArray = processedArray.filter(item => parseFloat(item.preco) >= 40);
-
-    return filteredArray;
+    return result;
 }
-

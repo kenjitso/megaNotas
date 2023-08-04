@@ -28,17 +28,17 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, lojaId, onListP
         setCheckboxFilter(event.target.checked);
 
         const celularItems = new Set(selectedProdutoLoja);
+        var exclusions = ['pad', 'case', 'capa', 'pelicula', 'cabo', 'carregador', 'fone','reloj'];
 
         if (event.target.checked) {
             listProdutoLoja?.naoCadastrados.forEach(produtoLoja => {
                 const nomeProdutoLower = produtoLoja.nome.toLowerCase();
-                /* Se o nome incluir 'microfone', ele não será adicionado.
-                if (nomeProdutoLower.includes('microfone')||nomeProdutoLower.includes('tel')) {
-                    return;
-                }*/
-                // Se o nome incluir 'celular' ou 'cel', ele será adicionado.
+            
                 if (nomeProdutoLower.includes('xiaomi') && nomeProdutoLower.includes('cel') ||
                     nomeProdutoLower.includes('xiaomi') && nomeProdutoLower.includes('celular') ||
+                    (nomeProdutoLower.includes('xiaomi redmi') && !exclusions.some(exclusion => nomeProdutoLower.includes(exclusion))) ||
+                    (nomeProdutoLower.includes('xiaomi note') && !exclusions.some(exclusion => nomeProdutoLower.includes(exclusion))) ||
+                    (nomeProdutoLower.includes('xiaomi poco') && !exclusions.some(exclusion => nomeProdutoLower.includes(exclusion))) ||
                     nomeProdutoLower.includes('iphone') ||
                     nomeProdutoLower.includes('samsung') && nomeProdutoLower.includes('cel') ||
                     nomeProdutoLower.includes('samsung') && nomeProdutoLower.includes('celular')
@@ -50,9 +50,10 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, lojaId, onListP
             const itemsToDelete = [];
             for (let item of celularItems) {
                 const nomeProdutoLower = item.nome.toLowerCase();
-                if (
-                    nomeProdutoLower.includes('xiaomi') && nomeProdutoLower.includes('cel') ||
+                if (nomeProdutoLower.includes('xiaomi') && nomeProdutoLower.includes('cel') ||
                     nomeProdutoLower.includes('xiaomi') && nomeProdutoLower.includes('celular') ||
+                    (nomeProdutoLower.includes('xiaomi redmi') && !exclusions.some(exclusion => nomeProdutoLower.includes(exclusion))) ||
+                    (nomeProdutoLower.includes('xiaomi note') && !exclusions.some(exclusion => nomeProdutoLower.includes(exclusion))) ||
                     nomeProdutoLower.includes('iphone') ||
                     nomeProdutoLower.includes('samsung') && nomeProdutoLower.includes('cel') ||
                     nomeProdutoLower.includes('samsung') && nomeProdutoLower.includes('celular')
@@ -227,7 +228,16 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, lojaId, onListP
                                                         ? `https://www.madridcenter.com/produtos?q=${produtoLoja.codigo}`
                                                         : (lojaId?.algoritmo === 4
                                                             ? `https://cellshop.com/catalogsearch/result/?q=${produtoLoja.codigo}`
-                                                        : '#')))}
+                                                            : (lojaId?.algoritmo === 8
+                                                                ? `https://www.mobilezone.com.br/search/q?search=${produtoLoja.codigo}`
+                                                                : (lojaId?.algoritmo === 3
+                                                                    ? `https://www.bestshop.com.py/buscar/${produtoLoja.codigo}`
+                                                                    : (lojaId?.algoritmo === 6
+                                                                        ? ` https://stargamesparaguay.com/?s=${produtoLoja.codigo}`
+                                                                : '#'))))))}
+
+                                                               
+                                                                
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         title={produtoLoja.nome}

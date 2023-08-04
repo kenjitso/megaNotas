@@ -12,8 +12,8 @@ import { ModalVinculo } from "./ModalProdutoLoja/ModalVinculoCopy";
 import { useQuery } from "@tanstack/react-query";
 import { compareValues, useSort } from "@/components/utils/FilterArrows";
 import { ILoja, LojaController } from "@/datatypes/loja";
-import { formataXiaomiAtacadoGames } from "@/functions/lojas/atacadoGames/formataProdutos/xiaomi/xiaomi";
-import { formataIphoneAtacadoGames } from "@/functions/lojas/atacadoGames/formataProdutos/apple/iphone";
+import { formataXiaomiAtacadoGames } from "@/functions/lojas/atacadoGames/formataProdutos/xiaomi/formataXiaomiAtacadoGames";
+import { formataIphoneAtacadoGames } from "@/functions/lojas/atacadoGames/formataProdutos/apple/formataIphoneAtacadoGames";
 import { formataXiaomiMega } from "@/functions/lojas/mega/formataProdutos/xiaomi/xiaomi";
 import { PaginationDown } from "@/components/pagination/PaginationDown";
 import { PaginationUp } from "@/components/pagination/PaginationUp";
@@ -24,6 +24,12 @@ import { formataSamsungMadrid } from "@/functions/lojas/madridCenter/formataProd
 import { formataXiaomiCellShop } from "@/functions/lojas/cellShop/formataProdutos/xiaomi/formataXiaomiCellShop";
 import { formataIphoneCellShop } from "@/functions/lojas/cellShop/formataProdutos/apple/formataIphoneCellShop";
 import { formataSamsungCellShop } from "@/functions/lojas/cellShop/formataProdutos/samsung/formataSamsungCellShop";
+import { formataIphoneMobileZone } from "@/functions/lojas/mobileZone/formataProdutos/apple/formataIphoneMobileZone";
+import { formataSamsungMobileZone } from "@/functions/lojas/mobileZone/formataProdutos/samsung/formataSamsungMobileZone";
+import { formataXiaomiMobileZone } from "@/functions/lojas/mobileZone/formataProdutos/xiaomi/formataXiaomiMobileZone";
+import { formataSamsungStarGames } from "@/functions/lojas/starGames/formataProdutos/samsung/formataSamsungStarGames";
+import { formataXiaomiStarGames } from "@/functions/lojas/starGames/formataProdutos/xiaomi/formataXiaomiStarGames";
+import { formataXiaomiBestShop } from "@/functions/lojas/bestShop/formataProdutos/xiaomi/formataXiaomiBestShop";
 
 
 
@@ -55,6 +61,8 @@ export function PageProdutoLoja() {
                 nome_original: produtoLoja.nome,
             };
 
+
+            //ATACADO GAMES
             if (lojaData?.algoritmo === 1) {
 
                 const marca =
@@ -70,6 +78,9 @@ export function PageProdutoLoja() {
                     formataIphoneAtacadoGames(produtoLojaAtualizado);
                 }
             }
+
+
+            //MEGA
             if (lojaData?.algoritmo === 7) {
                 const marca =
                     /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
@@ -80,6 +91,9 @@ export function PageProdutoLoja() {
                     formataXiaomiMega(produtoLojaAtualizado);
                 }
             }
+
+
+            //MADRID CENTER
             if (lojaData?.algoritmo === 5) {
                 const marca =
                     /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
@@ -98,6 +112,8 @@ export function PageProdutoLoja() {
                 }
             }
 
+
+            //CELLSHOP
             if (lojaData?.algoritmo === 4) {
                 const marca =
                     /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
@@ -113,6 +129,55 @@ export function PageProdutoLoja() {
                 }
                 if (marca === "SAMSUNG") {
                     formataSamsungCellShop(produtoLojaAtualizado);
+                }
+            }
+
+            //MOBILE ZONE
+            if (lojaData?.algoritmo === 8) {
+                const marca =
+                    /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
+                        /APPLE/i.test(produtoLoja.nome) ? "APPLE" :
+                            /SAMSUNG/i.test(produtoLoja.nome) ? "SAMSUNG" :
+                                null;
+
+                if (marca === "XIAOMI") {
+                    formataXiaomiMobileZone(produtoLojaAtualizado);
+                }
+                if (marca === "APPLE") {
+                    formataIphoneMobileZone(produtoLojaAtualizado);
+                }
+                if (marca === "SAMSUNG") {
+                    formataSamsungMobileZone(produtoLojaAtualizado);
+                }
+            }
+
+            //STAR GAMES
+            if (lojaData?.algoritmo === 6) {
+                const marca =
+                    /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
+                        /APPLE/i.test(produtoLoja.nome) ? "APPLE" :
+                            /SAMSUNG/i.test(produtoLoja.nome) ? "SAMSUNG" :
+                                null;
+
+                if (marca === "XIAOMI") {
+                    formataXiaomiStarGames(produtoLojaAtualizado);
+                }
+                if (marca === "SAMSUNG") {
+                    formataSamsungStarGames(produtoLojaAtualizado);
+                }
+            }
+
+
+            //BESTSHOP
+            if (lojaData?.algoritmo === 3) {
+                const marca =
+                    /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
+                        /APPLE/i.test(produtoLoja.nome) ? "APPLE" :
+                            /SAMSUNG/i.test(produtoLoja.nome) ? "SAMSUNG" :
+                                null;
+
+                if (marca === "XIAOMI") {
+                    formataXiaomiBestShop(produtoLojaAtualizado);
                 }
             }
 
@@ -329,8 +394,14 @@ function ItemTable({ produtoLoja, onVinculo, lojaData }: IPropsItensTable) {
                                         ? `https://www.madridcenter.com/produtos?q=${produtoLoja.codigo}`
                                         : (lojaData?.algoritmo === 4
                                             ? `https://cellshop.com/catalogsearch/result/?q=${produtoLoja.codigo}`
-                                        : '#')))}
-                                        
+                                            : (lojaData?.algoritmo === 8
+                                                ? `https://www.mobilezone.com.br/search/q?search=${produtoLoja.codigo}`
+                                                : (lojaData?.algoritmo === 3
+                                                    ? `https://www.bestshop.com.py/buscar/${produtoLoja.codigo}`
+                                                    : (lojaData?.algoritmo === 6
+                                                        ? ` https://stargamesparaguay.com/?s=${produtoLoja.codigo}`
+                                                        : '#'))))))}
+
                         target="_blank"
                         rel="noopener noreferrer"
                         title={produtoLoja.codigo}

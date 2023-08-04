@@ -133,7 +133,7 @@ export const formataXiaomiAtacadoGames = (produtoLoja: IProdutoLoja): IProdutoLo
     if (capacidade) novoNome = novoNome.replace(new RegExp(/\b32GB\b|\b64GB\b|\b128GB\b|\b256GB\b|\b512GB\b/gi, 'i'), '');
     if (ram) novoNome = novoNome.replace(new RegExp(/\b2GB RAM\b|\b3GB RAM\b|\b4GB RAM\b|\b6GB RAM\b|\b8GB RAM\b|\b12GB RAM\b|\b16GB RAM\b/gi, 'i'), '');
     novoNome = novoNome.replace(/XIAOMI|APPLE/gi, '');
-    novoNome = novoNome.replace(/CELULAR|DUAL SIM|CEL/gi, '').replace(/\s+/g, ' ').trimStart();
+    novoNome = novoNome.replace(/CELULAR|DUAL SIM|CEL|DS(?!.*DS)/gi, '').replace(/\s+/g, ' ').trimStart();
 
 
     if (novoNome.trim().toUpperCase() === "REDMI 12") produtoLoja.rede = 5;
