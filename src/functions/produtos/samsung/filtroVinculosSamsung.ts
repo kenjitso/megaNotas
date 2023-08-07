@@ -5,6 +5,18 @@ export function filtrosVinculosSamsungAtacadoGames(produtoParaguay: IProdutoLoja
 
     let similarity = 0;
 
+    if (produtoParaguay.nome.trim().toUpperCase() === "GALAXY S23 S911B" && produtoParaguay.rede === 4) produtoParaguay.rede = 5;
+    if (produtoParaguay.nome.trim().toUpperCase() === "GALAXY S23 ULTRA S918B" && produtoParaguay.rede === 4) produtoParaguay.rede = 5;
+   
+   
+    if (produtoML.modelo.trim().toUpperCase() === "GALAXY S23 ULTRA" && produtoML.mobileNetwork.trim().toUpperCase() === "4G") produtoML.mobileNetwork = "5G";
+    if (produtoML.modelo.trim().toUpperCase() === "GALAXY A14" && produtoML.cor.toUpperCase().trim() === "VERDE" && produtoML.mobileNetwork.trim().toUpperCase() === "4G") produtoML.mobileNetwork = "5G";
+    if (produtoML.modelo.trim().toUpperCase() === "GALAXY A14" && produtoML.cor.toUpperCase().trim() === "PRATA" && produtoML.mobileNetwork.trim().toUpperCase() === "4G") produtoML.mobileNetwork = "5G";
+   
+
+
+    
+   
     // Aumenta a similaridade se a marca for igual
     if (produtoML.marca) {
         if (produtoParaguay.marca.toUpperCase().trim() === "SAMSUNG" && produtoML.marca.toUpperCase().trim() === "SAMSUNG") similarity++;
@@ -12,7 +24,7 @@ export function filtrosVinculosSamsungAtacadoGames(produtoParaguay: IProdutoLoja
 
     // Aumenta a similaridade se o modelo for igual
     if (produtoML.modelo) {
-      
+
         if (produtoParaguay.nome.toUpperCase().trim() === "A03 CORE SM-A032F" && produtoML.modelo.toUpperCase().trim() === "A03 CORE") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "A04E SM-A042F" && produtoML.modelo.toUpperCase().trim() === "A04E DUAL SIM") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "A04E SM-A042M" && produtoML.modelo.toUpperCase().trim() === "A04E DUAL SIM") similarity++;
@@ -22,20 +34,40 @@ export function filtrosVinculosSamsungAtacadoGames(produtoParaguay: IProdutoLoja
         if (produtoParaguay.nome.toUpperCase().trim() === "A34 SM-A346M" && produtoML.modelo.toUpperCase().trim() === "A34") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "A34 SM-A346M" && produtoML.modelo.toUpperCase().trim() === "A34 5G") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "A54 SM-A546E" && produtoML.modelo.toUpperCase().trim() === "A54 5G") similarity++;
+
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A03 A032F" && produtoML.modelo.toUpperCase().trim() === "A03 CORE") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A03 A035M" && produtoML.modelo.toUpperCase().trim() === "A03 DUAL SIM") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A04E A042M" && produtoML.modelo.toUpperCase().trim() === "A04E") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A23 A236M" && produtoML.modelo.toUpperCase().trim() === "A23 5G") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A54 A546E" && produtoML.modelo.toUpperCase().trim() === "A54 5G DUAL SIM") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A54 A546E" && produtoML.modelo.toUpperCase().trim() === "A54 5G") similarity++;
+   
+   
+        if (produtoParaguay.nome.toUpperCase().trim() === "A54 SM-A546E" && produtoML.modelo.toUpperCase().trim() === "A54 5G") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "A54 SM-A546E" && produtoML.modelo.toUpperCase().trim() === "A54 5G") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "A54 SM-A546E" && produtoML.modelo.toUpperCase().trim() === "A54 5G") similarity++;
+
+
         if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A03 A035M" && produtoML.modelo.toUpperCase().trim() === "A03 CORE") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A03S A037M" && produtoML.modelo.toUpperCase().trim() === "A03S DUAL SIM") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A03 CORE A032F" && produtoML.modelo.toUpperCase().trim() === "A03 DUAL SIM") similarity++;
-        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A04E A042M" && produtoML.modelo.toUpperCase().trim() === "A04E") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A04E A042M" && produtoML.modelo.toUpperCase().trim() === "A04E DUAL SIM") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A04S A047M" && produtoML.modelo.toUpperCase().trim() === "A04S") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A10S A107M RDF" && produtoML.modelo.toUpperCase().trim() === "A10S DUOS") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A10S A107M" && produtoML.modelo.toUpperCase().trim() === "A10S DUOS") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A14 A145M" && produtoML.modelo.toUpperCase().trim() === "GALAXY A14") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A14 A146M" && produtoML.modelo.toUpperCase().trim() === "GALAXY A14") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A24 A245M" && produtoML.modelo.toUpperCase().trim() === "A24") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY S21 FE G990E" && produtoML.modelo.toUpperCase().trim() === "SM-G990EZARZTO") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY S21 FE G990E" && produtoML.modelo.toUpperCase().trim() === "S21 FE 5G DUAL SIM (EXYNOS)") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY S23 ULTRA S918B" && produtoML.modelo.toUpperCase().trim() === "S23 ULTRA") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY S23 ULTRA S918B" && produtoML.modelo.toUpperCase().trim() === "GALAXY S23 ULTRA") similarity++;
-        
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A34 A346M" && produtoML.modelo.toUpperCase().trim() === "A34 5G") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY S23 S911B" && produtoML.modelo.toUpperCase().trim() === "S23") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY Z FLIP3 F711B" && produtoML.modelo.toUpperCase().trim() === "Z FLIP3 5G") similarity++;
+
+
+
     }
 
     // Aumenta a similaridade se a cor do produtoParaguay for azul e esta cor estiver no produtoML
@@ -63,6 +95,8 @@ export function filtrosVinculosSamsungAtacadoGames(produtoParaguay: IProdutoLoja
         if (produtoParaguay.cor.toUpperCase().trim() === "PRETO" && produtoML.cor.toUpperCase().trim() === "CERAMIC BLACK") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "PRETO" && produtoML.cor.toUpperCase().trim() === "LASER BLACK") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "PRETO" && produtoML.cor.toUpperCase().trim() === "TRUFFLE BLACK") similarity++;
+        if (produtoParaguay.cor.toUpperCase().trim() === "PRETO" && produtoML.cor.toUpperCase().trim() === "PHANTOM BLACK") similarity++;
+
 
         if (produtoParaguay.cor.toUpperCase().trim() === "CINZA" && produtoML.cor.toUpperCase().trim() === "GRAPHITE GRAY") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "CINZA" && produtoML.cor.toUpperCase().trim() === "ONYX GRAY") similarity++;
@@ -96,6 +130,8 @@ export function filtrosVinculosSamsungAtacadoGames(produtoParaguay: IProdutoLoja
         if (produtoParaguay.cor.toUpperCase().trim() === "ROXO" && produtoML.cor.toUpperCase().trim() === "PEPPY PURPLE") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "ROXO" && produtoML.cor.toUpperCase().trim() === "STARLIGHT PURPLE") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "ROXO" && produtoML.cor.toUpperCase().trim() === "ROXO") similarity++;
+        if (produtoParaguay.cor.toUpperCase().trim() === "ROXO" && produtoML.cor.toUpperCase().trim() === "LAVENDER") similarity++;
+        if (produtoParaguay.cor.toUpperCase().trim() === "ROXO" && produtoML.cor.toUpperCase().trim() === "LAVANDER") similarity++;
 
         if (produtoParaguay.cor.toUpperCase().trim() === "VERDE" && produtoML.cor.toUpperCase().trim() === "LAKE GREEN") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "VERDE" && produtoML.cor.toUpperCase().trim() === "CORAL GREEN") similarity++;
@@ -110,12 +146,19 @@ export function filtrosVinculosSamsungAtacadoGames(produtoParaguay: IProdutoLoja
         if (produtoParaguay.cor.toUpperCase().trim() === "VERDE" && produtoML.cor.toUpperCase().trim() === "FLORA GREEN") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "VERDE" && produtoML.cor.toUpperCase().trim() === "LIMA") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "VERDE" && produtoML.cor.toUpperCase().trim() === "FOREST GREEN") similarity++;
+        if (produtoParaguay.cor.toUpperCase().trim() === "VERDE" && produtoML.cor.toUpperCase().trim() === "VERDE-CLARO") similarity++;
+        if (produtoParaguay.cor.toUpperCase().trim() === "LIME" && produtoML.cor.toUpperCase().trim() === "AWESOME LIME") similarity++;
+        if (produtoParaguay.cor.toUpperCase().trim() === "LIME" && produtoML.cor.toUpperCase().trim() === "VERDE-LIMA") similarity++;
+        if (produtoParaguay.cor.toUpperCase().trim() === "VERDE" && produtoML.cor.toUpperCase().trim() === "OLIVE") similarity++;
 
         if (produtoParaguay.cor.toUpperCase().trim() === "BRANCO" && produtoML.cor.toUpperCase().trim() === "BRANCO") similarity++;
+        if (produtoParaguay.cor.toUpperCase().trim() === "BRANCO" && produtoML.cor.toUpperCase().trim() === "AWESOME WHITE") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "BRANCO" && produtoML.cor.toUpperCase().trim() === "PEBBLE WHITE") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "BRANCO" && produtoML.cor.toUpperCase().trim() === "WHITE") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "BRANCO" && produtoML.cor.toUpperCase().trim() === "ARCTIC WHITE") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "BRANCO" && produtoML.cor.toUpperCase().trim() === "CERAMIC WHITE") similarity++;
+        if (produtoParaguay.cor.toUpperCase().trim() === "BRANCO" && produtoML.cor.toUpperCase().trim() === "CREME") similarity++;
+        if (produtoParaguay.cor.toUpperCase().trim() === "BRANCO" && produtoML.cor.toUpperCase().trim() === "CREAM") similarity++;
 
         if (produtoParaguay.cor.toUpperCase().trim() === "LARANJA" && produtoML.cor.toUpperCase().trim() === "LARANJA") similarity++;
 
@@ -127,6 +170,7 @@ export function filtrosVinculosSamsungAtacadoGames(produtoParaguay: IProdutoLoja
         if (produtoParaguay.cor.toUpperCase().trim() === "BRONZE" && produtoML.cor.toUpperCase().trim() === "BRONZE") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "COPPER" && produtoML.cor.toUpperCase().trim() === "COPPER") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "VERMELHO" && produtoML.cor.toUpperCase().trim() === "VERMELHO") similarity++;
+        if (produtoParaguay.cor.toUpperCase().trim() === "VIOLETA" && produtoML.cor.toUpperCase().trim() === "VIOLETA") similarity++;
 
     }
 
@@ -154,6 +198,7 @@ export function filtrosVinculosSamsungAtacadoGames(produtoParaguay: IProdutoLoja
     if (produtoML.mobileNetwork) {
         if (produtoParaguay.rede === 4 && produtoML.mobileNetwork.toUpperCase().includes("4G")) similarity++;
         if (produtoParaguay.rede === 5 && produtoML.mobileNetwork.toUpperCase().includes("5G")) similarity++;
+       
     }
 
     return similarity;

@@ -3,7 +3,6 @@ import { parseISO } from "date-fns";
 import { z } from "zod";
 import { schemaLoja } from "./loja";
 import { schemaProdutoLoja } from "./ProdutoLoja";
-import { IFreteiro } from "./freteiro";
 
 export const schemaCatalogo = z.object({
     id: z.string().optional(),
@@ -228,7 +227,7 @@ export class CatalogoController {
         };
 
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/competidores?${params}`, options);
-      
+
         const responseData: unknown = await response.json();
 
         const catalogos = z.object({
@@ -243,27 +242,28 @@ export class CatalogoController {
 
     public static async searchCatalogoML(q: string = "") {
         if (!q || q.trim() === "") return [];
-    
+
         const params = new URLSearchParams();
         params.set("q", q);
-    
+
         const options: RequestInit = {
             method: "GET",
             headers: {
                 "Content-type": "application/json"
             }
         };
-    
+
         const response = await fetch(`https://us-central1-mega-notas.cloudfunctions.net/api/mercadolivre/catalogo/search?${params}`, options);
         const responseData: unknown = await response.json();
     
         const attributeSchema = z.object({
+            id: z.string(),
             name: z.string(),
             value_name: z.string().optional(),
         });
 
-      
-    
+
+
         const schemaProduto = z.object({
             id: z.string(),
             name: z.string(),
@@ -273,22 +273,23 @@ export class CatalogoController {
             attributes: z.array(attributeSchema).optional()
         });
 
-     
-    
+
+
         const catalogos = z.object({
             results: z.array(schemaProduto)
         }).parse(responseData);
-    
+
         const produtos = catalogos.results.map(product => {
             const marca = product.attributes?.find(attribute => attribute.name === "Marca")?.value_name;
             const modelo = product.attributes?.find(attribute => attribute.name === "Modelo")?.value_name;
             const cor = product.attributes?.find(attribute => attribute.name === "Cor")?.value_name;
+         
             const memoriaInterna = product.attributes?.find(attribute => attribute.name === "Memória interna")?.value_name;
             const memoriaRam = product.attributes?.find(attribute => attribute.name === "Memória RAM")?.value_name;
-            const mobileNetwork = product.attributes?.find(attribute => attribute.name === "Rede")?.value_name;
+            const mobileNetwork = product.attributes?.find(attribute => attribute.id === "MOBILE_NETWORK")?.value_name;
 
-          
-  
+
+
             return {
                 codigo_catalogo: product.id,
                 nome: product.name,
@@ -304,7 +305,7 @@ export class CatalogoController {
 
         return produtos;
     }
-    
+
 
 
 

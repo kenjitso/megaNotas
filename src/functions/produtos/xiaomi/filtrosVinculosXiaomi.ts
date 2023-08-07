@@ -5,6 +5,10 @@ export function filtrosVinculosXiaomiAtacadoGames(produtoParaguay: IProdutoLoja,
 
     let similarity = 0;
 
+    if (produtoML.modelo.trim().toUpperCase() === "13 LITE DUAL SIM" && produtoML.mobileNetwork.trim().toUpperCase() === "4G") produtoML.mobileNetwork = "5G";
+
+
+
     // Aumenta a similaridade se a marca for igual
     if (produtoML.marca) {
         if (produtoParaguay.marca.toUpperCase().trim() === "XIAOMI" && produtoML.marca.toUpperCase().trim() === "XIAOMI") similarity++;
@@ -35,6 +39,8 @@ export function filtrosVinculosXiaomiAtacadoGames(produtoParaguay: IProdutoLoja,
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI 10A SPORT" && produtoML.modelo.toUpperCase().trim() === "10A") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI 11 PRIME" && produtoML.modelo.toUpperCase().trim() === "11 PRIME") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI 12" && produtoML.modelo.toUpperCase().trim() === "REDMI 12") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "REDMI 12" && produtoML.nome.toUpperCase().includes("REDMI 12 ")) similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "REDMI A1+" && produtoML.nome.toUpperCase().includes("REDMI A1+")) similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI 12C" && produtoML.modelo.toUpperCase().trim() === "12C DUAL SIM") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI 9 ACTIV" && produtoML.modelo.toUpperCase().trim() === "9 ACTIV") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI 9 PRIME" && produtoML.modelo.toUpperCase().trim() === "9 PRIME") similarity++;
@@ -44,8 +50,10 @@ export function filtrosVinculosXiaomiAtacadoGames(produtoParaguay: IProdutoLoja,
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI NOTE 10 LITE" && produtoML.modelo.toUpperCase().trim() === "REDMI NOTE 10 LITE") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI NOTE 10 LITE" && produtoML.modelo.toUpperCase().trim() === "NOTE 10 LITE") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI NOTE 11 PRO" && produtoML.modelo.toUpperCase().trim() === "NOTE 11 PRO") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "NOTE 11 PRO+" && produtoML.modelo.toUpperCase().trim() === "NOTE 11 PRO+ 5G (MEDIATEK)") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI NOTE 11 PRO+" && produtoML.modelo.toUpperCase().trim() === "NOTE 11 PRO+ 5G (MEDIATEK)") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI NOTE 12" && produtoML.modelo.toUpperCase().trim() === "NOTE 12 4G") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "NOTE 12" && produtoML.modelo.toUpperCase().trim() === "NOTE 12 4G") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI NOTE 11S" && produtoML.modelo.toUpperCase().trim() === "NOTE 11S") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI NOTE 12" && produtoML.modelo.toUpperCase().trim() === "NOTE 12 5G") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "POCO X4 PRO" && produtoML.modelo.toUpperCase().trim() === "POCO X4 PRO 5G") similarity++;
@@ -56,6 +64,7 @@ export function filtrosVinculosXiaomiAtacadoGames(produtoParaguay: IProdutoLoja,
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI NOTE 11S" && produtoML.modelo.toUpperCase().trim() === "NOTE 11S 5G") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI NOTE 12 PRO PLUS" && produtoML.modelo.toUpperCase().trim() === "NOTE 12 PRO+ 5G") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI NOTE 12 PRO" && produtoML.modelo.toUpperCase().trim() === "NOTE 12 PRO 5G") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "REDMI NOTE 12 PRO" && produtoML.modelo.toUpperCase().trim() === "REDMI NOTE 12 PRO") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "12X" && produtoML.modelo.toUpperCase().trim() === "12X") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "12T" && produtoML.modelo.toUpperCase().trim() === "12T") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI 9AT" && produtoML.modelo.toUpperCase().trim() === "9A") similarity++;
@@ -75,7 +84,8 @@ export function filtrosVinculosXiaomiAtacadoGames(produtoParaguay: IProdutoLoja,
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI 10 (2022) LTE" && produtoML.modelo.toUpperCase().trim() === "10 2022") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "REDMI NOTE 11 CHINA" && produtoML.modelo.toUpperCase().trim() === "NOTE 11 (MEDIATEK)") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "13 PRO DS" && produtoML.modelo.toUpperCase().trim() === "13 PRO") similarity++;
-    
+        if (produtoParaguay.nome.toUpperCase().trim() === "REDMI NOTE 12S" && produtoML.modelo.toUpperCase().trim() === "NOTE 12S") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "REDMI NOTE 12S" && produtoML.modelo.toUpperCase().trim() === "NOTE 12S DUAL SIM") similarity++;
   
     }
 
@@ -84,6 +94,8 @@ export function filtrosVinculosXiaomiAtacadoGames(produtoParaguay: IProdutoLoja,
 
         if (produtoParaguay.cor.toUpperCase().trim() === "PRATA" && produtoML.cor.toUpperCase().trim() === "PRATA") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "SILVER" && produtoML.cor.toUpperCase().trim() === "PRATA") similarity++;
+        if (produtoParaguay.cor.toUpperCase().trim() === "PRATA" && produtoML.cor.toUpperCase().trim() === "MOONSILVER") similarity++;
+
         if (produtoParaguay.cor.toUpperCase().trim() === "PRETO" && produtoML.cor.toUpperCase().trim() === "PRETO") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "PRETO" && produtoML.cor.toUpperCase().trim() === "BLACK") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "PRETO" && produtoML.cor.toUpperCase().trim() === "MATTE BLACK") similarity++;
@@ -105,6 +117,7 @@ export function filtrosVinculosXiaomiAtacadoGames(produtoParaguay: IProdutoLoja,
 
         if (produtoParaguay.cor.toUpperCase().trim() === "CINZA" && produtoML.cor.toUpperCase().trim() === "GRAPHITE GRAY") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "CINZA" && produtoML.cor.toUpperCase().trim() === "ONYX GRAY") similarity++;
+        if (produtoParaguay.cor.toUpperCase().trim() === "CINZA" && produtoML.cor.toUpperCase().trim() === "Cinza-escuro") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "CINZA" && produtoML.cor.toUpperCase().trim() === "GREY") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "CINZA" && produtoML.cor.toUpperCase().trim() === "GRAY") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "CINZA" && produtoML.cor.toUpperCase().trim() === "CINZA") similarity++;
@@ -135,6 +148,7 @@ export function filtrosVinculosXiaomiAtacadoGames(produtoParaguay: IProdutoLoja,
         if (produtoParaguay.cor.toUpperCase().trim() === "ROXO" && produtoML.cor.toUpperCase().trim() === "PEPPY PURPLE") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "ROXO" && produtoML.cor.toUpperCase().trim() === "STARLIGHT PURPLE") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "ROXO" && produtoML.cor.toUpperCase().trim() === "ROXO") similarity++;
+        if (produtoParaguay.cor.toUpperCase().trim() === "ROXO" && produtoML.cor.toUpperCase().trim() === "LAVENDER PURPLE") similarity++;
 
         if (produtoParaguay.cor.toUpperCase().trim() === "VERDE" && produtoML.cor.toUpperCase().trim() === "LAKE GREEN") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "VERDE" && produtoML.cor.toUpperCase().trim() === "CORAL GREEN") similarity++;

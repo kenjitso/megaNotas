@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
-import { Button, Col, Dropdown, FloatingLabel, Row, Table, } from "react-bootstrap";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { PaginationComponent } from "../../components/pagination/PaginationComponent";
+import { Button, Col, FloatingLabel, Row, Table, } from "react-bootstrap";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ILoja, LojaController } from "@/datatypes/loja";
 import React from "react";
 import { ModalCadastroLoja } from "./ModalCadastroLoja";

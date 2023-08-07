@@ -87,21 +87,32 @@ function processPdfArray(
         let descricao = match[2].toLocaleUpperCase().trim().replace(/\s+/g, ' ')
 
             .replace(/(\b\d\.\d{2}\"|\b\d\.\d\"|\b\d\"|\b\d\d\.\d\"|\b\d\d\.\d{2}\")/g, '')
-
-
-            .replace(/2\//g, ' 2GB ')
-            .replace(/3\//g, ' 3GB ')
-            .replace(/4\//g, ' 4GB ')
-            .replace(/6\//g, ' 6GB ')
+        
+            .replace(/12\//g, ' 12GB ')
             .replace(/8\//g, ' 8GB ')
+            .replace(/6\//g, ' 6GB ')
+            .replace(/4\//g, ' 4GB ')
+            .replace(/3\//g, ' 3GB ') 
+            .replace(/2\//g, ' 2GB ')
+         
+           
+         
+          
+          
             .replace(/\//g, '')
             .replace(/ 128 /g, ' 128GB ')
             .replace(/ 512 /g, ' 512GB ')
-            .replace(/2RAM/g, ' 2GB ')
-            .replace(/3RAM/g, ' 3GB ')
-            .replace(/4RAM/g, ' 4GB ')
-            .replace(/6RAM/g, ' 6GB ')
+            .replace(/12RAM/g, ' 12GB ')
             .replace(/8RAM/g, ' 8GB ')
+            .replace(/6RAM/g, ' 6GB ')
+            .replace(/4RAM/g, ' 4GB ')
+            .replace(/3RAM/g, ' 3GB ')
+            .replace(/2RAM/g, ' 2GB ')
+          
+          
+           
+          
+           
             .replace(/\(CHINA\)/g, 'CHINA')
             .replace(/\(INDIA\)/g, 'INDIA')
             .replace(/INDU/g, 'INDIA')
