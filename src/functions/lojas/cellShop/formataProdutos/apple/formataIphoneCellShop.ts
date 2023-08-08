@@ -260,11 +260,6 @@ export const formataIphoneCellShop = (produtoLoja: IProdutoLoja): IProdutoLoja |
     if (novoNome.trim().toUpperCase() === ("IPHONE 14 PRO MAX MQ913LL2651")) produtoLoja.rede = 5;
 
 
-
-
-
-
-
     if (novoNome.trim().toUpperCase() === ("IPHONE 13 A2633 LZ")) produtoLoja.rede = 5;
     if (novoNome.trim().toUpperCase() === ("IPHONE 13 PRO MAX A2484 LL")) produtoLoja.rede = 5;
     if (novoNome.trim().toUpperCase() === ("IPHONE 14 PLUS *SWAP A+*")) produtoLoja.rede = 5;

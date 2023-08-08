@@ -5,35 +5,35 @@ export const formataIphoneMadrid = (produtoLoja: IProdutoLoja): IProdutoLoja | n
         /APPLE/i.test(produtoLoja.nome) ? "APPLE" :
             null;
 
-    if (marca !== null) {
+     if (marca !== null) {
         produtoLoja.marca = marca;
     }
 
     const ram =
-        /16GB RAM/i.test(produtoLoja.nome) ? 16 :
-            /12GB RAM/i.test(produtoLoja.nome) ? 12 :
-                /8GB RAM/i.test(produtoLoja.nome) ? 8 :
-                    /6GB RAM/i.test(produtoLoja.nome) ? 6 :
-                        /6\//i.test(produtoLoja.nome) ? 6 :
-                            /4GB RAM/i.test(produtoLoja.nome) ? 4 :
-                                /4\//i.test(produtoLoja.nome) ? 4 :
-                                    /3GB RAM/i.test(produtoLoja.nome) ? 3 :
-                                        /2GB RAM/i.test(produtoLoja.nome) ? 2 :
-                                            null;
+    /R32GB/i.test(produtoLoja.nome) ? 32 :
+        /R16GB/i.test(produtoLoja.nome) ? 16 :
+            /R12GB/i.test(produtoLoja.nome) ? 12 :
+                /R8GB/i.test(produtoLoja.nome) ? 8 :
+                    /R6GB/i.test(produtoLoja.nome) ? 6 :
+                        /R4GB/i.test(produtoLoja.nome) ? 4 :
+                            /R3GB/i.test(produtoLoja.nome) ? 3 :
+                                /R2GB/i.test(produtoLoja.nome) ? 2 :
+                                    /R1GB/i.test(produtoLoja.nome) ? 1 :
+                                        null;
 
     if (ram !== null) {
         produtoLoja.ram = ram;
     }
 
     const capacidade =
-        /512GB/i.test(produtoLoja.nome) ? 512 :
-            /256GB/i.test(produtoLoja.nome) ? 256 :
-                /128GB/i.test(produtoLoja.nome) ? 128 :
-                    /64GB/i.test(produtoLoja.nome) ? 64 :
-                        /32GB/i.test(produtoLoja.nome) ? 32 :
-                            /1TB/i.test(produtoLoja.nome) ? 1 :
+    /C1024GB/i.test(produtoLoja.nome) ? 1024 :
+        /C512GB/i.test(produtoLoja.nome) ? 512 :
+            /C256GB/i.test(produtoLoja.nome) ? 256 :
+                /C128GB/i.test(produtoLoja.nome) ? 128 :
+                    /C64GB/i.test(produtoLoja.nome) ? 64 :
+                        /C32GB/i.test(produtoLoja.nome) ? 32 :
+                            /C16GB/i.test(produtoLoja.nome) ? 16 :
                                 null;
-
 
     if (capacidade !== null) {
         produtoLoja.capacidade = capacidade;
@@ -93,8 +93,9 @@ export const formataIphoneMadrid = (produtoLoja: IProdutoLoja): IProdutoLoja | n
                                                                                                                                                                         /BLUE/i.test(produtoLoja.nome) ? "AZUL" :
                                                                                                                                                                             /YELLOW/i.test(produtoLoja.nome) ? "AMARELO" :
                                                                                                                                                                                 /DOURADO/i.test(produtoLoja.nome) ? "DOURADO" :
+                                                                                                                                                                                /WHITE/i.test(produtoLoja.nome) ? "BRANCO" :
                                                                                                                                                                                 /GREEN/i.test(produtoLoja.nome) ? "VERDE" :
-
+                                                                                                                                                                                /ROSE/i.test(produtoLoja.nome) ? "ROSA" :
                                                                                                                                                                                     null;
 
     if (cor !== null) {
@@ -109,26 +110,20 @@ export const formataIphoneMadrid = (produtoLoja: IProdutoLoja): IProdutoLoja | n
                     /INDONESIA/i.test(produtoLoja.nome) ? "INDONESIA" :
                         "GLOBAL";
 
-    if (origem !== null) {
-        produtoLoja.origem = origem;
-    }
-    let posicaoUltimoDS = produtoLoja.nome.indexOf("/");
-    let novoNome = produtoLoja.nome;
-    // let novoNome = posicaoUltimoDS !== -1 ? produtoLoja.nome.substring(0, posicaoUltimoDS) : produtoLoja.nome;
-
-
-
-    if (origem) novoNome = novoNome.replace(/INDIA|GLOBAL|INDONESIA/gi, '');
-    if (cor) novoNome = novoNome.replace(/VERDE|AZUL|CINZA|PRETO|LITE GREEN|BRANCO|ONYX BLACK|BLACK|GLACIER BLUE|MINT GREEN|ICE BLUE|TWILIGHT BLUE|STAR BLUE|COSMIC PURPLE|ONYX GRAY|GREEN|BRONZE|LIGHT BLUE|LAVANDER PURPLE|GRAPHITE GRAY|OCEAN BLUE|LAVENDER PURPLE|PRATA|PEPPY PURPLE|AMARELO|FOREST GREEN|PINK|ROSA|BLUE|GOLD|VERMELHO|GRAPHITE|YELLOW|MIDNIGHT|DOURADO|DEEP PURPLE|STARLIGHT|PURPLE|SILVER|SPACE/gi, '');
-    if (rede) novoNome = novoNome.replace(/\b4g\b|\b4G\b|\b5g\b|\b5G\b/gi, '');
-    if (capacidade) novoNome = novoNome.replace(new RegExp(/\b32GB\b|\b64GB\b|\b128GB\b|\b256GB\b|\b512GB\b|\b1TB\b/gi, 'i'), '');
-    if (ram) novoNome = novoNome.replace(new RegExp(/\b2GB RAM\b|\b3GB RAM\b|\b4GB RAM\b|\b6GB RAM\b|\b8GB RAM\b|\b12GB RAM\b|\b16GB RAM\b|\b6\/|\b4\//gi, 'i'), '');
-    novoNome = novoNome.replace(/XIAOMI|APPLE/gi, '');
-    novoNome = novoNome.replace(/CELULAR|DUAL SIM|CEL|OLED|LCD|\(SIM\)/gi, '').replace(/\s+/g, ' ').trimStart();
-    novoNome = novoNome.replace(/CELULAR|DUAL SIM|CEL|OLED|LCD|WHITE JP|\(SIM\)| LZ | LL | BE | VC |CPO(?!.*CPO)|SLIM BOX(?!.*SLIM BOX)|\(ANATEL\)(?!.*\(ANATEL\))/gi, '').replace(/\s+/g, ' ').trimStart();
-   
-    novoNome = novoNome.split("-")[0].trim();
-
+                        if (origem !== null) {
+                            produtoLoja.origem = origem;
+                        }
+                    
+                        let novoNome = produtoLoja.nome;
+                    
+                        if (origem) novoNome = novoNome.replace(/GLOBAL|INDIA|INDONESIA|CHINA/gi, '').trim();
+                        if (cor) novoNome = novoNome.replace(/VERDE|AZUL|ROXO|CINZA|PRETO|LITE GREEN|BRANCO|ONYX BLACK|BLACK|GLACIER BLUE|MINT GREEN|ICE BLUE|TWILIGHT BLUE|STAR BLUE|COSMIC PURPLE|ONYX GRAY|BRONZE|SPACE BLAC|NEPTUNE|MOONLIGHT|SPACE BLACK|SPACE|LIGHT BLUE|MOONSHADOW|SILVER|GRANITE|LAVANDER PURPLE|GRAPHITE GRAY|OCEAN BLUE|ONIX|DARK NIGHT|TWILIGHT|PEBBLE|POLAR|LAVENDER PURPLE|SUNSET|CARBON|MATE|PRATA|PEPPY PURPLE|AMARELO|AURORA|FOREST GREEN|PINK|ROSA|BLUE|GOLD|VERMELHO|GRAPHITE|YELLOW|MIDNIGHT|DOURADO|DEEP PURPLE|STARLIGHT|PURPLE|GREEN|COPPER|STARSCAPE|PEARL WHITE|PEARL|WHITE|VIOLET|GRAY|GREY|CORAL|LARANJA|MIRAGE|SEA|SKY/gi, '');
+                        if (rede) novoNome = novoNome.replace(/ 4G\b| 5G\b/gi, '');
+                        if (capacidade) novoNome = novoNome.replace(new RegExp(/C1024GB|C512GB|C256GB|C128GB|C64GB|C32GB|C16GB/gi, 'i'), '');
+                        if (ram) novoNome = novoNome.replace(/R12GB|R8GB|R6GB|R4GB|R3GB|R2GB|R1GB/gi, '');
+                        novoNome = novoNome.replace(/XIAOMI|APPLE|SAMSUNG/gi, '');
+                        novoNome = novoNome.replace(/CELULAR|CEL|DUAL SIM|ESCURO|SEM LACRE|S LACRE|A\.LED|OLED|S CX S ACS| S LA| S L|\(C.F.\)|\(SIM\)|\(NO\)|\(C.F\)|DP(?!.*DP)|MP(?!.*MP)|K(?!.*K)|DG(?!.*DG)|NFC(?!.*NFC)|CRE(?!.*CRE)|\s\+(?!.*\s\+)|\.(?!.*\.)/gi, '').replace(/CAM13\+2\+2 5|CAM13\+2\+2MP 5|\s+/g, ' ').trim();
+                    
 
     //MODELOS ML
 
@@ -166,7 +161,20 @@ export const formataIphoneMadrid = (produtoLoja: IProdutoLoja): IProdutoLoja | n
     if (novoNome.trim().toUpperCase() === ("IPHONE 14 PRO MAX ESIM A2651")) produtoLoja.ram = 6;
 
 
+
     //REDES
+
+    if (novoNome.trim().toUpperCase() === ("IPHONE 13 A2633HN")) produtoLoja.rede = 5;
+    if (novoNome.trim().toUpperCase() === ("IPHONE 14 A2882HN")) produtoLoja.rede = 5;
+    if (novoNome.trim().toUpperCase() === ("IPHONE 14 PRO A2650LL")) produtoLoja.rede = 5;
+    if (novoNome.trim().toUpperCase() === ("IPHONE 14 PRO A2890BE")) produtoLoja.rede = 5;
+    if (novoNome.trim().toUpperCase() === ("IPHONE 14 PRO MAX A2651LL")) produtoLoja.rede = 5;
+    if (novoNome.trim().toUpperCase() === ("IPHONE 14 PRO MAX A2894BE")) produtoLoja.rede = 5;
+    if (novoNome.trim().toUpperCase() === ("IPHONE 14 PRO MAX A2651LL")) produtoLoja.rede = 5;
+    if (novoNome.trim().toUpperCase() === ("IPHONE 14 PRO MAX A2896CH")) produtoLoja.rede = 5;
+    if (novoNome.trim().toUpperCase() === ("IPHONE 14 PRO MAX A2894BE")) produtoLoja.rede = 5;
+
+
     if (novoNome.trim().toUpperCase() === ("IPHONE 13 A2633 LZ")) produtoLoja.rede = 5;
     if (novoNome.trim().toUpperCase() === ("IPHONE 13 PRO MAX A2484 LL")) produtoLoja.rede = 5;
     if (novoNome.trim().toUpperCase() === ("IPHONE 14 PLUS *SWAP A+*")) produtoLoja.rede = 5;
@@ -174,6 +182,8 @@ export const formataIphoneMadrid = (produtoLoja: IProdutoLoja): IProdutoLoja | n
     if (novoNome.trim().toUpperCase() === ("IPHONE 14 PRO MAX A2896 CH")) produtoLoja.rede = 5;
     if (novoNome.trim().toUpperCase() === ("IPHONE 12 A2403 ZD *CPO*")) produtoLoja.rede = 5;
     if (novoNome.trim().toUpperCase() === ("IPHONE 14 PRO A2890 LE")) produtoLoja.rede = 5;
+
+
     produtoLoja.nome = novoNome;
 
     return produtoLoja;

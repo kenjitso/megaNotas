@@ -10,20 +10,17 @@ export const formataSamsungMadrid = (produtoLoja: IProdutoLoja): IProdutoLoja | 
     }
 
 
-
     const ram =
-        /16GB RAM/i.test(produtoLoja.nome) ? 16 :
-            /12GB RAM/i.test(produtoLoja.nome) ? 12 :
-                /12GB/i.test(produtoLoja.nome) ? 12 :
-                    /12\//i.test(produtoLoja.nome) ? 12 :
-                        /8GB RAM/i.test(produtoLoja.nome) ? 8 :
-                            /8GB/i.test(produtoLoja.nome) ? 8 :
-                                /8\//i.test(produtoLoja.nome) ? 8 :
-                                    /6GB RAM/i.test(produtoLoja.nome) ? 6 :
-                                        /4GB RAM/i.test(produtoLoja.nome) ? 4 :
-                                            /3GB RAM/i.test(produtoLoja.nome) ? 3 :
-                                                /2GB RAM/i.test(produtoLoja.nome) ? 2 :
-                                                    null;
+        /R32GB/i.test(produtoLoja.nome) ? 32 :
+            /R16GB/i.test(produtoLoja.nome) ? 16 :
+                /R12GB/i.test(produtoLoja.nome) ? 12 :
+                    /R8GB/i.test(produtoLoja.nome) ? 8 :
+                        /R6GB/i.test(produtoLoja.nome) ? 6 :
+                            /R4GB/i.test(produtoLoja.nome) ? 4 :
+                                /R3GB/i.test(produtoLoja.nome) ? 3 :
+                                    /R2GB/i.test(produtoLoja.nome) ? 2 :
+                                        /R1GB/i.test(produtoLoja.nome) ? 1 :
+                                            null;
 
     if (ram !== null) {
         produtoLoja.ram = ram;
@@ -31,16 +28,19 @@ export const formataSamsungMadrid = (produtoLoja: IProdutoLoja): IProdutoLoja | 
 
 
     const capacidade =
-        /512GB/i.test(produtoLoja.nome) ? 512 :
-            /512\//i.test(produtoLoja.nome) ? 512 :
-                /256GB/i.test(produtoLoja.nome) ? 256 :
-                    /256\//i.test(produtoLoja.nome) ? 256 :
-                        /128GB/i.test(produtoLoja.nome) ? 128 :
-                            /128\//i.test(produtoLoja.nome) ? 128 :
-                                /64GB/i.test(produtoLoja.nome) ? 64 :
-                                    /32GB/i.test(produtoLoja.nome) ? 32 :
-                                        /1TB/i.test(produtoLoja.nome) ? 1 :
-                                            null;
+        /C1024GB/i.test(produtoLoja.nome) ? 1024 :
+            /C512GB/i.test(produtoLoja.nome) ? 512 :
+                /C256GB/i.test(produtoLoja.nome) ? 256 :
+                    /C128GB/i.test(produtoLoja.nome) ? 128 :
+                        /C64GB/i.test(produtoLoja.nome) ? 64 :
+                            /C32GB/i.test(produtoLoja.nome) ? 32 :
+                                /32GB/i.test(produtoLoja.nome) ? 32 :
+                                    /64GB/i.test(produtoLoja.nome) ? 64 :
+                                        /128GB/i.test(produtoLoja.nome) ? 128 :
+                                            /256GB/i.test(produtoLoja.nome) ? 256 :
+                                                /512/i.test(produtoLoja.nome) ? 512 :
+
+                                                    null;
 
 
     if (capacidade !== null) {
@@ -116,76 +116,53 @@ export const formataSamsungMadrid = (produtoLoja: IProdutoLoja): IProdutoLoja | 
     }
 
 
+
     const origem =
-        /ÍNDIA/i.test(produtoLoja.nome) ? "INDIA" :
+
+        /GLOBAL/i.test(produtoLoja.nome) ? "GLOBAL" :
             /INDIA/i.test(produtoLoja.nome) ? "INDIA" :
-                /GLOBAL/i.test(produtoLoja.nome) ? "GLOBAL" :
-                    /INDONESIA/i.test(produtoLoja.nome) ? "INDONESIA" :
-                        "GLOBAL";
+                /INDONESIA/i.test(produtoLoja.nome) ? "INDONESIA" :
+                    /CHINA/i.test(produtoLoja.nome) ? "CHINA" :
+                        null;
 
     if (origem !== null) {
         produtoLoja.origem = origem;
     }
-    let posicaoUltimoDS = produtoLoja.nome.indexOf("DS");
-    // let novoNome = produtoLoja.nome;
-    let novoNome = posicaoUltimoDS !== -1 ? produtoLoja.nome.substring(0, posicaoUltimoDS) : produtoLoja.nome;
 
+    let novoNome = produtoLoja.nome;
 
-
-    if (origem) novoNome = novoNome.replace(/INDIA|GLOBAL|INDONESIA/gi, '');
-    if (cor) novoNome = novoNome.replace(/VERDE|AZUL|CINZA|PRETO|LITE GREEN|BRANCO|ONYX BLACK|BLACK|GLACIER BLUE|MINT GREEN|ICE BLUE|TWILIGHT BLUE|STAR BLUE|COSMIC PURPLE|ONYX GRAY|BRONZE|LIGHT BLUE|LAVANDER PURPLE|GRAPHITE GRAY|OCEAN BLUE|LAVENDER PURPLE|PRATA|PEPPY PURPLE|AMARELO|FOREST GREEN|PINK|ROSA|BLUE|GOLD|VERMELHO|GRAPHITE|YELLOW|MIDNIGHT|DOURADO|DEEP PURPLE|STARLIGHT|PURPLE|GREEN|COPPER|WHITE|VIOLET|BURGUNDY|CREAM|BEIGE|GRAY/gi, '');
-    if (rede) novoNome = novoNome.replace(/\b4g\b|\b4G\b|\b5g\b|\b5G\b/gi, '');
-    if (capacidade) novoNome = novoNome.replace(new RegExp(/\b32GB\b|\b64GB\b|\b128GB\b|\b256GB\b|\b512GB\b|\b1TB\b|\b512\/\b|\b256\/\b|\b128\/\b/gi, 'i'), '');
-    if (ram) novoNome = novoNome.replace(new RegExp(/\b2GB RAM\b|\b3GB RAM\b|\b4GB RAM\b|\b6GB RAM\b|\b8GB RAM\b|\b8GB\b|\b12GB RAM\b|\b16GB RAM\b|\b12GB\b|\b12\/|\b8\//gi, 'i'), '');
-    novoNome = novoNome.replace(/CELULAR|CEL|DUAL SIM|ADAPTADOR|CORE|GARANTIA|GARANTI|CARREGADOR PADRAO ARG|SO PAR|ASIL|DESLACRADO S TIGO PERSONA|ATLA|\(VITRINA\)|\*\*(?!.*\*\*)|\S L(?!.*\S L)|C FEA(?!.*C FEA)|GAR(?!.*GAR)|BR(?!.*BR)|PY AR(?!.*PY AR)|RDF(?!.*RDF)|\-(?!.*\-)|US(?!.*US)|DP(?!.*DP)|K(?!.*K)|DG(?!.*DG)|NFC(?!.*NFC)|L P-(?!.*L P-)|L P(?!.*L P)|\.(?!.*\.)|\S CAPA(?!.*\S CAPA)|(?!.*\S CAPA)|\s\+(?!.*\s\+)/gi, '').replace(/\s+/g, ' ').trim();
-
-    novoNome = novoNome.replace(/CELULAR|DUAL SIM|CEL|SS(?!.*SS)/gi, '').replace(/\s+/g, ' ').trimStart();
+    if (origem) novoNome = novoNome.replace(/GLOBAL|INDIA|INDONESIA|CHINA/gi, '').trim();
+    if (cor) novoNome = novoNome.replace(/VERDE|AZUL|ROXO|CINZA|PRETO|LITE GREEN|AWESOME|LIGHT|BRANCO|ONYX BLACK|BURGUNDY|BLACK|GLACIER BLUE|MINT GREEN|ICE BLUE|TWILIGHT BLUE|STAR BLUE|COSMIC PURPLE|ONYX GRAY|BRONZE|SPACE BLAC|NEPTUNE|MOONLIGHT|SPACE BLACK|SPACE|LIGHT BLUE|MOONSHADOW|SILVER|GRANITE|LAVANDER PURPLE|GRAPHITE GRAY|OCEAN BLUE|ONIX|DARK NIGHT|TWILIGHT|PEBBLE|POLAR|LAVENDER PURPLE|SUNSET|CARBON|MATE|PRATA|PEPPY PURPLE|AMARELO|AURORA|FOREST GREEN|PINK|ROSA|BLUE|GOLD|VERMELHO|GRAPHITE|YELLOW|MIDNIGHT|DOURADO|DEEP PURPLE|STARLIGHT|PURPLE|GREEN|COPPER|STARSCAPE|PEARL WHITE|PEARL|WHITE|VIOLET|GRAY|GREY|CORAL|LARANJA|MIRAGE|SEA|SKY/gi, '');
+    if (rede) novoNome = novoNome.replace(/ 4G\b| 5G\b/gi, '');
+    if (capacidade) novoNome = novoNome.replace(new RegExp(/C1024GB|C512GB|C256GB|C128GB|C64GB|C32GB|C16GB|32GB|64GB|128GB|256GB|512GB/gi, 'i'), '');
+    if (ram) novoNome = novoNome.replace(/R12GB|R8GB|R6GB|R4GB|R3GB|R2GB|R1GB/gi, '');
+    novoNome = novoNome.replace(/XIAOMI|APPLE/gi, '');
+    novoNome = novoNome.replace(/CELULAR|CEL|DUAL SIM|ESCURO|CORE|SEM LACRE|LCD|S LACRE|A\.LED|S CX S ACS| S LA| S L|\(C.F.\)|\(NO\)|\(C.F\)|DP(?!.*DP)|MP(?!.*MP)|K(?!.*K)|DG(?!.*DG)|NFC(?!.*NFC)|CRE(?!.*CRE)|\s\+(?!.*\s\+)|\.(?!.*\.)|\(.*(?!\().*$/gi, '').replace(/CAM13\+2\+2 5|CAM13\+2\+2MP 5|\s+/g, ' ').trim();
 
 
 
     //MODELOS ML
 
 
-    //MODELOS
-    if (novoNome.trim().toUpperCase() === "IPHONE 11 A2221") produtoLoja.ram = 4;
-    if (novoNome.trim().toUpperCase() === "IPHONE 12 A2402 3J") produtoLoja.ram = 4;
-    if (novoNome.trim().toUpperCase() === "IPHONE 12 A2403 HN") produtoLoja.ram = 4;
-    if (novoNome.trim().toUpperCase() === "IPHONE 11 PRO MAX A2218 ZD") produtoLoja.ram = 4;
-    if (novoNome.trim().toUpperCase() === "IPHONE 12 A2403 LE") produtoLoja.ram = 4;
-    if (novoNome.trim().toUpperCase() === "IPHONE 12 A2403 QL") produtoLoja.ram = 4;
-    if (novoNome.trim().toUpperCase() === "IPHONE 12 A2403 ZD") produtoLoja.ram = 4;
-    if (novoNome.trim().toUpperCase() === "IPHONE 13 A2633 HN") produtoLoja.ram = 4;
-    if (novoNome.trim().toUpperCase() === "IPHONE 14 PLUS A2886 HN") produtoLoja.ram = 6;
-    if (novoNome.trim().toUpperCase() === "IPHONE 14 PLUS A2886 BE") produtoLoja.ram = 6;
-    if (novoNome.trim().toUpperCase() === "IPHONE 14 PLUS A2886 HN") produtoLoja.ram = 6;
-    if (novoNome.trim().toUpperCase() === "IPHONE 14 PRO A2650") produtoLoja.ram = 6;
-    if (novoNome.trim().toUpperCase() === "IPHONE 14 PLUS A2886 AA") produtoLoja.ram = 6;
-    if (novoNome.trim().toUpperCase() === "IPHONE 14 A2884 CH") produtoLoja.ram = 6;
-    if (novoNome.trim().toUpperCase() === "IPHONE 13 PRO MAX A2484 LL") produtoLoja.ram = 6;
-    if (novoNome.trim().toUpperCase() === "IPHONE 14 PRO MAX A2896 CH") produtoLoja.ram = 6;
-    if (novoNome.trim().toUpperCase() === "IPHONE 14 PRO MAX A2893 3J") produtoLoja.ram = 6;
-    if (novoNome.trim().toUpperCase() === "IPHONE 14 PRO MAX A2651") produtoLoja.ram = 6;
-    if (novoNome.trim().toUpperCase() === "IPHONE 14 PRO A2892 CH") produtoLoja.ram = 6;
-    if (novoNome.trim().toUpperCase() === "IPHONE 14 PRO A2890 BE") produtoLoja.ram = 6;
-    if (novoNome.trim().toUpperCase() === "IPHONE 14 A2882 HN") produtoLoja.ram = 6;
-    if (novoNome.trim().toUpperCase() === "IPHONE 14 A2882 BE") produtoLoja.ram = 6;
-    if (novoNome.trim().toUpperCase() === "IPHONE 14 PRO A2890 LE") produtoLoja.ram = 6;
-    if (novoNome.trim().toUpperCase() === "IPHONE 13 PRO") produtoLoja.ram = 6;
-    if (novoNome.trim().toUpperCase() === "IPHONE 14 PRO") produtoLoja.ram = 6;
-    if (novoNome.trim().toUpperCase() === "IPHONE 14 PRO MAX") produtoLoja.ram = 6;
-    if (novoNome.trim().toUpperCase() === "IPHONE 14 PRO A2650 CH") produtoLoja.ram = 6;
-    if (novoNome.trim().toUpperCase() === ("IPHONE 13 A2633 LZ")) produtoLoja.ram = 4;
-    if (novoNome.trim().toUpperCase() === ("IPHONE 14 PRO MAX ESIM A2651")) produtoLoja.ram = 6;
 
 
-    //REDES
-    if (novoNome.trim().toUpperCase() === ("IPHONE 13 A2633 LZ")) produtoLoja.rede = 5;
-    if (novoNome.trim().toUpperCase() === ("IPHONE 13 PRO MAX A2484 LL")) produtoLoja.rede = 5;
-    if (novoNome.trim().toUpperCase() === ("IPHONE 14 PLUS *SWAP A+*")) produtoLoja.rede = 5;
-    if (novoNome.trim().toUpperCase() === ("IPHONE 14 PRO A2892 CH")) produtoLoja.rede = 5;
-    if (novoNome.trim().toUpperCase() === ("IPHONE 14 PRO MAX A2896 CH")) produtoLoja.rede = 5;
-    if (novoNome.trim().toUpperCase() === ("IPHONE 12 A2403 ZD *CPO*")) produtoLoja.rede = 5;
-    if (novoNome.trim().toUpperCase() === ("IPHONE 14 PRO A2890 LE")) produtoLoja.rede = 5;
+    //SAMSUNG
+    if (novoNome.trim().toUpperCase() === ("SAMSUNG A03 SM-A032F")) produtoLoja.ram = 2;
+    if (novoNome.trim().toUpperCase() === ("SAMSUNG A04E SM-A042F")) produtoLoja.ram = 3;
+    if (novoNome.trim().toUpperCase() === ("SAMSUNG A04E SM-A042M")) produtoLoja.ram = 3;
+    if (novoNome.trim().toUpperCase() === ("SAMSUNG A04S SM-A047M")) produtoLoja.ram = 4;
+    if (novoNome.trim().toUpperCase() === ("SAMSUNG A24 SM-A245M")) produtoLoja.ram = 4;
+    if (novoNome.trim().toUpperCase() === ("SAMSUNG A24 SM-A245M")) produtoLoja.ram = 4;
+
+
+
+    if (novoNome.trim().toUpperCase() === ("SAMSUNG A34 SM-A346M")) produtoLoja.ram = 6;
+    if (novoNome.trim().toUpperCase() === ("SAMSUNG S23+ S916B")) produtoLoja.ram = 8;
+
+
+
+    if (novoNome.trim().toUpperCase() === ("SAMSUNG Z FLIP 3 F711B")) produtoLoja.rede = 5;
+    if (novoNome.trim().toUpperCase() === ("SAMSUNG Z FOLD 4 F936B")) produtoLoja.rede = 5;
     produtoLoja.nome = novoNome;
 
     return produtoLoja;

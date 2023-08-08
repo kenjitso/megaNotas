@@ -83,30 +83,70 @@ function processPdfArray(
     while ((match = regex.exec(text)) !== null) {
         const codigo = match[1];
         let descricao = match[2].toLocaleUpperCase()
-            .replace(/6\.1/g, '')
-            .replace(/6\.28/g, '')
-            .replace(/6\.4/g, '')
-            .replace(/6\.43/g, '')
-            .replace(/6\.5/g, '')
-            .replace(/6\.52/g, '')
-            .replace(/6\.53/g, '')
-            .replace(/6\.55/g, '')
-            .replace(/6\.56/g, '')
-            .replace(/6\.53/g, '')
-            .replace(/6\.6/g, '')
-            .replace(/6\.67/g, '')
-            .replace(/6\.7/g, '')
-            .replace(/6\.71/g, '')
-            .replace(/6\.8/g, '')
-            .replace(/INDIANO/g, 'INDIA')
+        .replace(/(\b\d\.\d{1,2}|\b\d\.\d\"|\b\d\"|\b\d\d\.\d\"|\b\d\d\.\d{1,2})/g, '')
+        .replace(/ 128G /g, ' 128GB ')
+        .replace(/\b128G\b/g, '128GB')
+        .replace(/\b128\b\//g, ' 128GB ')
+        .replace(/\b256\b\//g, ' 256GB ')
+        .replace(/\b512\b\//g, ' 512GB ')
+        .replace(/ 12\+/g, ' 12GB ')
+        .replace(/ 8\+/g, ' 8GB ')
+        .replace(/ 6\+/g, ' 6GB ')
+        .replace(/ 4\+/g, ' 4GB ')
+        .replace(/ 3\+/g, ' 3GB ')
+        .replace(/ 2\+/g, ' 2GB ')
+        .replace(/\+12 /g, ' 12GB ')
+        .replace(/\+8 /g, ' 8GB ')
+        .replace(/\+6 /g, ' 6GB ')
+        .replace(/\+4 /g, ' 4GB ')
+        .replace(/\+3 /g, ' 3GB ')
+        .replace(/\+2 /g, ' 2GB ')
+        .replace(/ 12\//g, ' 12GB ')
+        .replace(/ 8\//g, ' 8GB ')
+        .replace(/ 6\//g, ' 6GB ')
+        .replace(/ 4\//g, ' 4GB ')
+        .replace(/ 3\//g, ' 3GB ')
+        .replace(/ 2\//g, ' 2GB ')
+        .replace(/ 2\//g, ' 2GB ')
+        .replace(/\(CHINA\)/g, 'CHINA')
+        .replace(/\(INDIA\)/g, 'INDIA')
+        .replace(/\(INDONESIA\)/g, 'INDONESIA')
+        .replace(/\(GLOBAL\)/g, 'GLOBAL')
+        .replace(/ SAMS /g, ' SAMSUNG ')
+        .replace(/ LTE /g, ' ')
+        .replace(/ DPJ /g, ' ')
+        .replace(/ DPJ\b/g, ' ')
+        .replace(/ DS /g, ' DUAL SIM ')
+        .replace(/ DP /g, ' ')
+        .replace(/ 128 /g, ' 128GB ')
+        .replace(/\//g, ' ')
 
-        if (!/(INDONESIA|INDIA|CHINA)/gi.test(descricao)) {
+        let memoryValues = descricao.match(/(\b\d+GB\b)/g);  // encontra todos os valores de memória na descrição
+
+        if (memoryValues && memoryValues.length > 1) {
+            memoryValues.sort((a, b) => parseInt(a) - parseInt(b));  // classifica os valores em ordem crescente
+
+            // substitui os valores na descrição original pelo valor classificado com o prefixo 'R' e 'C'
+            for (let i = 0; i < memoryValues.length; i++) {
+                let prefix = i == 0 ? 'R' : 'C';
+                let regex = new RegExp("\\b" + memoryValues[i] + "\\b", "g"); // cria um regex para substituir todas as ocorrências
+                descricao = descricao.replace(regex, prefix + memoryValues[i]);
+            }
+        }
+
+        if (/IPHONE/gi.test(descricao) && !descricao.includes(' APPLE ')) {
+            descricao = "APPLE " + descricao;
+        }
+
+        if (!/( 5G )/gi.test(descricao) && !descricao.includes(' 4G ')) {
+            descricao = descricao + " 4G";
+        }
+
+        if (!/(INDONESIA|INDIA|CHINA)/gi.test(descricao) && !descricao.includes('GLOBAL')) {
             descricao = descricao + " GLOBAL";
         }
 
-        if (/(IPHONE)/gi.test(descricao)) {
-            descricao =  "APPLE " +descricao;
-        }
+
 
         let preco = match[3];
 
@@ -114,7 +154,7 @@ function processPdfArray(
         preco = preco.replace(',', '');
         const precoNumero = parseFloat(preco);
 
-        if (precoNumero < 30 || /swap/i.test(descricao) || /swa/i.test(descricao)) {
+        if (precoNumero < 40 || /swap/i.test(descricao) || /swa/i.test(descricao)) {
             continue;
         }
 

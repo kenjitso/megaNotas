@@ -10,8 +10,6 @@ export const formataXiaomiCellShop = (produtoLoja: IProdutoLoja): IProdutoLoja |
         produtoLoja.marca = marca;
     }
 
-
-
     const ram =
         /R32GB/i.test(produtoLoja.nome) ? 32 :
             /R16GB/i.test(produtoLoja.nome) ? 16 :
@@ -27,7 +25,6 @@ export const formataXiaomiCellShop = (produtoLoja: IProdutoLoja): IProdutoLoja |
     if (ram !== null) {
         produtoLoja.ram = ram;
     }
-
 
     const capacidade =
         /C1024GB/i.test(produtoLoja.nome) ? 1024 :
@@ -125,6 +122,7 @@ export const formataXiaomiCellShop = (produtoLoja: IProdutoLoja): IProdutoLoja |
                                                                                                                                                                                                             /MOONSHADOW/i.test(produtoLoja.nome) ? "CINZA" :
                                                                                                                                                                                                             /STARSCAPE/i.test(produtoLoja.nome) ? "AZUL" :
                                                                                                                                                                                                             /GRANITE/i.test(produtoLoja.nome) ? "CINZA" :
+                                                                                                                                                                                                            /LARANJA/i.test(produtoLoja.nome) ? "LARANJA" :
                                                                                                                                                                                                                 null;
 
     if (cor !== null) {
@@ -147,12 +145,12 @@ export const formataXiaomiCellShop = (produtoLoja: IProdutoLoja): IProdutoLoja |
     let novoNome = produtoLoja.nome;
 
     if (origem) novoNome = novoNome.replace(/GLOBAL|INDIA|INDONESIA|CHINA/gi, '').trim();
-    if (cor) novoNome = novoNome.replace(/VERDE|AZUL|ROXO|CINZA|PRETO|LITE GREEN|BRANCO|ONYX BLACK|BLACK|GLACIER BLUE|MINT GREEN|ICE BLUE|TWILIGHT BLUE|STAR BLUE|COSMIC PURPLE|ONYX GRAY|BRONZE|SPACE BLAC|NEPTUNE|MOONLIGHT|SPACE BLACK|SPACE|LIGHT BLUE|MOONSHADOW|SILVER|GRANITE|LAVANDER PURPLE|GRAPHITE GRAY|OCEAN BLUE|ONIX|DARK NIGHT|TWILIGHT|PEBBLE|POLAR|LAVENDER PURPLE|SUNSET|CARBON|MATE|PRATA|PEPPY PURPLE|AMARELO|AURORA|FOREST GREEN|PINK|ROSA|BLUE|GOLD|VERMELHO|GRAPHITE|YELLOW|MIDNIGHT|DOURADO|DEEP PURPLE|STARLIGHT|PURPLE|GREEN|COPPER|STARSCAPE|PEARL WHITE|PEARL|WHITE|VIOLET|GRAY|GREY|CORAL|MIRAGE|SEA|SKY/gi, '');
+    if (cor) novoNome = novoNome.replace(/VERDE|AZUL|ROXO|CINZA|PRETO|LITE GREEN|BRANCO|ONYX BLACK|BLACK|GLACIER BLUE|MINT GREEN|ICE BLUE|TWILIGHT BLUE|STAR BLUE|COSMIC PURPLE|ONYX GRAY|BRONZE|SPACE BLAC|NEPTUNE|MOONLIGHT|SPACE BLACK|SPACE|LIGHT BLUE|MOONSHADOW|SILVER|GRANITE|LAVANDER PURPLE|GRAPHITE GRAY|OCEAN BLUE|ONIX|DARK NIGHT|TWILIGHT|PEBBLE|POLAR|LAVENDER PURPLE|SUNSET|CARBON|MATE|PRATA|PEPPY PURPLE|AMARELO|AURORA|FOREST GREEN|PINK|ROSA|BLUE|GOLD|VERMELHO|GRAPHITE|YELLOW|MIDNIGHT|DOURADO|DEEP PURPLE|STARLIGHT|PURPLE|GREEN|COPPER|STARSCAPE|PEARL WHITE|PEARL|WHITE|VIOLET|GRAY|GREY|CORAL|LARANJA|MIRAGE|SEA|SKY/gi, '');
     if (rede) novoNome = novoNome.replace(/ 4G\b| 5G\b/gi, '');
     if (capacidade) novoNome = novoNome.replace(new RegExp(/C1024GB|C512GB|C256GB|C128GB|C64GB|C32GB|C16GB/gi, 'i'), '');
     if (ram) novoNome = novoNome.replace(/R12GB|R8GB|R6GB|R4GB|R3GB|R2GB|R1GB/gi, '');
     novoNome = novoNome.replace(/XIAOMI|APPLE|SAMSUNG/gi, '');
-    novoNome = novoNome.replace(/CELULAR|CEL|DUAL SIM|ESCURO|SEM LACRE|S LACRE|S CX S ACS| S LA| S L|\(C.F.\)|\(C.F\)|DP(?!.*DP)|MP(?!.*MP)|K(?!.*K)|DG(?!.*DG)|NFC(?!.*NFC)|\s\+(?!.*\s\+)|\.(?!.*\.)/gi, '').replace(/CAM13\+2\+2 5|CAM13\+2\+2MP 5|\s+/g, ' ').trim();
+    novoNome = novoNome.replace(/CELULAR|CEL|DUAL SIM|ESCURO|SEM LACRE|S LACRE|S CX S ACS| S LA| S L|\(C.F.\)|\(C.F\)|DP(?!.*DP)|MP(?!.*MP)|K(?!.*K)|DG(?!.*DG)|NFC(?!.*NFC)|CRE(?!.*CRE)|\s\+(?!.*\s\+)|\.(?!.*\.)/gi, '').replace(/CAM13\+2\+2 5|CAM13\+2\+2MP 5|\s+/g, ' ').trim();
     
 
     produtoLoja.nome = novoNome;

@@ -41,6 +41,10 @@ export function filtrosVinculosIphoneAtacadoGames(produtoParaguay: IProdutoLoja,
     if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 13 MLQ63LZ2633" && produtoML.modelo.toUpperCase().trim() === "IPHONE 13") similarity++;
     if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 13 MLQ83LZ2633" && produtoML.modelo.toUpperCase().trim() === "IPHONE 13") similarity++;
     if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 13 MLQ73LZ2633" && produtoML.modelo.toUpperCase().trim() === "IPHONE 13") similarity++;
+    if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 13 A2633HN" && produtoML.modelo.toUpperCase().trim() === "IPHONE 13") similarity++;
+    if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 14 PRO A2890BE" && produtoML.modelo.toUpperCase().trim() === "IPHONE 14 PRO") similarity++;
+
+    if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 14 A2882HN" && produtoML.modelo.toUpperCase().trim() === "IPHONE 14") similarity++;
     if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 14 MPUF3BE2882" && produtoML.modelo.toUpperCase().trim() === "IPHONE 14") similarity++;
     if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 14 MPV03BE2882" && produtoML.modelo.toUpperCase().trim() === "IPHONE 14") similarity++;
     if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 14 MPUR3BE2882" && produtoML.modelo.toUpperCase().trim() === "IPHONE 14") similarity++;
@@ -89,6 +93,12 @@ export function filtrosVinculosIphoneAtacadoGames(produtoParaguay: IProdutoLoja,
     if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 14 PRO A2650" && produtoML.modelo.toUpperCase().trim() === "IPHONE 14 PRO") similarity++;
     if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 14 PRO A2650 CH" && produtoML.modelo.toUpperCase().trim() === "IPHONE 14 PRO") similarity++;
     if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 14 PRO A2890 BE" && produtoML.modelo.toUpperCase().trim() === "IPHONE 14 PRO") similarity++;
+    if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 14 PRO A2650LL" && produtoML.modelo.toUpperCase().trim() === "IPHONE 14 PRO") similarity++;
+ 
+    if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 14 PRO MAX A2651LL" && produtoML.modelo.toUpperCase().trim() === "IPHONE 14 PRO MAX") similarity++;
+    if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 14 PRO MAX A2894BE" && produtoML.modelo.toUpperCase().trim() === "IPHONE 14 PRO MAX") similarity++;
+    if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 14 PRO MAX A2896CH" && produtoML.modelo.toUpperCase().trim() === "IPHONE 14 PRO MAX") similarity++;
+   
     if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 14 PRO A2892 CH" && produtoML.modelo.toUpperCase().trim() === "IPHONE 14 PRO") similarity++;
     if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 14 PRO MAX" && produtoML.modelo.toUpperCase().trim() === "IPHONE 14 PRO MAX") similarity++;
     if (produtoParaguay.nome.toUpperCase().trim() === "IPHONE 14 PRO MAX A2651" && produtoML.modelo.toUpperCase().trim() === "IPHONE 14 PRO MAX") similarity++;
