@@ -123,7 +123,7 @@ export function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropIt
                                                                 rel="noopener noreferrer"
                                                                 title={competidor.produto.codigo}
                                                             >
-                                                                {competidor.produto.nome}
+                                                                {competidor.produto.nome.toLocaleUpperCase()}
                                                             </a>
 
 

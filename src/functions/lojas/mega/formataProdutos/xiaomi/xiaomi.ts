@@ -124,6 +124,10 @@ export const formataXiaomiMega = (produtoLoja: IProdutoLoja): IProdutoLoja | nul
     novoNome = novoNome.replace(/CELULAR|CEL|DUAL SIM|ADAPTADOR|C ROTA|ATLA|LTE|\(VITRINA\)|\*\*(?!.*\*\*)|\S L(?!.*\S L)|C FEA(?!.*C FEA)|\-(?!.*\-)|US(?!.*US)|DP(?!.*DP)|K(?!.*K)|DG(?!.*DG)|NFC(?!.*NFC)|L P-(?!.*L P-)|PL(?!.*PL)|L P(?!.*L P)|G(?!.*G)|\"(?!.*\")|\.(?!.*\.)|\S CAPA(?!.*\S CAPA)|\s\+(?!.*\s\+)/gi, '').replace(/\s+/g, ' ').trim();
     novoNome = novoNome.replace(/LTE/gi, '');
     novoNome = novoNome.replace(/ LT/gi, '').trim();
+
+
+    if (novoNome.trim().toUpperCase() === "13 ULTRA") produtoLoja.rede = 5;
+
     produtoLoja.nome = novoNome;
 
     return produtoLoja;

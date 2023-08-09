@@ -28,6 +28,9 @@ export function PageHome() {
     const [indiaFilter, setIndiaFilter] = useState(false);
     const [chinaFilter, setChinaFilter] = useState(false);
     const [indonesiaFilter, setIndonesiaFilter] = useState(false);
+    const [appleFilter, setAppleFilter] = useState(false);
+    const [xiaomiFilter, setXiaomiFilter] = useState(false);
+    const [samsungFilter, setSamsungFilter] = useState(false);
     const [catalogoSincronismoUpdate, setSincronismoUpdate] = useState<boolean>(false);
 
     const { isFetching, data } = useQuery(["catalogoshome", filtro], async () => {
@@ -80,19 +83,30 @@ export function PageHome() {
                 ...catalogo,
                 competidores: catalogo.competidores.filter(competidor => {
                     const nome = competidor.produto.nome.toUpperCase().replace(/[^a-zA-Z0-9 ]/g, '');
+
                     if (indiaFilter && nome.includes("INDIA")) {
-                        return false; // Se o filtro India estiver ativado e o nome incluir "INDIA", remova este competidor.
+                        return true; // Se o filtro India estiver ativado e o nome incluir "INDIA", inclua este competidor.
                     }
                     if (globalFilter && nome.includes("GLOBAL")) {
-                        return false; // Se o filtro Global estiver ativado e o nome incluir "GLOBAL", remova este competidor.
+                        return true; // Se o filtro Global estiver ativado e o nome incluir "GLOBAL", inclua este competidor.
                     }
                     if (chinaFilter && nome.includes("CHINA")) {
-                        return false; // Se o filtro CHINA estiver ativado e o nome incluir "GLOBAL", remova este competidor.
+                        return true; // Se o filtro CHINA estiver ativado e o nome incluir "CHINA", inclua este competidor.
                     }
                     if (indonesiaFilter && nome.includes("INDONESIA")) {
-                        return false; // Se o filtro INDONESIA estiver ativado e o nome incluir "GLOBAL", remova este competidor.
+                        return true; // Se o filtro INDONESIA estiver ativado e o nome incluir "INDONESIA", inclua este competidor.
                     }
-                    return true; // Se nenhum dos filtros corresponder, mantenha o competidor.
+                    if (appleFilter && nome.includes("APPLE")) {
+                        return true; // Se o filtro apple estiver ativado e o nome incluir "APPLE", inclua este competidor.
+                    }
+                    if (samsungFilter && nome.includes("SAMSUNG")) {
+                        return true; // Se o filtro samsung estiver ativado e o nome incluir "SAMSUNG", inclua este competidor.
+                    }
+                    if (xiaomiFilter && nome.includes("XIAOMI")) {
+                        return true; // Se o filtro xiaomi estiver ativado e o nome incluir "XIAOMI", inclua este competidor.
+                    }
+                    // Se nenhum filtro estiver ativo, mostre todos. Caso contrário, não mostre o competidor.
+                    return !(indiaFilter || globalFilter || chinaFilter || indonesiaFilter || appleFilter || samsungFilter || xiaomiFilter);
                 }),
             }))
             .filter(catalogo => catalogo.competidores.length > 0); // Remove catálogos que agora estão sem competidores.
@@ -107,7 +121,7 @@ export function PageHome() {
         return {
             page, total, limit, items
         }
-    }, [data, freteiro, page, limit, sortBy, sortOrder, indiaFilter, globalFilter, chinaFilter, indonesiaFilter])
+    }, [data, freteiro, page, limit, sortBy, sortOrder, indiaFilter, globalFilter, chinaFilter, indonesiaFilter, appleFilter, samsungFilter, xiaomiFilter])
 
     function exportCatalogoExcel(catalogos: ICatalogo[]) {
         const filteredCatalogos = catalogos.map(({
@@ -144,8 +158,8 @@ export function PageHome() {
     return (
         <React.Fragment>
 
-          
-    <ModalSincronismoUpdate onHide={() => setSincronismoUpdate(false)} isVisible={catalogoSincronismoUpdate} catalogos={catalogos?.total} />
+
+            <ModalSincronismoUpdate onHide={() => setSincronismoUpdate(false)} isVisible={catalogoSincronismoUpdate} catalogos={catalogos?.total} />
 
             <Row className="my-3">
                 <Col xs={12} className="d-flex align-items-center">
@@ -162,50 +176,89 @@ export function PageHome() {
                         placement="top"
                         overlay={<Tooltip id="download-tooltip">Filtros</Tooltip>}
                     >
-                    <Dropdown>
-                        <Dropdown.Toggle id="dropdown-basic" className="no-caret mx-2 custom-dropdown">
-                            <Icons tipo="filtro" tamanho={20} />
-                        </Dropdown.Toggle>
+                        <Dropdown>
+                            <Dropdown.Toggle id="dropdown-basic" className="no-caret mx-2 custom-dropdown">
+                                <Icons tipo="filtro" tamanho={20} />
+                            </Dropdown.Toggle>
 
-                        <Dropdown.Menu>
-                            <Dropdown.Item as='div' onClick={(e) => e.stopPropagation()}>
-                                <Form.Check
-                                    type="checkbox"
-                                    id="globalFilter"
-                                    checked={globalFilter}
-                                    onChange={(e) => handleCheckboxChange(e, setGlobalFilter)}
-                                    label="Global"
-                                />
-                            </Dropdown.Item>
-                            <Dropdown.Item as='div' onClick={(e) => e.stopPropagation()}>
-                                <Form.Check
-                                    type="checkbox"
-                                    id="indiaFilter"
-                                    checked={indiaFilter}
-                                    onChange={(e) => handleCheckboxChange(e, setIndiaFilter)}
-                                    label="India"
-                                />
-                            </Dropdown.Item>
-                            <Dropdown.Item as='div' onClick={(e) => e.stopPropagation()}>
-                                <Form.Check
-                                    type="checkbox"
-                                    id="chinaFilter"
-                                    checked={chinaFilter}
-                                    onChange={(e) => handleCheckboxChange(e, setChinaFilter)}
-                                    label="China"
-                                />
-                            </Dropdown.Item>
-                            <Dropdown.Item as='div' onClick={(e) => e.stopPropagation()}>
-                                <Form.Check
-                                    type="checkbox"
-                                    id="indonesiaFilter"
-                                    checked={indonesiaFilter}
-                                    onChange={(e) => handleCheckboxChange(e, setIndonesiaFilter)}
-                                    label="Indonesia"
-                                />
-                            </Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
+                            <Dropdown.Menu className="custom-filter-dropdown-menu">
+
+
+                                <Row>
+                                    <Col xs={6}>
+                                        PAISES
+                                        <Dropdown.Item as='div' onClick={(e) => e.stopPropagation()}>
+                                            <Form.Check
+                                                type="checkbox"
+                                                id="globalFilter"
+                                                checked={globalFilter}
+                                                onChange={(e) => handleCheckboxChange(e, setGlobalFilter)}
+                                                label="Global"
+                                            />
+                                        </Dropdown.Item>
+                                        <Dropdown.Item as='div' onClick={(e) => e.stopPropagation()}>
+                                            <Form.Check
+                                                type="checkbox"
+                                                id="indiaFilter"
+                                                checked={indiaFilter}
+                                                onChange={(e) => handleCheckboxChange(e, setIndiaFilter)}
+                                                label="India"
+                                            />
+                                        </Dropdown.Item>
+                                        <Dropdown.Item as='div' onClick={(e) => e.stopPropagation()}>
+                                            <Form.Check
+                                                type="checkbox"
+                                                id="chinaFilter"
+                                                checked={chinaFilter}
+                                                onChange={(e) => handleCheckboxChange(e, setChinaFilter)}
+                                                label="China"
+                                            />
+                                        </Dropdown.Item>
+                                        <Dropdown.Item as='div' onClick={(e) => e.stopPropagation()}>
+                                            <Form.Check
+                                                type="checkbox"
+                                                id="indonesiaFilter"
+                                                checked={indonesiaFilter}
+                                                onChange={(e) => handleCheckboxChange(e, setIndonesiaFilter)}
+                                                label="Indonesia"
+                                            />
+                                        </Dropdown.Item>
+                                    </Col>
+                                    <Col xs={6}>
+                                        MARCA
+                                        <Dropdown.Item as='div' onClick={(e) => e.stopPropagation()}>
+                                            <Form.Check
+                                                type="checkbox"
+                                                id="appleFilter"
+                                                checked={appleFilter}
+                                                onChange={(e) => handleCheckboxChange(e, setAppleFilter)}
+                                                label="Apple"
+                                            />
+                                        </Dropdown.Item>
+                                        <Dropdown.Item as='div' onClick={(e) => e.stopPropagation()}>
+                                            <Form.Check
+                                                type="checkbox"
+                                                id="samsungFilter"
+                                                checked={samsungFilter}
+                                                onChange={(e) => handleCheckboxChange(e, setSamsungFilter)}
+                                                label="Samsung"
+                                            />
+                                        </Dropdown.Item>
+                                        <Dropdown.Item as='div' onClick={(e) => e.stopPropagation()}>
+                                            <Form.Check
+                                                type="checkbox"
+                                                id="xiaomiFilter"
+                                                checked={xiaomiFilter}
+                                                onChange={(e) => handleCheckboxChange(e, setXiaomiFilter)}
+                                                label="Xiaomi"
+                                            />
+                                        </Dropdown.Item>
+                                    </Col>
+                                </Row>
+
+                            </Dropdown.Menu>
+
+                        </Dropdown>
                     </OverlayTrigger>
 
                     <OverlayTrigger
@@ -221,11 +274,11 @@ export function PageHome() {
                         placement="top"
                         overlay={<Tooltip id="download-tooltip">Sincronizar Catalogos</Tooltip>}
                     >
-                    <Button id="dropdown-basic" className="custom-dropdown" onClick={() => setSincronismoUpdate(true)}
-                     
-                    >
-                        <Icons tipo="update" tamanho={23} />
-                    </Button>
+                        <Button id="dropdown-basic" className="custom-dropdown" onClick={() => setSincronismoUpdate(true)}
+
+                        >
+                            <Icons tipo="update" tamanho={23} />
+                        </Button>
                     </OverlayTrigger>
 
                 </Col>

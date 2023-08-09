@@ -98,6 +98,13 @@ table {
     border-bottom: none;
 }
 
+.custom-filter-dropdown-menu {
+    text-align: center;
+    min-width: 0;
+    width: 330px;
+
+}
+
 .custom-dropdown-menu {
     text-align: center;
     min-width: 0;

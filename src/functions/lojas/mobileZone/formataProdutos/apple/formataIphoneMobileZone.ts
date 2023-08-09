@@ -134,17 +134,42 @@ export const formataIphoneMobileZone = (produtoLoja: IProdutoLoja): IProdutoLoja
 
 
     //MODELOS
+
+    if (novoNome.trim().toUpperCase() === "IPHONE XR A1984") produtoLoja.ram = 3;
+
+    if (novoNome.trim().toUpperCase() === "IPHONE XS A1920") produtoLoja.ram = 4;
+
+    if (novoNome.trim().toUpperCase() === "IPHONE SE 2020 A2275") produtoLoja.ram = 3;
+    if (novoNome.trim().toUpperCase() === "IPHONE SE 2022 A2783") produtoLoja.ram = 4;
+
+
+    if (novoNome.trim().toUpperCase() === "IPHONE 8 PLUS A1864") produtoLoja.ram = 3;
+
     if (novoNome.trim().toUpperCase() === "IPHONE 11 A2221") produtoLoja.ram = 4;
     if (novoNome.trim().toUpperCase() === "IPHONE 12 A2402 3J") produtoLoja.ram = 4;
     if (novoNome.trim().toUpperCase() === "IPHONE 12 A2403 HN") produtoLoja.ram = 4;
     if (novoNome.trim().toUpperCase() === "IPHONE 11 PRO MAX A2218 ZD") produtoLoja.ram = 4;
+    if (novoNome.trim().toUpperCase() === "IPHONE 11 PRO A2160") produtoLoja.ram = 4;
+    if (novoNome.trim().toUpperCase() === "IPHONE 11 PRO A2215") produtoLoja.ram = 4;
+    if (novoNome.trim().toUpperCase() === "IPHONE 11 PRO MAX A2161") produtoLoja.ram = 4;
+    if (novoNome.trim().toUpperCase() === "IPHONE 11 PRO MAX A2218") produtoLoja.ram = 4;
+
+
+
     if (novoNome.trim().toUpperCase() === "IPHONE 12 A2403 LE") produtoLoja.ram = 4;
     if (novoNome.trim().toUpperCase() === "IPHONE 12 A2403 QL") produtoLoja.ram = 4;
     if (novoNome.trim().toUpperCase() === "IPHONE 12 A2403 ZD") produtoLoja.ram = 4;
     if (novoNome.trim().toUpperCase() === "IPHONE 13 A2633 HN") produtoLoja.ram = 4;
+    if (novoNome.trim().toUpperCase() === "IPHONE 13 A2633") produtoLoja.ram = 4;
+
+
     if (novoNome.trim().toUpperCase() === "IPHONE 14 PLUS A2886 HN") produtoLoja.ram = 6;
     if (novoNome.trim().toUpperCase() === "IPHONE 14 PLUS A2886 BE") produtoLoja.ram = 6;
     if (novoNome.trim().toUpperCase() === "IPHONE 14 PLUS A2886 HN") produtoLoja.ram = 6;
+    if (novoNome.trim().toUpperCase() === "IPHONE 14 PLUS A2886") produtoLoja.ram = 6;
+
+
+
     if (novoNome.trim().toUpperCase() === "IPHONE 14 PRO A2650") produtoLoja.ram = 6;
     if (novoNome.trim().toUpperCase() === "IPHONE 14 PLUS A2886 AA") produtoLoja.ram = 6;
     if (novoNome.trim().toUpperCase() === "IPHONE 14 A2884 CH") produtoLoja.ram = 6;
@@ -180,12 +205,14 @@ export const formataIphoneMobileZone = (produtoLoja: IProdutoLoja): IProdutoLoja
 
     //REDES
     if (novoNome.trim().toUpperCase() === ("IPHONE 13 A2633 LZ")) produtoLoja.rede = 5;
+    if (novoNome.trim().toUpperCase() === ("IPHONE 13 A2633")) produtoLoja.rede = 5;
     if (novoNome.trim().toUpperCase() === ("IPHONE 13 PRO MAX A2484 LL")) produtoLoja.rede = 5;
     if (novoNome.trim().toUpperCase() === ("IPHONE 14 PLUS *SWAP A+*")) produtoLoja.rede = 5;
     if (novoNome.trim().toUpperCase() === ("IPHONE 14 PRO A2892 CH")) produtoLoja.rede = 5;
     if (novoNome.trim().toUpperCase() === ("IPHONE 14 PRO MAX A2896 CH")) produtoLoja.rede = 5;
     if (novoNome.trim().toUpperCase() === ("IPHONE 12 A2403 ZD *CPO*")) produtoLoja.rede = 5;
     if (novoNome.trim().toUpperCase() === ("IPHONE 14 PRO A2890 LE")) produtoLoja.rede = 5;
+    if (novoNome.trim().toUpperCase() === ("IPHONE 14 PLUS A2886")) produtoLoja.rede = 5;
     produtoLoja.nome = novoNome;
 
     return produtoLoja;

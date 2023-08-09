@@ -37,6 +37,7 @@ export function filtrosVinculosSamsungAtacadoGames(produtoParaguay: IProdutoLoja
         if (produtoParaguay.nome.toUpperCase().trim() === "SAMSUNG A03 SM-A032F" && produtoML.modelo.toUpperCase().trim() === "A03 CORE") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "SAMSUNG A03 SM-A032F" && produtoML.modelo.toUpperCase().trim() === "A03") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "SAMSUNG A04E SM-A042F" && produtoML.modelo.toUpperCase().trim() === "A04E DUAL SIM") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "SAMSUNG A04E SM-A042M" && produtoML.modelo.toUpperCase().trim() === "A04E DUAL SIM") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "SAMSUNG A04E SM-A042M" && produtoML.modelo.toUpperCase().trim() === "A04E") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "SAMSUNG A04S SM-A047M" && produtoML.modelo.toUpperCase().trim() === "A04S") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "SAMSUNG A34 SM-A346M" && produtoML.modelo.toUpperCase().trim() === "A34 5G") similarity++;
@@ -45,6 +46,16 @@ export function filtrosVinculosSamsungAtacadoGames(produtoParaguay: IProdutoLoja
         if (produtoParaguay.nome.toUpperCase().trim() === "SAMSUNG S23+ S916B" && produtoML.modelo.toUpperCase().trim() === "S23 PLUS") similarity++;
         
         if (produtoParaguay.nome.toUpperCase().trim() === "SAMSUNG A24 SM-A245M" && produtoML.modelo.toUpperCase().trim() === "A24") similarity++;
+
+        if (produtoParaguay.nome.toUpperCase().trim() === "A03 A032F" && produtoML.modelo.toUpperCase().trim() === "A03 CORE DUAL SIM") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "A04E A042F" && produtoML.modelo.toUpperCase().trim() === "A04E DUAL SIM") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "A04E A042M" && produtoML.modelo.toUpperCase().trim() === "A04E DUAL SIM") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "A23 A236M" && produtoML.modelo.toUpperCase().trim() === "A23 DUAL SIM") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "A23 A236M" && produtoML.modelo.toUpperCase().trim() === "A23") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "A24 A245M" && produtoML.modelo.toUpperCase().trim() === "A24") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "A34 A346M" && produtoML.modelo.toUpperCase().trim() === "GALAXY A34 5G") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "A34 A346M" && produtoML.modelo.toUpperCase().trim() === "A34 5G") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "A53 A536E" && produtoML.modelo.toUpperCase().trim() === "A53 5G") similarity++;
 
         if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A03 A032F" && produtoML.modelo.toUpperCase().trim() === "A03 CORE") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "GALAXY A03 A035M" && produtoML.modelo.toUpperCase().trim() === "A03 DUAL SIM") similarity++;
@@ -81,6 +92,7 @@ export function filtrosVinculosSamsungAtacadoGames(produtoParaguay: IProdutoLoja
         if (produtoParaguay.nome.toUpperCase().trim() === "SAMSUNG S23 ULTRA S918B" && produtoML.modelo.toUpperCase().trim() === "S23 ULTRA") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "SAMSUNG Z FLIP 3 F711B" && produtoML.modelo.toUpperCase().trim() === "Z FLIP3 5G") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "SAMSUNG Z FOLD 4 F936B" && produtoML.modelo.toUpperCase().trim() === "Z FOLD4 DUAL SIM") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "S21 FE SMG990E" && produtoML.modelo.toUpperCase().trim() === "S21 FE 5G (EXYNOS)") similarity++;
 
 
 

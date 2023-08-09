@@ -25,6 +25,7 @@ export async function otherSearchAtacadoGames(produto: IProdutoLoja) {
     //XIAOMI
     if (produto.nome.trim().toUpperCase() === "POCO M5") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Pocophone Poco M5 (5 Mpx) Dual SIM");
     if (produto.nome.trim().toUpperCase() === "POCO X5") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Pocophone Poco X5 5G Dual SIM");
+  
     if (produto.nome.trim().toUpperCase() === "POCO X5 PRO") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Pocophone Poco X5 Pro 5G Dual SIM");
     if (produto.nome.trim().toUpperCase() === "REDMI 12") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi 12");
     if (produto.nome.trim().toUpperCase() === "REDMI 12C") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi 12C Dual SIM 128 GB ocean blue 6 GB RAM");
@@ -56,9 +57,13 @@ export async function otherSearchAtacadoGames(produto: IProdutoLoja) {
     if (produto.nome.trim().toUpperCase() === "REDMI NOTE 12 PRO" && produto.cor === "AZUL" && produto.rede === 4) catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi Note 12 Pro Dual SIM");
 
     if (produto.nome.trim().toUpperCase() === "POCO F3") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Poco F3 5G Dual SIM " + produto.capacidade + "GB " + produto.ram + "GB ");
+    if (produto.nome.trim().toUpperCase() === "POCO F3" && produto.cor.toUpperCase() === "PRETO") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Poco F3 5G Dual SIM 128 GB preto 6 GB RAM");
+   
     if (produto.nome.trim().toUpperCase() === "REDMI NOTE 12 PRO PLUS" && produto.rede === 5 && produto.capacidade === 256 && produto.cor === "AZUL") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi Note 12 Pro+ 5G Dual SIM 256 GB iceberg blue 8 GB RAM");
     if (produto.nome.trim().toUpperCase() === "REDMI NOTE 12 PRO+" && produto.rede === 5 && produto.capacidade === 256 && produto.cor === "AZUL") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi Note 12 Pro+ 5G Dual SIM 256 GB iceberg blue 8 GB RAM");
     if (produto.nome.trim().toUpperCase() === "REDMI NOTE 12 PRO+" && produto.rede === 5 && produto.capacidade === 256 && produto.cor === "BRANCO") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi Note 12 Pro+ 5G Dual SIM 256 GB white 8 GB RAM");
+    if (produto.nome.trim().toUpperCase() === "REDMI NOTE 12 PRO+" && produto.rede === 5 && produto.capacidade === 256 && produto.cor === "PRETO") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi Note 12 Pro+ 5G Dual SIM "+produto.capacidade+" GB obsidian black "+produto.ram+" GB RAM");
+   
     if (produto.nome.trim().toUpperCase() === "REDMI NOTE 12S") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi Note 12s 4G Dual SIM "+produto.capacidade+" GB "+produto.cor+" "+produto.ram+" GB RAM");
 
     if (produto.nome.trim().toUpperCase() === "POCO C55") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Poco C55 Dual SIM");
@@ -66,6 +71,7 @@ export async function otherSearchAtacadoGames(produto: IProdutoLoja) {
 
     if (produto.nome.trim().toUpperCase() === "POCO M4 PRO") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Pocophone Poco M4 Pro Dual SIM");
     if (produto.nome.trim().toUpperCase() === "POCO X4 PRO") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Poco X4 Pro Dual Sim");
+
     if (produto.nome.trim().toUpperCase() === "13 PRO" && produto.cor === "PRETO") catalogo = await CatalogoController.searchCatalogoML("Xiaomi 13 Pro ceramic black 12 GB RAM");
     if (produto.nome.trim().toUpperCase() === "REDMI 12C") catalogo = await CatalogoController.searchCatalogoML("Xiaomi Redmi 12C Dual SIM " + produto.capacidade + " GB " + produto.cor + " " + produto.ram + " GB RAM");
 
@@ -77,22 +83,25 @@ export async function otherSearchAtacadoGames(produto: IProdutoLoja) {
     if (produto.nome.trim().toUpperCase() === "GALAXY A23 A236M") catalogo = await CatalogoController.searchCatalogoML("Samsung GALAXY A23 5G" + produto.cor +" "+ produto.capacidade +" GB "+produto.ram+" GB");
     if (produto.nome.trim().toUpperCase() === "GALAXY A34 A346M") catalogo = await CatalogoController.searchCatalogoML("Samsung Galaxy A34 5G " + produto.cor +" "+ produto.capacidade +" GB "+produto.ram+" GB");
     if (produto.nome.trim().toUpperCase() === "GALAXY A34 A346M" && produto.cor === "LIME") catalogo = await CatalogoController.searchCatalogoML("Samsung Galaxy A34 5G AWESOME " + produto.cor +" "+ produto.capacidade +" GB "+produto.ram+" GB");
+    if (produto.nome.trim().toUpperCase() === "A34 A346M") catalogo = await CatalogoController.searchCatalogoML("Samsung Galaxy A34 5G " + produto.cor +" "+ produto.capacidade +" GB "+produto.ram+" GB");
+    if (produto.nome.trim().toUpperCase() === "A34 A346M" && produto.cor === "LIME") catalogo = await CatalogoController.searchCatalogoML("Samsung Galaxy A34 5G AWESOME " + produto.cor +" "+ produto.capacidade +" GB "+produto.ram+" GB");
+ 
     if (produto.nome.trim().toUpperCase() === "GALAXY A54 A546E") catalogo = await CatalogoController.searchCatalogoML("Samsung Galaxy A54 5G " + produto.cor +" "+ produto.capacidade +" GB "+produto.ram+" GB");
     if (produto.nome.trim().toUpperCase() === "GALAXY S23 S911B") catalogo = await CatalogoController.searchCatalogoML("Samsung Galaxy S23 Dual SIM "+produto.capacidade+ " GB "+produto.cor+" "+produto.ram+" GB" );
     if (produto.nome.trim().toUpperCase() === "GALAXY S23 ULTRA S918B" && produto.cor === "PRETO") catalogo = await CatalogoController.searchCatalogoML("Samsung Galaxy S23 Ultra 5G Dual SIM 256 GB Phantom black 12 GB RAM");
     if (produto.nome.trim().toUpperCase() === "GALAXY S23 ULTRA S918B") catalogo = await CatalogoController.searchCatalogoML("Samsung Galaxy S23 Ultra Dual SIM "+produto.capacidade+" GB "+produto.cor+" "+produto.ram+" GB RAM");
     if (produto.nome.trim().toUpperCase() === "GALAXY S23 ULTRA S918B" && produto.cor === "BRANCO") catalogo = await CatalogoController.searchCatalogoML("Samsung Galaxy S23 Ultra Dual SIM "+produto.capacidade+" GB cream "+produto.ram+" GB RAM");
     if (produto.nome.trim().toUpperCase() === "GALAXY S23 ULTRA S918B" && produto.cor === "ROXO") catalogo = await CatalogoController.searchCatalogoML("Samsung Galaxy S23 Ultra Dual SIM "+produto.capacidade+" GB lavender "+produto.ram+" GB RAM");
-    if (produto.nome.trim().toUpperCase() === "SAMSUNG A03 SMA032F") catalogo = await CatalogoController.searchCatalogoML("samsung a03 "+produto.capacidade+" GB "+produto.cor+" "+produto.ram+" GB RAM");
-    if (produto.nome.trim().toUpperCase() === "SAMSUNG A04E SMA042M") catalogo = await CatalogoController.searchCatalogoML("samsung A04 "+produto.capacidade+" GB "+produto.cor+" "+produto.ram+" GB RAM");
-    if (produto.nome.trim().toUpperCase() === "SAMSUNG A34 SMA346M"&& produto.cor === "VERDE") catalogo = await CatalogoController.searchCatalogoML("Samsung Galaxy A34 5G Dual SIM "+produto.capacidade+" GB VERDE LIMA "+produto.ram+" GB RAM");
+    if (produto.nome.trim().toUpperCase() === "SAMSUNG A03 SM-A032F") catalogo = await CatalogoController.searchCatalogoML("samsung a03 "+produto.capacidade+" GB "+produto.cor+" "+produto.ram+" GB RAM");
+    if (produto.nome.trim().toUpperCase() === "SAMSUNG A04E SM-A042M") catalogo = await CatalogoController.searchCatalogoML("samsung A04 "+produto.capacidade+" GB "+produto.cor+" "+produto.ram+" GB RAM");
+    if (produto.nome.trim().toUpperCase() === "SAMSUNG A34 SM-A346M"&& produto.cor === "VERDE") catalogo = await CatalogoController.searchCatalogoML("Samsung Galaxy A34 5G Dual SIM "+produto.capacidade+" GB VERDE LIMA "+produto.ram+" GB RAM");
     if (produto.nome.trim().toUpperCase() === "SAMSUNG S23 ULTRA S918B"&& produto.cor === "ROSA") catalogo = await CatalogoController.searchCatalogoML("Samsung Galaxy S23 Ultra Dual SIM "+produto.capacidade+" GB LAVENDER "+produto.ram+" GB RAM");
     if (produto.nome.trim().toUpperCase() === "SAMSUNG S23+ S916B") catalogo = await CatalogoController.searchCatalogoML("Samsung Galaxy S23 Plus Dual SIM "+produto.capacidade+" GB  "+produto.cor+" "+produto.ram+" GB RAM");
     if (produto.nome.trim().toUpperCase() === "SAMSUNG Z FLIP 3 F711B") catalogo = await CatalogoController.searchCatalogoML("Samsung Galaxy Z Flip3 5G "+produto.capacidade+" GB  "+produto.cor+" "+produto.ram+" GB RAM");
     if (produto.nome.trim().toUpperCase() === "SAMSUNG Z FOLD 4 F936B") catalogo = await CatalogoController.searchCatalogoML("Samsung Galaxy Z FOLD4 5G "+produto.capacidade+" GB  "+produto.cor+" "+produto.ram+" GB RAM");
   
-    if (produto.nome.trim().toUpperCase() === "SAMSUNG A54 SMA546E") catalogo = await CatalogoController.searchCatalogoML("Samsung A54 5G Dual SIM "+produto.capacidade+" GB "+produto.cor+" "+produto.ram+" GB RAM");
-    if (produto.nome.trim().toUpperCase() === "SAMSUNG A54 SMA546E"&& produto.cor === "VERDE") catalogo = await CatalogoController.searchCatalogoML("Samsung A54 5G Dual SIM "+produto.capacidade+" GB VERDE LIMA "+produto.ram+" GB RAM");
+    if (produto.nome.trim().toUpperCase() === "SAMSUNG A54 SM-A546E") catalogo = await CatalogoController.searchCatalogoML("Samsung A54 5G Dual SIM "+produto.capacidade+" GB "+produto.cor+" "+produto.ram+" GB RAM");
+    if (produto.nome.trim().toUpperCase() === "SAMSUNG A54 SM-A546E"&& produto.cor === "VERDE") catalogo = await CatalogoController.searchCatalogoML("Samsung A54 5G Dual SIM "+produto.capacidade+" GB VERDE LIMA "+produto.ram+" GB RAM");
 
    
     if (!catalogo) catalogo = await CatalogoController.searchCatalogoML(produto.marca + " " + produto.nome + " " + produto.cor + " " + produto.ram + " " + produto.capacidade);

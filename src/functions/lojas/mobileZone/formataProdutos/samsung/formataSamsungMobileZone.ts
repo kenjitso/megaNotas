@@ -157,7 +157,7 @@ export const formataSamsungMobileZone = (produtoLoja: IProdutoLoja): IProdutoLoj
     if (capacidade) novoNome = novoNome.replace(new RegExp(/C1024GB|C512GB|C256GB|C128GB|C64GB|C32GB|C16GB/gi, 'i'), '');
     if (ram) novoNome = novoNome.replace(/R12GB|R8GB|R6GB|R4GB|R3GB|R2GB|R1GB/gi, '');
     novoNome = novoNome.replace(/XIAOMI|APPLE|SAMSUNG/gi, '');
-    novoNome = novoNome.replace(/CELULAR|CEL|DUAL SIM|ADAPTADOR|DESLACRADO S TIGO PERSONA|ATLA|\(VITRINA\)|\*\*(?!.*\*\*)|\S L(?!.*\S L)|C FEA(?!.*C FEA)|\-(?!.*\-)|US(?!.*US)|DP(?!.*DP)|K(?!.*K)|DG(?!.*DG)|NFC(?!.*NFC)|L P-(?!.*L P-)|L P(?!.*L P)|\.(?!.*\.)|\S CAPA(?!.*\S CAPA)|(?!.*\S CAPA)|\s\+(?!.*\s\+)/gi, '').replace(/\s+/g, ' ').trim();
+    novoNome = novoNome.replace(/CELULAR|CEL|DUAL SIM|ADAPTADOR|DESLACRADO S TIGO PERSONA|ATLA|CORE|\(VITRINA\)|\*\*(?!.*\*\*)|\S L(?!.*\S L)|C FEA(?!.*C FEA)|\-(?!.*\-)|US(?!.*US)|DP(?!.*DP)|K(?!.*K)|DG(?!.*DG)|NFC(?!.*NFC)|L P-(?!.*L P-)|L P(?!.*L P)|\.(?!.*\.)|\S CAPA(?!.*\S CAPA)|(?!.*\S CAPA)|\s\+(?!.*\s\+)/gi, '').replace(/\s+/g, ' ').trim();
     
     produtoLoja.nome = novoNome;
 

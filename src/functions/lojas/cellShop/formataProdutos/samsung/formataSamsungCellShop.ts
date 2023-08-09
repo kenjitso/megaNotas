@@ -57,9 +57,11 @@ export const formataSamsungCellShop = (produtoLoja: IProdutoLoja): IProdutoLoja 
     const cor =
         /VERDE/i.test(produtoLoja.nome) ? "VERDE" :
             /MINT GREEN/i.test(produtoLoja.nome) ? "VERDE" :
+            /MINT/i.test(produtoLoja.nome) ? "VERDE" :
                 /LITE GREEN/i.test(produtoLoja.nome) ? "VERDE" :
                     /FOREST GREEN/i.test(produtoLoja.nome) ? "VERDE" :
                         /GREEN/i.test(produtoLoja.nome) ? "VERDE" :
+                        /ICY BLUE/i.test(produtoLoja.nome) ? "BLUE" :
                             /PRETO ESPACIAL/i.test(produtoLoja.nome) ? "PRETO" :
                                 /SPACE BLAC/i.test(produtoLoja.nome) ? "PRETO" :
                                 /SPACE BLACK/i.test(produtoLoja.nome) ? "PRETO" :
@@ -150,7 +152,7 @@ export const formataSamsungCellShop = (produtoLoja: IProdutoLoja): IProdutoLoja 
     let novoNome = produtoLoja.nome;
 
     if (origem) novoNome = novoNome.replace(/GLOBAL|INDIA|INDONESIA|CHINA/gi, '').trim();
-    if (cor) novoNome = novoNome.replace(/VERDE|AZUL|ROXO|CINZA|PRETO|LITE GREEN|BRANCO|ONYX BLACK|BLACK|GLACIER BLUE|MINT GREEN|ICE BLUE|TWILIGHT BLUE|STAR BLUE|COSMIC PURPLE|ONYX GRAY|BRONZE|SPACE BLAC|NEPTUNE|LAVAN|MOONLIGHT|OLIVE|CREAM|SPACE BLACK|LIME|SPACE|LIGHT BLUE|MOONSHADOW|SILVER|LAVANDER PURPLE|GRAPHITE GRAY|OCEAN BLUE|ONIX|DARK NIGHT|TWILIGHT|PEBBLE|POLAR|LAVENDER PURPLE|LAVENDER|SUNSET|CARBON|MATE|PRATA|PEPPY PURPLE|AMARELO|AURORA|FOREST GREEN|PINK|ROSA|BLUE|GOLD|VERMELHO|GRAPHITE|YELLOW|MIDNIGHT|DOURADO|DEEP PURPLE|STARLIGHT|PURPLE|GREEN|COPPER|STARSCAPE|PEARL WHITE|PEARL|WHITE|VIOLET|GRAY|GREY|ONYX|CORAL|MIRAGE|SEA|SKY/gi, '');
+    if (cor) novoNome = novoNome.replace(/VERDE|AZUL|ROXO|CINZA|PRETO|LITE GREEN|BRANCO|ONYX BLACK|ICY BLUE|BLACK|GLACIER BLUE|MINT GREEN|ICE BLUE|TWILIGHT BLUE|STAR BLUE|COSMIC PURPLE|ONYX GRAY|BRONZE|SPACE BLAC|NEPTUNE|LAVAN|MOONLIGHT|OLIVE|CREAM|SPACE BLACK|LIME|SPACE|LIGHT BLUE|MOONSHADOW|SILVER|LAVANDER PURPLE|GRAPHITE GRAY|OCEAN BLUE|ONIX|DARK NIGHT|TWILIGHT|PEBBLE|POLAR|LAVENDER PURPLE|LAVENDER|SUNSET|CARBON|MATE|PRATA|PEPPY PURPLE|AMARELO|AURORA|FOREST GREEN|PINK|ROSA|BLUE|GOLD|VERMELHO|GRAPHITE|YELLOW|MIDNIGHT|DOURADO|DEEP PURPLE|STARLIGHT|PURPLE|GREEN|COPPER|STARSCAPE|PEARL WHITE|PEARL|WHITE|VIOLET|GRAY|GREY|ONYX|CORAL|MIRAGE|MINT|SEA|SKY/gi, '');
     if (rede) novoNome = novoNome.replace(/ 4G\b| 5G\b/gi, '');
     if (capacidade) novoNome = novoNome.replace(new RegExp(/C1024GB|C512GB|C256GB|C128GB|C64GB|C32GB|C16GB/gi, 'i'), '');
     if (ram) novoNome = novoNome.replace(/R12GB|R8GB|R6GB|R4GB|R3GB|R2GB|R1GB/gi, '');
