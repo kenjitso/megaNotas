@@ -79,7 +79,7 @@ function processPdfArray(
     const text = pdfArray.join(' ').replace(/\\/g, '');
 
     const regex = /\|\s*(\d+-\d+)\|\s*\d+\|\s*(.*?)\s*\|\s*([\d.,]+)\|\s*([\d.,]+)\|/g;
-
+    var exclusions = ['PAD', 'CASE', 'TABLET', 'CAPA', 'PELICULA', 'CABO', 'CARREGADOR', 'FONE', 'RELOJ'];
 
     let match;
 
@@ -91,18 +91,53 @@ function processPdfArray(
             .replace(/(\b\d\.\d{2}\"|\b\d\.\d\"|\b\d\"|\b\d\d\.\d\"|\b\d\d\.\d{2}\")/g, '')
             .replace(/ ULTR /g, ' ULTRA ')
             .replace(/ NFC/g, '')
-            .replace(/NT12PR\+/g, 'NOTE 12 PRO PLUS')
+            .replace(/NT12PR\+/g, 'NOTE 12 PRO+')
             .replace(/NT12PR/g, 'NOTE 12 PRO')
             .replace(/NT12S/g, 'NOTE 12S')
             .replace(/NT12/g, 'NOTE 12')
             .replace(/PRIM/g, 'PRIME')
-            .replace(/11PR\+/g, '11 PRO PLUS')
+            .replace(/11PR\+/g, '11 PRO+')
             .replace(/NT11S/g, 'NOTE 11S')
             .replace(/NT11/g, 'NOTE 11')
             .replace(/NT10/g, 'NOTE 10')
             .replace(/REDM/g, 'REDMI')
             .replace(/SPOR/g, " SPORT ")
             .replace(/CEL/g, 'CELULAR')
+
+         
+            .replace(/2GB\+32GB/g, ' 2GB 32GB ')
+            .replace(/ 8G\+256GB/g, ' 8GB 256GB ')
+            .replace(/ 2G\+32GB/g, ' 2GB 32GB ')
+            .replace(/ 3G\+64GB/g, ' 3GB 64GB ')
+            .replace(/ 12G\+256G/g, ' 12GB 256GB ')
+            .replace(/ 4\+64GB/g, ' 4GB 128GB ')
+            .replace(/ 2\+32GB/g, ' 2GB 32GB ')
+            .replace(/ 3\+64GB/g, ' 3GB 64GB ')
+            .replace(/ 4\+128GB/g, ' 4GB 128GB ')
+            .replace(/ 6\+128GB/g, ' 6GB 128GB ')
+            .replace(/ 8\+128GB/g, ' 8GB 128GB ')
+            .replace(/ 8\+256GB/g, ' 8GB 256GB ')
+            .replace(/ 2\+32G/g, ' 2GB 32GB ')
+            .replace(/ 3\+64G/g, ' 3GB 64GB ')
+            .replace(/ 8\+128G/g, ' 8GB 128GB ')
+            .replace(/ 8\+256G/g, ' 8GB 256GB ')
+            .replace(/ 12\+256G/g, ' 12GB 256GB ')
+            .replace(/ 4\+64/g, ' 4GB 64GB ')
+            .replace(/ 6\+64/g, ' 6GB 64GB ')
+            .replace(/ 8\+256/g, ' 8GB 256GB ')
+            .replace(/ 4\+128/g, ' 4GB 128GB ')
+            .replace(/ 4\+128/g, ' 4GB 128GB ')
+            .replace(/ 8\+128/g, ' 8GB 128GB ')
+            .replace(/ 6\+128/g, ' 6GB 128GB ')
+            .replace(/6\+128/g, ' 6GB 128GB ')
+            .replace(/ 12\+256/g, ' 12GB 256GB ')
+            .replace(/ 12\+512/g, ' 12GB 512GB ')
+            .replace(/ 16\+512/g, ' 16GB 512GB ')
+            .replace(/ 16\+1024/g, ' 16GB 1024GB ')
+            .replace(/16\+1024/g, ' 16GB 1024GB ')
+            .replace(/16\+512/g, ' 16GB 1024GB ')
+            .replace(/6\+64/g, ' 6GB 64GB ')
+
             .replace(/\(B CN\)/g, ' CHINA ')
             .replace(/\(BR CN\)/g, ' CHINA ')
             .replace(/\(CN\)/g, ' CHINA ')
@@ -160,9 +195,48 @@ function processPdfArray(
             .replace(/ X5 PRETO /g, ' X5 PRO ')
             .replace(/ NOTE 10 PRETO /g, ' NOTE 10 PRO ')
 
-        if (!/(INDONESIA|INDIA|CHINA)/gi.test(descricao)) {
+        let memoryValues = descricao.match(/(\b\d+GB\b)/g);  // encontra todos os valores de memória na descrição
+
+        if (memoryValues && memoryValues.length > 1) {
+            memoryValues.sort((a: string, b: string) => parseInt(a) - parseInt(b));  // classifica os valores em ordem crescente
+
+            // substitui os valores na descrição original pelo valor classificado com o prefixo 'R' e 'C'
+            for (let i = 0; i < memoryValues.length; i++) {
+                let prefix = i == 0 ? 'R' : 'C';
+                let regex = new RegExp("\\b" + memoryValues[i] + "\\b", "g"); // cria um regex para substituir todas as ocorrências
+                descricao = descricao.replace(regex, prefix + memoryValues[i]);
+            }
+        }
+
+        if (descricao.includes('WATCH') || descricao.includes('ROLOGIO')) {
+            if (!descricao.includes("RELOGIO")) descricao = "RELOGIO " + descricao;
+        }
+
+        if (descricao.includes('XIAOMI') && descricao.includes('CEL') ||
+            descricao.includes('XIAOMI') && descricao.includes('CELULAR') ||
+            descricao.includes('XIAOMI 13') && descricao.includes('LITE') && descricao.includes('5G') ||
+            (descricao.includes('XIAOMI REDMI') && !exclusions.some(exclusion => descricao.includes(exclusion))) ||
+            (descricao.includes('XIAOMI NOTE') && !exclusions.some(exclusion => descricao.includes(exclusion))) ||
+            (descricao.includes('XIAOMI POCO') && !exclusions.some(exclusion => descricao.includes(exclusion))) ||
+            descricao.includes('IPHONE') ||
+            descricao.includes('SAMSUNG') && descricao.includes('CEL') ||
+            descricao.includes('SAMSUNG') && descricao.includes('CELULAR')
+        ) {
+            if (!descricao.includes("CELULAR")) descricao = "CELULAR " + descricao;
+        }
+
+        if (/IPHONE/gi.test(descricao) && !descricao.includes(' APPLE ')) {
+            descricao = "APPLE " + descricao;
+        }
+
+        if (!/( 5G )/gi.test(descricao) && !descricao.includes(' 4G ')) {
+            descricao = descricao + " 4G";
+        }
+
+        if (!/(INDONESIA|INDIA|CHINA)/gi.test(descricao) && !descricao.includes('GLOBAL')) {
             descricao = descricao + " GLOBAL";
         }
+
 
         let preco = match[4];
 

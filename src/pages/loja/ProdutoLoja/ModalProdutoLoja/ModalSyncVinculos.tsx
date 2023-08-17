@@ -4,11 +4,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CatalogoController } from "@/datatypes/catalogo";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
 import { toast } from "react-toastify";
-import { filtrosVinculosIphoneAtacadoGames } from "@/functions/produtos/apple/filtrosVinculosIphone";
-import { otherSearchAtacadoGames } from "@/functions/produtos/otherSearchAtacadoGames";
+import { filtrosVinculosIphone } from "@/functions/produtos/apple/filtrosVinculosIphone";
+import { otherSearch } from "@/functions/produtos/otherSearch";
 import { ILoja } from "@/datatypes/loja";
-import { filtrosVinculosXiaomiAtacadoGames } from "@/functions/produtos/xiaomi/filtrosVinculosXiaomi";
-import { filtrosVinculosSamsungAtacadoGames } from "@/functions/produtos/samsung/filtroVinculosSamsung";
+import { filtrosVinculosXiaomi } from "@/functions/produtos/xiaomi/filtrosVinculosXiaomi";
+import { filtrosVinculosSamsung } from "@/functions/produtos/samsung/filtroVinculosSamsung";
 
 interface IProps {
     produtoParaguay?: IProdutoLoja[];
@@ -21,20 +21,16 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
     const produtoAtualParaguay = produtoParaguay ? produtoParaguay[currentIndex] : null;
     const queryClient = useQueryClient();
 
-
+  
     const { isFetching, data, refetch } = useQuery(
         ["catalogosSync", currentIndex],
         async () => {
 
-
-
             if (produtoParaguay && currentIndex >= 0 && currentIndex < produtoParaguay.length) {
                 const produto = produtoParaguay[currentIndex];
 
-                let catalogo;
+                let catalogo = await otherSearch(produto) || [];
 
-
-                catalogo = otherSearchAtacadoGames(produto);
 
 
 
@@ -42,21 +38,20 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
                 let highestSimilarity = -1;
                 let similarity = 0;
 
-
                 for (const productML of await catalogo) {
                     if (!productML.mobileNetwork) {
                         productML.mobileNetwork = "4G"
                     }
                     if (produto.marca === "XIAOMI") {
-                        similarity = filtrosVinculosXiaomiAtacadoGames(produto, productML);
+                        similarity = filtrosVinculosXiaomi(produto, productML);
                     }
                     if (produto.marca === "APPLE") {
-                        similarity = filtrosVinculosIphoneAtacadoGames(produto, productML);
-                    }
-                    if (produto.marca === "SAMSUNG") {
-                        similarity = filtrosVinculosSamsungAtacadoGames(produto, productML);
+                        similarity = filtrosVinculosIphone(produto, productML);
                     }
 
+                    if (produto.marca === "SAMSUNG") {
+                        similarity = filtrosVinculosSamsung(produto, productML);
+                    }
 
                     if (similarity > highestSimilarity) {
                         highestSimilarity = similarity;
@@ -64,32 +59,7 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
                     }
                 }
 
-                if (highestSimilarity < 6) {
-
-                    catalogo = await CatalogoController.searchCatalogoML(produto.marca + " " + produto.nome + " Dual SIM"); //(achou os xiaomi 12 pro)
-
-                    for (const productML of catalogo) {
-                        if (!productML.mobileNetwork) {
-                            productML.mobileNetwork = "4G"
-                        }
-                        if (produto.marca === "XIAOMI") {
-                            similarity = filtrosVinculosXiaomiAtacadoGames(produto, productML);
-                        }
-
-                        if (produto.marca === "APPLE") {
-                            similarity = filtrosVinculosIphoneAtacadoGames(produto, productML);
-                        }
-                        if (produto.marca === "SAMSUNG") {
-                            similarity = filtrosVinculosSamsungAtacadoGames(produto, productML);
-                        }
-
-
-                        if (similarity > highestSimilarity) {
-                            highestSimilarity = similarity;
-                            mostSimilarProduct = productML;
-                        }
-                    }
-                }
+          console.log(mostSimilarProduct);
 
                 return { data: catalogo, mostSimilarProduct, highestSimilarity };
             }
@@ -97,9 +67,6 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
         },
         { enabled: currentIndex >= 0 }
     );
-
-
-
 
     const mutation = useMutation(({ produto, url_catalogoML }: { produto: IProdutoLoja, url_catalogoML: string }) => {
         if (!produto) throw new Error("Produto Indefinido");
@@ -156,9 +123,7 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
         for (let i = 0; i < produtoParaguay.length; i++) {
             const produto = produtoParaguay[i];
 
-            let catalogo = await otherSearchAtacadoGames(produto);
-            catalogo = [...catalogo, ...(await CatalogoController.searchCatalogoML(produto.marca + " " + produto.nome + " Dual SIM"))];
-
+            let catalogo = await otherSearch(produto)||[];
 
             let highestSimilarity = -1;
             let similarity = 0;
@@ -168,15 +133,15 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
                     productML.mobileNetwork = "4G"
                 }
                 if (produto.marca === "XIAOMI") {
-                    similarity = filtrosVinculosXiaomiAtacadoGames(produto, productML);
+                    similarity = filtrosVinculosXiaomi(produto, productML);
                 }
 
                 if (produto.marca === "APPLE") {
-                    similarity = filtrosVinculosIphoneAtacadoGames(produto, productML);
+                    similarity = filtrosVinculosIphone(produto, productML);
                 }
 
                 if (produto.marca === "SAMSUNG") {
-                    similarity = filtrosVinculosSamsungAtacadoGames(produto, productML);
+                    similarity = filtrosVinculosSamsung(produto, productML);
                 }
 
                 if (similarity > highestSimilarity) {
@@ -331,7 +296,6 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
                     </Button>
 
                 )}
-
 
                 <Button variant="secondary" onClick={autoLinkProducts}>
                     Vincular Automaticamente

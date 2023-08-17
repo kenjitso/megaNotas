@@ -61,6 +61,7 @@ export class ProdutoLojaController {
         return produtoLojaSchema;
     }
 
+
     public static async cadastro(produtos: IProdutoLoja[]) {
 
 
@@ -86,7 +87,7 @@ export class ProdutoLojaController {
     }
 
 
-
+//enviar um patch com o id na frente para editar os produtos
     public static async importar(produtos: IProdutoLoja[]) {
 
         const options: RequestInit = {

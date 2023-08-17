@@ -1,6 +1,6 @@
 import { ILoja } from "@/datatypes/loja";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
-import { AtacadoGamesFormat, updateFiltro } from "@/functions/lojas/atacadoGames/atacadoGames";
+import { AtacadoGamesFormat, updateFiltro } from "@/functions/lojas/atacadoGames";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
 import { Modal, Row, Col, Button, Spinner } from "react-bootstrap";
@@ -12,12 +12,12 @@ import FragmentLoading from "@/components/fragments/FragmentLoading";
 import * as pdfjsLib from "pdfjs-dist";
 import { ModalTableAtualizarProdutoLoja } from "./ModalTableAtualizarProdutoLoja";
 import { ModalTableImportarProdutoLoja } from "./ModalTableImportarProdutoLoja";
-import { MegaFormat } from "@/functions/lojas/mega/mega";
-import { MadridFormat } from "@/functions/lojas/madridCenter/madridCenter";
-import { CellShopFormat } from "@/functions/lojas/cellShop/cellShop";
-import { MobileZoneFormat } from "@/functions/lojas/mobileZone/mobileZone";
-import { StarGamesFormat } from "@/functions/lojas/starGames/starGames";
-import { BestShopFormat } from "@/functions/lojas/bestShop/bestShop";
+import { MegaFormat } from "@/functions/lojas/mega";
+import { MadridFormat } from "@/functions/lojas/madridCenter";
+import { CellShopFormat } from "@/functions/lojas/cellShop";
+import { MobileZoneFormat } from "@/functions/lojas/mobileZone";
+import { StarGamesFormat } from "@/functions/lojas/starGames";
+import { BestShopFormat } from "@/functions/lojas/bestShop";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
 

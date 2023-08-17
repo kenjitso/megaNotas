@@ -79,7 +79,7 @@ function processPdfArray(
 
     const regex = /(\d{4,}-\d)\s+(.*?)\s+((?:\d{1,3},)?\d+\.\d+)\s+\|/g;
     let match;
-
+    var exclusions = ['PAD', 'CASE','TABLET', 'CAPA', 'PELICULA', 'CABO', 'CARREGADOR', 'FONE', 'RELOJ'];
 
 
     while ((match = regex.exec(text)) !== null) {
@@ -100,8 +100,11 @@ function processPdfArray(
           
           
             .replace(/\//g, '')
+            .replace(/ 64 /g, ' 64GB ')
             .replace(/ 128 /g, ' 128GB ')
+            .replace(/ 256 /g, ' 256GB ')
             .replace(/ 512 /g, ' 512GB ')
+            .replace(/ 1024 /g, ' 1024GB ')
             .replace(/12RAM/g, ' 12GB ')
             .replace(/8RAM/g, ' 8GB ')
             .replace(/6RAM/g, ' 6GB ')
@@ -109,10 +112,6 @@ function processPdfArray(
             .replace(/3RAM/g, ' 3GB ')
             .replace(/2RAM/g, ' 2GB ')
           
-          
-           
-          
-           
             .replace(/\(CHINA\)/g, 'CHINA')
             .replace(/\(INDIA\)/g, 'INDIA')
             .replace(/INDU/g, 'INDIA')
@@ -121,30 +120,47 @@ function processPdfArray(
             .replace(/ SAMS /g, ' SAMSUNG ')
            
           
-        let memoryValues = descricao.match(/(\b\d+GB\b)/g);  // encontra todos os valores de memória na descrição
+            let memoryValues = descricao.match(/(\b\d+GB\b)/g);  // encontra todos os valores de memória na descrição
 
-        if (memoryValues && memoryValues.length > 1) {
-            memoryValues.sort((a, b) => parseInt(a) - parseInt(b));  // classifica os valores em ordem crescente
+            if (memoryValues && memoryValues.length > 1) {
+                memoryValues.sort((a: string, b: string) => parseInt(a) - parseInt(b));  // classifica os valores em ordem crescente
 
-            // substitui os valores na descrição original pelo valor classificado com o prefixo 'R' e 'C'
-            for (let i = 0; i < memoryValues.length; i++) {
-                let prefix = i == 0 ? 'R' : 'C';
-                let regex = new RegExp("\\b" + memoryValues[i] + "\\b", "g"); // cria um regex para substituir todas as ocorrências
-                descricao = descricao.replace(regex, prefix + memoryValues[i]);
+                // substitui os valores na descrição original pelo valor classificado com o prefixo 'R' e 'C'
+                for (let i = 0; i < memoryValues.length; i++) {
+                    let prefix = i == 0 ? 'R' : 'C';
+                    let regex = new RegExp("\\b" + memoryValues[i] + "\\b", "g"); // cria um regex para substituir todas as ocorrências
+                    descricao = descricao.replace(regex, prefix + memoryValues[i]);
+                }
             }
-        }
 
-        if (/IPHONE/gi.test(descricao) && !descricao.includes(' APPLE ')) {
-            descricao = "APPLE " + descricao;
-        }
+            if (descricao.includes('WATCH') || descricao.includes('ROLOGIO')) {
+                if (!descricao.includes("RELOGIO")) descricao = "RELOGIO " + descricao;
+            }
 
-        if (!/( 5G )/gi.test(descricao) && !descricao.includes(' 4G ')) {
-            descricao = descricao + " 4G";
-        }
+            if (descricao.includes('XIAOMI') && descricao.includes('CEL') ||
+                descricao.includes('XIAOMI') && descricao.includes('CELULAR') ||
+                descricao.includes('XIAOMI 13') && descricao.includes('LITE') && descricao.includes('5G') ||
+                (descricao.includes('XIAOMI REDMI') && !exclusions.some(exclusion => descricao.includes(exclusion))) ||
+                (descricao.includes('XIAOMI NOTE') && !exclusions.some(exclusion => descricao.includes(exclusion))) ||
+                (descricao.includes('XIAOMI POCO') && !exclusions.some(exclusion => descricao.includes(exclusion))) ||
+                descricao.includes('IPHONE') ||
+                descricao.includes('SAMSUNG') && descricao.includes('CEL') ||
+                descricao.includes('SAMSUNG') && descricao.includes('CELULAR')
+            ) {
+                if (!descricao.includes("CELULAR")) descricao = "CELULAR " + descricao;
+            }
 
-        if (!/(INDONESIA|INDIA|CHINA)/gi.test(descricao) && !descricao.includes('GLOBAL')) {
-            descricao = descricao + " GLOBAL";
-        }
+            if (/IPHONE/gi.test(descricao) && !descricao.includes(' APPLE ')) {
+                descricao = "APPLE " + descricao;
+            }
+
+            if (!/( 5G )/gi.test(descricao) && !descricao.includes(' 4G ')) {
+                descricao = descricao + " 4G";
+            }
+
+            if (!/(INDONESIA|INDIA|CHINA)/gi.test(descricao) && !descricao.includes('GLOBAL')) {
+                descricao = descricao + " GLOBAL";
+            }
 
         const preco = String(match[3]);
         // assegurando que o preço é tratado como um número

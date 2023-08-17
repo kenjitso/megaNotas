@@ -1,5 +1,5 @@
 import React, { Suspense, useMemo, useState } from "react";
-import { Row, Col, Table, Button, FloatingLabel, Form, Dropdown } from "react-bootstrap";
+import { Row, Col, Table, Button, FloatingLabel, Form, Dropdown, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { Icons } from "@/components/icons/icons";
@@ -12,25 +12,12 @@ import { ModalVinculo } from "./ModalProdutoLoja/ModalVinculoCopy";
 import { useQuery } from "@tanstack/react-query";
 import { compareValues, useSort } from "@/components/utils/FilterArrows";
 import { ILoja, LojaController } from "@/datatypes/loja";
-import { formataXiaomiAtacadoGames } from "@/functions/lojas/atacadoGames/formataProdutos/xiaomi/formataXiaomiAtacadoGames";
-import { formataIphoneAtacadoGames } from "@/functions/lojas/atacadoGames/formataProdutos/apple/formataIphoneAtacadoGames";
-import { formataXiaomiMega } from "@/functions/lojas/mega/formataProdutos/xiaomi/xiaomi";
 import { PaginationDown } from "@/components/pagination/PaginationDown";
 import { PaginationUp } from "@/components/pagination/PaginationUp";
 import { SortableTableHeader } from "@/components/pagination/SortableTableHeader";
-import { formataXiaomiMadrid } from "@/functions/lojas/madridCenter/formataProdutos/xiaomi/formataXiaomiMadrid";
-import { formataIphoneMadrid } from "@/functions/lojas/madridCenter/formataProdutos/apple/formataIphoneMadrid";
-import { formataSamsungMadrid } from "@/functions/lojas/madridCenter/formataProdutos/samsung/formataSamsungMadrid";
-import { formataXiaomiCellShop } from "@/functions/lojas/cellShop/formataProdutos/xiaomi/formataXiaomiCellShop";
-import { formataIphoneCellShop } from "@/functions/lojas/cellShop/formataProdutos/apple/formataIphoneCellShop";
-import { formataSamsungCellShop } from "@/functions/lojas/cellShop/formataProdutos/samsung/formataSamsungCellShop";
-import { formataIphoneMobileZone } from "@/functions/lojas/mobileZone/formataProdutos/apple/formataIphoneMobileZone";
-import { formataSamsungMobileZone } from "@/functions/lojas/mobileZone/formataProdutos/samsung/formataSamsungMobileZone";
-import { formataXiaomiMobileZone } from "@/functions/lojas/mobileZone/formataProdutos/xiaomi/formataXiaomiMobileZone";
-import { formataSamsungStarGames } from "@/functions/lojas/starGames/formataProdutos/samsung/formataSamsungStarGames";
-import { formataXiaomiStarGames } from "@/functions/lojas/starGames/formataProdutos/xiaomi/formataXiaomiStarGames";
-import { formataXiaomiBestShop } from "@/functions/lojas/bestShop/formataProdutos/xiaomi/formataXiaomiBestShop";
+import { formataSmartPhone } from "@/functions/produtos/xiaomi/formataSmartPhone";
 
+type Categoria = 'CELULAR' | 'RELOGIO' | 'NOTEBOOK';
 
 
 export function PageProdutoLoja() {
@@ -46,6 +33,7 @@ export function PageProdutoLoja() {
     const { sortOrder, sortBy, handleSort } = useSort<IProdutoLoja>('nome');
     const [isFilteredDesvinculados, setIsFilteredDesvinculados] = useState(false);
     const [isFilteredVinculados, setIsFilteredVinculados] = useState(false);
+    const [isCategoria, setCategoria] = useState<Categoria>("CELULAR");
 
     const { isLoading: isLojaLoading, data: lojaData } = useQuery(["loja", lojaId], () => {
         const data = LojaController.get(lojaId ?? "");
@@ -61,125 +49,7 @@ export function PageProdutoLoja() {
                 nome_original: produtoLoja.nome,
             };
 
-
-            //ATACADO GAMES
-            if (lojaData?.algoritmo === 1) {
-
-                const marca =
-                    /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
-                        /APPLE/i.test(produtoLoja.nome) ? "APPLE" :
-                            null;
-
-                if (marca === "XIAOMI") {
-                    formataXiaomiAtacadoGames(produtoLojaAtualizado);
-                }
-
-                if (marca === "APPLE") {
-                    formataIphoneAtacadoGames(produtoLojaAtualizado);
-                }
-            }
-
-
-            //MEGA
-            if (lojaData?.algoritmo === 7) {
-                const marca =
-                    /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
-                        /APPLE/i.test(produtoLoja.nome) ? "APPLE" :
-                            null;
-
-                if (marca === "XIAOMI") {
-                    formataXiaomiMega(produtoLojaAtualizado);
-                }
-            }
-
-
-            //MADRID CENTER
-            if (lojaData?.algoritmo === 5) {
-                const marca =
-                    /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
-                        /APPLE/i.test(produtoLoja.nome) ? "APPLE" :
-                            /SAMSUNG/i.test(produtoLoja.nome) ? "SAMSUNG" :
-                                null;
-
-                if (marca === "XIAOMI") {
-                    formataXiaomiMadrid(produtoLojaAtualizado);
-                }
-                if (marca === "APPLE") {
-                    formataIphoneMadrid(produtoLojaAtualizado);
-                }
-                if (marca === "SAMSUNG") {
-                    formataSamsungMadrid(produtoLojaAtualizado);
-                }
-            }
-
-
-            //CELLSHOP
-            if (lojaData?.algoritmo === 4) {
-                const marca =
-                    /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
-                        /APPLE/i.test(produtoLoja.nome) ? "APPLE" :
-                            /SAMSUNG/i.test(produtoLoja.nome) ? "SAMSUNG" :
-                                null;
-
-                if (marca === "XIAOMI") {
-                    formataXiaomiCellShop(produtoLojaAtualizado);
-                }
-                if (marca === "APPLE") {
-                    formataIphoneCellShop(produtoLojaAtualizado);
-                }
-                if (marca === "SAMSUNG") {
-                    formataSamsungCellShop(produtoLojaAtualizado);
-                }
-            }
-
-            //MOBILE ZONE
-            if (lojaData?.algoritmo === 8) {
-                const marca =
-                    /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
-                        /APPLE/i.test(produtoLoja.nome) ? "APPLE" :
-                            /SAMSUNG/i.test(produtoLoja.nome) ? "SAMSUNG" :
-                                null;
-
-                if (marca === "XIAOMI") {
-                    formataXiaomiMobileZone(produtoLojaAtualizado);
-                }
-                if (marca === "APPLE") {
-                    formataIphoneMobileZone(produtoLojaAtualizado);
-                }
-                if (marca === "SAMSUNG") {
-                    formataSamsungMobileZone(produtoLojaAtualizado);
-                }
-            }
-
-            //STAR GAMES
-            if (lojaData?.algoritmo === 6) {
-                const marca =
-                    /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
-                        /APPLE/i.test(produtoLoja.nome) ? "APPLE" :
-                            /SAMSUNG/i.test(produtoLoja.nome) ? "SAMSUNG" :
-                                null;
-
-                if (marca === "XIAOMI") {
-                    formataXiaomiStarGames(produtoLojaAtualizado);
-                }
-                if (marca === "SAMSUNG") {
-                    formataSamsungStarGames(produtoLojaAtualizado);
-                }
-            }
-
-
-            //BESTSHOP
-            if (lojaData?.algoritmo === 3) {
-                const marca =
-                    /XIAOMI/i.test(produtoLoja.nome) ? "XIAOMI" :
-                        /APPLE/i.test(produtoLoja.nome) ? "APPLE" :
-                            /SAMSUNG/i.test(produtoLoja.nome) ? "SAMSUNG" :
-                                null;
-
-                if (marca === "XIAOMI") {
-                    formataXiaomiBestShop(produtoLojaAtualizado);
-                }
-            }
+                formataSmartPhone(produtoLojaAtualizado);
 
             return produtoLojaAtualizado;
         }) ?? [];
@@ -190,7 +60,6 @@ export function PageProdutoLoja() {
 
 
         let dados = produtosData ?? [];
-
         if (isFilteredDesvinculados) {
             dados = dados.filter(produto => produto.vinculos === null || produto.vinculos.length === 0);
         }
@@ -199,20 +68,27 @@ export function PageProdutoLoja() {
             dados = dados.filter(produto => produto.vinculos !== null && produto.vinculos.length > 0);
         }
 
-        const sortedData = [...dados].sort(compareValues(sortBy, sortOrder));
+        if (isCategoria === "CELULAR") {
+            dados = dados.filter(produto => produto.categoria !== null && produto.categoria.includes("CELULAR"));
+        }
 
+        if (isCategoria === "RELOGIO") {
+            dados = dados.filter(produto => produto.categoria !== null && produto.categoria.includes("RELOGIO"));
+        }
+
+        if (isCategoria === "NOTEBOOK") {
+            dados = dados.filter(produto => produto.categoria !== null && produto.categoria.includes("NOTEBOOK"));
+        }
+
+        const sortedData = [...dados].sort(compareValues(sortBy, sortOrder));
         const allItems = sortedData;
         const total = sortedData.length;
         const items = sortedData.slice((page - 1) * limit, limit * page);
 
-
         return {
             page, total, limit, items, allItems
         }
-    }, [produtosData, page, limit, sortBy, sortOrder, isFilteredDesvinculados, isFilteredVinculados]);
-
-
-
+    }, [produtosData, page, limit, sortBy, sortOrder, isFilteredDesvinculados, isFilteredVinculados, isCategoria]);
 
     const handlePageChange = (page: number, newLimit?: number) => {
         const limitToUse = newLimit || limit;
@@ -253,38 +129,76 @@ export function PageProdutoLoja() {
                             pageLink={`?limit=20&page=1`}
                         />
                     </FloatingLabel>
+                    <OverlayTrigger
+                        placement="top"
+                        overlay={<Tooltip id="download-tooltip">Filtros</Tooltip>}
+                    >
+                        <Dropdown>
+                            <Dropdown.Toggle id="dropdown-basic" className="no-caret mx-2 custom-dropdown">
+                                <Icons tipo="filtro" tamanho={20} />
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu className="custom-filter-dropdown-menu">
+                                <Row>
+                                    <Col xs={6}>
+                                        <Dropdown.Item as='div' onClick={(e) => e.stopPropagation()}>
+
+                                            <Form.Switch
+                                                type="checkbox"
+                                                label="Vinculado"
+                                                checked={isFilteredVinculados}
+                                                onChange={() => { }}
+                                                onMouseDown={e => {
+                                                    e.preventDefault();
+                                                    handleFilterVinculados();
+                                                }}
+                                                className="me-3 custom-switch"  // Adicionado a classe custom-switch
+                                            />
+                                        </Dropdown.Item>
+
+                                    </Col>
+                                    <Col xs={6}>
+                                        <Dropdown.Item as='div' onClick={(e) => e.stopPropagation()}>
+                                            <Form.Switch
+                                                type="checkbox"
+                                                label="Não Vinculado"
+                                                checked={isFilteredDesvinculados}
+                                                onChange={() => { }}
+                                                onMouseDown={e => {
+                                                    e.preventDefault();
+                                                    handleFilterDesvinculados();
+                                                }}
+                                                className="me-3 custom-switch"
+                                            />
+                                        </Dropdown.Item>
+
+                                    </Col>
+                                </Row>
+
+                            </Dropdown.Menu>
+
+                        </Dropdown>
+                    </OverlayTrigger>
+
+                    <OverlayTrigger
+                        placement="top"
+                        overlay={<Tooltip id="download-tooltip">Categoria</Tooltip>}
+                    >
+                        <Dropdown>
+                            <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                                {isCategoria}
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={() => setCategoria('CELULAR')}>CELULAR</Dropdown.Item>
+                                <Dropdown.Item onClick={() => setCategoria('RELOGIO')}>RELOGIO</Dropdown.Item>
+                                <Dropdown.Item onClick={() => setCategoria('NOTEBOOK')}>NOTEBOOK</Dropdown.Item>
+                            </Dropdown.Menu>
+
+                        </Dropdown>
+                    </OverlayTrigger>
 
                 </Col>
-                <Col>
-                    <div className="d-flex my-2">
-                        <Form.Switch
-                            type="checkbox"
-                            label="Vinculado"
-                            checked={isFilteredVinculados}
-                            onChange={() => { }}
-                            onMouseDown={e => {
-                                e.preventDefault();
-                                handleFilterVinculados();
-                            }}
-                            className="me-3 custom-switch"  // Adicionado a classe custom-switch
-
-                        />
-
-                        <Form.Switch
-                            type="checkbox"
-                            label="Não Vinculado"
-                            checked={isFilteredDesvinculados}
-                            onChange={() => { }}
-                            onMouseDown={e => {
-                                e.preventDefault();
-                                handleFilterDesvinculados();
-                            }}
-                            className="me-3 custom-switch"
-                        />
-                    </div>
-                </Col>
-
-
                 <Col xs className="d-flex justify-content-end">
                     <Button
                         onClick={() => {
@@ -294,7 +208,6 @@ export function PageProdutoLoja() {
                         className="me-3 custom-btn"
                     >
                         <Icons tipo="update" tamanho={22} />  Vinc. Catalogos
-
                     </Button>
 
                     <Button
@@ -320,21 +233,24 @@ export function PageProdutoLoja() {
 
             {!isProdutoLoading && !isLojaLoading &&
 
-
-
                 <Table striped bordered hover className="rounded-table">
-
 
                     <thead>
                         <tr>
                             <SortableTableHeader css="th150" displayText="Codigo" sortKey="codigo" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
                             <SortableTableHeader css="th250" displayText="Marca" sortKey="marca" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
                             <SortableTableHeader css="th250" displayText="Modelo" sortKey="nome" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
-                            <SortableTableHeader css="th250" displayText="Origem" sortKey="origem" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                            {isCategoria !== "RELOGIO" && (
+                                <SortableTableHeader css="th250" displayText="Origem" sortKey="origem" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                            )}
                             <SortableTableHeader css="th250" displayText="Cor" sortKey="cor" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
                             <SortableTableHeader css="th150" displayText="Rede" sortKey="rede" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
-                            <SortableTableHeader css="th150" displayText="Ram" sortKey="ram" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
-                            <SortableTableHeader css="th150" displayText="Capacidade" sortKey="capacidade" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                            {isCategoria !== "RELOGIO" && (
+                                <SortableTableHeader css="th150" displayText="Ram" sortKey="ram" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                            )}
+                            {isCategoria !== "RELOGIO" && (
+                                <SortableTableHeader css="th150" displayText="Capacidade" sortKey="capacidade" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                            )}
                             <SortableTableHeader css="th130" displayText="Preço U$" sortKey="preco" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
                             <SortableTableHeader css="th70" displayText="Vinc." sortKey="vinculos" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
                             <th className="th70">
@@ -343,12 +259,11 @@ export function PageProdutoLoja() {
                         </tr>
                     </thead>
                     <tbody>
-                        {!isFetching && produtosLoja?.items?.map((produtoLoja, index) => <ItemTable key={index} produtoLoja={produtoLoja} onVinculo={setVinculoProduto} lojaData={lojaData} />)}
+                        {!isFetching && produtosLoja?.items?.map((produtoLoja, index) => <ItemTable key={index} produtoLoja={produtoLoja} onVinculo={setVinculoProduto} lojaData={lojaData} categoria={isCategoria} />)}
                     </tbody>
                 </Table>
 
             }
-
 
             <PaginationDown
                 handlePageChange={handlePageChange}
@@ -365,22 +280,21 @@ export function PageProdutoLoja() {
 interface IPropsItensTable {
     produtoLoja: IProdutoLoja,
     lojaData?: ILoja,
+    categoria: string;
     onVinculo: (idProdutoParaguay: IProdutoLoja) => void,
 }
 
-function ItemTable({ produtoLoja, onVinculo, lojaData }: IPropsItensTable) {
+function ItemTable({ produtoLoja, onVinculo, lojaData, categoria }: IPropsItensTable) {
     return (
 
         <React.Fragment>
+
             <tr>
                 <td>
                     {produtoLoja.codigo}
                 </td>
                 <td>
-
-
                     {produtoLoja.marca}
-
                 </td>
                 <td>
                     <a
@@ -410,21 +324,27 @@ function ItemTable({ produtoLoja, onVinculo, lojaData }: IPropsItensTable) {
                     </a>
 
                 </td>
-                <td>
-                    {produtoLoja.origem}
-                </td>
+                {categoria !== "RELOGIO" && (
+                    <td>
+                        {produtoLoja.origem}
+                    </td>
+                )}
                 <td>
                     {produtoLoja.cor}
                 </td>
                 <td>
                     {produtoLoja.rede}G
                 </td>
-                <td>
-                    {produtoLoja.ram}
-                </td>
-                <td>
-                    {produtoLoja.capacidade}
-                </td>
+                {categoria !== "RELOGIO" && (
+                    <td>
+                        {produtoLoja.ram}
+                    </td>
+                )}
+                {categoria !== "RELOGIO" && (
+                    <td>
+                        {produtoLoja.capacidade}
+                    </td>
+                )}
                 <td>
                     U$: {formatCurrency(produtoLoja.preco)}
                 </td>

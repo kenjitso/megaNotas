@@ -21,27 +21,29 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, lojaId, onListP
     const [selectedProdutoLoja, setSelectedProdutoLoja] = useState<Set<IProdutoLoja>>(new Set());
     const [filtro, setFiltro] = useState("");
     const [lastCheckedIndex, setLastCheckedIndex] = useState<number | null>(null);
-    const [checkboxFilter, setCheckboxFilter] = useState(false);
+    const [checkboxFilterCelular, setCheckboxFilterCelular] = useState(false);
+    const [checkboxFilterRelogio, setCheckboxFilterRelogio] = useState(false);
     const [checkboxFilterNaoEncontrados, setCheckboxFilterNaoEncontrados] = useState(false);
 
     const handleCheckboxFilterChangeCelular = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setCheckboxFilter(event.target.checked);
+        setCheckboxFilterCelular(event.target.checked);
 
         const celularItems = new Set(selectedProdutoLoja);
-        var exclusions = ['pad', 'case', 'capa', 'pelicula', 'cabo', 'carregador', 'fone','reloj'];
+        var exclusions = ['PAD', 'CASE', 'CAPA', 'PELICULA', 'CABO', 'CARREGADOR', 'FONE', 'RELOJ','RELOGIO'];
 
         if (event.target.checked) {
             listProdutoLoja?.naoCadastrados.forEach(produtoLoja => {
-                const nomeProdutoLower = produtoLoja.nome.toLowerCase();
-            
-                if (nomeProdutoLower.includes('xiaomi') && nomeProdutoLower.includes('cel') ||
-                    nomeProdutoLower.includes('xiaomi') && nomeProdutoLower.includes('celular') ||
-                    (nomeProdutoLower.includes('xiaomi redmi') && !exclusions.some(exclusion => nomeProdutoLower.includes(exclusion))) ||
-                    (nomeProdutoLower.includes('xiaomi note') && !exclusions.some(exclusion => nomeProdutoLower.includes(exclusion))) ||
-                    (nomeProdutoLower.includes('xiaomi poco') && !exclusions.some(exclusion => nomeProdutoLower.includes(exclusion))) ||
-                    nomeProdutoLower.includes('iphone') ||
-                    nomeProdutoLower.includes('samsung') && nomeProdutoLower.includes('cel') ||
-                    nomeProdutoLower.includes('samsung') && nomeProdutoLower.includes('celular')
+                const nomeProdutoLower = produtoLoja.nome;
+
+                if (nomeProdutoLower.includes('XIAOMI') && nomeProdutoLower.includes('CEL') ||
+                    nomeProdutoLower.includes('XIAOMI') && nomeProdutoLower.includes('CELULAR') ||
+                    nomeProdutoLower.includes('XIAOMI 13') && nomeProdutoLower.includes('LITE 5G') ||
+                    (nomeProdutoLower.includes('XIAOMI REDMI') && !exclusions.some(exclusion => nomeProdutoLower.includes(exclusion))) ||
+                    (nomeProdutoLower.includes('XIAOMI NOTE') && !exclusions.some(exclusion => nomeProdutoLower.includes(exclusion))) ||
+                    (nomeProdutoLower.includes('XIAOMI POCO') && !exclusions.some(exclusion => nomeProdutoLower.includes(exclusion))) ||
+                    nomeProdutoLower.includes('IPHONE') ||
+                    nomeProdutoLower.includes('SAMSUNG') && nomeProdutoLower.includes('CEL') ||
+                    nomeProdutoLower.includes('SAMSUNG') && nomeProdutoLower.includes('CELULAR')
                 ) {
                     celularItems.add(produtoLoja);
                 }
@@ -49,14 +51,16 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, lojaId, onListP
         } else {
             const itemsToDelete = [];
             for (let item of celularItems) {
-                const nomeProdutoLower = item.nome.toLowerCase();
-                if (nomeProdutoLower.includes('xiaomi') && nomeProdutoLower.includes('cel') ||
-                    nomeProdutoLower.includes('xiaomi') && nomeProdutoLower.includes('celular') ||
-                    (nomeProdutoLower.includes('xiaomi redmi') && !exclusions.some(exclusion => nomeProdutoLower.includes(exclusion))) ||
-                    (nomeProdutoLower.includes('xiaomi note') && !exclusions.some(exclusion => nomeProdutoLower.includes(exclusion))) ||
-                    nomeProdutoLower.includes('iphone') ||
-                    nomeProdutoLower.includes('samsung') && nomeProdutoLower.includes('cel') ||
-                    nomeProdutoLower.includes('samsung') && nomeProdutoLower.includes('celular')
+                const nomeProdutoLower = item.nome;
+                if (nomeProdutoLower.includes('XIAOMI') && nomeProdutoLower.includes('CEL') ||
+                    nomeProdutoLower.includes('XIAOMI') && nomeProdutoLower.includes('CELULAR') ||
+                    nomeProdutoLower.includes('XIAOMI 13') && nomeProdutoLower.includes('LITE 5G') ||
+                    (nomeProdutoLower.includes('XIAOMI REDMI') && !exclusions.some(exclusion => nomeProdutoLower.includes(exclusion))) ||
+                    (nomeProdutoLower.includes('XIAOMI NOTE') && !exclusions.some(exclusion => nomeProdutoLower.includes(exclusion))) ||
+                    (nomeProdutoLower.includes('XIAOMI POCO') && !exclusions.some(exclusion => nomeProdutoLower.includes(exclusion))) ||
+                    nomeProdutoLower.includes('IPHONE') ||
+                    nomeProdutoLower.includes('SAMSUNG') && nomeProdutoLower.includes('CEL') ||
+                    nomeProdutoLower.includes('SAMSUNG') && nomeProdutoLower.includes('CELULAR')
                 ) {
                     itemsToDelete.push(item);
                 }
@@ -67,6 +71,34 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, lojaId, onListP
 
         setSelectedProdutoLoja(celularItems);
         onListProdutoLoja(Array.from(celularItems));
+    };
+
+
+    const handleCheckboxFilterChangeRelogio = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCheckboxFilterRelogio(event.target.checked);
+
+        const relogioItems = new Set(selectedProdutoLoja);
+
+        if (event.target.checked) {
+            listProdutoLoja?.naoCadastrados.forEach(produtoLoja => {
+                const nomeProdutoLower = produtoLoja.nome.toLowerCase();
+
+                if (nomeProdutoLower.includes('watch') || nomeProdutoLower.includes('relogio')) relogioItems.add(produtoLoja);
+
+            });
+        } else {
+            const itemsToDelete = [];
+            for (let item of relogioItems) {
+                const nomeProdutoLower = item.nome.toLowerCase();
+                if (nomeProdutoLower.includes('watch') && nomeProdutoLower.includes('relogio')) itemsToDelete.push(item);
+
+            }
+            // remove os itens em uma segunda passagem
+            itemsToDelete.forEach(item => relogioItems.delete(item));
+        }
+
+        setSelectedProdutoLoja(relogioItems);
+        onListProdutoLoja(Array.from(relogioItems));
     };
 
 
@@ -81,13 +113,13 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, lojaId, onListP
 
     if (checkboxFilterNaoEncontrados) {
         filteredProdutos = (listProdutoLoja?.naoEncontrados || []).filter(produtoLoja =>
-            (!checkboxFilter || produtoLoja.nome.toLowerCase().includes('celular')) &&
+            (!checkboxFilterCelular || produtoLoja.nome.toLowerCase().includes('celular')) &&
             (!produtoLoja.nome.toLowerCase().includes('microfone'))
         );
     } else {
         filteredProdutos = (listProdutoLoja?.naoCadastrados || []).filter(produtoLoja =>
             produtoLoja.nome.toLowerCase().includes(filtro.toLowerCase()) ||
-            (checkboxFilter && (produtoLoja.nome.toLowerCase().includes('celular') || produtoLoja.nome.toLowerCase().includes(' cel '))) &&
+            (checkboxFilterCelular && (produtoLoja.nome.toLowerCase().includes('celular') || produtoLoja.nome.toLowerCase().includes(' cel '))) &&
             (!produtoLoja.nome.toLowerCase().includes('microfone'))
         );
     }
@@ -135,22 +167,28 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, lojaId, onListP
         <React.Fragment>
 
             <Row className="d-flex align-items-center">
-                <Col xs="1" >
+                <Col md={3} >
                     <Form.Check
                         label="Celular"
                         id="checkbox-celular"
-                        checked={checkboxFilter}
+                        checked={checkboxFilterCelular}
                         onChange={handleCheckboxFilterChangeCelular}
-                        className="mr-2"
                     />
                 </Col>
-                <Col className="mx-3" >
+                <Col md={3} >
+                    <Form.Check
+                        label="Relogio"
+                        id="checkbox-relogio"
+                        checked={checkboxFilterRelogio}
+                        onChange={handleCheckboxFilterChangeRelogio}
+                    />
+                </Col>
+                <Col md={3}  >
                     <Form.Check
                         label="Não encontrados"
                         id="checkbox-nao-encontrados"
                         checked={checkboxFilterNaoEncontrados}
                         onChange={handleCheckboxFilterChangeNaoEncontrados}
-                        className="mr-2"
                     />
                 </Col>
             </Row>
@@ -234,10 +272,10 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, lojaId, onListP
                                                                     ? `https://www.bestshop.com.py/buscar/${produtoLoja.codigo}`
                                                                     : (lojaId?.algoritmo === 6
                                                                         ? ` https://stargamesparaguay.com/?s=${produtoLoja.codigo}`
-                                                                : '#'))))))}
+                                                                        : '#'))))))}
 
-                                                               
-                                                                
+
+
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         title={produtoLoja.nome}

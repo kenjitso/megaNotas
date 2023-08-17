@@ -241,11 +241,12 @@ export class CatalogoController {
 
 
     public static async searchCatalogoML(q: string = "") {
+
         if (!q || q.trim() === "") return [];
 
         const params = new URLSearchParams();
         params.set("q", q);
-
+     
         const options: RequestInit = {
             method: "GET",
             headers: {
@@ -254,8 +255,12 @@ export class CatalogoController {
         };
 
         const response = await fetch(`https://us-central1-mega-notas.cloudfunctions.net/api/mercadolivre/catalogo/search?${params}`, options);
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Erro na resposta da API:", errorText);
+            throw new Error(errorText);
+        }
         const responseData: unknown = await response.json();
-
 
         const attributeSchema = z.object({
             id: z.string(),
@@ -274,21 +279,17 @@ export class CatalogoController {
             attributes: z.array(attributeSchema).optional()
         });
 
-
-
         const catalogos = z.object({
             results: z.array(schemaProduto)
         }).parse(responseData);
 
         const produtos = catalogos.results.map(product => {
-            const marca = product.attributes?.find(attribute => attribute.name === "Marca")?.value_name;
-            const modelo = product.attributes?.find(attribute => attribute.name === "Modelo")?.value_name;
-            const cor = product.attributes?.find(attribute => attribute.name === "Cor")?.value_name;
-         
-            const memoriaInterna = product.attributes?.find(attribute => attribute.name === "Memória interna")?.value_name;
-            const memoriaRam = product.attributes?.find(attribute => attribute.name === "Memória RAM")?.value_name;
+            const marca = product.attributes?.find(attribute => attribute.id === "BRAND")?.value_name;
+            const modelo = product.attributes?.find(attribute => attribute.id === "MODEL")?.value_name;
+            const cor = product.attributes?.find(attribute => attribute.id === "COLOR")?.value_name;
+            const memoriaInterna = product.attributes?.find(attribute => attribute.id === "INTERNAL_MEMORY")?.value_name;
+            const memoriaRam = product.attributes?.find(attribute => attribute.id === "RAM")?.value_name;
             const mobileNetwork = product.attributes?.find(attribute => attribute.id === "MOBILE_NETWORK")?.value_name;
-
 
 
             return {

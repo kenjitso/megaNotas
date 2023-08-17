@@ -4,11 +4,11 @@ import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 import { z } from "zod";
 
 
-export function MobileZoneFormat(
+export function StarGamesFormat(
     idLoja: string,
-    excelArray: unknown[][],
+    pdfArray: string[],
+    excelArray: unknown[],
     produtoParaguay?: IProdutoLoja[]
-
 ): {
     cadastrados: IProdutoLoja[],
     naoCadastrados: IProdutoLoja[],
@@ -17,7 +17,9 @@ export function MobileZoneFormat(
 
     try {
 
-        const extractedItems = processExcelArray(excelArray);
+
+        const extractedItems = processPdfArray(pdfArray);
+
 
         const lineValidation = z.object({
             codigo: z.string(),
@@ -67,51 +69,43 @@ export function MobileZoneFormat(
 }
 
 
-function processExcelArray(
-    excelArray: Array<Array<any>>
+function processPdfArray(
+    pdfArray: string[]
 ): Array<{ codigo: string; descricao: string; preco: string }> {
+    let result = [];
+    var exclusions = ['PAD', 'CASE', 'CAPA', 'PELICULA', 'CABO', 'CARREGADOR', 'FONE', 'RELOJ','RELOGIO'];
 
-    const sliceArray = excelArray.slice(2);
+    const text = pdfArray.join(' ');
 
-    const processedArray = sliceArray.map(item => {
-        const codigo = String(item[0]).trim().replace(/-/g, '')
-        let descricao = String(item[1]).toLocaleUpperCase().trim()
+    const regex = /(\d+-\d+)\s+(.*?)\s+(\d+)\s+([\d,]+\.\d+)/g;
+    let match;
+
+    while ((match = regex.exec(text)) !== null) {
+        const codigo = match[3];
+        let descricao = match[2].toUpperCase().trim()
             .replace(/(\b\d\.\d{2}\"|\b\d\.\d\"|\b\d\"|\b\d\d\.\d\"|\b\d\d\.\d{2}\")/g, '')
-            .replace(/ ULTR /g, ' ULTRA ')
-            .replace(/ 128G /g, ' 128GB ')
-            .replace(/\b128G\b/g, '128GB')
-            .replace(/ 12\+/g, ' 12GB ')
-            .replace(/ 8\+/g, ' 8GB ')
-            .replace(/ 6\+/g, ' 6GB ')
-            .replace(/ 4\+/g, ' 4GB ')
-            .replace(/ 3\+/g, ' 3GB ')
-            .replace(/ 2\+/g, ' 2GB ')
-            .replace(/\+12 /g, ' 12GB ')
-            .replace(/\+8 /g, ' 8GB ')
-            .replace(/\+6 /g, ' 6GB ')
-            .replace(/\+4 /g, ' 4GB ')
-            .replace(/\+3 /g, ' 3GB ')
-            .replace(/\+2 /g, ' 2GB ')
-            .replace(/ 12\//g, ' 12GB ')
-            .replace(/ 8\//g, ' 8GB ')
-            .replace(/ 6\//g, ' 6GB ')
-            .replace(/ 4\//g, ' 4GB ')
-            .replace(/ 3\//g, ' 3GB ')
-            .replace(/ 2\//g, ' 2GB ')
-            .replace(/ 2\//g, ' 2GB ')
-            .replace(/\(CHINA\)/g, 'CHINA')
-            .replace(/\(INDIA\)/g, 'INDIA')
-            .replace(/INDU/g, 'INDIA')
-            .replace(/\(INDONESIA\)/g, 'INDONESIA')
-            .replace(/\(GLOBAL\)/g, 'GLOBAL')
-            .replace(/ SAMS /g, ' SAMSUNG ')
-            .replace(/ LTE /g, ' ')
-            .replace(/ DPJ /g, ' ')
-            .replace(/ DPJ\b/g, ' ')
-            .replace(/ DS /g, ' DUAL SIM ')
-            .replace(/ DP /g, ' ')
-            .replace(/ 128 /g, ' 128GB ')
-            .replace(/\//g, ' ')
+            .replace(/XMI RDM/g, ' XIAOMI REDMI ')
+            .replace(/CEL/g, ' CELULAR ')
+            .replace(/RELOJ/g, ' RELOGIO ')
+            .replace(/XMI NT/g, ' XIAOMI NOTE ')
+            .replace(/XMI POCO/g, ' XIAOMI POCO ')
+            .replace(/XMI 13/g, ' XIAOMI 13 ')
+            .replace(/ 32GB\//g, ' 32GB ')
+            .replace(/ 32G\//g, ' 32GB ')
+            .replace(/ 32\//g, ' 32GB ')
+            .replace(/ 64GB\//g, ' 64GB ')
+            .replace(/ 64G\//g, ' 64GB ')
+            .replace(/ 64\//g, ' 64GB ')
+            .replace(/ 128GB\//g, ' 128GB ')
+            .replace(/ 128G\//g, ' 128GB ')
+            .replace(/ 128\//g, ' 128GB ')
+            .replace(/ 256GB\//g, ' 256GB ')
+            .replace(/ 256G\//g, ' 256GB ')
+            .replace(/ 256\//g, ' 256GB ')
+            .replace(/ 2R/g, ' 2GB ')
+            .replace(/ 4R/g, ' 4GB ')
+            .replace(/ 6R/g, ' 6GB ')
+            .replace(/ 8R/g, ' 8GB ')
 
         let memoryValues = descricao.match(/(\b\d+GB\b)/g);  // encontra todos os valores de memória na descrição
 
@@ -126,6 +120,23 @@ function processExcelArray(
             }
         }
 
+        if (descricao.includes('WATCH') || descricao.includes('ROLOGIO')) {
+            if (!descricao.includes("RELOGIO")) descricao = "RELOGIO " + descricao;
+        }
+
+        if (descricao.includes('XIAOMI') && descricao.includes('CEL') ||
+            descricao.includes('XIAOMI') && descricao.includes('CELULAR') ||
+            descricao.includes('XIAOMI 13') && descricao.includes('LITE 5G') ||
+            (descricao.includes('XIAOMI REDMI') && !exclusions.some(exclusion => descricao.includes(exclusion))) ||
+            (descricao.includes('XIAOMI NOTE') && !exclusions.some(exclusion => descricao.includes(exclusion))) ||
+            (descricao.includes('XIAOMI POCO') && !exclusions.some(exclusion => descricao.includes(exclusion))) ||
+            descricao.includes('IPHONE') ||
+            descricao.includes('SAMSUNG') && descricao.includes('CEL') ||
+            descricao.includes('SAMSUNG') && descricao.includes('CELULAR')
+        ) {
+            if (!descricao.includes("CELULAR")) descricao = "CELULAR " + descricao;
+        }
+
         if (/IPHONE/gi.test(descricao) && !descricao.includes(' APPLE ')) {
             descricao = "APPLE " + descricao;
         }
@@ -138,19 +149,18 @@ function processExcelArray(
             descricao = descricao + " GLOBAL";
         }
 
-        const preco = String(item[2]);
+        const preco = String(match[4]).replace(',', '');
         // assegurando que o preço é tratado como um número
 
-        return {
+        result.push({
             codigo,
             descricao,
             preco
-        };
-    });
+        });
+    }
 
-    const processedArrayWithoutSwap = processedArray.filter(item => !item.descricao.includes('SWAP'));
-    const filteredArray = processedArrayWithoutSwap.filter(item => parseFloat(item.preco) >= 40);
+    result = result.filter(item => parseFloat(item.preco) >= 40); // Filtre itens cujo preço é maior ou igual a 40
 
-    return filteredArray;
+
+    return result;
 }
-

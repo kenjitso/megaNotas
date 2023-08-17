@@ -55,7 +55,7 @@ export function AtacadoGamesFormat(
 
     } catch (error) {
         toast.error("Entre em contato com o desenvolvedor, parece que a estrutura fornecida pela loja mudou.");
-        return { cadastrados: [], naoCadastrados: [], naoEncontrados:[] };
+        return { cadastrados: [], naoCadastrados: [], naoEncontrados: [] };
     }
 }
 
@@ -87,7 +87,9 @@ function processPdfArray(
 
     while ((match = regex.exec(text)) !== null) {
         let codigo = match[1];
-        let descricao = match[2].replace(/CEL/g, 'CELULAR');
+        let descricao = match[2].toUpperCase();
+
+
         let preco = match[3];
 
         // Remove traço do código
@@ -129,11 +131,92 @@ export function updateFiltro(
 
     // Mapeia códigos para descrições do excelArray
     const excelDataMap: { [codigo: string]: string } = {};
+    var exclusions = ['PAD', 'CASE', 'TABLET', 'CAPA', 'PELICULA', 'CABO', 'CARREGADOR', 'FONE', 'RELOJ', 'RELOGIO'];
 
     dataRows.forEach(row => {
         if (Array.isArray(row)) {
             const codigo = row[0].toString().trim();
-            const descricao = row[1] ? row[1].replace(/CEL/g, 'CELULAR').toString().trim() : '';
+            let descricao = row[1].toUpperCase().trim()
+                .replace(/(\b\d\.\d{2}\"|\b\d\.\d\"|\b\d\"|\b\d\d\.\d\"|\b\d\d\.\d{2}\")/g, '')
+                .replace(/ CEL /g, ' CELULAR ')
+                .replace(/ RELOJ /g, ' RELOGIO ')
+                .replace(/RELÓGIO /g, ' RELOGIO ')
+                .replace(/ PLUS /g, '+ ')
+                .replace(/2RAM\/32GB/g, ' 2GB 32GB ')
+                .replace(/3RAM\/64GB/g, ' 3GB 64GB ')
+                .replace(/6RAM\/128GB/g, ' 6GB 128GB ')
+                .replace(/XMI RDM/g, ' XIAOMI REDMI ')
+                .replace(/\(VERSÃO GLOBAL\)/g, ' GLOBAL ')
+                .replace(/VERSÃO/g, '')
+                .replace(/\(GLOBAL\)/g, ' GLOBAL ')
+                .replace(/RAM/g, '')
+                .replace(/XMI NT/g, ' XIAOMI NOTE ')
+                .replace(/XMI POCO/g, ' XIAOMI POCO ')
+                .replace(/XMI 13/g, ' XIAOMI 13 ')
+                .replace(/ 32GB\//g, ' 32GB ')
+                .replace(/ 32G\//g, ' 32GB ')
+                .replace(/ 32\//g, ' 32GB ')
+                .replace(/ 64GB\//g, ' 64GB ')
+                .replace(/ 64G\//g, ' 64GB ')
+                .replace(/ 64\//g, ' 64GB ')
+                .replace(/ 128GB\//g, ' 128GB ')
+                .replace(/ 128G\//g, ' 128GB ')
+                .replace(/ 128\//g, ' 128GB ')
+                .replace(/ 256GB\//g, ' 256GB ')
+                .replace(/ 256G\//g, ' 256GB ')
+                .replace(/ 256\//g, ' 256GB ')
+                .replace(/512GB\//g, ' 512GB ')
+                .replace(/ 2R/g, ' 2GB ')
+                .replace(/ 4R/g, ' 4GB ')
+                .replace(/ 6R/g, ' 6GB ')
+                .replace(/ 8R/g, ' 8GB ')
+                .replace(/ 12R/g, ' 12GB ')
+                .replace(/\/12\//g, ' 12GB ')
+
+
+            let memoryValues = descricao.match(/(\b\d+GB\b)/g);  // encontra todos os valores de memória na descrição
+
+            if (memoryValues && memoryValues.length > 1) {
+                memoryValues.sort((a: string, b: string) => parseInt(a) - parseInt(b));  // classifica os valores em ordem crescente
+
+                // substitui os valores na descrição original pelo valor classificado com o prefixo 'R' e 'C'
+                for (let i = 0; i < memoryValues.length; i++) {
+                    let prefix = i == 0 ? 'R' : 'C';
+                    let regex = new RegExp("\\b" + memoryValues[i] + "\\b", "g"); // cria um regex para substituir todas as ocorrências
+                    descricao = descricao.replace(regex, prefix + memoryValues[i]);
+                }
+            }
+
+            if (descricao.includes('WATCH') || descricao.includes('ROLOGIO')) {
+                if (!descricao.includes("RELOGIO")) descricao = "RELOGIO " + descricao;
+            }
+
+            if (descricao.includes('XIAOMI') && descricao.includes('CEL') ||
+                descricao.includes('XIAOMI') && descricao.includes('CELULAR') ||
+                descricao.includes('XIAOMI 13') && descricao.includes('LITE') && descricao.includes('5G') ||
+                descricao.includes('XIAOMI 12') && descricao.includes('LITE') && descricao.includes('5G') ||
+                (descricao.includes('XIAOMI REDMI') && !exclusions.some(exclusion => descricao.includes(exclusion))) ||
+                (descricao.includes('XIAOMI NOTE') && !exclusions.some(exclusion => descricao.includes(exclusion))) ||
+                (descricao.includes('XIAOMI POCO') && !exclusions.some(exclusion => descricao.includes(exclusion))) ||
+                descricao.includes('IPHONE') ||
+                descricao.includes('SAMSUNG') && descricao.includes('CEL') ||
+                descricao.includes('SAMSUNG') && descricao.includes('CELULAR')
+            ) {
+                if (!descricao.includes("CELULAR")) descricao = "CELULAR " + descricao;
+            }
+
+
+            if (/IPHONE/gi.test(descricao) && !descricao.includes(' APPLE ')) {
+                descricao = "APPLE " + descricao;
+            }
+
+            if (!/( 5G )/gi.test(descricao) && !descricao.includes(' 4G ')) {
+                descricao = descricao + " 4G";
+            }
+
+            if (!/(INDONESIA|INDIA|CHINA)/gi.test(descricao) && !descricao.includes('GLOBAL')) {
+                descricao = descricao + " GLOBAL";
+            }
 
             excelDataMap[codigo] = descricao;
         }
