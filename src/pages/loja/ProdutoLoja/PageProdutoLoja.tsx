@@ -15,7 +15,10 @@ import { ILoja, LojaController } from "@/datatypes/loja";
 import { PaginationDown } from "@/components/pagination/PaginationDown";
 import { PaginationUp } from "@/components/pagination/PaginationUp";
 import { SortableTableHeader } from "@/components/pagination/SortableTableHeader";
-import { formataSmartPhone } from "@/functions/produtos/xiaomi/formataSmartPhone";
+import { formataSmartPhone } from "@/functions/produtos/formataSmartPhone";
+import { formataSmartWatch } from "@/functions/produtos/formataSmartWatch";
+import { format } from "date-fns";
+
 
 type Categoria = 'CELULAR' | 'RELOGIO' | 'NOTEBOOK';
 
@@ -49,7 +52,9 @@ export function PageProdutoLoja() {
                 nome_original: produtoLoja.nome,
             };
 
-                formataSmartPhone(produtoLojaAtualizado);
+            if (produtoLoja.nome.includes("CELULAR")) formataSmartPhone(produtoLojaAtualizado);
+            if (produtoLoja.nome.includes("RELOGIO")) formataSmartWatch(produtoLojaAtualizado);
+
 
             return produtoLojaAtualizado;
         }) ?? [];
@@ -238,20 +243,26 @@ export function PageProdutoLoja() {
                     <thead>
                         <tr>
                             <SortableTableHeader css="th150" displayText="Codigo" sortKey="codigo" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
-                            <SortableTableHeader css="th250" displayText="Marca" sortKey="marca" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                            <SortableTableHeader css="th150" displayText="Marca" sortKey="marca" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
                             <SortableTableHeader css="th250" displayText="Modelo" sortKey="nome" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
-                            {isCategoria !== "RELOGIO" && (
-                                <SortableTableHeader css="th250" displayText="Origem" sortKey="origem" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
-                            )}
-                            <SortableTableHeader css="th250" displayText="Cor" sortKey="cor" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                            <SortableTableHeader css="th150" displayText="Cor" sortKey="cor" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
                             <SortableTableHeader css="th150" displayText="Rede" sortKey="rede" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
-                            {isCategoria !== "RELOGIO" && (
-                                <SortableTableHeader css="th150" displayText="Ram" sortKey="ram" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                            {isCategoria === "CELULAR" && (
+                                <>
+                                    <SortableTableHeader css="th150" displayText="Origem" sortKey="origem" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                                    <SortableTableHeader css="th100" displayText="Ram" sortKey="ram" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                                    <SortableTableHeader css="th85" displayText="Capacidade" sortKey="capacidade" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                                </>
                             )}
-                            {isCategoria !== "RELOGIO" && (
-                                <SortableTableHeader css="th150" displayText="Capacidade" sortKey="capacidade" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+
+                            {isCategoria === "RELOGIO" && (
+                                <>
+                                    <SortableTableHeader css="th150" displayText="Tamanho Caixa" sortKey="caixaMedida" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                                    <SortableTableHeader css="th150" displayText="Pulseira" sortKey="tipoPulseira" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                                </>
                             )}
                             <SortableTableHeader css="th130" displayText="Preço U$" sortKey="preco" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                            <SortableTableHeader css="th170" displayText="Ult. Att." sortKey="ultima_atualizacao" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
                             <SortableTableHeader css="th70" displayText="Vinc." sortKey="vinculos" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
                             <th className="th70">
                                 <span>Est.</span>
@@ -324,30 +335,34 @@ function ItemTable({ produtoLoja, onVinculo, lojaData, categoria }: IPropsItensT
                     </a>
 
                 </td>
-                {categoria !== "RELOGIO" && (
-                    <td>
-                        {produtoLoja.origem}
-                    </td>
+                <td>{produtoLoja.cor}</td>
+                <td>{produtoLoja.rede === 0 ? "N/A" : produtoLoja.rede + "G"}</td>
+
+            
+                {categoria === "CELULAR" && (
+                    <>
+                        <td>{produtoLoja.origem}</td>
+                        <td>{produtoLoja.ram}</td>
+                        <td>{produtoLoja.capacidade}</td>
+                    </>
                 )}
-                <td>
-                    {produtoLoja.cor}
-                </td>
-                <td>
-                    {produtoLoja.rede}G
-                </td>
-                {categoria !== "RELOGIO" && (
-                    <td>
-                        {produtoLoja.ram}
-                    </td>
+
+
+                {categoria === "RELOGIO" && (
+                    <>
+                        <td>{produtoLoja.caixaMedida}</td>
+                        <td>{produtoLoja.tipoPulseira}</td>
+                    </>
                 )}
-                {categoria !== "RELOGIO" && (
-                    <td>
-                        {produtoLoja.capacidade}
-                    </td>
-                )}
-                <td>
-                    U$: {formatCurrency(produtoLoja.preco)}
-                </td>
+
+
+
+
+                <td>U$: {formatCurrency(produtoLoja.preco)}</td>
+
+                <td>{format(produtoLoja.ultima_atualizacao, 'dd/MM/yyyy HH:mm')}</td>
+
+
                 <td
                     className="centralize-icon"
                     style={{

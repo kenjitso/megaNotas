@@ -42,6 +42,9 @@ export function MegaFormat(
             capacidade: 0,
             ram: 0,
             cor: "n/a",
+            caixaMedida: "n/a",
+            corPulseira: "n/a",
+            tipoPulseira: "n/a",
             ultima_atualizacao: new Date(),
             vinculos: [],
         }));
@@ -229,11 +232,11 @@ function processPdfArray(
             descricao = "APPLE " + descricao;
         }
 
-        if (!/( 5G )/gi.test(descricao) && !descricao.includes(' 4G ')) {
+        if (!/( 5G )/gi.test(descricao) && !descricao.includes(' 4G ') && !exclusions.some(exclusion => descricao.includes(exclusion))) {
             descricao = descricao + " 4G";
         }
 
-        if (!/(INDONESIA|INDIA|CHINA)/gi.test(descricao) && !descricao.includes('GLOBAL')) {
+        if (!/(INDONESIA|INDIA|CHINA)/gi.test(descricao) && !descricao.includes('GLOBAL') && !exclusions.some(exclusion => descricao.includes(exclusion)))  {
             descricao = descricao + " GLOBAL";
         }
 

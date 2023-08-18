@@ -41,6 +41,9 @@ export function MadridFormat(
             capacidade: 0,
             ram: 0,
             cor: "n/a",
+            caixaMedida: "n/a",
+            corPulseira: "n/a",
+            tipoPulseira: "n/a",
             ultima_atualizacao: new Date(),
             vinculos: [],
         }));
@@ -238,16 +241,17 @@ function formatDescricao(codigo: string, descricao: string, preco: string, exclu
         descricao = "APPLE " + descricao;
     }
 
-    if (!/( 5G )/gi.test(descricao) && !descricao.includes(' 4G ')) {
-
+    if (!/( 5G )/gi.test(descricao) && !descricao.includes(' 4G ') && !exclusions.some(exclusion => descricao.includes(exclusion))) {
         descricao = descricao + " 4G";
-
         if (descricao.includes("SAMSUNG Z FLIP 3") ||
             descricao.includes("SAMSUNG Z FOLD 4")) descricao.replace(" 4G ", " 5G ")
-
-
-
     }
+
+    if (!/(INDONESIA|INDIA|CHINA)/gi.test(descricao) && !descricao.includes('GLOBAL') && !exclusions.some(exclusion => descricao.includes(exclusion)))  {
+        descricao = descricao + " GLOBAL";
+    }
+
+
 
 
 

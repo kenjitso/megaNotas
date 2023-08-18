@@ -31,6 +31,9 @@ export function PageHome() {
     const [appleFilter, setAppleFilter] = useState(false);
     const [xiaomiFilter, setXiaomiFilter] = useState(false);
     const [samsungFilter, setSamsungFilter] = useState(false);
+    const [celularFilter, setCelularFilter] = useState(false);
+    const [relogioFilter, setRelogioFilter] = useState(false);
+    const [notebookFilter, setNotebookFilter] = useState(false);
     const [catalogoSincronismoUpdate, setSincronismoUpdate] = useState<boolean>(false);
 
     const { isFetching, data } = useQuery(["catalogoshome", filtro], async () => {
@@ -96,7 +99,8 @@ export function PageHome() {
                     if (indonesiaFilter && nome.includes("INDONESIA")) {
                         return true; // Se o filtro INDONESIA estiver ativado e o nome incluir "INDONESIA", inclua este competidor.
                     }
-                    if (appleFilter && nome.includes("APPLE")) {
+
+                    if (appleFilter && (nome.includes("APPLE") || nome.includes("IPHONE"))) {
                         return true; // Se o filtro apple estiver ativado e o nome incluir "APPLE", inclua este competidor.
                     }
                     if (samsungFilter && nome.includes("SAMSUNG")) {
@@ -105,8 +109,18 @@ export function PageHome() {
                     if (xiaomiFilter && nome.includes("XIAOMI")) {
                         return true; // Se o filtro xiaomi estiver ativado e o nome incluir "XIAOMI", inclua este competidor.
                     }
+                    if (celularFilter && nome.includes("CELULAR")) {
+                        return true; // Se o filtro xiaomi estiver ativado e o nome incluir "XIAOMI", inclua este competidor.
+                    }
+                    if (relogioFilter && nome.includes("RELOGIO")) {
+                        return true; // Se o filtro xiaomi estiver ativado e o nome incluir "XIAOMI", inclua este competidor.
+                    }
+                    if (notebookFilter && nome.includes("NOTEBOOK")) {
+                        return true; // Se o filtro xiaomi estiver ativado e o nome incluir "XIAOMI", inclua este competidor.
+                    }
+
                     // Se nenhum filtro estiver ativo, mostre todos. Caso contrário, não mostre o competidor.
-                    return !(indiaFilter || globalFilter || chinaFilter || indonesiaFilter || appleFilter || samsungFilter || xiaomiFilter);
+                    return !(indiaFilter || globalFilter || chinaFilter || indonesiaFilter || appleFilter || samsungFilter || xiaomiFilter || celularFilter || relogioFilter || notebookFilter);
                 }),
             }))
             .filter(catalogo => catalogo.competidores.length > 0); // Remove catálogos que agora estão sem competidores.
@@ -121,7 +135,7 @@ export function PageHome() {
         return {
             page, total, limit, items
         }
-    }, [data, freteiro, page, limit, sortBy, sortOrder, indiaFilter, globalFilter, chinaFilter, indonesiaFilter, appleFilter, samsungFilter, xiaomiFilter])
+    }, [data, freteiro, page, limit, sortBy, sortOrder, indiaFilter, globalFilter, chinaFilter, indonesiaFilter, appleFilter, samsungFilter, xiaomiFilter,celularFilter,relogioFilter,notebookFilter])
 
     function exportCatalogoExcel(catalogos: ICatalogo[]) {
         const filteredCatalogos = catalogos.map(({
@@ -185,7 +199,7 @@ export function PageHome() {
 
 
                                 <Row>
-                                    <Col xs={6}>
+                                    <Col xs={4}>
                                         PAISES
                                         <Dropdown.Item as='div' onClick={(e) => e.stopPropagation()}>
                                             <Form.Check
@@ -224,7 +238,7 @@ export function PageHome() {
                                             />
                                         </Dropdown.Item>
                                     </Col>
-                                    <Col xs={6}>
+                                    <Col xs={4}>
                                         MARCA
                                         <Dropdown.Item as='div' onClick={(e) => e.stopPropagation()}>
                                             <Form.Check
@@ -251,6 +265,36 @@ export function PageHome() {
                                                 checked={xiaomiFilter}
                                                 onChange={(e) => handleCheckboxChange(e, setXiaomiFilter)}
                                                 label="Xiaomi"
+                                            />
+                                        </Dropdown.Item>
+                                    </Col>
+                                    <Col xs={4}>
+                                        PRODUTOS
+                                        <Dropdown.Item as='div' onClick={(e) => e.stopPropagation()}>
+                                            <Form.Check
+                                                type="checkbox"
+                                                id="celularFilter"
+                                                checked={celularFilter}
+                                                onChange={(e) => handleCheckboxChange(e, setCelularFilter)}
+                                                label="CELULAR"
+                                            />
+                                        </Dropdown.Item>
+                                        <Dropdown.Item as='div' onClick={(e) => e.stopPropagation()}>
+                                            <Form.Check
+                                                type="checkbox"
+                                                id="relogioFilter"
+                                                checked={relogioFilter}
+                                                onChange={(e) => handleCheckboxChange(e, setRelogioFilter)}
+                                                label="RELOGIO"
+                                            />
+                                        </Dropdown.Item>
+                                        <Dropdown.Item as='div' onClick={(e) => e.stopPropagation()}>
+                                            <Form.Check
+                                                type="checkbox"
+                                                id="notebookFilter"
+                                                checked={notebookFilter}
+                                                onChange={(e) => handleCheckboxChange(e, setNotebookFilter)}
+                                                label="NOTEBOOK"
                                             />
                                         </Dropdown.Item>
                                     </Col>

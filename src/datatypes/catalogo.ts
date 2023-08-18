@@ -246,7 +246,7 @@ export class CatalogoController {
 
         const params = new URLSearchParams();
         params.set("q", q);
-     
+
         const options: RequestInit = {
             method: "GET",
             headers: {
@@ -261,7 +261,7 @@ export class CatalogoController {
             throw new Error(errorText);
         }
         const responseData: unknown = await response.json();
-
+        console.log(responseData);
         const attributeSchema = z.object({
             id: z.string(),
             name: z.string(),
@@ -286,12 +286,18 @@ export class CatalogoController {
         const produtos = catalogos.results.map(product => {
             const marca = product.attributes?.find(attribute => attribute.id === "BRAND")?.value_name;
             const modelo = product.attributes?.find(attribute => attribute.id === "MODEL")?.value_name;
-            const cor = product.attributes?.find(attribute => attribute.id === "COLOR")?.value_name;
+            let cor = product.attributes?.find(attribute => attribute.id === "COLOR")?.value_name;
             const memoriaInterna = product.attributes?.find(attribute => attribute.id === "INTERNAL_MEMORY")?.value_name;
-            const memoriaRam = product.attributes?.find(attribute => attribute.id === "RAM")?.value_name;
-            const mobileNetwork = product.attributes?.find(attribute => attribute.id === "MOBILE_NETWORK")?.value_name;
-
-
+            let memoriaRam = product.attributes?.find(attribute => attribute.id === "RAM")?.value_name;
+            let mobileNetwork = product.attributes?.find(attribute => attribute.id === "MOBILE_NETWORK")?.value_name;
+            let caixaMedida = product.attributes?.find(attribute => attribute.id === "CASE_SIZE")?.value_name;
+            let corPulseira = product.attributes?.find(attribute => attribute.id === "WRISTBAND_COLOR")?.value_name;
+            let tipoPulseira = product.attributes?.find(attribute => attribute.id === "WRISTBAND_TYPE")?.value_name;
+          
+            if (memoriaRam === undefined) memoriaRam = product.attributes?.find(attribute => attribute.id === "RAM_MEMORY")?.value_name;
+            if (mobileNetwork === undefined) mobileNetwork = product.attributes?.find(attribute => attribute.id === "WITH_MOBILE_NETWORK")?.value_name;
+            if (cor === undefined) cor = product.attributes?.find(attribute => attribute.id === "CASE_COLOR")?.value_name;
+            if (tipoPulseira === undefined) tipoPulseira = product.attributes?.find(attribute => attribute.id === "SMARTWATCH_VERSION")?.value_name;
             return {
                 codigo_catalogo: product.id,
                 nome: product.name,
@@ -301,7 +307,10 @@ export class CatalogoController {
                 cor: cor,
                 memoriaInterna: memoriaInterna,
                 memoriaRam: memoriaRam,
-                mobileNetwork: mobileNetwork
+                mobileNetwork: mobileNetwork,
+                caixaMedida: caixaMedida,
+                corPulseira: corPulseira,
+                tipoPulseira: tipoPulseira,
             };
         });
 

@@ -1,7 +1,7 @@
 import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 import { CatalogoController } from "@/datatypes/catalogo";
 
-export async function otherSearch(produto: IProdutoLoja) {
+export async function otherSearchSmartPhone(produto: IProdutoLoja) {
 
     let catalogo;
 

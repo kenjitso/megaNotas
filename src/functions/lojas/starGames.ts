@@ -41,6 +41,9 @@ export function StarGamesFormat(
             capacidade: 0,
             ram: 0,
             cor: "n/a",
+            caixaMedida: "n/a",
+            corPulseira: "n/a",
+            tipoPulseira: "n/a",
             ultima_atualizacao: new Date(),
             vinculos: [],
         }));
@@ -120,9 +123,6 @@ function processPdfArray(
             }
         }
 
-        if (descricao.includes('WATCH') || descricao.includes('ROLOGIO')) {
-            if (!descricao.includes("RELOGIO")) descricao = "RELOGIO " + descricao;
-        }
 
         if (descricao.includes('XIAOMI') && descricao.includes('CEL') ||
             descricao.includes('XIAOMI') && descricao.includes('CELULAR') ||
@@ -137,15 +137,19 @@ function processPdfArray(
             if (!descricao.includes("CELULAR")) descricao = "CELULAR " + descricao;
         }
 
+        if (descricao.includes('WATCH') || descricao.includes('ROLOGIO')) {
+            if (!descricao.includes("RELOGIO")) descricao = "RELOGIO " + descricao;
+        }
+
         if (/IPHONE/gi.test(descricao) && !descricao.includes(' APPLE ')) {
             descricao = "APPLE " + descricao;
         }
 
-        if (!/( 5G )/gi.test(descricao) && !descricao.includes(' 4G ')) {
+        if (!/( 5G )/gi.test(descricao) && !descricao.includes(' 4G ') && !exclusions.some(exclusion => descricao.includes(exclusion))) {
             descricao = descricao + " 4G";
         }
 
-        if (!/(INDONESIA|INDIA|CHINA)/gi.test(descricao) && !descricao.includes('GLOBAL')) {
+        if (!/(INDONESIA|INDIA|CHINA)/gi.test(descricao) && !descricao.includes('GLOBAL') && !exclusions.some(exclusion => descricao.includes(exclusion)))  {
             descricao = descricao + " GLOBAL";
         }
 

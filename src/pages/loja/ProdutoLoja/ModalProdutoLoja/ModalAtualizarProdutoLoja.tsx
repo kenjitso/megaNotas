@@ -131,13 +131,15 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                                     allPagesText.push(...dataList);
                                 }
 
+                                //ATACADO GAMES
                                 if (lojaId?.algoritmo === 1) {
-
                                     setFormattedList(AtacadoGamesFormat(lojaId?.id ?? "", allPagesText, [], produtoParaguay));
                                     mutationAtualizaCadastrados.mutate(AtacadoGamesFormat(lojaId.id ?? "", allPagesText, [], produtoParaguay).cadastrados);
                                     setIsModalImportVisible(false);
                                     setIsLoading(false);
                                     setIsModalStatusBar(true);
+
+                                //MEGA
                                 } else if (lojaId?.algoritmo === 7) {
 
                                     setFormattedList(MegaFormat(lojaId.id ?? "", allPagesText, [], produtoParaguay));
@@ -146,6 +148,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                                     setIsLoading(false);
                                     setIsModalStatusBar(true);
 
+                                //MADRID
                                 } else if (lojaId?.algoritmo === 5) {
 
                                     setFormattedList(MadridFormat(lojaId.id ?? "", allPagesText, [], produtoParaguay));
@@ -154,6 +157,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                                     setIsLoading(false);
                                     setIsModalStatusBar(true);
 
+                                //STAR GAMES
                                 } else if (lojaId?.algoritmo === 6) {
 
                                     setFormattedList(StarGamesFormat(lojaId.id ?? "", allPagesText, [], produtoParaguay));
@@ -161,6 +165,8 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                                     setIsModalImportVisible(false);
                                     setIsLoading(false);
                                     setIsModalStatusBar(true);
+
+                                //BESTSHOP
                                 } else if (lojaId?.algoritmo === 3) {
 
                                     setFormattedList(BestShopFormat(lojaId.id ?? "", allPagesText, [], produtoParaguay));
@@ -184,9 +190,9 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                             const dataList: unknown[][] = XLSX.utils.sheet_to_json(worksheet, {
                                 header: 1,
                             });
+                
 
-
-
+                            //CELLSHOP
                             if (lojaId?.algoritmo === 4) {
 
                                 setFormattedList(CellShopFormat(lojaId.id ?? "", dataList, produtoParaguay));
@@ -195,7 +201,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                                 setIsLoading(false);
                                 setIsModalStatusBar(true);
                             }
-
+                            //MOBILE ZONE
                             if (lojaId?.algoritmo === 8) {
 
                                 setFormattedList(MobileZoneFormat(lojaId.id ?? "", dataList, produtoParaguay));

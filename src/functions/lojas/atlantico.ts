@@ -29,6 +29,9 @@ export function AtlanticoFormat(idLoja: string, pdfArray: string[]): Array<IProd
             capacidade: 0, // Incluir o novo campo capacidade
             ram: 0, // Incluir o novo campo ram
             cor: "n/a", // Incluir o novo campo cor
+            caixaMedida: "n/a",
+            corPulseira: "n/a",
+            tipoPulseira: "n/a",
             ultima_atualizacao: new Date(), // .toISOString() exemplo de data válida
             vinculos: [],
         }));

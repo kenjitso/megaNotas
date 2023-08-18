@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { Modal, Button, Spinner } from "react-bootstrap";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CatalogoController } from "@/datatypes/catalogo";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
 import { toast } from "react-toastify";
 import { filtrosVinculosIphone } from "@/functions/produtos/apple/filtrosVinculosIphone";
-import { otherSearch } from "@/functions/produtos/otherSearch";
 import { ILoja } from "@/datatypes/loja";
 import { filtrosVinculosXiaomi } from "@/functions/produtos/xiaomi/filtrosVinculosXiaomi";
 import { filtrosVinculosSamsung } from "@/functions/produtos/samsung/filtroVinculosSamsung";
+import { otherSearchSmartPhone } from "@/functions/produtos/otherSearchSmartPhone";
+import { filtrosVinculosSmartWatch } from "@/functions/produtos/apple/filtrosVinculosWatch";
+import { otherSearchSmartWatch } from "@/functions/produtos/otherSearchSmartWatch";
 
 interface IProps {
     produtoParaguay?: IProdutoLoja[];
@@ -16,20 +17,24 @@ interface IProps {
     onHide: () => void;
 }
 
+
+
 export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const produtoAtualParaguay = produtoParaguay ? produtoParaguay[currentIndex] : null;
     const queryClient = useQueryClient();
 
-  
+
     const { isFetching, data, refetch } = useQuery(
         ["catalogosSync", currentIndex],
         async () => {
 
             if (produtoParaguay && currentIndex >= 0 && currentIndex < produtoParaguay.length) {
                 const produto = produtoParaguay[currentIndex];
+                let catalogosML;
 
-                let catalogo = await otherSearch(produto) || [];
+                if (produto.categoria === "CELULAR") catalogosML = await otherSearchSmartPhone(produto) || [];
+                if (produto.categoria === "RELOGIO") catalogosML = await otherSearchSmartWatch(produto) || [];
 
 
 
@@ -38,30 +43,23 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
                 let highestSimilarity = -1;
                 let similarity = 0;
 
-                for (const productML of await catalogo) {
-                    if (!productML.mobileNetwork) {
-                        productML.mobileNetwork = "4G"
-                    }
-                    if (produto.marca === "XIAOMI") {
-                        similarity = filtrosVinculosXiaomi(produto, productML);
-                    }
-                    if (produto.marca === "APPLE") {
-                        similarity = filtrosVinculosIphone(produto, productML);
-                    }
+                for (const catalogoML of catalogosML ?? []) {
 
-                    if (produto.marca === "SAMSUNG") {
-                        similarity = filtrosVinculosSamsung(produto, productML);
-                    }
+                    if (produto.marca === "XIAOMI" && produto.categoria === "CELULAR") similarity = filtrosVinculosXiaomi(produto, catalogoML);
+                    if (produto.marca === "APPLE" && produto.categoria === "CELULAR") similarity = filtrosVinculosIphone(produto, catalogoML);
+                     if (produto.marca === "SAMSUNG" && produto.categoria === "CELULAR") similarity = filtrosVinculosSamsung(produto, catalogoML);
+                     if (produto.marca === "APPLE"||produto.marca==="XIAOMI" && produto.categoria === "RELOGIO") similarity = filtrosVinculosSmartWatch(produto, catalogoML);
+                  
 
                     if (similarity > highestSimilarity) {
                         highestSimilarity = similarity;
-                        mostSimilarProduct = productML;
+                        mostSimilarProduct = catalogoML;
                     }
                 }
 
-          console.log(mostSimilarProduct);
+             
 
-                return { data: catalogo, mostSimilarProduct, highestSimilarity };
+                return { data: catalogosML, mostSimilarProduct, highestSimilarity };
             }
             return null;
         },
@@ -123,25 +121,23 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
         for (let i = 0; i < produtoParaguay.length; i++) {
             const produto = produtoParaguay[i];
 
-            let catalogo = await otherSearch(produto)||[];
+            let catalogo = await otherSearchSmartPhone(produto) || [];
 
             let highestSimilarity = -1;
             let similarity = 0;
 
-            for (const productML of catalogo) {
-                if (!productML.mobileNetwork) {
-                    productML.mobileNetwork = "4G"
-                }
+            for (const catalogoML of catalogo) {
+                
                 if (produto.marca === "XIAOMI") {
-                    similarity = filtrosVinculosXiaomi(produto, productML);
+                    similarity = filtrosVinculosXiaomi(produto, catalogoML);
                 }
 
                 if (produto.marca === "APPLE") {
-                    similarity = filtrosVinculosIphone(produto, productML);
+                    similarity = filtrosVinculosIphone(produto, catalogoML);
                 }
 
                 if (produto.marca === "SAMSUNG") {
-                    similarity = filtrosVinculosSamsung(produto, productML);
+                    similarity = filtrosVinculosSamsung(produto, catalogoML);
                 }
 
                 if (similarity > highestSimilarity) {
@@ -153,7 +149,7 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
 
                     try {
 
-                        await mutation.mutateAsync({ produto, url_catalogoML: `https://www.mercadolivre.com.br/p/${productML.codigo_catalogo}` });
+                        await mutation.mutateAsync({ produto, url_catalogoML: `https://www.mercadolivre.com.br/p/${catalogoML.codigo_catalogo}` });
                         linkCount++;
                         setAutoLinkStatus(`Vinculando item ${i + 1} de ${produtoParaguay.length}. ${linkCount} produtos foram vinculados até agora.`);
 
@@ -231,11 +227,19 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
                         <ul>
                             <li><strong>Nome:</strong> {produtoAtualParaguay.nome_original}</li>
                             <li><strong>Marca:</strong> {produtoAtualParaguay.marca}</li>
-                            <li><strong>Modelo:</strong> {produtoAtualParaguay.nome.toLocaleUpperCase()}</li>
+                            <li><strong>Modelo:</strong> {produtoAtualParaguay.nome.toUpperCase()}</li>
                             <li><strong>Memoria Interna:</strong> {produtoAtualParaguay.capacidade} GB</li>
                             <li><strong>Memoria Ram:</strong> {produtoAtualParaguay.ram} GB</li>
                             <li><strong>Mobile Network:</strong> {produtoAtualParaguay.rede}G</li>
                             <li><strong>Cor:</strong> {produtoAtualParaguay.cor.toUpperCase()}</li>
+                            {produtoAtualParaguay?.categoria === "RELOGIO" && (
+                                <>
+                                  <li><strong>Medida da Caixa:</strong> {produtoAtualParaguay.caixaMedida?.toUpperCase()}</li>
+                                    <li><strong>Cor da Pulseira:</strong> {produtoAtualParaguay.corPulseira?.toUpperCase()}</li>
+                                    <li><strong>Tipo da Pulseira:</strong> {produtoAtualParaguay.tipoPulseira?.toUpperCase()}</li>
+                                </>
+
+                            )}
                         </ul>
                     </div>
                 )}
@@ -264,11 +268,19 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
                             <ul>
                                 <li><strong>Nome:</strong> {data.mostSimilarProduct.nome}</li>
                                 <li><strong>Marca:</strong> {data.mostSimilarProduct.marca}</li>
-                                <li><strong>Modelo:</strong> {data.mostSimilarProduct.modelo?.toLocaleUpperCase()}</li>
+                                <li><strong>Modelo:</strong> {data.mostSimilarProduct.modelo?.toUpperCase()}</li>
                                 <li><strong>Memoria Interna:</strong> {data.mostSimilarProduct.memoriaInterna}</li>
                                 <li><strong>Memoria Ram:</strong> {data.mostSimilarProduct.memoriaRam}</li>
-                                <li><strong>Mobile Network:</strong> {data.mostSimilarProduct.mobileNetwork}</li>
-                                <li><strong>Cor:</strong> {data.mostSimilarProduct.cor?.toLocaleUpperCase()}</li>
+                                <li><strong>Mobile Network:</strong> {data.mostSimilarProduct.mobileNetwork?.toUpperCase()}</li>
+                                <li><strong>Cor:</strong> {data.mostSimilarProduct.cor?.toUpperCase()}</li>
+                                {produtoAtualParaguay?.categoria === "RELOGIO" && (
+                                    <>
+                                       <li><strong>Medida da Caixa:</strong> {data.mostSimilarProduct.caixaMedida?.toUpperCase()}</li>
+                                        <li><strong>Cor da Pulseira:</strong> {data.mostSimilarProduct.corPulseira?.toUpperCase()}</li>
+                                        <li><strong>Tipo da Pulseira:</strong> {data.mostSimilarProduct.tipoPulseira?.toUpperCase()}</li>
+                                    </>
+
+                                )}
                             </ul>
                         </div>
                     )

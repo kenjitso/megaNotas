@@ -33,17 +33,17 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, lojaId, onListP
 
         if (event.target.checked) {
             listProdutoLoja?.naoCadastrados.forEach(produtoLoja => {
-                const nomeProdutoLower = produtoLoja.nome;
+                const nomeProdutoUpperCase = produtoLoja.nome.toUpperCase();
 
-                if (nomeProdutoLower.includes('XIAOMI') && nomeProdutoLower.includes('CEL') ||
-                    nomeProdutoLower.includes('XIAOMI') && nomeProdutoLower.includes('CELULAR') ||
-                    nomeProdutoLower.includes('XIAOMI 13') && nomeProdutoLower.includes('LITE 5G') ||
-                    (nomeProdutoLower.includes('XIAOMI REDMI') && !exclusions.some(exclusion => nomeProdutoLower.includes(exclusion))) ||
-                    (nomeProdutoLower.includes('XIAOMI NOTE') && !exclusions.some(exclusion => nomeProdutoLower.includes(exclusion))) ||
-                    (nomeProdutoLower.includes('XIAOMI POCO') && !exclusions.some(exclusion => nomeProdutoLower.includes(exclusion))) ||
-                    nomeProdutoLower.includes('IPHONE') ||
-                    nomeProdutoLower.includes('SAMSUNG') && nomeProdutoLower.includes('CEL') ||
-                    nomeProdutoLower.includes('SAMSUNG') && nomeProdutoLower.includes('CELULAR')
+                if (nomeProdutoUpperCase.includes('XIAOMI') && nomeProdutoUpperCase.includes('CEL') ||
+                    nomeProdutoUpperCase.includes('XIAOMI') && nomeProdutoUpperCase.includes('CELULAR') ||
+                    nomeProdutoUpperCase.includes('XIAOMI 13') && nomeProdutoUpperCase.includes('LITE 5G') ||
+                    (nomeProdutoUpperCase.includes('XIAOMI REDMI') && !exclusions.some(exclusion => nomeProdutoUpperCase.includes(exclusion))) ||
+                    (nomeProdutoUpperCase.includes('XIAOMI NOTE') && !exclusions.some(exclusion => nomeProdutoUpperCase.includes(exclusion))) ||
+                    (nomeProdutoUpperCase.includes('XIAOMI POCO') && !exclusions.some(exclusion => nomeProdutoUpperCase.includes(exclusion))) ||
+                    nomeProdutoUpperCase.includes('IPHONE') ||
+                    nomeProdutoUpperCase.includes('SAMSUNG') && nomeProdutoUpperCase.includes('CEL') ||
+                    nomeProdutoUpperCase.includes('SAMSUNG') && nomeProdutoUpperCase.includes('CELULAR')
                 ) {
                     celularItems.add(produtoLoja);
                 }
@@ -51,16 +51,16 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, lojaId, onListP
         } else {
             const itemsToDelete = [];
             for (let item of celularItems) {
-                const nomeProdutoLower = item.nome;
-                if (nomeProdutoLower.includes('XIAOMI') && nomeProdutoLower.includes('CEL') ||
-                    nomeProdutoLower.includes('XIAOMI') && nomeProdutoLower.includes('CELULAR') ||
-                    nomeProdutoLower.includes('XIAOMI 13') && nomeProdutoLower.includes('LITE 5G') ||
-                    (nomeProdutoLower.includes('XIAOMI REDMI') && !exclusions.some(exclusion => nomeProdutoLower.includes(exclusion))) ||
-                    (nomeProdutoLower.includes('XIAOMI NOTE') && !exclusions.some(exclusion => nomeProdutoLower.includes(exclusion))) ||
-                    (nomeProdutoLower.includes('XIAOMI POCO') && !exclusions.some(exclusion => nomeProdutoLower.includes(exclusion))) ||
-                    nomeProdutoLower.includes('IPHONE') ||
-                    nomeProdutoLower.includes('SAMSUNG') && nomeProdutoLower.includes('CEL') ||
-                    nomeProdutoLower.includes('SAMSUNG') && nomeProdutoLower.includes('CELULAR')
+                const nomeProdutoUpperCase = item.nome.toUpperCase();
+                if (nomeProdutoUpperCase.includes('XIAOMI') && nomeProdutoUpperCase.includes('CEL') ||
+                    nomeProdutoUpperCase.includes('XIAOMI') && nomeProdutoUpperCase.includes('CELULAR') ||
+                    nomeProdutoUpperCase.includes('XIAOMI 13') && nomeProdutoUpperCase.includes('LITE 5G') ||
+                    (nomeProdutoUpperCase.includes('XIAOMI REDMI') && !exclusions.some(exclusion => nomeProdutoUpperCase.includes(exclusion))) ||
+                    (nomeProdutoUpperCase.includes('XIAOMI NOTE') && !exclusions.some(exclusion => nomeProdutoUpperCase.includes(exclusion))) ||
+                    (nomeProdutoUpperCase.includes('XIAOMI POCO') && !exclusions.some(exclusion => nomeProdutoUpperCase.includes(exclusion))) ||
+                    nomeProdutoUpperCase.includes('IPHONE') ||
+                    nomeProdutoUpperCase.includes('SAMSUNG') && nomeProdutoUpperCase.includes('CEL') ||
+                    nomeProdutoUpperCase.includes('SAMSUNG') && nomeProdutoUpperCase.includes('CELULAR')
                 ) {
                     itemsToDelete.push(item);
                 }
@@ -81,17 +81,14 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, lojaId, onListP
 
         if (event.target.checked) {
             listProdutoLoja?.naoCadastrados.forEach(produtoLoja => {
-                const nomeProdutoLower = produtoLoja.nome.toLowerCase();
-
-                if (nomeProdutoLower.includes('watch') || nomeProdutoLower.includes('relogio')) relogioItems.add(produtoLoja);
-
+                const relogio = produtoLoja.nome.toUpperCase();
+                if (relogio.includes('WATCH') || relogio.includes('RELOGIO')) relogioItems.add(produtoLoja);
             });
         } else {
             const itemsToDelete = [];
             for (let item of relogioItems) {
-                const nomeProdutoLower = item.nome.toLowerCase();
-                if (nomeProdutoLower.includes('watch') && nomeProdutoLower.includes('relogio')) itemsToDelete.push(item);
-
+                const relogio = item.nome.toUpperCase();
+                if (relogio.includes('WATCH') || relogio.includes('RELOGIO')) itemsToDelete.push(item);
             }
             // remove os itens em uma segunda passagem
             itemsToDelete.forEach(item => relogioItems.delete(item));
