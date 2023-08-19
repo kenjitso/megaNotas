@@ -9,10 +9,10 @@ export function filtrosVinculosIphone(produtoParaguay: IProdutoLoja, produtoML: 
 
     //ARRUMA ESPEFICACOES DE ALGUNS MODELOS
 
+    if (produtoML.mobileNetwork === undefined) produtoML.mobileNetwork = "4G"
 
 
-    
-    if (produtoML.modelo.trim().toUpperCase() === "IPHONE 14" && produtoML.memoriaRam.trim().toUpperCase()=== "4 GB") produtoML.memoriaRam = "6 GB";
+    if (produtoML.modelo.trim().toUpperCase() === "IPHONE 14" && produtoML.memoriaRam.trim().toUpperCase() === "4 GB") produtoML.memoriaRam = "6 GB";
     if (produtoML.modelo.trim().toUpperCase() === "IPHONE 14 PLUS" && produtoML.memoriaRam.trim().toUpperCase() === "4 GB") produtoML.memoriaRam = "6 GB";
     if (produtoML.modelo.trim().toUpperCase() === "IPHONE 14 PLUS" && produtoML.mobileNetwork.trim().toUpperCase() === "4G") produtoML.mobileNetwork = "5G";
     if (produtoParaguay.nome.trim().toUpperCase() === "IPHONE 12" && produtoParaguay.rede === 4) produtoParaguay.rede = 5;
@@ -21,7 +21,7 @@ export function filtrosVinculosIphone(produtoParaguay: IProdutoLoja, produtoML: 
     if (produtoParaguay.nome.trim().toUpperCase() === "IPHONE 14 PLUS" && produtoParaguay.rede === 4) produtoParaguay.rede = 5;
     if (produtoParaguay.nome.trim().toUpperCase() === "IPHONE 14 PRO" && produtoParaguay.rede === 4) produtoParaguay.rede = 5;
     if (produtoParaguay.nome.trim().toUpperCase() === "IPHONE 14 PRO MAX" && produtoParaguay.rede === 4) produtoParaguay.rede = 5;
- 
+
 
 
 

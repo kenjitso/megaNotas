@@ -92,7 +92,7 @@ export class CatalogoController {
             },
             body: JSON.stringify(produto)
         };
-
+    
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos`, options);
         const responseData: unknown = await response.json();
 
@@ -261,7 +261,7 @@ export class CatalogoController {
             throw new Error(errorText);
         }
         const responseData: unknown = await response.json();
-        console.log(responseData);
+
         const attributeSchema = z.object({
             id: z.string(),
             name: z.string(),

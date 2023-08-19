@@ -11,7 +11,7 @@ export async function otherSearchSmartWatch(produto: IProdutoLoja) {
 
     if (!catalogo) {
         try {
-            console.log(produto.marca + " " + produto.nome.trim() + " " + produto.tipoPulseira + " " + produto.cor + " " + produto.caixaMedida);
+         //   console.log(produto.marca + " " + produto.nome.trim() + " " + produto.tipoPulseira + " " + produto.cor + " " + produto.caixaMedida);
             catalogo = await CatalogoController.searchCatalogoML(produto.marca + " " + produto.nome.trim() + " " + produto.tipoPulseira + " " + produto.cor + " " + produto.caixaMedida);
         } catch (error) {
 

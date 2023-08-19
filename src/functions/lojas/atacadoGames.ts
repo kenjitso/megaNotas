@@ -169,12 +169,52 @@ export function updateFiltro(
                 .replace(/ 256G\//g, ' 256GB ')
                 .replace(/ 256\//g, ' 256GB ')
                 .replace(/512GB\//g, ' 512GB ')
+                .replace(/ 1TB/g, ' 1024GB ')
                 .replace(/ 2R/g, ' 2GB ')
                 .replace(/ 4R/g, ' 4GB ')
                 .replace(/ 6R/g, ' 6GB ')
                 .replace(/ 8R/g, ' 8GB ')
                 .replace(/ 12R/g, ' 12GB ')
                 .replace(/\/12\//g, ' 12GB ')
+
+
+
+            if (descricao.includes("IPHONE 6S") ||
+                descricao.includes("IPHONE 7") ||
+                descricao.includes("IPHONE 8") &&
+                !descricao.includes("+ ") &&
+                !descricao.includes(" 2GB")) descricao = descricao + " 2GB"
+
+            if (descricao.includes("IPHONE 8 +") ||
+                descricao.includes("IPHONE 7") ||
+                descricao.includes("IPHONE XR") &&
+                !descricao.includes(" 3GB")) descricao = descricao + " 3GB"
+
+               
+            if ((
+                descricao.includes("IPHONE SE") ||
+                descricao.includes("IPHONE 11") ||
+                descricao.includes("IPHONE 12") ||
+                descricao.includes("IPHONE XS") ||
+                descricao.includes("IPHONE 13")) &&
+                !descricao.includes("PRO") &&
+                !descricao.includes("PRO MAX") &&
+                !descricao.includes(" 4GB")) {
+                descricao = descricao + " 4GB";
+            }
+
+            if (descricao.includes("IPHONE 11 PRO MAX") ||
+                descricao.includes("IPHONE 11 PRO")
+                && !descricao.includes(" 4GB")) descricao = descricao + " 4GB"
+
+            if (descricao.includes("IPHONE 13 PRO MAX") ||
+                descricao.includes("IPHONE 14 PRO MAX") ||
+                descricao.includes("IPHONE 14+") ||
+                descricao.includes("IPHONE 13 PRO") ||
+                descricao.includes("IPHONE 14 PRO") ||
+                descricao.includes("IPHONE 14") &&
+                !descricao.includes(" 6GB")) descricao = descricao + " 6GB"
+        
 
 
             let memoryValues = descricao.match(/(\b\d+GB\b)/g);  // encontra todos os valores de memória na descrição

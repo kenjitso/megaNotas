@@ -75,7 +75,7 @@ export async function otherSearchSmartPhone(produto: IProdutoLoja) {
    
     if (!catalogo) {
         try {
-            console.log("Pesquisando: " + produto.marca + " " + produto.nome.trim() + " DUAL SIM " + produto.rede + "G " + produto.cor + " " + produto.ram + "GB " + produto.capacidade + "GB");
+         //   console.log("Pesquisando: " + produto.marca + " " + produto.nome.trim() + " DUAL SIM " + produto.rede + "G " + produto.cor + " " + produto.ram + "GB " + produto.capacidade + "GB");
             catalogo = await CatalogoController.searchCatalogoML(produto.marca + " " + produto.nome.trim() + " DUAL SIM " + produto.rede + "G " + produto.cor + " " + produto.ram + "GB " + produto.capacidade + "GB");
         } catch (error) {
          
