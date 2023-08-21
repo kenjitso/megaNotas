@@ -86,6 +86,7 @@ export class ProdutoLojaController {
 
     public static async update(produtoLoja: IProdutoLoja) {
 
+
         if (produtoLoja.categoria === "") {
             toast.info("Não é possivel vincular o produto " + produtoLoja.codigo + ", produto sem \"categoria\".");
             return Promise.reject(new Error("Produto sem categoria"));
@@ -102,6 +103,9 @@ export class ProdutoLojaController {
 
         const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/produtoloja/${produtoLoja.id}`, options);
         const responseData: unknown = await response.json();
+
+
+
         const produtoLojaSchema = schemaProdutoLoja.parse(responseData);
         return produtoLojaSchema;
     }

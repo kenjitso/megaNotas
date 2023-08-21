@@ -9,7 +9,7 @@ export function filtrosVinculosIphone(produtoParaguay: IProdutoLoja, produtoML: 
 
     //ARRUMA ESPEFICACOES DE ALGUNS MODELOS
 
-    if (produtoML.mobileNetwork === undefined) produtoML.mobileNetwork = "4G"
+    if (produtoML.mobileNetwork === undefined) produtoML.mobileNetwork = "0G"
 
 
     if (produtoML.modelo.trim().toUpperCase() === "IPHONE 14" && produtoML.memoriaRam.trim().toUpperCase() === "4 GB") produtoML.memoriaRam = "6 GB";

@@ -99,7 +99,24 @@ export function TableVinculoManual({ produtoParaguay, onHide }: IProps) {
     const mutation = useMutation(() => {
         if (!produtoParaguay) throw new Error("Produto Indefinido");
         produtoParaguay.vinculos = [...selectedIds.values()];
-        return ProdutoLojaController.update(produtoParaguay);
+
+       
+            // Verifica e ajusta os campos corPulseira e tipoPulseira se necessário
+            if (produtoParaguay.corPulseira === "n/a") produtoParaguay.corPulseira = "";
+            if (produtoParaguay.tipoPulseira === "n/a") produtoParaguay.tipoPulseira = "";
+            if (produtoParaguay.cor === "n/a") produtoParaguay.cor = "";
+
+            // Ajusta o nome com base na categoria
+            if (produtoParaguay.categoria === "CELULAR") {
+                produtoParaguay.nome = produtoParaguay.categoria + " " + produtoParaguay.marca + " " + produtoParaguay.nome + " #* " + produtoParaguay.cor + " " + produtoParaguay.rede + "G R" + produtoParaguay.ram + "GB C" + produtoParaguay.capacidade + "GB ";
+            }
+            if (produtoParaguay.categoria === "RELOGIO") {
+                produtoParaguay.nome = produtoParaguay.categoria + " " + produtoParaguay.marca + " " + produtoParaguay.nome + " #* " + produtoParaguay.cor + " " + produtoParaguay.rede + "G " + produtoParaguay.caixaMedida + " " + produtoParaguay.corPulseira + " " + produtoParaguay.tipoPulseira;
+            }
+
+            // Após realizar os ajustes, chama a atualização no ProdutoLojaController
+            return ProdutoLojaController.update(produtoParaguay);
+      
     }, {
         onSuccess: () => {
             queryClient.invalidateQueries(["catalogoshome"]);

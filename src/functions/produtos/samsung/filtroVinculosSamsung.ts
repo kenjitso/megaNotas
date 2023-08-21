@@ -4,6 +4,10 @@ import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 export function filtrosVinculosSamsung(produtoParaguay: IProdutoLoja, produtoML: any) {
 
     let similarity = 0;
+ 
+   if (produtoML.mobileNetwork === undefined) produtoML.mobileNetwork = "0G"
+
+
 
     if (produtoParaguay.nome.trim().toUpperCase() === "GALAXY S23" && produtoParaguay.rede === 4) produtoParaguay.rede = 5;
     if (produtoParaguay.nome.trim().toUpperCase() === "GALAXY S23 ULTRA" && produtoParaguay.rede === 4) produtoParaguay.rede = 5;
@@ -56,7 +60,7 @@ export function filtrosVinculosSamsung(produtoParaguay: IProdutoLoja, produtoML:
     // Aumenta a similaridade se a cor do produtoParaguay for azul e esta cor estiver no produtoML
     if (produtoML.cor) {
 
-      
+
         if (produtoParaguay.cor.toUpperCase().trim() === "SILVER" && produtoML.cor.toUpperCase().trim() === "PRATA") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "SILVER" && produtoML.cor.toUpperCase().trim() === "AWESOME SILVER") similarity++;
         if (produtoParaguay.cor.toUpperCase().trim() === "PRETO" && produtoML.cor.toUpperCase().trim() === "PRETO") similarity++;

@@ -5,7 +5,8 @@ export function filtrosVinculosXiaomi(produtoParaguay: IProdutoLoja, produtoML: 
 
     let similarity = 0;
 
-   
+    if (produtoML.mobileNetwork === undefined) produtoML.mobileNetwork = "0G"
+
     if (produtoParaguay.marca.trim().toUpperCase() === "XIAOMI" &&produtoParaguay.nome.trim().toUpperCase() === "13 ULTRA" && produtoParaguay.rede === 4) produtoParaguay.rede = 5;
  
 
