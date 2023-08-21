@@ -19,8 +19,6 @@ interface IProps {
 }
 
 export function ModalTableRemoveVinculo({ onHide, produtoParaguay, lojaId }: IProps) {
-    const [selectedTable, setSelectedTable] = useState<string | null>(null);
-
     return (
         <Modal
             size="lg"

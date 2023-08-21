@@ -32,8 +32,7 @@ export class FreteiroController {
         "Content-type": "application/json"
       },
     };
-   // const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/freteiro/${id}`, options);
-    const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/freteiro/${id}`, options);
+    const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/freteiro/${id}`, options);
     const responseData: unknown = await response.json();
     const freteiro = schemaFreteiro.parse(responseData);
     return freteiro;
@@ -49,8 +48,7 @@ export class FreteiroController {
       body: JSON.stringify(freteiro)
 
     };
-   // const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/freteiro`, options);
-    const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/freteiro`, options);
+    const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/freteiro`, options);
     const responseData: unknown = await response.json();
 
     const freteiroSchema = schemaFreteiro.parse(responseData);
@@ -65,8 +63,7 @@ export class FreteiroController {
       },
       body: JSON.stringify(freteiro)
     };
-  //  const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/freteiro/${freteiro.id}`, options);
-    const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/freteiro/${freteiro.id}`, options);
+    const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/freteiro/${freteiro.id}`, options);
     const responseData: unknown = await response.json();
     const freteiroSchema = schemaFreteiro.parse(responseData);
     return freteiroSchema;
@@ -81,8 +78,7 @@ export class FreteiroController {
       body: JSON.stringify({ ativo: false })
 
     };
-  //  const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/freteiro/${id}`, options);
-    const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/freteiro/${id}`, options);
+    const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/freteiro/${id}`, options);
     const responseData: unknown = await response.json();
     const freteiro = schemaFreteiro.parse(responseData);
     return freteiro;
@@ -109,8 +105,7 @@ export class FreteiroController {
         "Content-type": "application/json"
       }
     };
-  //  const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/freteiro?${params}`, options);
-    const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/freteiro?${params}`, options);
+    const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/freteiro?${params}`, options);
     const responseData: unknown = await response.json();
 
     const freteiroSchema = z.object({

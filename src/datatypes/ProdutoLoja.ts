@@ -1,4 +1,5 @@
 import { parseISO } from "date-fns";
+import { toast } from "react-toastify";
 import { z } from "zod";
 
 export const schemaProdutoLoja = z.object({
@@ -64,8 +65,7 @@ export class ProdutoLojaController {
                 "Content-type": "application/json"
             },
         };
-
-        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja/${id}`, options);
+        const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/produtoloja/${id}`, options);
 
         // Verifique o conteúdo da resposta
         const text = await response.text();
@@ -86,7 +86,11 @@ export class ProdutoLojaController {
 
     public static async update(produtoLoja: IProdutoLoja) {
 
-    
+        if (produtoLoja.categoria === "") {
+            toast.info("Não é possivel vincular o produto " + produtoLoja.codigo + ", produto sem \"categoria\".");
+            return Promise.reject(new Error("Produto sem categoria"));
+        }
+
         const options: RequestInit = {
             method: "PATCH",
             headers: {
@@ -96,8 +100,7 @@ export class ProdutoLojaController {
         };
 
 
-        //   const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/produtoloja/${produtoLoja.id}`, options);
-        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja/${produtoLoja.id}`, options);
+        const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/produtoloja/${produtoLoja.id}`, options);
         const responseData: unknown = await response.json();
         const produtoLojaSchema = schemaProdutoLoja.parse(responseData);
         return produtoLojaSchema;
@@ -111,8 +114,7 @@ export class ProdutoLojaController {
                 "Content-type": "application/json"
             },
         };
-        //    const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/lojas/${id}`, options);
-        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja/${id}`, options);
+        const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/lojas/${id}`, options);
         const responseData: unknown = await response.json();
         console.log(responseData);
         const produtoLojaSchema = schemaProdutoLoja.parse(responseData);
@@ -135,8 +137,7 @@ export class ProdutoLojaController {
             },
         };
 
-        // const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/produtoloja?loja=${idLoja}`, options);
-        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja?loja=${idLoja}`, options);
+        const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/produtoloja?loja=${idLoja}`, options);
         const responseData: unknown = await response.json();
         const produtoLojaSchema = z.array(schemaProdutoLoja).parse(responseData);
         return produtoLojaSchema;
@@ -160,8 +161,8 @@ export class ProdutoLojaController {
             body: JSON.stringify({ produtos })
         };
 
-        // const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/produtoloja`, options);
-        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja`, options);
+        const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/produtoloja`, options);
+
         const responseData: unknown = await response.json();
 
         const produtosLojaSchema = z.array(schemaProdutoLoja).parse(responseData);
@@ -179,8 +180,8 @@ export class ProdutoLojaController {
             },
             body: JSON.stringify({ produtos })
         };
-        // const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/produtoloja/importar`, options);
-        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja/importar`, options);
+        const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/produtoloja/importar`, options);
+
         const responseData: unknown = await response.json();
 
         const produtosLojaSchema = z.array(schemaProdutoLoja).parse(responseData);
@@ -198,8 +199,8 @@ export class ProdutoLojaController {
                 url: url_catalogoML
             })
         };
-        // const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/produtoloja/${produtoLoja.id}/vincular`, options);
-        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja/${produtoLoja.id}/vincular`, options);
+        const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/produtoloja/${produtoLoja.id}/vincular`, options);
+
         const responseData: unknown = await response.json();
 
 
@@ -221,8 +222,7 @@ export class ProdutoLojaController {
                 "Content-type": "application/json"
             }
         };
-        //    const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/produtoloja?${params}`, options);
-        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja?${params}`, options);
+        const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/produtoloja?${params}`, options);
         const responseData: unknown = await response.json();
 
         const produtoLoja = z.object({

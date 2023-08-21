@@ -40,8 +40,7 @@ export class LojaController {
                 "Content-type": "application/json"
             },
         };
-    //    const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/lojas/${id}`, options);
-        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas/${id}`, options);
+        const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/lojas/${id}`, options);
         const responseData: unknown = await response.json();
 
         const lojaSchema = schemaLoja.parse(responseData);
@@ -57,8 +56,7 @@ export class LojaController {
             },
             body: JSON.stringify(loja)
         };
-      //  const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/lojas`, options);
-        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas`, options);
+        const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/lojas`, options);
 
         const responseData: unknown = await response.json();
       
@@ -77,8 +75,7 @@ export class LojaController {
             },
             body: JSON.stringify(loja)
         };
-     //   const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/lojas/${loja.id}`, options);
-        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas/${loja.id}`, options);
+        const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/lojas/${loja.id}`, options);
         const responseData: unknown = await response.json();
 
         const lojaSchema = schemaLoja.parse(responseData);
@@ -94,8 +91,7 @@ export class LojaController {
             },
             body: JSON.stringify({ cotacao })
         };
-     //   const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/lojas/cotacao`, options);
-        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas/cotacao`, options);
+        const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/lojas/cotacao`, options);
         const responseData: unknown = await response.json();
         const schema = z.object({ message: z.string() }).parse(responseData);
         return schema.message;
@@ -110,8 +106,7 @@ export class LojaController {
             body: JSON.stringify({ ativo: false })
 
         };
-    //    const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/lojas/${id}`, options);
-        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas/${id}`, options);
+        const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/lojas/${id}`, options);
         const responseData: unknown = await response.json();
         const lojaSchema = schemaLoja.parse(responseData);
         return lojaSchema;
@@ -140,9 +135,7 @@ export class LojaController {
             }
         };
 
-      //  const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/lojas?${params}`, options);
-        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/lojas?${params}`, options);
-
+        const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/lojas?${params}`, options);
         const responseData: unknown = await response.json();
 
         const lojasSchema = z.object({

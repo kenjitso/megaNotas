@@ -17,7 +17,7 @@ interface Props {
 
 export default function InputSearchDebounce({
     initial = "",
-    delay = 1000,
+    delay = 200,
     controlName,
     placeholder,
     onUpdate,

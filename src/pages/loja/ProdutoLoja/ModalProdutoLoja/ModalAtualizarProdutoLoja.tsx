@@ -81,7 +81,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
     const mutationCadastraNaoCadastrados = useMutation(() => {
 
         if (!lojaId) throw new Error("Loja Indefinido");
-
+console.log(listToSave);
         return ProdutoLojaController.cadastro(listToSave);
     }, {
         onSuccess: () => {
@@ -139,7 +139,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                                     setIsLoading(false);
                                     setIsModalStatusBar(true);
 
-                                //MEGA
+                                    //MEGA
                                 } else if (lojaId?.algoritmo === 7) {
 
                                     setFormattedList(MegaFormat(lojaId.id ?? "", allPagesText, [], produtoParaguay));
@@ -148,7 +148,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                                     setIsLoading(false);
                                     setIsModalStatusBar(true);
 
-                                //MADRID
+                                    //MADRID
                                 } else if (lojaId?.algoritmo === 5) {
 
                                     setFormattedList(MadridFormat(lojaId.id ?? "", allPagesText, [], produtoParaguay));
@@ -157,7 +157,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                                     setIsLoading(false);
                                     setIsModalStatusBar(true);
 
-                                //STAR GAMES
+                                    //STAR GAMES
                                 } else if (lojaId?.algoritmo === 6) {
 
                                     setFormattedList(StarGamesFormat(lojaId.id ?? "", allPagesText, [], produtoParaguay));
@@ -166,7 +166,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                                     setIsLoading(false);
                                     setIsModalStatusBar(true);
 
-                                //BESTSHOP
+                                    //BESTSHOP
                                 } else if (lojaId?.algoritmo === 3) {
 
                                     setFormattedList(BestShopFormat(lojaId.id ?? "", allPagesText, [], produtoParaguay));
@@ -190,7 +190,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                             const dataList: unknown[][] = XLSX.utils.sheet_to_json(worksheet, {
                                 header: 1,
                             });
-                
+
 
                             //CELLSHOP
                             if (lojaId?.algoritmo === 4) {
@@ -359,7 +359,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
                         </Col>
                     )}
 
-                    {!isLoading && isItensNotRegistered && formattedList.naoCadastrados.length > 0 && (
+                    {!isLoading && isItensNotRegistered && (formattedList.naoCadastrados.length > 0 || formattedList.naoEncontrados.length > 0) && (
                         <Col xs={12}>
                             <ModalTableImportarProdutoLoja
                                 listProdutoLoja={formattedList}
@@ -391,14 +391,15 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
 
                 {isItensNotRegistered && (
                     <Button
-
                         variant="secondary"
                         onClick={() => {
-                            formattedList.naoCadastrados.length > 0
-                                ? mutationCadastraNaoCadastrados.mutate()
-                                : toast.info("A lista está vazia, por favor adicione dados antes de confirmar.");
+                            if (formattedList.naoCadastrados.length > 0 || formattedList.naoEncontrados.length > 0) {
+                                formattedList.naoCadastrados = formattedList.naoCadastrados.concat(formattedList.naoEncontrados);
+                                mutationCadastraNaoCadastrados.mutate();
+                            } else {
+                                toast.info("A lista está vazia, por favor adicione dados antes de confirmar.");
+                            }
                         }}
-
                     >
                         {cadastraIsLoading ? (
                             <>

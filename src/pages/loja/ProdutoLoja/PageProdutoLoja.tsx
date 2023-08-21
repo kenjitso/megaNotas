@@ -21,9 +21,11 @@ import { ModalEditarProdutoLoja } from "./ModalEditarProdutoLoja";
 import { ModalDeletaProdutoLoja } from "./ModalDeletaProdutoLoja";
 import { ModalTableRemoveVinculo } from "./ModalProdutoLoja/ModalTableRemoveVinculo";
 import { buildUrl } from "@/features/UrlLinkLojas";
+import { toast } from "react-toastify";
+import { ICatalogo } from "@/datatypes/catalogo";
 
 
-type Categoria = 'CELULAR' | 'RELOGIO';
+type Categoria = 'CELULAR' | 'RELOGIO' | '';
 
 
 export function PageProdutoLoja() {
@@ -48,8 +50,8 @@ export function PageProdutoLoja() {
         return data;
     }, { enabled: !!lojaId });
 
-    const { isFetching, isLoading: isProdutoLoading, data: produtosData } = useQuery(["produtosloja", lojaData, filtro], async () => {
-        const produtosLoja = await ProdutoLojaController.search(lojaId ?? "", filtro);
+    const { isFetching, isLoading: isProdutoLoading, data: produtosData } = useQuery(["produtosloja", lojaData], async () => {
+        const produtosLoja = await ProdutoLojaController.search(lojaId ?? "");
 
         return produtosLoja?.map((produtoLoja: IProdutoLoja) => {
             const produtoLojaAtualizado = {
@@ -59,44 +61,47 @@ export function PageProdutoLoja() {
 
             if (produtoLoja.nome.includes("CELULAR")) formataSmartPhone(produtoLojaAtualizado);
             if (produtoLoja.nome.includes("RELOGIO")) formataSmartWatch(produtoLojaAtualizado);
-
+            if (!produtoLoja.nome.includes("CELULAR") || !produtoLoja.nome.includes("RELOGIO")) formataSmartPhone(produtoLojaAtualizado);
 
             return produtoLojaAtualizado;
         }) ?? [];
     });
 
-
     const produtosLoja = useMemo(() => {
-
-
         let dados = produtosData ?? [];
+
+        if (filtro) {
+            dados = dados.filter(produto => filterByAttributes(produto, filtro));
+        }
+
+       
+
         if (isFilteredDesvinculados) {
-            dados = dados.filter(produto => produto.vinculos === null || produto.vinculos.length === 0);
+            dados = dados.filter(produto => !produto.vinculos || produto.vinculos.length === 0);
         }
 
         if (isFilteredVinculados) {
-            dados = dados.filter(produto => produto.vinculos !== null && produto.vinculos.length > 0);
+            dados = dados.filter(produto => produto.vinculos && produto.vinculos.length > 0);
         }
 
-        if (isCategoria === "CELULAR") {
-            dados = dados.filter(produto => produto.categoria !== null && produto.categoria.includes("CELULAR"));
+        if (isCategoria !== undefined) {
+            if (isCategoria === '') {
+                dados = dados.filter(produto => !produto.categoria || produto.categoria === '');
+            } else {
+                dados = dados.filter(produto => produto.categoria === isCategoria);
+            }
         }
-
-        if (isCategoria === "RELOGIO") {
-            dados = dados.filter(produto => produto.categoria !== null && produto.categoria.includes("RELOGIO"));
-        }
-
-    
+        
 
         const sortedData = [...dados].sort(compareValues(sortBy, sortOrder));
-        const allItems = sortedData;
         const total = sortedData.length;
         const items = sortedData.slice((page - 1) * limit, limit * page);
 
         return {
-            page, total, limit, items, allItems
+            page, total, limit, items
         }
-    }, [produtosData, page, limit, sortBy, sortOrder, isFilteredDesvinculados, isFilteredVinculados, isCategoria]);
+    }, [produtosData, page, limit, sortBy, sortOrder, filtro, isFilteredDesvinculados, isFilteredVinculados, isCategoria]);
+
 
     const handlePageChange = (page: number, newLimit?: number) => {
         const limitToUse = newLimit || limit;
@@ -110,6 +115,11 @@ export function PageProdutoLoja() {
     }
     const handleFilterVinculados = () => {
         setIsFilteredVinculados(prevState => !prevState);
+        setParams({ page: '1', limit: params.get("limit") || '20' });
+
+    }
+
+    const handleFilterCategoria = () => {
         setParams({ page: '1', limit: params.get("limit") || '20' });
 
     }
@@ -195,14 +205,14 @@ export function PageProdutoLoja() {
                         overlay={<Tooltip id="download-tooltip">Categoria</Tooltip>}
                     >
                         <Dropdown>
-                        <Dropdown.Toggle id="dropdown-basic" className=" mx-2 custom-dropdown-categoria">
-                                {isCategoria}
+                            <Dropdown.Toggle id="dropdown-basic" className=" mx-2 custom-dropdown-categoria">
+                                {isCategoria || 'SEM CATEGORIA'}
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu>
-                                <Dropdown.Item onClick={() => setCategoria('CELULAR')}>CELULAR</Dropdown.Item>
-                                <Dropdown.Item onClick={() => setCategoria('RELOGIO')}>RELOGIO</Dropdown.Item>
-                          
+                                <Dropdown.Item onClick={() => { setCategoria('CELULAR'); handleFilterCategoria(); }}>CELULAR</Dropdown.Item>
+                                <Dropdown.Item onClick={() => { setCategoria('RELOGIO'); handleFilterCategoria(); }}>RELOGIO</Dropdown.Item>
+                                <Dropdown.Item onClick={() => { setCategoria(''); handleFilterCategoria(); }}>SEM CATEGORIA</Dropdown.Item>
                             </Dropdown.Menu>
 
                         </Dropdown>
@@ -213,12 +223,24 @@ export function PageProdutoLoja() {
                     <Button
                         onClick={() => {
                             const produtosSemVinculos = produtosLoja.items.filter(produto => produto.vinculos.length === 0);
+                            const produtoSemCategoria = produtosSemVinculos.find(produto => !produto.categoria);
+
+                            if (produtoSemCategoria) {
+                                toast.info(`Não é possivel vincular produto sem categoria o produto: ${produtoSemCategoria.codigo} não possui categoria.`);
+                                return; // interrompe a execução do resto do código
+                            }
+
+                            if (produtosSemVinculos.length === 0) {
+                                toast.info("Não há produtos sem vínculos.");
+                                return;
+                            }
                             setSyncVinculos(produtosSemVinculos);
                         }}
                         className="me-3 custom-btn"
                     >
                         <Icons tipo="update" tamanho={22} />  Vinc. Catalogos
                     </Button>
+
 
                     <Button
                         className="custom-btn"
@@ -305,7 +327,7 @@ interface IPropsItensTable {
     onDelete: (idProdutoParaguay: IProdutoLoja) => void,
 }
 
-function ItemTable({ produtoLoja, onVinculo, onEditar,onDelete, lojaData, categoria }: IPropsItensTable) {
+function ItemTable({ produtoLoja, onVinculo, onEditar, onDelete, lojaData, categoria }: IPropsItensTable) {
     return (
 
         <React.Fragment>
@@ -390,4 +412,13 @@ function ItemTable({ produtoLoja, onVinculo, onEditar,onDelete, lojaData, catego
             </tr>
         </React.Fragment >
     );
+}
+
+
+function filterByAttributes(produto:IProdutoLoja, filtro:string) {
+    const loweredFiltro = filtro.toLowerCase();
+    return produto.codigo.toLowerCase().includes(loweredFiltro) ||
+           produto.marca.toLowerCase().includes(loweredFiltro) ||
+           produto.nome.toLowerCase().includes(loweredFiltro) ||
+           produto.cor.toLowerCase().includes(loweredFiltro);
 }

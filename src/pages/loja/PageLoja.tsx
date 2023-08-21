@@ -25,30 +25,31 @@ export function PageLoja() {
     const { sortOrder, sortBy, handleSort } = useSort<ILoja>('nome');
 
 
-    const { isFetching, data } = useQuery(["lojas", filtro], () => {
-        const loja = LojaController.search(filtro);
+    const { isFetching, data } = useQuery(["lojas"], () => {
+        const loja = LojaController.search("");
         return loja;
     });
 
     const lojas = useMemo(() => {
-
-        let dados = data?.map((loja: ILoja) => {
-
-            return loja;
-        }) ?? []
-
+        let dados = data ?? [];
+    
+        if (filtro) {
+            dados = dados.filter(loja => 
+                loja.nome.toLowerCase().includes(filtro.toLowerCase())
+            );
+        }
+    
         dados = dados.filter(loja => loja.ativo === true);
-
         const sortedData = [...dados].sort(compareValues(sortBy, sortOrder));
-
+    
         const total = sortedData.length;
         const items = sortedData.slice((page - 1) * limit, limit * page);
+    
         return {
             page, total, limit, items
-        }
-
-
-    }, [data, page, limit, sortBy, sortOrder]);
+        };
+    }, [data, page, limit, sortBy, sortOrder, filtro]);
+    
 
 
 

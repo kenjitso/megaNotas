@@ -76,8 +76,8 @@ export class CatalogoController {
                 "Content-type": "application/json"
             },
         };
-       // const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/catalogos/${id}`, options);
-        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/${id}`, options);
+        const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/catalogos/${id}`, options);
+       
         
         const responseData: unknown = await response.json();
         const catalogoSchema = schemaCatalogo.parse(responseData);
@@ -94,8 +94,8 @@ export class CatalogoController {
             },
             body: JSON.stringify(produto)
         };
-       // const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/catalogos`, options);
-        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos`, options);
+        const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/catalogos`, options);
+       
         const responseData: unknown = await response.json();
 
         const catalogoSchema = schemaCatalogo.parse(responseData);
@@ -110,8 +110,8 @@ export class CatalogoController {
             },
             body: JSON.stringify({ data, catalogos })
         };
-      //  const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/catalogos/sync`, options);
-        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/sync`, options);
+        const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/catalogos/sync`, options);
+     
 
         const responseData = await response.json();
 
@@ -126,8 +126,8 @@ export class CatalogoController {
             },
             body: JSON.stringify(produto)
         };
-     //   const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/catalogos/${produto.id}`, options);
-        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/${produto.id}`, options);
+       const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/catalogos/${produto.id}`, options);
+   
         const responseData: unknown = await response.json();
 
         const catalogoSchema = schemaCatalogo.parse(responseData);
@@ -143,8 +143,7 @@ export class CatalogoController {
             body: JSON.stringify({ ativo: false })
 
         };
-     //   const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/catalogos/${id}`, options);
-        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/${id}`, options);
+        const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/catalogos/${id}`, options);
         const responseData: unknown = await response.json();
         const catalogoSchema = schemaCatalogo.parse(responseData);
         return catalogoSchema;
@@ -204,8 +203,7 @@ export class CatalogoController {
 
 
 
-       // const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/catalogos?${params}`, options);
-        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos?${params}`, options);
+        const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/catalogos?${params}`, options);
         const responseData: unknown = await response.json();
 
 
@@ -231,8 +229,7 @@ export class CatalogoController {
             }
         };
 
-      //  const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/catalogos/competidores?${params}`, options);
-        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/catalogos/competidores?${params}`, options);
+        const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/catalogos/competidores?${params}`, options);
         const responseData: unknown = await response.json();
 
         const catalogos = z.object({

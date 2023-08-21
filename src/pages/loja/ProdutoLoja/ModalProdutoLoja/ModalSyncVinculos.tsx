@@ -133,9 +133,6 @@ export function ModalSyncVinculos({ onHide, lojaId, produtosParaguay }: IProps) 
 
     }, [mutation, produtosParaguay, setAutoLinkStatus, nextProduct]);
 
-
-
-  
     return (
         <Modal
             size="xl"  // Alterado para um tamanho menor
