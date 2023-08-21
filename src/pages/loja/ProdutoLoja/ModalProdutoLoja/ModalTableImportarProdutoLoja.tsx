@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { formatCurrency } from "@/features/FormatCurrency";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import { ILoja } from "@/datatypes/loja";
+import { buildUrl } from "@/features/UrlLinkLojas";
 
 interface IProps {
     listProdutoLoja?: {
@@ -254,22 +255,7 @@ export function ModalTableImportarProdutoLoja({ listProdutoLoja, lojaId, onListP
 
                                     <a
                                         style={{ color: "blue" }}
-                                        href={
-                                            lojaId?.algoritmo === 1
-                                                ? `https://atacadogames.com/lista-produtos/termo/${produtoLoja.codigo}/1`
-                                                : (lojaId?.algoritmo === 7
-                                                    ? `https://www.megaeletro.com.py/br/p/${produtoLoja.codigo}/1`
-                                                    : (lojaId?.algoritmo === 5
-                                                        ? `https://www.madridcenter.com/produtos?q=${produtoLoja.codigo}`
-                                                        : (lojaId?.algoritmo === 4
-                                                            ? `https://cellshop.com/catalogsearch/result/?q=${produtoLoja.codigo}`
-                                                            : (lojaId?.algoritmo === 8
-                                                                ? `https://www.mobilezone.com.br/search/q?search=${produtoLoja.codigo}`
-                                                                : (lojaId?.algoritmo === 3
-                                                                    ? `https://www.bestshop.com.py/buscar/${produtoLoja.codigo}`
-                                                                    : (lojaId?.algoritmo === 6
-                                                                        ? ` https://stargamesparaguay.com/?s=${produtoLoja.codigo}`
-                                                                        : '#'))))))}
+                                        href={buildUrl(lojaId?.algoritmo || 0, produtoLoja?.codigo || "")}
 
 
 

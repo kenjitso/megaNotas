@@ -28,9 +28,8 @@ const CAIXA_MEDIDA_MAPEAMENTO = [
 ];
 
 const TIPO_PULSEIRA_MAPEAMENTO = [
-    { regex: /BRANCA SPORT/i, valor: "ESPORTIVA BRANCA" },
-    { regex: /STARLIGHT SPORT/i, valor: "ESPORTIVA STARLIGHT" },
     { regex: /SPORT/i, valor: "ESPORTIVA" },
+    { regex: /ESPORTIVA/i, valor: "ESPORTIVA" },
 ];
 
 const RAM_MAPEAMENTO = [
@@ -183,7 +182,7 @@ export const formataSmartWatch = (produtoLoja: IProdutoLoja): IProdutoLoja | nul
     if (categoria) novoNome = novoNome.replace(/RELOGIO/gi, '');
     if (pulseiraMedida) novoNome = novoNome.replace(/49MM|47MM|46MM|45MM|44MM|42MM|41MM|40MM|39MM|38MM|2MM/gi, '');
     if (marca) novoNome = novoNome.replace(/XIAOMI|APPLE|SAMSUNG/gi, '');
-    if (tipoPulseira) novoNome = novoNome.replace(/STARLIGHT SPORT|BRANCA SPORT|SPORT/gi, '');
+    if (tipoPulseira) novoNome = novoNome.replace(/SPORT/gi, '');
     novoNome = novoNome.replace(/\(A2174\)|BHR5439GL -|M2116W BHR5381GL|\(MKQ63LL\/A\)|MU9F2AM\/A \-|MQFK3BE\/A \-|MQF53LZ\/A \-|MQET3LL\/A \-|MQF53LL\/A \-|MQF33LL\/A \-|MQEV3LL\/A \-|MQF23LL\/A \-|MKQU3LL\/A \-|MKQU3LL\/A|MQF13LL\/A \-|MKQ53LL\/A|MKQN3LL\/A|M2141B1 BHR5970GL|MKQ83LL\/A|FNTF3LL\/A \-|FNTF3LL\/A|MNTG3LL\/A \-|MNTG3LL\/A|FNT73LL\/A \-|FNT73LL\/A|\(MKQ13LL\/A\)|\(MKQ03LL\/A\)|MNUQ3LL\/A \-|MNUF3LL\/A \-|MNUF3LL\/A|MNU93LL\/A \-|MP6P3LL\/A \-|MP6P3LL\/A|MNU93LL\/A \-|MNU83LL\/A \-|MNU83LL\/A|MNU73LL\/A \-|MP6Q3LL\/A \-|MP6Q3LL\/A|MNUU3LL\/A \-|MNUP3LL\/A \-|MNUP3LL\/A \-|MNUL3LL\/A \-|MNUL3LL\/A|MKNY3LL\/A|GPS MTEY2LL\/A|MTEY2LL\/A|MNUJ3LL\/A \-|MTF02LL\/A|MTF22LL\/A \-|MTF22LL\/A|MNP13ZP\/A \-|MNP13ZP\/A|MTF32LL\/A \-|MTF32LL\/A|MKN03LL\/A|MKJ93LL\/A \-|MKJ93LL\/A|MNC03LZ\/A -|MNC03LZ\/A|M2116W BHR5467GL|M2116W BHR5380GL|M2141B1 BHR6076GL|BHR6854GL|M2131W1|BHR6851GL|BHR5724GL|BHR5501GL|A2770|M2109W1|A2035|A1971|A1952|A2171|A1952|A2040|A1969|A2018|A2021|A2168|A2176|A2170/gi, '');
     novoNome = novoNome.replace(/\(CAIXA DANIFICADA\)|ATIVADO|\/ OXIMETRO|OXÍMETRO|TRAIL LOOP|TRAIL LP| BAND|SMART|GPS \+ CELL|\/ CASE|\/ GPS \-|GPS \-|GPS\+CELL|CEL\+GPS|GPS\+CEL|GPS/gi, '');
     novoNome = novoNome.replace(/\(M\/L\)|M\/L|S\/M|LOOP \(L\)/gi, '');

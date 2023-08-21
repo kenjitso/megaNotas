@@ -19,6 +19,8 @@ import { formataSmartWatch } from "@/functions/produtos/formataSmartWatch";
 import { format } from "date-fns";
 import { ModalEditarProdutoLoja } from "./ModalEditarProdutoLoja";
 import { ModalDeletaProdutoLoja } from "./ModalDeletaProdutoLoja";
+import { ModalTableRemoveVinculo } from "./ModalProdutoLoja/ModalTableRemoveVinculo";
+import { buildUrl } from "@/features/UrlLinkLojas";
 
 
 type Categoria = 'CELULAR' | 'RELOGIO';
@@ -118,6 +120,7 @@ export function PageProdutoLoja() {
             <ModalSyncVinculos onHide={() => setSyncVinculos(undefined)} lojaId={lojaData} produtosParaguay={modalSyncVinculos} />
             <ModalEditarProdutoLoja onHide={() => setEditarProduto(undefined)} lojaId={lojaData} produtoParaguay={modalEditarProduto} />
             <ModalDeletaProdutoLoja onHide={() => setDeletaProduto(undefined)} lojaId={lojaData} produtoParaguay={modalDeletaProduto} />
+            <ModalTableRemoveVinculo onHide={() => setVinculoProduto(undefined)} lojaId={lojaData} produtoParaguay={modalVinculoProduto} />
 
             <Row className="my-3">
                 <Col xs={6} className="d-flex">
@@ -317,22 +320,7 @@ function ItemTable({ produtoLoja, onVinculo, onEditar,onDelete, lojaData, catego
                 <td>
                     <a
                         style={{ color: "blue" }}
-                        href={
-                            lojaData?.algoritmo === 1
-                                ? `https://atacadogames.com/lista-produtos/termo/${produtoLoja.codigo}/1`
-                                : (lojaData?.algoritmo === 7
-                                    ? `https://www.megaeletro.com.py/br/p/${produtoLoja.codigo}/1`
-                                    : (lojaData?.algoritmo === 5
-                                        ? `https://www.madridcenter.com/produtos?q=${produtoLoja.codigo}`
-                                        : (lojaData?.algoritmo === 4
-                                            ? `https://cellshop.com/catalogsearch/result/?q=${produtoLoja.codigo}`
-                                            : (lojaData?.algoritmo === 8
-                                                ? `https://www.mobilezone.com.br/search/q?search=${produtoLoja.codigo}`
-                                                : (lojaData?.algoritmo === 3
-                                                    ? `https://www.bestshop.com.py/buscar/${produtoLoja.codigo}`
-                                                    : (lojaData?.algoritmo === 6
-                                                        ? ` https://stargamesparaguay.com/?s=${produtoLoja.codigo}`
-                                                        : '#'))))))}
+                        href={buildUrl(lojaData?.algoritmo || 0, produtoLoja?.codigo || "")}
 
                         target="_blank"
                         rel="noopener noreferrer"

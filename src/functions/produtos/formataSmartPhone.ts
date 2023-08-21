@@ -139,7 +139,7 @@ if(produtoLoja.nome.includes("A2783 RED")) produtoLoja.nome= produtoLoja.nome.re
     novoNome = novoNome.replace("IPHONE 14 +", 'IPHONE 14 PLUS');  
     novoNome = novoNome.replace("IPHONE 14+", 'IPHONE 14 PLUS');  
     novoNome = novoNome.replace("GALAXY S23+", 'GALAXY S23 PLUS');  
-   
+    novoNome = novoNome.replace(/#\*.*/, '');
    
     produtoLoja.nome = novoNome;
 

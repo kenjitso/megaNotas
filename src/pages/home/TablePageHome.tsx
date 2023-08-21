@@ -3,6 +3,7 @@ import React from "react";
 import ratata from "../../assets/megaPreco.svg";
 import { formatCurrency } from "@/features/FormatCurrency";
 import { Accordion, Card, Col, ListGroup, Row } from "react-bootstrap";
+import { buildUrl } from "@/features/UrlLinkLojas";
 
 interface IPropItensTable {
     catalogo: ICatalogo;
@@ -104,21 +105,7 @@ export function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropIt
 
                                                             <a
                                                                 style={{ color: "blue" }}
-                                                                href={competidor.loja.algoritmo === 1
-                                                                    ? `https://atacadogames.com/lista-produtos/termo/${competidor.produto.codigo}/1`
-                                                                    : (competidor.loja.algoritmo === 7
-                                                                        ? `https://www.megaeletro.com.py/br/p/${competidor.produto.codigo}/1`
-                                                                        : (competidor.loja.algoritmo === 5
-                                                                            ? `https://www.madridcenter.com/produtos?q=${competidor.produto.codigo}`
-                                                                            : (competidor.loja.algoritmo === 4
-                                                                                ? `https://cellshop.com/catalogsearch/result/?q=${competidor.produto.codigo}`
-                                                                                : (competidor.loja.algoritmo === 8
-                                                                                    ? `https://www.mobilezone.com.br/search/q?search=${competidor.produto.codigo}`
-                                                                                    : (competidor.loja.algoritmo === 3
-                                                                                        ? `https://www.bestshop.com.py/buscar/${competidor.produto.codigo}`
-                                                                                        : (competidor.loja.algoritmo === 6
-                                                                                            ? ` https://stargamesparaguay.com/?s=${competidor.produto.codigo}`
-                                                                                            : '#'))))))}
+                                                                href={buildUrl(competidor.loja.algoritmo || 0, competidor.produto.codigo || "")}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
                                                                 title={competidor.produto.codigo}

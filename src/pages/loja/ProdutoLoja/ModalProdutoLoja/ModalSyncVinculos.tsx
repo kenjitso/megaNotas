@@ -6,12 +6,11 @@ import { toast } from "react-toastify";
 import { ILoja } from "@/datatypes/loja";
 import { filtrosVinculosXiaomi } from "@/functions/produtos/xiaomi/filtrosVinculosXiaomi";
 import { filtrosVinculosSamsung } from "@/functions/produtos/samsung/filtroVinculosSamsung";
-import { filtrosVinculosSmartWatch } from "@/functions/produtos/apple/filtrosVinculosWatch";
 import { filtrosVinculosIphone } from "@/functions/produtos/apple/filtrosVinculosIphone";
-import { otherSearchSmartWatch } from "@/functions/produtos/otherSearchSmartWatch";
 import { ICatalogoItem, SearchResponse, otherSearchSmartPhone } from "@/functions/produtos/otherSearchSmartPhone";
-import { TableVinculoML } from "./ModalVinculoCopy";
+import { ModalTableSearchCatalogo } from "./ModalTableSearchCatalogo";
 import { CatalogoController } from "@/datatypes/catalogo";
+import { buildUrl } from "@/features/UrlLinkLojas";
 
 interface IProps {
     produtosParaguay?: IProdutoLoja[];
@@ -136,20 +135,7 @@ export function ModalSyncVinculos({ onHide, lojaId, produtosParaguay }: IProps) 
 
 
 
-    function buildUrl(algoritmo: number, codigo: string) {
-        switch (algoritmo) {
-            case 1: return `https://atacadogames.com/lista-produtos/termo/${codigo}/1`;
-            case 7: return `https://www.megaeletro.com.py/br/p/${codigo}/1`;
-            case 5: return `https://www.madridcenter.com/produtos?q=${codigo}`;
-            case 4: return `https://cellshop.com/catalogsearch/result/?q=${codigo}`;
-            case 8: return `https://www.mobilezone.com.br/search/q?search=${codigo}`;
-            case 3: return `https://www.bestshop.com.py/buscar/${codigo}`;
-            case 6: return `https://stargamesparaguay.com/?s=${codigo}`;
-            default: return '#';
-        }
-    }
-
-
+  
     return (
         <Modal
             size="xl"  // Alterado para um tamanho menor
@@ -177,7 +163,7 @@ export function ModalSyncVinculos({ onHide, lojaId, produtosParaguay }: IProps) 
 
                         {produtoAtualParaguay && (
                             <div>
-                                <p><strong>Produto do Paraguai</strong></p>
+                                <p><strong>Produto do Paraguay </strong></p>
                                 <p>
                                     <strong>Codigo: </strong>
                                     <a
@@ -259,7 +245,7 @@ export function ModalSyncVinculos({ onHide, lojaId, produtosParaguay }: IProps) 
                     </Col>
                     <Col>
 
-                        <TableVinculoML produtoParaguay={produtosParaguay} currentIndex={currentIndex} onProdutoML={(produtoML) => { setProdutoML(produtoML) }} onFetchingStateChange={setChildIsFetching} onHighestSimilarity={(highestSimilarity) => { setHighestSimilarity(highestSimilarity)}} />
+                        <ModalTableSearchCatalogo produtoParaguay={produtosParaguay} currentIndex={currentIndex} onProdutoML={(produtoML) => { setProdutoML(produtoML) }} onFetchingStateChange={setChildIsFetching} onHighestSimilarity={(highestSimilarity) => { setHighestSimilarity(highestSimilarity)}} />
 
                     </Col>
                 </Row>

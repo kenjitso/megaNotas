@@ -29,7 +29,7 @@ interface IProps {
 }
 
 
-export function TableVinculoML({ produtoParaguay, currentIndex, onProdutoML, onFetchingStateChange, onHighestSimilarity }: IProps) {
+export function ModalTableSearchCatalogo({ produtoParaguay, currentIndex, onProdutoML, onFetchingStateChange, onHighestSimilarity }: IProps) {
 
     const produtoAtualParaguay = produtoParaguay ? produtoParaguay[currentIndex] : null;
     const [selectedProduct, setSelectedProduct] = useState<ICatalogoItem | null>(null);

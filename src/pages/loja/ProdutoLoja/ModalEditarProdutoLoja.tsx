@@ -5,8 +5,8 @@ import { ILoja } from "@/datatypes/loja";
 import useQueryMutation from "@/hooks/useQueryMutation";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button, Card, Col, FloatingLabel, Form, ListGroup, Modal, Row } from "react-bootstrap";
-import { useState } from "react";
-import { formatCurrency } from "@/features/FormatCurrency";
+import InputNumero from "@/components/inputs/InputNumero";
+import { buildUrl } from "@/features/UrlLinkLojas";
 
 interface IProps {
     lojaId?: ILoja;
@@ -18,8 +18,6 @@ interface IProps {
 
 export function ModalEditarProdutoLoja({ onHide, produtoParaguay, lojaId }: IProps) {
     const queryClient = useQueryClient();
-    const [produtoFormatado, setProdutoFormatado] = useState<IProdutoLoja | null>(null);
-
 
     const produtoLojaMutator = useQueryMutation(ProdutoLojaController.createNew(), {
         queryEnabled: Boolean(produtoParaguay),
@@ -39,7 +37,24 @@ export function ModalEditarProdutoLoja({ onHide, produtoParaguay, lojaId }: IPro
             saveComplete: `Produto ${produtoParaguay?.codigo} atualizado com sucesso!`
         },
 
-        saveFn: (produto) => ProdutoLojaController.update(produto),
+        saveFn: async (produtoLoja) => {
+            // Verifica e ajusta os campos corPulseira e tipoPulseira se necessário
+            if (produtoLoja.corPulseira === "n/a") produtoLoja.corPulseira = "";
+            if (produtoLoja.tipoPulseira === "n/a") produtoLoja.tipoPulseira = "";
+            if (produtoLoja.cor === "n/a") produtoLoja.cor = "";
+
+            // Ajusta o nome com base na categoria
+            if (produtoLoja.categoria === "CELULAR") {
+                produtoLoja.nome = produtoLoja.categoria + " " + produtoLoja.marca + " " + produtoLoja.nome + " #* " + produtoLoja.cor + " " + produtoLoja.rede + "G R" + produtoLoja.ram + "GB C" + produtoLoja.capacidade + "GB ";
+            }
+            if (produtoLoja.categoria === "RELOGIO") {
+                produtoLoja.nome = produtoLoja.categoria + " " + produtoLoja.marca + " " + produtoLoja.nome + " #* " + produtoLoja.cor + " " + produtoLoja.rede + "G " + produtoLoja.caixaMedida + " " + produtoLoja.corPulseira + " " + produtoLoja.tipoPulseira;
+            }
+
+            // Após realizar os ajustes, chama a atualização no ProdutoLojaController
+            return await ProdutoLojaController.update(produtoLoja);
+        }
+
     });
 
 
@@ -56,7 +71,7 @@ export function ModalEditarProdutoLoja({ onHide, produtoParaguay, lojaId }: IPro
             onHide={() => { onHide(); produtoLojaMutator.clear(); }}>
 
             <Modal.Header closeButton>
-                <Modal.Title>Editar Produto</Modal.Title>
+                <Modal.Title>Editar Produto Paraguay</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 {lojaId && produtoLojaMutator.isLoading ? (
@@ -67,7 +82,18 @@ export function ModalEditarProdutoLoja({ onHide, produtoParaguay, lojaId }: IPro
 
                         <Col className="mb-4" xs={12}>
                             <Card>
-                                <Card.Header><strong>Codigo:</strong> {produtoParaguay?.codigo}</Card.Header>
+                                <Card.Header>
+                                    <strong>Codigo: </strong>
+                                    <a
+                                        className="product-link"
+                                        href={buildUrl(lojaId?.algoritmo || 0, produtoParaguay?.codigo || "")}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        title={produtoParaguay?.codigo}
+                                    >
+                                        {produtoParaguay?.codigo}
+                                    </a>
+                                </Card.Header>
                                 <Card.Header><strong>Nome original:</strong> {produtoParaguay?.nome_original}</Card.Header>
                                 <Card.Body>
                                     <Form>
@@ -98,7 +124,7 @@ export function ModalEditarProdutoLoja({ onHide, produtoParaguay, lojaId }: IPro
                                                     <option value="" disabled>Selecione uma categoria</option>
                                                     <option value="CELULAR">CELULAR</option>
                                                     <option value="RELOGIO">RELOGIO</option>
-                                        
+
                                                 </Form.Select>
                                                 <div className="invalid-feedback">Por favor, preencha o campo categoria.</div>
                                             </FloatingLabel>
@@ -278,11 +304,11 @@ export function ModalEditarProdutoLoja({ onHide, produtoParaguay, lojaId }: IPro
                                                     <FloatingLabel controlId="formPulseira" label="Cor da pulseira">
                                                         <Form.Control
                                                             title="Por favor, insira apenas caracteres não numéricos"
-                                                            value={produtoLojaMutator.state.tipoPulseira}
-                                                            onChange={(event) => produtoLojaMutator.update("tipoPulseira", event.target.value)}
-                                                            required
+                                                            value={produtoLojaMutator.state.corPulseira}
+                                                            onChange={(event) => produtoLojaMutator.update("corPulseira", event.target.value)}
+                                                       
                                                         />
-                                                        <div className="invalid-feedback">Por favor, preencha o campo Nome.</div>
+                                               
                                                     </FloatingLabel>
                                                 </Form.Group>
                                                 <Form.Group
@@ -293,9 +319,9 @@ export function ModalEditarProdutoLoja({ onHide, produtoParaguay, lojaId }: IPro
                                                             title="Por favor, insira apenas caracteres não numéricos"
                                                             value={produtoLojaMutator.state.tipoPulseira}
                                                             onChange={(event) => produtoLojaMutator.update("tipoPulseira", event.target.value)}
-                                                            required
+                                                    
                                                         />
-                                                        <div className="invalid-feedback">Por favor, preencha o campo Nome.</div>
+                                                     
                                                     </FloatingLabel>
                                                 </Form.Group>
                                             </>
@@ -307,11 +333,17 @@ export function ModalEditarProdutoLoja({ onHide, produtoParaguay, lojaId }: IPro
                                             className="mb-3">
                                             <FloatingLabel controlId="formPreco" label="Preço">
                                                 <Form.Control
+                                                    as={InputNumero}
+                                                    decimals={2}
                                                     title="Por favor, insira apenas caracteres não numéricos"
-                                                    value={formatCurrency(produtoLojaMutator.state.preco ?? 0)}
-                                                    onChange={(event) => produtoLojaMutator.update("preco", Number(event.target.value))}
-                                                    required
+                                                    value={produtoLojaMutator.state.preco ?? 0}
+                                                    onValueChange={(numero: number) => produtoLojaMutator.update("preco", numero)}
+
                                                 />
+
+
+
+
                                                 <div className="invalid-feedback">Por favor, preencha o campo Nome.</div>
                                             </FloatingLabel>
                                         </Form.Group>

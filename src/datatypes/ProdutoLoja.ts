@@ -86,12 +86,7 @@ export class ProdutoLojaController {
 
     public static async update(produtoLoja: IProdutoLoja) {
 
-if(produtoLoja.corPulseira==="n/a") produtoLoja.corPulseira = "";
-if(produtoLoja.tipoPulseira==="n/a") produtoLoja.tipoPulseira = "";
-
-        if(produtoLoja.categoria==="CELULAR") produtoLoja.nome = produtoLoja.categoria+" "+produtoLoja.marca+" "+produtoLoja.nome+" "+produtoLoja.cor+" "+produtoLoja.rede+"G R"+produtoLoja.ram+"GB C"+produtoLoja.capacidade+"GB ";
-        if(produtoLoja.categoria==="RELOGIO") produtoLoja.nome = produtoLoja.categoria+" "+produtoLoja.marca+" "+produtoLoja.nome+" #* "+produtoLoja.cor+" "+produtoLoja.rede+"G "+produtoLoja.caixaMedida+" "+produtoLoja.corPulseira+" "+produtoLoja.tipoPulseira
-       
+    
         const options: RequestInit = {
             method: "PATCH",
             headers: {
@@ -109,7 +104,7 @@ if(produtoLoja.tipoPulseira==="n/a") produtoLoja.tipoPulseira = "";
     }
 
     public static async getId(id: string) {
-console.log(id);
+        console.log(id);
         const options: RequestInit = {
             method: "GET",
             headers: {
@@ -125,10 +120,10 @@ console.log(id);
     }
 
     public static async getProduto(produtoLoja: IProdutoLoja) {
-     
-             
-                return produtoLoja;
-            }
+
+
+        return produtoLoja;
+    }
 
 
 
@@ -237,6 +232,6 @@ console.log(id);
 
         return produtoLoja;
     }
-    
+
 
 }

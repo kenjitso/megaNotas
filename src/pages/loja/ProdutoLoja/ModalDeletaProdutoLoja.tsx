@@ -49,12 +49,12 @@ export function ModalDeletaProdutoLoja({ onHide, produtoParaguay, lojaId }: IPro
             onHide={() => onHide()}>
 
             <Modal.Header closeButton>
-                <Modal.Title> Desativar Freteiro </Modal.Title>
+                <Modal.Title> Deletar Produto </Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 {produtoLojaMutator.isLoading ? (
                     <div>{<FragmentLoading />}</div>) : (
-                    <div>Confirma deletar produto?</div>
+                    <div>Confirma deletar produto? <br/><br/> <b>ID produto: </b>{produtoParaguay?.codigo}</div>
                 )}
             </Modal.Body>
             <Modal.Footer>
