@@ -33,7 +33,7 @@ export function PageHome() {
     const [samsungFilter, setSamsungFilter] = useState(false);
     const [celularFilter, setCelularFilter] = useState(false);
     const [relogioFilter, setRelogioFilter] = useState(false);
-    const [notebookFilter, setNotebookFilter] = useState(false);
+   
     const [catalogoSincronismoUpdate, setSincronismoUpdate] = useState<boolean>(false);
 
     const { isFetching, data } = useQuery(["catalogoshome", filtro], async () => {
@@ -115,12 +115,9 @@ export function PageHome() {
                     if (relogioFilter && nome.includes("RELOGIO")) {
                         return true; // Se o filtro xiaomi estiver ativado e o nome incluir "XIAOMI", inclua este competidor.
                     }
-                    if (notebookFilter && nome.includes("NOTEBOOK")) {
-                        return true; // Se o filtro xiaomi estiver ativado e o nome incluir "XIAOMI", inclua este competidor.
-                    }
-
+           
                     // Se nenhum filtro estiver ativo, mostre todos. Caso contrário, não mostre o competidor.
-                    return !(indiaFilter || globalFilter || chinaFilter || indonesiaFilter || appleFilter || samsungFilter || xiaomiFilter || celularFilter || relogioFilter || notebookFilter);
+                    return !(indiaFilter || globalFilter || chinaFilter || indonesiaFilter || appleFilter || samsungFilter || xiaomiFilter || celularFilter || relogioFilter );
                 }),
             }))
             .filter(catalogo => catalogo.competidores.length > 0); // Remove catálogos que agora estão sem competidores.
@@ -135,7 +132,7 @@ export function PageHome() {
         return {
             page, total, limit, items
         }
-    }, [data, freteiro, page, limit, sortBy, sortOrder, indiaFilter, globalFilter, chinaFilter, indonesiaFilter, appleFilter, samsungFilter, xiaomiFilter,celularFilter,relogioFilter,notebookFilter])
+    }, [data, freteiro, page, limit, sortBy, sortOrder, indiaFilter, globalFilter, chinaFilter, indonesiaFilter, appleFilter, samsungFilter, xiaomiFilter,celularFilter,relogioFilter])
 
     function exportCatalogoExcel(catalogos: ICatalogo[]) {
         const filteredCatalogos = catalogos.map(({
@@ -288,15 +285,7 @@ export function PageHome() {
                                                 label="RELOGIO"
                                             />
                                         </Dropdown.Item>
-                                        <Dropdown.Item as='div' onClick={(e) => e.stopPropagation()}>
-                                            <Form.Check
-                                                type="checkbox"
-                                                id="notebookFilter"
-                                                checked={notebookFilter}
-                                                onChange={(e) => handleCheckboxChange(e, setNotebookFilter)}
-                                                label="NOTEBOOK"
-                                            />
-                                        </Dropdown.Item>
+                                   
                                     </Col>
                                 </Row>
 
@@ -309,11 +298,11 @@ export function PageHome() {
                         placement="top"
                         overlay={<Tooltip id="download-tooltip">Exportar para Excel</Tooltip>}
                     >
-                        <Button id="dropdown-basic" className="custom-dropdown me-2" onClick={() => exportCatalogoExcel(catalogos.items)}>
+                        <Button id="dropdown-basic" className="custom-dropdown me-0" onClick={() => exportCatalogoExcel(catalogos.items)}>
                             <Icons tipo="downloadXLSX" tamanho={20} />
                         </Button>
                     </OverlayTrigger>
-
+{/*
                     <OverlayTrigger
                         placement="top"
                         overlay={<Tooltip id="download-tooltip">Sincronizar Catalogos</Tooltip>}
@@ -324,7 +313,7 @@ export function PageHome() {
                             <Icons tipo="update" tamanho={23} />
                         </Button>
                     </OverlayTrigger>
-
+*/}
                 </Col>
             </Row>
 

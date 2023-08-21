@@ -86,6 +86,7 @@ export function filtrosVinculosXiaomi(produtoParaguay: IProdutoLoja, produtoML: 
         if (produtoParaguay.nome.toUpperCase().trim() === "11 LITE NE" && produtoML.modelo.toUpperCase().trim() === "11 LITE 5G NE") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "12 LITE" && produtoML.modelo.toUpperCase().trim() === "12 LITE 5G") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "12" && produtoML.modelo.toUpperCase().trim() === "12") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "12X (2022)" && produtoML.modelo.toUpperCase().trim() === "12X") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "13 LITE" && produtoML.modelo.toUpperCase().trim() === "13 LITE DUAL SIM") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "13" && produtoML.modelo.toUpperCase().trim() === "13") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "13 ULTRA" && produtoML.modelo.toUpperCase().trim() === "13 ULTRA") similarity++;

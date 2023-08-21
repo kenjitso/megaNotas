@@ -28,6 +28,8 @@ const CAIXA_MEDIDA_MAPEAMENTO = [
 ];
 
 const TIPO_PULSEIRA_MAPEAMENTO = [
+    { regex: /BRANCA SPORT/i, valor: "ESPORTIVA BRANCA" },
+    { regex: /STARLIGHT SPORT/i, valor: "ESPORTIVA STARLIGHT" },
     { regex: /SPORT/i, valor: "ESPORTIVA" },
 ];
 
@@ -56,6 +58,8 @@ const CAPACIDADE_MAPEAMENTO = [
 const REDE_MAPEAMENTO: Mapeamento_Item[] = [
     { regex: /\b5G\b/i, valor: 5 },
     { regex: /\b4G\b/i, valor: 4 }
+
+
 ];
 
 const COR_MAPEAMENTO: Mapeamento_Item[] = [
@@ -67,6 +71,7 @@ const COR_MAPEAMENTO: Mapeamento_Item[] = [
     { regex: /MOSS GREEN/i, valor: "MOSS GREEN" },
     { regex: /MOON WHITE/i, valor: "MOON WHITE" },
     { regex: /WILD GREEN/i, valor: "WILD GREEN" },
+    { regex: /STARLIGHT ALPINE/i, valor: "STARLIGHT ALPINE" },
     { regex: /DESERT KHAKI/i, valor: "DESERT KHAKI" },
     { regex: /SPACE GRAY/i, valor: "SPACE GRAY" },
     { regex: /OBSIDIAN BLACK/i, valor: "OBSIDIAN BLACK" },
@@ -79,12 +84,24 @@ const COR_MAPEAMENTO: Mapeamento_Item[] = [
     { regex: /PETAL PINK/i, valor: "PETAL PINK" },
     { regex: /SPACE BLACK/i, valor: "SPACE BLACK" },
     { regex: /CINZA ESPACIAL/i, valor: "CINZA ESPACIAL" },
-    
+    { regex: /MEIA NOITE/i, valor: "MEIA NOITE" },
+    { regex: /SPACE GREY/i, valor: "SPACE GREY" },
+    { regex: /ORANGE ALPINE/i, valor: "ORANGE ALPINE" },
+    { regex: /BLACK GRAY/i, valor: "BLACK GRAY" },
+    { regex: /BLUE GRAY/i, valor: "BLACK GRAY" },
+    { regex: /PRATA\/BRANCO/i, valor: "BRANCO" },
+    { regex: /AMARELO OCEAN/i, valor: "AMARELO OCEAN" },
+    { regex: /YELLOW BEIGE/i, valor: "YELLOW" },
+    { regex: /DOURADO/i, valor: "DOURADO" },
+    { regex: /GRAFITE/i, valor: "GRAFITE" },
     { regex: /MIDNIGHT/i, valor: "MIDNIGHT" },
-    
+    { regex: /BRANCO/i, valor: "BRANCO" },
     { regex: /GOLD/i, valor: "GOLD" },
+    { regex: /PRATA/i, valor: "PRATA" },
+    { regex: /GREEN/i, valor: "GREEN" },
     { regex: /BLUE/i, valor: "BLUE" },
     { regex: /PRETO/i, valor: "PRETO" },
+    { regex: /VERDE/i, valor: "VERDE" },
     { regex: /ROSA/i, valor: "ROSA" },
     { regex: /AZUL/i, valor: "AZUL" },
     { regex: /PINK/i, valor: "PINK" },
@@ -94,7 +111,9 @@ const COR_MAPEAMENTO: Mapeamento_Item[] = [
     { regex: /MARFIM/i, valor: "MARFIM" },
     { regex: /CREAM/i, valor: "CREAM" },
     { regex: /BROWN/i, valor: "BROWN" },
-   
+    { regex: /SILVER/i, valor: "SILVER" },
+    { regex: /VERMELHO/i, valor: "VERMELHO" },
+    { regex: /STARLIGHT/i, valor: "STARLIGHT" },
     
 ];
 
@@ -107,7 +126,6 @@ const ORIGEM_MAPEAMENTO: Mapeamento_Item[] = [
 const CATEGORIA_MAPEAMENTO: Mapeamento_Item[] = [
     { regex: /CELULAR/i, valor: "CELULAR" },
     { regex: /RELOGIO/i, valor: "RELOGIO" },
-    { regex: /NOTEBOOK/i, valor: "NOTEBOOK" }
 ];
 
 
@@ -159,16 +177,19 @@ export const formataSmartWatch = (produtoLoja: IProdutoLoja): IProdutoLoja | nul
 
   
 
-    if (cor) novoNome = novoNome.replace(/LIGHTNING GRAY|CINZA ESPACIAL|LIGHTNINGGRAY|ONYX PEBBLE GREY|MOONLIGHT BRANCO|MOONLIGHT GRAY|FLAMINGO PINK|SPACE BLACK|EMBER BLACK|PETAL PINK|THUNDER BLACK|INFINITE BLACK|MOSS GREEN|MOON WHITE|OBSIDIAN BLACK|SPACE GRAY|MISTY WHITE|MINT BLUE|DESERT KHAKI|ASTRO BLACK|WILD GREEN|E SQUARE M.GREY|MIDNIGHT|OCEAN|GOLD|BLACK|PRETO|ROSA|AZUL|PINK|IVORY|YVORY|BROWN|CREAM|WHITE|MARFIM|BLUE/gi, '');
+    if (cor) novoNome = novoNome.replace(/CINZA ALUMINUM PRETO|TITANIUM BLACK GRAY|TITANIUM ORANGE ALPINE|TITANIUM BLACK OCEAN|ALUMINIO - SPACE GREY|ALUMINIO - DOURADO|GOLD ALUMINUM|YELLOW BEIGE|BLUE GRAY|BLACK GRAY|ORANGE ALPINE|STARLIGHT ALPINE|MIDNIGHT ALUMINUM|- SPACE GRAY|SPACE GREY|GRAFITE STANLESS STEEL|GREEN ALUMINUM CLOVER|- PRATA ALUMÍNIO|- PRATA\/BRANCO|LIGHTNING GRAY|MEIA NOITE|CINZA ESPACIAL|LIGHTNINGGRAY|ONYX PEBBLE GREY|MOONLIGHT BRANCO|MOONLIGHT GRAY|FLAMINGO PINK|SPACE BLACK|EMBER BLACK|PETAL PINK|THUNDER BLACK|INFINITE BLACK|MOSS GREEN|MOON WHITE|OBSIDIAN BLACK|SPACE GRAY|MISTY WHITE|MINT BLUE|DESERT KHAKI|ASTRO BLACK|WILD GREEN|E SQUARE M.GREY|PRATA|DOURADO|MIDNIGHT|OCEAN|GOLD|BLACK|PRETO|ROSA|AZUL|PINK|IVORY|SILVER|VERMELHO|YVORY|STARLIGHT|BROWN|CREAM|BRANCO|WHITE|MARFIM|VERDE|BLUE/gi, '');
     if (capacidade) novoNome = novoNome.replace(new RegExp(/C1024GB|C512GB|C256GB|C128GB|C64GB|C32GB|C16GB/gi, 'i'), '');
     if (ram) novoNome = novoNome.replace(/R16GB|R12GB|R8GB|R6GB|R4GB|R3GB|R2GB|R1GB|\- LPDDR5 \-|LPDDR5/gi, '');
     if (categoria) novoNome = novoNome.replace(/RELOGIO/gi, '');
     if (pulseiraMedida) novoNome = novoNome.replace(/49MM|47MM|46MM|45MM|44MM|42MM|41MM|40MM|39MM|38MM|2MM/gi, '');
     if (marca) novoNome = novoNome.replace(/XIAOMI|APPLE|SAMSUNG/gi, '');
-    if (tipoPulseira) novoNome = novoNome.replace(/SPORT/gi, '');
-    novoNome = novoNome.replace(/\(A2174\)|BHR5439GL -|M2116W BHR5381GL|\(MKQ63LL\/A\)|MU9F2AM\/A \-|MQFK3BE\/A \-|MQF53LZ\/A \-|MQET3LL\/A \-|MQF53LL\/A \-|MQF33LL\/A \-|MQEV3LL\/A \-|MQF23LL\/A \-|MKQU3LL\/A \-|MQF13LL\/A \-|MKQ53LL\/A|MKQN3LL\/A|M2141B1 BHR5970GL|MKQ83LL\/A|FNTF3LL\/A \-|MNTG3LL\/A \-|FNT73LL\/A|\(MKQ13LL\/A\)|\(MKQ03LL\/A\)|MNUQ3LL\/A \-|MNUF3LL\/A|MNU93LL\/A \-|MP6P3LL\/A|MNU93LL\/A \-|MNU83LL\/A|MNU73LL\/A \-|MP6Q3LL\/A|MNUU3LL\/A \-|MNUP3LL\/A \-|MNUP3LL\/A \-|MNUL3LL\/A|MKNY3LL\/A|MTEY2LL\/A|MNUJ3LL\/A \-|MTF02LL\/A|MTF22LL\/A|MNP13ZP\/A|MTF32LL\/A|MKN03LL\/A|MKJ93LL\/A|MNC03LZ\/A|M2116W BHR5467GL|M2116W BHR5380GL|M2141B1 BHR6076GL|BHR6854GL|M2131W1|BHR6851GL|BHR5724GL|BHR5501GL|A2770|M2109W1|A2035|A1971|A1952|A2171|A1952|A2040|A1969|A2018|A2021|A2168|A2176|A2170/gi, '');
-    novoNome = novoNome.replace(/ATIVADO| BAND|SMART/gi, '');
-
+    if (tipoPulseira) novoNome = novoNome.replace(/STARLIGHT SPORT|BRANCA SPORT|SPORT/gi, '');
+    novoNome = novoNome.replace(/\(A2174\)|BHR5439GL -|M2116W BHR5381GL|\(MKQ63LL\/A\)|MU9F2AM\/A \-|MQFK3BE\/A \-|MQF53LZ\/A \-|MQET3LL\/A \-|MQF53LL\/A \-|MQF33LL\/A \-|MQEV3LL\/A \-|MQF23LL\/A \-|MKQU3LL\/A \-|MKQU3LL\/A|MQF13LL\/A \-|MKQ53LL\/A|MKQN3LL\/A|M2141B1 BHR5970GL|MKQ83LL\/A|FNTF3LL\/A \-|FNTF3LL\/A|MNTG3LL\/A \-|MNTG3LL\/A|FNT73LL\/A \-|FNT73LL\/A|\(MKQ13LL\/A\)|\(MKQ03LL\/A\)|MNUQ3LL\/A \-|MNUF3LL\/A \-|MNUF3LL\/A|MNU93LL\/A \-|MP6P3LL\/A \-|MP6P3LL\/A|MNU93LL\/A \-|MNU83LL\/A \-|MNU83LL\/A|MNU73LL\/A \-|MP6Q3LL\/A \-|MP6Q3LL\/A|MNUU3LL\/A \-|MNUP3LL\/A \-|MNUP3LL\/A \-|MNUL3LL\/A \-|MNUL3LL\/A|MKNY3LL\/A|GPS MTEY2LL\/A|MTEY2LL\/A|MNUJ3LL\/A \-|MTF02LL\/A|MTF22LL\/A \-|MTF22LL\/A|MNP13ZP\/A \-|MNP13ZP\/A|MTF32LL\/A \-|MTF32LL\/A|MKN03LL\/A|MKJ93LL\/A \-|MKJ93LL\/A|MNC03LZ\/A -|MNC03LZ\/A|M2116W BHR5467GL|M2116W BHR5380GL|M2141B1 BHR6076GL|BHR6854GL|M2131W1|BHR6851GL|BHR5724GL|BHR5501GL|A2770|M2109W1|A2035|A1971|A1952|A2171|A1952|A2040|A1969|A2018|A2021|A2168|A2176|A2170/gi, '');
+    novoNome = novoNome.replace(/\(CAIXA DANIFICADA\)|ATIVADO|\/ OXIMETRO|OXÍMETRO|TRAIL LOOP|TRAIL LP| BAND|SMART|GPS \+ CELL|\/ CASE|\/ GPS \-|GPS \-|GPS\+CELL|CEL\+GPS|GPS\+CEL|GPS/gi, '');
+    novoNome = novoNome.replace(/\(M\/L\)|M\/L|S\/M|LOOP \(L\)/gi, '');
+    novoNome = novoNome.replace(/\/|-|\*CPO\*|CASE \(\)|CASE/gi, '');
+    novoNome = novoNome.replace(/- NIKE|\(NIKE\)/gi, 'NIKE');
+    novoNome = novoNome.replace(/#\*.*/, '');
 
     produtoLoja.nome = novoNome.replace(/\s+/g, ' ');
 

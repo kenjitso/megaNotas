@@ -75,13 +75,13 @@ const COR_MAPEAMENTO: Mapeamento_Item[] = [
 const ORIGEM_MAPEAMENTO: Mapeamento_Item[] = [
     { regex: /ÍNDIA|INDIA/i, valor: "INDIA" },
     { regex: /GLOBAL/i, valor: "GLOBAL" },
-    { regex: /INDONESIA/i, valor: "INDONESIA" }
+    { regex: /INDONESIA/i, valor: "INDONESIA" },
+    { regex: /CHINA/i, valor: "CHINA" }
 ];
 
 const CATEGORIA_MAPEAMENTO: Mapeamento_Item[] = [
     { regex: /CELULAR/i, valor: "CELULAR" },
     { regex: /RELOGIO/i, valor: "RELOGIO" },
-    { regex: /NOTEBOOK/i, valor: "NOTEBOOK" }
 ];
 
 
@@ -127,7 +127,7 @@ if(produtoLoja.nome.includes("A2783 RED")) produtoLoja.nome= produtoLoja.nome.re
     if (rede) novoNome = novoNome.replace(/ 4G\b| 5G\b|/gi, '');
     if (capacidade) novoNome = novoNome.replace(new RegExp(/C1024GB|C512GB|C256GB|C128GB|C64GB|C32GB|C16GB/gi, 'i'), '');
     if (ram) novoNome = novoNome.replace(/R16GB|R12GB|R8GB|R6GB|R4GB|R3GB|R2GB|R1GB|\- LPDDR5 \-|LPDDR5/gi, '');
-    if (categoria) novoNome = novoNome.replace(/CELULAR|RELOGIO|NOTEBOOK/gi, '');
+    if (categoria) novoNome = novoNome.replace(/CELULAR|RELOGIO/gi, '');
     novoNome = novoNome.replace(/XIAOMI|APPLE|SAMSUNG/gi, '');
     novoNome = novoNome.replace(/200MP|108MPX|108MP\+|64MP\+|64MP \+|50MP\+|54\/32MPX|13MP \+|13MP\+|DE 12MP\+|E 12MP|12MP\+|12MP|8MP \+|8MP\+|8 MP\+|5MP \+|0.08MP E|0.08 MP|0.8MP E|0.3MP|HDR10\+|\+2MP E|\+ 16MP|\+16MP|\+8MP|\+2MP|50MP|48MP\+|48MP|16MP|E 13MP|13MP|E 8MP|8MP|E 5MP|5MP|E 32MP|E 20MP|E 16MP|E 2MP|2MP|\+ E|13\+8\+2|4K/g, '');
     novoNome = novoNome.replace(/CELULAR|GOLBAL|\(CAIXA DANIFICADA\)|\(SIM FISICO\)|S ACS|CÂMERAS DUPLA|CÂMERA DUPLA|CÁMARA DUPLA|ESIM|CORE|\(CX FEIA\)|\(LACRE PEQUENO\)|\(Dual SIM Físico\)|\(DUAL SIM FIS|\(SIM FÍSICO\)|A \(CPO\)|\(CPO\)|LTE|SEM LACRE|OLED|LCD|C ROTA|S LACRE|\(CARREGADOR 3 PINOS\)|CEL|DUAL SIM|TELA|CÂMERA QUÁDRUPLA|CÂMERAS DE|CÂMERAS |CÂMERAS|TRIPLA|CÂMERA|\+ ADAPTADOR|\+ADAPTADOR|\+ADATAP|ADAPTADOR|DESLACRADO S TIGO PERSONA|ATLA|\/|\(VITRINA\)|\(VITRINA\)|\*\*(?!.*\*\*)|C FEA(?!.*C FEA)|\-(?!.*\-)|DP(?!.*DP)|DG(?!.*DG)|\(NFC\)(?!.*\(NFC\))|NFC(?!.*NFC)|L P-(?!.*L P-)|US L P(?!.*US L P)|L P(?!.*L P)|US(?!.*US)|\.(?!.*\.)|\S CAPA(?!.*\S CAPA)|GLO(?!.*GLO)|(?!.*\S CAPA)|\s\+(?!.*\s\+)/gi, '').replace(/\s+/g, ' ').trim();

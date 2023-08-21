@@ -30,6 +30,9 @@ export const schemaProdutoLoja = z.object({
 export type IProdutoLoja = z.infer<typeof schemaProdutoLoja>;
 
 export class ProdutoLojaController {
+    static get(arg0: string) {
+        throw new Error("Method not implemented.");
+    }
     public static createNew(): IProdutoLoja {
         return {
             id: "",
@@ -54,6 +57,81 @@ export class ProdutoLojaController {
         }
     }
 
+    public static async delete(id: string) {
+        const options: RequestInit = {
+            method: "DELETE",
+            headers: {
+                "Content-type": "application/json"
+            },
+        };
+
+        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja/${id}`, options);
+
+        // Verifique o conteúdo da resposta
+        const text = await response.text();
+
+        if (text === "success") {
+            return null; // ou qualquer outro valor padrão que você deseja retornar em caso de sucesso
+        } else {
+            try {
+                const responseData = JSON.parse(text);
+                const produtoLojaSchema = schemaProdutoLoja.parse(responseData);
+                return produtoLojaSchema;
+            } catch (error) {
+                console.error("Failed to parse JSON:", error);
+                throw error;
+            }
+        }
+    }
+
+    public static async update(produtoLoja: IProdutoLoja) {
+
+if(produtoLoja.corPulseira==="n/a") produtoLoja.corPulseira = "";
+if(produtoLoja.tipoPulseira==="n/a") produtoLoja.tipoPulseira = "";
+
+        if(produtoLoja.categoria==="CELULAR") produtoLoja.nome = produtoLoja.categoria+" "+produtoLoja.marca+" "+produtoLoja.nome+" "+produtoLoja.cor+" "+produtoLoja.rede+"G R"+produtoLoja.ram+"GB C"+produtoLoja.capacidade+"GB ";
+        if(produtoLoja.categoria==="RELOGIO") produtoLoja.nome = produtoLoja.categoria+" "+produtoLoja.marca+" "+produtoLoja.nome+" #* "+produtoLoja.cor+" "+produtoLoja.rede+"G "+produtoLoja.caixaMedida+" "+produtoLoja.corPulseira+" "+produtoLoja.tipoPulseira
+       
+        const options: RequestInit = {
+            method: "PATCH",
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify(produtoLoja)
+        };
+
+
+        //   const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/produtoloja/${produtoLoja.id}`, options);
+        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja/${produtoLoja.id}`, options);
+        const responseData: unknown = await response.json();
+        const produtoLojaSchema = schemaProdutoLoja.parse(responseData);
+        return produtoLojaSchema;
+    }
+
+    public static async getId(id: string) {
+console.log(id);
+        const options: RequestInit = {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json"
+            },
+        };
+        //    const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/lojas/${id}`, options);
+        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja/${id}`, options);
+        const responseData: unknown = await response.json();
+        console.log(responseData);
+        const produtoLojaSchema = schemaProdutoLoja.parse(responseData);
+        return produtoLojaSchema;
+    }
+
+    public static async getProduto(produtoLoja: IProdutoLoja) {
+     
+             
+                return produtoLoja;
+            }
+
+
+
     public static async getByLoja(idLoja: string) {
         const options: RequestInit = {
             method: "GET",
@@ -61,11 +139,14 @@ export class ProdutoLojaController {
                 "Content-type": "application/json"
             },
         };
+
+        // const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/produtoloja?loja=${idLoja}`, options);
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja?loja=${idLoja}`, options);
         const responseData: unknown = await response.json();
         const produtoLojaSchema = z.array(schemaProdutoLoja).parse(responseData);
         return produtoLojaSchema;
     }
+
 
 
     public static async cadastro(produtos: IProdutoLoja[]) {
@@ -84,8 +165,8 @@ export class ProdutoLojaController {
             body: JSON.stringify({ produtos })
         };
 
+        // const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/produtoloja`, options);
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja`, options);
-
         const responseData: unknown = await response.json();
 
         const produtosLojaSchema = z.array(schemaProdutoLoja).parse(responseData);
@@ -93,7 +174,7 @@ export class ProdutoLojaController {
     }
 
 
-//enviar um patch com o id na frente para editar os produtos
+    //enviar um patch com o id na frente para editar os produtos
     public static async importar(produtos: IProdutoLoja[]) {
 
         const options: RequestInit = {
@@ -103,7 +184,7 @@ export class ProdutoLojaController {
             },
             body: JSON.stringify({ produtos })
         };
-
+        // const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/produtoloja/importar`, options);
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja/importar`, options);
         const responseData: unknown = await response.json();
 
@@ -111,10 +192,7 @@ export class ProdutoLojaController {
         return produtosLojaSchema;
     }
 
-
     public static async updateML(produtoLoja: IProdutoLoja, url_catalogoML: string) {
-
-
 
         const options: RequestInit = {
             method: "POST",
@@ -125,6 +203,7 @@ export class ProdutoLojaController {
                 url: url_catalogoML
             })
         };
+        // const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/produtoloja/${produtoLoja.id}/vincular`, options);
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja/${produtoLoja.id}/vincular`, options);
         const responseData: unknown = await response.json();
 
@@ -132,26 +211,6 @@ export class ProdutoLojaController {
         const produtoLojaSchema = schemaProdutoLoja.parse(responseData);
         return produtoLojaSchema;
 
-    }
-
-
-
-    public static async update(produtoLoja: IProdutoLoja) {
-
-        produtoLoja.nome = produtoLoja.nome_original;
-
-        const options: RequestInit = {
-            method: "PATCH",
-            headers: {
-                "Content-type": "application/json"
-            },
-            body: JSON.stringify(produtoLoja)
-        };
-        const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja/${produtoLoja.id}`, options);
-        const responseData: unknown = await response.json();
-
-        const produtoLojaSchema = schemaProdutoLoja.parse(responseData);
-        return produtoLojaSchema;
     }
 
     public static async search(idLoja: string, q: string = "") {
@@ -167,16 +226,17 @@ export class ProdutoLojaController {
                 "Content-type": "application/json"
             }
         };
-
+        //    const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/produtoloja?${params}`, options);
         const response = await fetch(`https://us-central1-megapreco-d9449.cloudfunctions.net/api/produtoloja?${params}`, options);
         const responseData: unknown = await response.json();
-      
+
         const produtoLoja = z.object({
             items: z.array(schemaProdutoLoja),
         }).transform(dados => dados.items).parse(responseData);
 
-      
+
         return produtoLoja;
     }
+    
 
 }

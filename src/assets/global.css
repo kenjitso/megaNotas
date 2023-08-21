@@ -126,6 +126,35 @@ table {
         /* Cor da borda do botão ao passar o mouse, focar ou ativar */
 }
 
+.custom-dropdown-categoria{
+    width: 130px;
+    background-color: #e67e22;
+    /* Cor de fundo do botão */
+    border-color: #e67e22;
+    /* Cor da borda do botão */
+}
+
+.custom-dropdown-categoria.show {
+    background-color: #e67e22;
+    /* Cor de fundo do botão */
+    border-color: #e67e22;
+    /* Cor da borda do botão */
+}
+
+.custom-dropdown-categoria:hover,
+.custom-dropdown.clickable-categoria:hover {
+    background-color: #d35400;
+    /* Cor de fundo do botão ao passar o mouse, focar ou ativar */
+    border-color: #d35400;
+    /* Cor da borda do botão ao passar o mouse, focar ou ativar */
+}
+
+.custom-dropdown-categoria:active,
+.custom-dropdown.clickable-categoria:active {
+    background-color: #d35400 !important;
+    border-color: #d35400 !important;
+}
+
 
 .custom-dropdown {
     width: 60px;

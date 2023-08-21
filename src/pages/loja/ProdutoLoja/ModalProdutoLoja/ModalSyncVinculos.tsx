@@ -1,74 +1,38 @@
 import { useCallback, useEffect, useState } from "react";
-import { Modal, Button, Spinner } from "react-bootstrap";
+import { Modal, Button, Spinner, Col, Row } from "react-bootstrap";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
 import { toast } from "react-toastify";
-import { filtrosVinculosIphone } from "@/functions/produtos/apple/filtrosVinculosIphone";
 import { ILoja } from "@/datatypes/loja";
 import { filtrosVinculosXiaomi } from "@/functions/produtos/xiaomi/filtrosVinculosXiaomi";
 import { filtrosVinculosSamsung } from "@/functions/produtos/samsung/filtroVinculosSamsung";
-import { otherSearchSmartPhone } from "@/functions/produtos/otherSearchSmartPhone";
 import { filtrosVinculosSmartWatch } from "@/functions/produtos/apple/filtrosVinculosWatch";
+import { filtrosVinculosIphone } from "@/functions/produtos/apple/filtrosVinculosIphone";
 import { otherSearchSmartWatch } from "@/functions/produtos/otherSearchSmartWatch";
+import { ICatalogoItem, SearchResponse, otherSearchSmartPhone } from "@/functions/produtos/otherSearchSmartPhone";
+import { TableVinculoML } from "./ModalVinculoCopy";
+import { CatalogoController } from "@/datatypes/catalogo";
 
 interface IProps {
-    produtoParaguay?: IProdutoLoja[];
+    produtosParaguay?: IProdutoLoja[];
     lojaId?: ILoja;
     onHide: () => void;
 }
 
 
 
-export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
+export function ModalSyncVinculos({ onHide, lojaId, produtosParaguay }: IProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const produtoAtualParaguay = produtoParaguay ? produtoParaguay[currentIndex] : null;
+    const produtoAtualParaguay = produtosParaguay ? produtosParaguay[currentIndex] : null;
     const queryClient = useQueryClient();
-
-
-    const { isFetching, data, refetch } = useQuery(
-        ["catalogosSync", currentIndex],
-        async () => {
-
-            if (produtoParaguay && currentIndex >= 0 && currentIndex < produtoParaguay.length) {
-                const produto = produtoParaguay[currentIndex];
-                let catalogosML;
-
-                if (produto.categoria === "CELULAR") catalogosML = await otherSearchSmartPhone(produto) || [];
-                if (produto.categoria === "RELOGIO") catalogosML = await otherSearchSmartWatch(produto) || [];
-
-
-
-
-                let mostSimilarProduct = null;
-                let highestSimilarity = -1;
-                let similarity = 0;
-
-                for (const catalogoML of catalogosML ?? []) {
-
-                    if (produto.marca === "XIAOMI" && produto.categoria === "CELULAR") similarity = filtrosVinculosXiaomi(produto, catalogoML);
-                    if (produto.marca === "APPLE" && produto.categoria === "CELULAR") similarity = filtrosVinculosIphone(produto, catalogoML);
-                     if (produto.marca === "SAMSUNG" && produto.categoria === "CELULAR") similarity = filtrosVinculosSamsung(produto, catalogoML);
-                     if (produto.marca === "APPLE"||produto.marca==="XIAOMI" && produto.categoria === "RELOGIO") similarity = filtrosVinculosSmartWatch(produto, catalogoML);
-                  
-
-                    if (similarity > highestSimilarity) {
-                        highestSimilarity = similarity;
-                        mostSimilarProduct = catalogoML;
-                    }
-                }
-
-             
-
-                return { data: catalogosML, mostSimilarProduct, highestSimilarity };
-            }
-            return null;
-        },
-        { enabled: currentIndex >= 0 }
-    );
-
-    const mutation = useMutation(({ produto, url_catalogoML }: { produto: IProdutoLoja, url_catalogoML: string }) => {
-        if (!produto) throw new Error("Produto Indefinido");
-        return ProdutoLojaController.updateML(produto, url_catalogoML);
+    const [produtoML, setProdutoML] = useState<ICatalogoItem | undefined>(undefined);
+    const [childIsFetching, setChildIsFetching] = useState(false);
+    const [highestSimilarity, setHighestSimilarity] = useState(0);
+  
+    
+    const mutation = useMutation(({ produtoParaguay, url_catalogoML }: { produtoParaguay: IProdutoLoja, url_catalogoML: string }) => {
+        if (!produtoParaguay) throw new Error("Produto Indefinido");
+        return ProdutoLojaController.updateML(produtoParaguay, url_catalogoML);
     }, {
         onSuccess: () => {
             queryClient.invalidateQueries(["catalogoshome"]);
@@ -86,15 +50,7 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
     });
 
     const [autoLinkStatus, setAutoLinkStatus] = useState('');
-    const sleep = (milliseconds: number) => {
-        return new Promise(resolve => setTimeout(resolve, milliseconds))
-    }
 
-    useEffect(() => {
-        if (produtoParaguay !== undefined) {
-            refetch();
-        }
-    }, [produtoParaguay, refetch]);
 
 
     const previousProduct = useCallback(() => {
@@ -105,39 +61,50 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
 
 
     const nextProduct = useCallback(() => {
-        if (produtoParaguay && currentIndex < produtoParaguay.length - 1) {
+        if (produtosParaguay && currentIndex < produtosParaguay.length - 1) {
             setCurrentIndex(currentIndex + 1);
 
         }
-    }, [currentIndex, setCurrentIndex, produtoParaguay]);
+    }, [currentIndex, setCurrentIndex, produtosParaguay]);
 
     const autoLinkProducts = useCallback(async () => {
 
-        if (!produtoParaguay || produtoParaguay.length === 0) return setAutoLinkStatus("Nenhum produto na lista");
+        if (!produtosParaguay || produtosParaguay.length === 0) return setAutoLinkStatus("Nenhum produto na lista");
 
-        setAutoLinkStatus(`Iniciando vinculação de ${produtoParaguay.length} produtos...`);
+        setAutoLinkStatus(`Iniciando vinculação de ${produtosParaguay.length} produtos...`);
         let linkCount = 0;
+        let catalogosML;
+        for (let i = 0; i < produtosParaguay.length; i++) {
+            const produtoParaguay = produtosParaguay[i];
 
-        for (let i = 0; i < produtoParaguay.length; i++) {
-            const produto = produtoParaguay[i];
+            let searchString = "";
 
-            let catalogo = await otherSearchSmartPhone(produto) || [];
+            try {
+          
+                if (produtoParaguay.categoria === "CELULAR") {
+                    searchString = await otherSearchSmartPhone(produtoParaguay);
+                    catalogosML = await CatalogoController.searchCatalogoML(searchString) || [];
+                }
+            } catch (error) {
+                console.log("Erro 500 aqui, enviando null para continuar o sistema.");
+                catalogosML = null
+            }
 
             let highestSimilarity = -1;
             let similarity = 0;
 
-            for (const catalogoML of catalogo) {
-                
-                if (produto.marca === "XIAOMI") {
-                    similarity = filtrosVinculosXiaomi(produto, catalogoML);
+            for (const catalogoML of catalogosML ?? []) {
+
+                if (produtoParaguay.marca === "XIAOMI") {
+                    similarity = filtrosVinculosXiaomi(produtoParaguay, catalogoML);
                 }
 
-                if (produto.marca === "APPLE") {
-                    similarity = filtrosVinculosIphone(produto, catalogoML);
+                if (produtoParaguay.marca === "APPLE") {
+                    similarity = filtrosVinculosIphone(produtoParaguay, catalogoML);
                 }
 
-                if (produto.marca === "SAMSUNG") {
-                    similarity = filtrosVinculosSamsung(produto, catalogoML);
+                if (produtoParaguay.marca === "SAMSUNG") {
+                    similarity = filtrosVinculosSamsung(produtoParaguay, catalogoML);
                 }
 
                 if (similarity > highestSimilarity) {
@@ -149,9 +116,9 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
 
                     try {
 
-                        await mutation.mutateAsync({ produto, url_catalogoML: `https://www.mercadolivre.com.br/p/${catalogoML.codigo_catalogo}` });
+                        await mutation.mutateAsync({ produtoParaguay, url_catalogoML: `https://www.mercadolivre.com.br/p/${catalogoML.codigo_catalogo}` });
                         linkCount++;
-                        setAutoLinkStatus(`Vinculando item ${i + 1} de ${produtoParaguay.length}. ${linkCount} produtos foram vinculados até agora.`);
+                        setAutoLinkStatus(`Vinculando item ${i + 1} de ${produtosParaguay.length}. ${linkCount} produtos foram vinculados até agora.`);
 
 
                     } catch (error) {
@@ -160,22 +127,36 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
                     }
 
                 } else {
-                    setAutoLinkStatus(`Vinculando item ${i + 1} de ${produtoParaguay.length}. ${linkCount} produtos foram vinculados até agora.`);
+                    setAutoLinkStatus(`Vinculando item ${i + 1} de ${produtosParaguay.length}. ${linkCount} produtos foram vinculados até agora.`);
                 }
             }
         }
 
-    }, [mutation, produtoParaguay, refetch, setAutoLinkStatus, nextProduct]);
+    }, [mutation, produtosParaguay, setAutoLinkStatus, nextProduct]);
 
+
+
+    function buildUrl(algoritmo: number, codigo: string) {
+        switch (algoritmo) {
+            case 1: return `https://atacadogames.com/lista-produtos/termo/${codigo}/1`;
+            case 7: return `https://www.megaeletro.com.py/br/p/${codigo}/1`;
+            case 5: return `https://www.madridcenter.com/produtos?q=${codigo}`;
+            case 4: return `https://cellshop.com/catalogsearch/result/?q=${codigo}`;
+            case 8: return `https://www.mobilezone.com.br/search/q?search=${codigo}`;
+            case 3: return `https://www.bestshop.com.py/buscar/${codigo}`;
+            case 6: return `https://stargamesparaguay.com/?s=${codigo}`;
+            default: return '#';
+        }
+    }
 
 
     return (
         <Modal
-            size="lg"  // Alterado para um tamanho menor
+            size="xl"  // Alterado para um tamanho menor
             centered
             backdrop="static"
             keyboard={false}
-            show={produtoParaguay !== undefined}
+            show={produtosParaguay !== undefined}
             onHide={() => {
                 setCurrentIndex(0);
                 setAutoLinkStatus('');
@@ -184,125 +165,121 @@ export function ModalSyncVinculos({ onHide, lojaId, produtoParaguay }: IProps) {
         >
             <Modal.Header closeButton>
                 <Modal.Title>
-                    Vincula Itens {produtoParaguay && currentIndex >= 0 ? `(${currentIndex + 1} de ${produtoParaguay.length})` : ''}
+                    Vincula Itens {produtosParaguay && currentIndex >= 0 ? `(${currentIndex + 1} de ${produtosParaguay.length})` : ''}
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                {data && data.highestSimilarity && (
-                    <p><strong>Similaridade:</strong> {data.highestSimilarity}</p>
-                )}
+                <Row>
+                    <Col>
+                        {highestSimilarity && (
+                            <p><strong>Similaridade:</strong> {highestSimilarity}</p>
+                        )}
 
-                {produtoAtualParaguay && (
-                    <div>
-                        <p><strong>Produto do Paraguai</strong></p>
-                        <p>
-                            <strong>Codigo: </strong>
-                            <a
-                                style={{ color: "blue" }}
-                                href={lojaId?.algoritmo === 1
-                                    ? `https://atacadogames.com/lista-produtos/termo/${produtoAtualParaguay.codigo}/1`
-                                    : (lojaId?.algoritmo === 7
-                                        ? `https://www.megaeletro.com.py/br/p/${produtoAtualParaguay.codigo}/1`
-                                        : (lojaId?.algoritmo === 5
-                                            ? `https://www.madridcenter.com/produtos?q=${produtoAtualParaguay.codigo}`
-                                            : (lojaId?.algoritmo === 4
-                                                ? `https://cellshop.com/catalogsearch/result/?q=${produtoAtualParaguay.codigo}`
-                                                : (lojaId?.algoritmo === 8
-                                                    ? `https://www.mobilezone.com.br/search/q?search=${produtoAtualParaguay.codigo}`
-                                                    : (lojaId?.algoritmo === 3
-                                                        ? `https://www.bestshop.com.py/buscar/${produtoAtualParaguay.codigo}`
-                                                        : (lojaId?.algoritmo === 6
-                                                            ? ` https://stargamesparaguay.com/?s=${produtoAtualParaguay.codigo}`
-                                                            : '#'))))))}
+                        {produtoAtualParaguay && (
+                            <div>
+                                <p><strong>Produto do Paraguai</strong></p>
+                                <p>
+                                    <strong>Codigo: </strong>
+                                    <a
+                                        className="product-link"
+                                        href={buildUrl(lojaId?.algoritmo || 0, produtoAtualParaguay.codigo)}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        title={produtoAtualParaguay.codigo}
+                                    >
+                                        {produtoAtualParaguay.codigo}
+                                    </a>
+                                </p>
 
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                title={produtoAtualParaguay.codigo}
-                            >
-                                {produtoAtualParaguay.codigo}
-                            </a>
-                        </p>
+                                <p><strong>Detalhes do Produto:</strong></p>
+                                <ul>
+                                    <li><strong>Nome:</strong> {produtoAtualParaguay.nome_original}</li>
+                                    <li><strong>Marca:</strong> {produtoAtualParaguay.marca}</li>
+                                    <li><strong>Modelo:</strong> {produtoAtualParaguay.nome.toUpperCase()}</li>
+                                    <li><strong>Memoria Interna:</strong> {produtoAtualParaguay.capacidade} GB</li>
+                                    <li><strong>Memoria Ram:</strong> {produtoAtualParaguay.ram} GB</li>
+                                    <li><strong>Mobile Network:</strong> {produtoAtualParaguay.rede}G</li>
+                                    <li><strong>Cor:</strong> {produtoAtualParaguay.cor.toUpperCase()}</li>
+                                    {produtoAtualParaguay?.categoria === "RELOGIO" && (
+                                        <>
+                                            <li><strong>Medida da Caixa:</strong> {produtoAtualParaguay.caixaMedida?.toUpperCase()}</li>
+                                            <li><strong>Cor da Pulseira:</strong> {produtoAtualParaguay.corPulseira?.toUpperCase()}</li>
+                                            <li><strong>Tipo da Pulseira:</strong> {produtoAtualParaguay.tipoPulseira?.toUpperCase()}</li>
+                                        </>
 
-                        <p><strong>Detalhes do Produto:</strong></p>
-                        <ul>
-                            <li><strong>Nome:</strong> {produtoAtualParaguay.nome_original}</li>
-                            <li><strong>Marca:</strong> {produtoAtualParaguay.marca}</li>
-                            <li><strong>Modelo:</strong> {produtoAtualParaguay.nome.toUpperCase()}</li>
-                            <li><strong>Memoria Interna:</strong> {produtoAtualParaguay.capacidade} GB</li>
-                            <li><strong>Memoria Ram:</strong> {produtoAtualParaguay.ram} GB</li>
-                            <li><strong>Mobile Network:</strong> {produtoAtualParaguay.rede}G</li>
-                            <li><strong>Cor:</strong> {produtoAtualParaguay.cor.toUpperCase()}</li>
-                            {produtoAtualParaguay?.categoria === "RELOGIO" && (
-                                <>
-                                  <li><strong>Medida da Caixa:</strong> {produtoAtualParaguay.caixaMedida?.toUpperCase()}</li>
-                                    <li><strong>Cor da Pulseira:</strong> {produtoAtualParaguay.corPulseira?.toUpperCase()}</li>
-                                    <li><strong>Tipo da Pulseira:</strong> {produtoAtualParaguay.tipoPulseira?.toUpperCase()}</li>
-                                </>
+                                    )}
+                                </ul>
+                            </div>
+                        )}
+                        <hr />
+                        {childIsFetching ? (
+                            <div className="text-center"> {/* Estilos CSS personalizados */}
+                                <Spinner animation="border" variant="primary" />
+                                <p>Carregando...</p>
+                            </div>
+                        ) : (
+                            produtoML && (
 
-                            )}
-                        </ul>
-                    </div>
-                )}
-                <hr />
-                {isFetching ? (
-                    <div className="text-center"> {/* Estilos CSS personalizados */}
-                        <Spinner animation="border" variant="primary" />
-                        <p>Carregando...</p>
-                    </div>
-                ) : (
-                    data && data.mostSimilarProduct && (
-                        <div>
-                            <p><strong>Produto Mais Similar</strong></p>
-                            <strong>Codigo: </strong>
-                            <a
-                                style={{ color: "blue" }}
-                                href={data && data.mostSimilarProduct ? `https://www.mercadolivre.com.br/p/${data.mostSimilarProduct.codigo_catalogo}` : '#'}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                {data.mostSimilarProduct.codigo_catalogo}
-                            </a>
 
-                            {/* Agrupando informações semelhantes */}
-                            <p><strong>Detalhes do Produto:</strong></p>
-                            <ul>
-                                <li><strong>Nome:</strong> {data.mostSimilarProduct.nome}</li>
-                                <li><strong>Marca:</strong> {data.mostSimilarProduct.marca}</li>
-                                <li><strong>Modelo:</strong> {data.mostSimilarProduct.modelo?.toUpperCase()}</li>
-                                <li><strong>Memoria Interna:</strong> {data.mostSimilarProduct.memoriaInterna}</li>
-                                <li><strong>Memoria Ram:</strong> {data.mostSimilarProduct.memoriaRam}</li>
-                                <li><strong>Mobile Network:</strong> {data.mostSimilarProduct.mobileNetwork?.toUpperCase()}</li>
-                                <li><strong>Cor:</strong> {data.mostSimilarProduct.cor?.toUpperCase()}</li>
-                                {produtoAtualParaguay?.categoria === "RELOGIO" && (
-                                    <>
-                                       <li><strong>Medida da Caixa:</strong> {data.mostSimilarProduct.caixaMedida?.toUpperCase()}</li>
-                                        <li><strong>Cor da Pulseira:</strong> {data.mostSimilarProduct.corPulseira?.toUpperCase()}</li>
-                                        <li><strong>Tipo da Pulseira:</strong> {data.mostSimilarProduct.tipoPulseira?.toUpperCase()}</li>
-                                    </>
+                                <div>
 
-                                )}
-                            </ul>
-                        </div>
-                    )
-                )}
+                                    <p><strong>Produto Mais Similar</strong></p>
+                                    <strong>Codigo: </strong>
+                                    <a
+                                        style={{ color: "blue" }}
+                                        href={produtoML ? `https://www.mercadolivre.com.br/p/${produtoML.codigo_catalogo}` : '#'}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        {produtoML.codigo_catalogo}
+                                    </a>
 
+
+                                    <p><strong>Detalhes do Produto:</strong></p>
+                                    <ul>
+                                        <li><strong>Nome:</strong> {produtoML.nome}</li>
+                                        <li><strong>Marca:</strong> {produtoML.marca}</li>
+                                        <li><strong>Modelo:</strong> {produtoML.modelo?.toUpperCase()}</li>
+                                        <li><strong>Memoria Interna:</strong> {produtoML.memoriaInterna}</li>
+                                        <li><strong>Memoria Ram:</strong> {produtoML.memoriaRam}</li>
+                                        <li><strong>Mobile Network:</strong> {produtoML.mobileNetwork?.toUpperCase()}</li>
+                                        <li><strong>Cor:</strong> {produtoML.cor?.toUpperCase()}</li>
+                                        {produtoAtualParaguay?.categoria === "RELOGIO" && (
+                                            <>
+                                                <li><strong>Medida da Caixa:</strong> {produtoML.caixaMedida?.toUpperCase()}</li>
+                                                <li><strong>Cor da Pulseira:</strong> {produtoML.corPulseira?.toUpperCase()}</li>
+                                                <li><strong>Tipo da Pulseira:</strong> {produtoML.tipoPulseira?.toUpperCase()}</li>
+                                            </>
+
+                                        )}
+                                    </ul>
+                                </div>
+                            )
+                        )}
+                    </Col>
+                    <Col>
+
+                        <TableVinculoML produtoParaguay={produtosParaguay} currentIndex={currentIndex} onProdutoML={(produtoML) => { setProdutoML(produtoML) }} onFetchingStateChange={setChildIsFetching} onHighestSimilarity={(highestSimilarity) => { setHighestSimilarity(highestSimilarity)}} />
+
+                    </Col>
+                </Row>
             </Modal.Body>
             <Modal.Footer>
                 <Button onClick={previousProduct}>Anterior</Button>
                 <Button onClick={nextProduct}>Próximo</Button>
-                {data && data.mostSimilarProduct && (
+                {produtoML && (
                     <Button
                         variant="secondary"
                         onClick={() => {
-                            if (produtoAtualParaguay && data?.mostSimilarProduct) {
+                            if (produtoAtualParaguay && produtoML) {
                                 mutation.mutate({
-                                    produto: produtoAtualParaguay,
-                                    url_catalogoML: `https://www.mercadolivre.com.br/p/${data.mostSimilarProduct.codigo_catalogo}`
+                                    produtoParaguay: produtoAtualParaguay,
+                                    url_catalogoML: `https://www.mercadolivre.com.br/p/${produtoML.codigo_catalogo}`
                                 });
                             }
                         }}
 
-                        disabled={!data?.mostSimilarProduct}
+                        disabled={!produtoML}
                     >
                         Vincular
                     </Button>

@@ -1,4 +1,4 @@
-import React, { Suspense, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Row, Col, Table, Button, FloatingLabel, Form, Dropdown, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
@@ -8,7 +8,6 @@ import { formatCurrency } from "@/features/FormatCurrency";
 import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
 import { ModalSyncVinculos } from "./ModalProdutoLoja/ModalSyncVinculos";
 import { ModalAtualizarProdutoLoja } from "./ModalProdutoLoja/ModalAtualizarProdutoLoja";
-import { ModalVinculo } from "./ModalProdutoLoja/ModalVinculoCopy";
 import { useQuery } from "@tanstack/react-query";
 import { compareValues, useSort } from "@/components/utils/FilterArrows";
 import { ILoja, LojaController } from "@/datatypes/loja";
@@ -18,9 +17,11 @@ import { SortableTableHeader } from "@/components/pagination/SortableTableHeader
 import { formataSmartPhone } from "@/functions/produtos/formataSmartPhone";
 import { formataSmartWatch } from "@/functions/produtos/formataSmartWatch";
 import { format } from "date-fns";
+import { ModalEditarProdutoLoja } from "./ModalEditarProdutoLoja";
+import { ModalDeletaProdutoLoja } from "./ModalDeletaProdutoLoja";
 
 
-type Categoria = 'CELULAR' | 'RELOGIO' | 'NOTEBOOK';
+type Categoria = 'CELULAR' | 'RELOGIO';
 
 
 export function PageProdutoLoja() {
@@ -28,6 +29,8 @@ export function PageProdutoLoja() {
     const { lojaId } = useParams();
     const navigate = useNavigate();
     const [modalVinculoProduto, setVinculoProduto] = useState<IProdutoLoja | undefined>(undefined);
+    const [modalEditarProduto, setEditarProduto] = useState<IProdutoLoja | undefined>(undefined);
+    const [modalDeletaProduto, setDeletaProduto] = useState<IProdutoLoja | undefined>(undefined);
     const [importProdutoLoja, setImportProdutoLoja] = useState<ILoja | undefined>(undefined);
     const [modalSyncVinculos, setSyncVinculos] = useState<IProdutoLoja[] | undefined>(undefined);
     const [filtro, setFiltro] = useState("");
@@ -81,9 +84,7 @@ export function PageProdutoLoja() {
             dados = dados.filter(produto => produto.categoria !== null && produto.categoria.includes("RELOGIO"));
         }
 
-        if (isCategoria === "NOTEBOOK") {
-            dados = dados.filter(produto => produto.categoria !== null && produto.categoria.includes("NOTEBOOK"));
-        }
+    
 
         const sortedData = [...dados].sort(compareValues(sortBy, sortOrder));
         const allItems = sortedData;
@@ -114,8 +115,9 @@ export function PageProdutoLoja() {
     return (
         <React.Fragment>
             <ModalAtualizarProdutoLoja onHide={() => setImportProdutoLoja(undefined)} lojaId={importProdutoLoja} produtoParaguay={produtosData} />
-            <ModalSyncVinculos onHide={() => setSyncVinculos(undefined)} lojaId={lojaData} produtoParaguay={modalSyncVinculos} />
-            <ModalVinculo onHide={() => setVinculoProduto(undefined)} lojaId={lojaData} produtoParaguay={modalVinculoProduto} />
+            <ModalSyncVinculos onHide={() => setSyncVinculos(undefined)} lojaId={lojaData} produtosParaguay={modalSyncVinculos} />
+            <ModalEditarProdutoLoja onHide={() => setEditarProduto(undefined)} lojaId={lojaData} produtoParaguay={modalEditarProduto} />
+            <ModalDeletaProdutoLoja onHide={() => setDeletaProduto(undefined)} lojaId={lojaData} produtoParaguay={modalDeletaProduto} />
 
             <Row className="my-3">
                 <Col xs={6} className="d-flex">
@@ -190,14 +192,14 @@ export function PageProdutoLoja() {
                         overlay={<Tooltip id="download-tooltip">Categoria</Tooltip>}
                     >
                         <Dropdown>
-                            <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                        <Dropdown.Toggle id="dropdown-basic" className=" mx-2 custom-dropdown-categoria">
                                 {isCategoria}
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu>
                                 <Dropdown.Item onClick={() => setCategoria('CELULAR')}>CELULAR</Dropdown.Item>
                                 <Dropdown.Item onClick={() => setCategoria('RELOGIO')}>RELOGIO</Dropdown.Item>
-                                <Dropdown.Item onClick={() => setCategoria('NOTEBOOK')}>NOTEBOOK</Dropdown.Item>
+                          
                             </Dropdown.Menu>
 
                         </Dropdown>
@@ -265,12 +267,15 @@ export function PageProdutoLoja() {
                             <SortableTableHeader css="th170" displayText="Ult. Att." sortKey="ultima_atualizacao" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
                             <SortableTableHeader css="th70" displayText="Vinc." sortKey="vinculos" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
                             <th className="th70">
-                                <span>Est.</span>
+                                <span></span>
+                            </th>
+                            <th className="th70">
+                                <span></span>
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        {!isFetching && produtosLoja?.items?.map((produtoLoja, index) => <ItemTable key={index} produtoLoja={produtoLoja} onVinculo={setVinculoProduto} lojaData={lojaData} categoria={isCategoria} />)}
+                        {!isFetching && produtosLoja?.items?.map((produtoLoja, index) => <ItemTable key={index} produtoLoja={produtoLoja} onVinculo={setVinculoProduto} onEditar={setEditarProduto} onDelete={setDeletaProduto} lojaData={lojaData} categoria={isCategoria} />)}
                     </tbody>
                 </Table>
 
@@ -293,9 +298,11 @@ interface IPropsItensTable {
     lojaData?: ILoja,
     categoria: string;
     onVinculo: (idProdutoParaguay: IProdutoLoja) => void,
+    onEditar: (idProdutoParaguay: IProdutoLoja) => void,
+    onDelete: (idProdutoParaguay: IProdutoLoja) => void,
 }
 
-function ItemTable({ produtoLoja, onVinculo, lojaData, categoria }: IPropsItensTable) {
+function ItemTable({ produtoLoja, onVinculo, onEditar,onDelete, lojaData, categoria }: IPropsItensTable) {
     return (
 
         <React.Fragment>
@@ -338,7 +345,7 @@ function ItemTable({ produtoLoja, onVinculo, lojaData, categoria }: IPropsItensT
                 <td>{produtoLoja.cor}</td>
                 <td>{produtoLoja.rede === 0 ? "N/A" : produtoLoja.rede + "G"}</td>
 
-            
+
                 {categoria === "CELULAR" && (
                     <>
                         <td>{produtoLoja.origem}</td>
@@ -375,12 +382,23 @@ function ItemTable({ produtoLoja, onVinculo, lojaData, categoria }: IPropsItensT
 
                     <Icons tipo="link" />
                 </td>
-                <td className="centralize-icon">
-                    <Form.Check
-                        checked={produtoLoja.estoque}
-                        readOnly
-                    />
+                <td
+                    className="centralize-icon"
+
+                    onClick={() => { onEditar(produtoLoja); }}
+                    role="button"
+                >
+                    <Icons tipo="edit" />
                 </td>
+
+                <td
+                    className="centralize-icon"
+                    onClick={() => { onDelete(produtoLoja); }}
+                    role="button"
+                >
+                    <Icons tipo="trash" />
+                </td>
+
             </tr>
         </React.Fragment >
     );
