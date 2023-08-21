@@ -81,7 +81,6 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
     const mutationCadastraNaoCadastrados = useMutation(() => {
 
         if (!lojaId) throw new Error("Loja Indefinido");
-console.log(listToSave);
         return ProdutoLojaController.cadastro(listToSave);
     }, {
         onSuccess: () => {

@@ -107,7 +107,6 @@ export class ProdutoLojaController {
     }
 
     public static async getId(id: string) {
-        console.log(id);
         const options: RequestInit = {
             method: "GET",
             headers: {
@@ -116,7 +115,6 @@ export class ProdutoLojaController {
         };
         const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/lojas/${id}`, options);
         const responseData: unknown = await response.json();
-        console.log(responseData);
         const produtoLojaSchema = schemaProdutoLoja.parse(responseData);
         return produtoLojaSchema;
     }
