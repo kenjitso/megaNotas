@@ -15,7 +15,7 @@ import { PaginationDown } from "@/components/pagination/PaginationDown";
 import { PaginationUp } from "@/components/pagination/PaginationUp";
 
 
-export function PageLoja() {
+export default function PageLoja() {
     const [params, setParams] = useSearchParams();
     const [lojaIdEdit, setEdit] = useState<string | undefined>(undefined)
     const [lojaIdDelete, setDelete] = useState("");

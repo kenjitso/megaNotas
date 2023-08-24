@@ -13,25 +13,23 @@ import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { Icons } from "@/components/icons/icons";
 import { formatCurrency } from "@/features/FormatCurrency";
 import { ILoja } from "@/datatypes/loja";
-import { ModalSincronismoUpdate } from "./ModalSincronismoUpdate";
 import { useQuery } from "@tanstack/react-query";
 import { compareValues, useSort } from "@/components/utils/FilterArrows";
 
 
-export function PageCatalogo() {
+export default function PageCatalogo() {
 
     const [params, setParams] = useSearchParams();
     const page = parseInt(params.get("page") ?? "1");
     const limit = parseInt(params.get("limit") ?? "20");
     const [catalogoIdEdit, setEdit] = useState<string | undefined>(undefined);
-    const [catalogoSincronismoUpdate, setSincronismoUpdate] = useState<boolean>(false);
     const [catalogoIdDelete, setDelete] = useState("");
     const [filtro, setFiltro] = useState("");
     const { sortOrder, sortBy, handleSort } = useSort<ICatalogo>('nome');
 
 
     const { isFetching, data } = useQuery(["catalogos", filtro], () => {
-        const catalogos = CatalogoController.search(filtro,true);
+        const catalogos = CatalogoController.search(filtro, true);
         return catalogos;
     });
 
@@ -67,7 +65,6 @@ export function PageCatalogo() {
 
             <ModalDesativaCatalogo onHide={() => setDelete("")} catalogoId={catalogoIdDelete} />
             <ModalCadastroCatalogo onHide={() => setEdit(undefined)} catalogoId={catalogoIdEdit} />
-            <ModalSincronismoUpdate onHide={() => setSincronismoUpdate(false)} isVisible={catalogoSincronismoUpdate} catalogos={catalogos?.total} />
 
             <Row className="my-3">
                 <Col xs className="d-flex">
@@ -81,12 +78,6 @@ export function PageCatalogo() {
                     </FloatingLabel>
                 </Col>
                 <Col xs className="d-flex justify-content-end">
-                    <Button
-                        onClick={() => setSincronismoUpdate(true)}
-                        className="me-3 custom-btn"
-                    >
-                        <Icons tipo="update" tamanho={23} /> Sincronizar
-                    </Button>
 
                     <Button
                         className="custom-btn "
@@ -172,7 +163,10 @@ export function PageCatalogo() {
             </Table>
 
 
-            {isFetching && <FragmentLoading />}
+            {isFetching &&
+                <div className="centralized-loading">
+                    <FragmentLoading />
+                </div>}
             <Row className="my-3">
                 <Col xs className="d-flex">
                     <PaginationComponent<ILoja>
@@ -181,7 +175,7 @@ export function PageCatalogo() {
                         onPageChange={handlePageChange}
                         currentPage={catalogos.page ?? 1}
                     />
-               
+
                     <Col className="ml-auto mx-3">
                         <Dropdown > Exibir
                             <Dropdown.Toggle id="dropdown-basic" className="no-caret custom-dropdown mx-1 limitPagination">
@@ -221,6 +215,7 @@ function ItemTable({ catalogo, onEdit, onDelete }: IPropItensTable) {
                     className="responsive-image"
                     src={catalogo.url_thumbnail || ratata}
                     alt="Descrição da imagem"
+                    loading="lazy"
                 />
             </td>
             <td>

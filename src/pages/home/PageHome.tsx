@@ -1,22 +1,21 @@
 import { CatalogoController, ICatalogo, } from "@/datatypes/catalogo";
-import React, { useMemo, useState } from "react";
-import { Button, Col, Dropdown, FloatingLabel, Form, OverlayTrigger, Row, Table, Tooltip, } from "react-bootstrap";
+import React, {  useMemo, useState } from "react";
+import { Button, Col, Dropdown, FloatingLabel, Form, OverlayTrigger, Row, Table, Toast, Tooltip, } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
 import InputSearchDebounce from "@/components/inputs/InputSearchDebounce";
 import FragmentLoading from "@/components/fragments/FragmentLoading";
 import { FreteiroStore } from "@/context/FreteiroStore";
 import { Icons } from "@/components/icons/icons";
 import * as XLSX from 'xlsx';
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { compareValues, useSort } from "@/components/utils/FilterArrows";
 import { ItemTable } from "./TablePageHome";
 import { PaginationUp } from "@/components/pagination/PaginationUp";
 import { PaginationDown } from "@/components/pagination/PaginationDown";
 import { SortableTableHeader } from "@/components/pagination/SortableTableHeader";
-import { ModalSincronismoUpdate } from "../catalogo/ModalSincronismoUpdate";
+import { SincronizaCatalogosStore } from "@/context/SincronizaCatalogosStore";
 
-
-export function PageHome() {
+export default function PageHome() {
     const [params, setParams] = useSearchParams();
     const [filtro, setFiltro] = useState("");
     const [expandedKey, setExpandedKey] = useState<string | null>(null);
@@ -33,13 +32,71 @@ export function PageHome() {
     const [samsungFilter, setSamsungFilter] = useState(false);
     const [celularFilter, setCelularFilter] = useState(false);
     const [relogioFilter, setRelogioFilter] = useState(false);
-   
-    const [catalogoSincronismoUpdate, setSincronismoUpdate] = useState<boolean>(false);
-
+    const queryClient = useQueryClient();
+    const dispatch = SincronizaCatalogosStore.useDispatch();
+    const [isSyncing, setIsSyncing] = useState(false);
     const { isFetching, data } = useQuery(["catalogoshome", filtro], async () => {
         let catalogo = await CatalogoController.searchCompetidor(filtro);
         return catalogo;
     });
+
+    const sincronizaValorML = async () => {
+
+        if (isSyncing) {
+            dispatch({
+                type: 'SET_MESSAGE',
+                payload: 'Já existe uma sincronização em andamento.'
+            });
+            return;
+        }
+        setIsSyncing(true);
+        const totalCatalogos = Number(catalogos.total) || 1;
+        const chunkSize = 5;
+        const currentDate = new Date();
+        const isoDate = currentDate.toISOString();
+        dispatch({
+            type: 'SET_MESSAGE',
+            payload: `Atualizando 0 itens de ${totalCatalogos}`
+        });
+
+
+        try {
+            let newSucesso = 0;
+
+            for (let i = 0; i < totalCatalogos; i += chunkSize) {
+
+
+                const currentChunk = Math.min(chunkSize, totalCatalogos - i);
+                const result = await CatalogoController.sync(isoDate, currentChunk);
+
+                newSucesso = newSucesso + parseInt(result.sucesso);
+
+                dispatch({
+                    type: 'SET_MESSAGE',
+                    payload: `Atualizando dados ML ${newSucesso} itens de ${result.total}`
+                });
+
+            }
+
+            dispatch({
+                type: 'SET_MESSAGE',
+                payload: `Dados ML sincronizados com sucesso!`
+            });
+        } catch (error) {
+
+            dispatch({
+                type: 'SET_MESSAGE',
+                payload: `Erro ao sincronizar os dados ML.`
+            });
+        } finally {
+            setIsSyncing(false);
+        }
+
+        queryClient.invalidateQueries(["catalogos"]);
+        queryClient.invalidateQueries(["catalogoshome"]);
+    };
+
+
 
     const catalogos = useMemo(() => {
 
@@ -115,9 +172,9 @@ export function PageHome() {
                     if (relogioFilter && nome.includes("RELOGIO")) {
                         return true; // Se o filtro xiaomi estiver ativado e o nome incluir "XIAOMI", inclua este competidor.
                     }
-           
+
                     // Se nenhum filtro estiver ativo, mostre todos. Caso contrário, não mostre o competidor.
-                    return !(indiaFilter || globalFilter || chinaFilter || indonesiaFilter || appleFilter || samsungFilter || xiaomiFilter || celularFilter || relogioFilter );
+                    return !(indiaFilter || globalFilter || chinaFilter || indonesiaFilter || appleFilter || samsungFilter || xiaomiFilter || celularFilter || relogioFilter);
                 }),
             }))
             .filter(catalogo => catalogo.competidores.length > 0); // Remove catálogos que agora estão sem competidores.
@@ -132,7 +189,7 @@ export function PageHome() {
         return {
             page, total, limit, items
         }
-    }, [data, freteiro, page, limit, sortBy, sortOrder, indiaFilter, globalFilter, chinaFilter, indonesiaFilter, appleFilter, samsungFilter, xiaomiFilter,celularFilter,relogioFilter])
+    }, [data, freteiro, page, limit, sortBy, sortOrder, indiaFilter, globalFilter, chinaFilter, indonesiaFilter, appleFilter, samsungFilter, xiaomiFilter, celularFilter, relogioFilter])
 
     function exportCatalogoExcel(catalogos: ICatalogo[]) {
         const filteredCatalogos = catalogos.map(({
@@ -165,12 +222,9 @@ export function PageHome() {
         setParams(`?limit=${limit}&page=1`);
     }
 
-
     return (
         <React.Fragment>
 
-
-            <ModalSincronismoUpdate onHide={() => setSincronismoUpdate(false)} isVisible={catalogoSincronismoUpdate} catalogos={catalogos?.total} />
 
             <Row className="my-3">
                 <Col xs={12} className="d-flex align-items-center">
@@ -285,7 +339,6 @@ export function PageHome() {
                                                 label="RELOGIO"
                                             />
                                         </Dropdown.Item>
-                                   
                                     </Col>
                                 </Row>
 
@@ -298,22 +351,25 @@ export function PageHome() {
                         placement="top"
                         overlay={<Tooltip id="download-tooltip">Exportar para Excel</Tooltip>}
                     >
-                        <Button id="dropdown-basic" className="custom-dropdown me-0" onClick={() => exportCatalogoExcel(catalogos.items)}>
+                        <Button id="dropdown-basic" className="custom-dropdown me-2" onClick={() => exportCatalogoExcel(catalogos.items)}>
                             <Icons tipo="downloadXLSX" tamanho={20} />
                         </Button>
                     </OverlayTrigger>
-{/*
+
                     <OverlayTrigger
                         placement="top"
                         overlay={<Tooltip id="download-tooltip">Sincronizar Catalogos</Tooltip>}
                     >
-                        <Button id="dropdown-basic" className="custom-dropdown" onClick={() => setSincronismoUpdate(true)}
-
+                        <Button
+                            id="dropdown-basic"
+                            className="custom-dropdown"
+                            onClick={() => sincronizaValorML()}
                         >
                             <Icons tipo="update" tamanho={23} />
                         </Button>
+
                     </OverlayTrigger>
-*/}
+
                 </Col>
             </Row>
 
@@ -359,7 +415,9 @@ export function PageHome() {
                 </tbody>
 
             </Table>
-            {isFetching && <FragmentLoading />}
+            {isFetching && <div className="centralized-loading">
+                <FragmentLoading />
+            </div>}
 
             <PaginationDown
                 handlePageChange={handlePageChange}

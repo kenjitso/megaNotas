@@ -12,9 +12,8 @@ export default function PageUsuario() {
             <MenuMega/>
            
             <Container fluid style={{marginTop:"10px"}} className="content-wrapper px-4">
-                <Outlet />
+                <Outlet /> {/*Server como um global do menuMega para exibir em todas as rotas*/}
             </Container>
-
         </React.Fragment>)
 
 }

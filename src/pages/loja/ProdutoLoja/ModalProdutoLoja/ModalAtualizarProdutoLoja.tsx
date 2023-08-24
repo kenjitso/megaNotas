@@ -63,6 +63,7 @@ export function ModalAtualizarProdutoLoja({ onHide, lojaId, produtoParaguay }: I
         onSuccess: () => {
             setIsModalTotalItens(true);
             queryClient.invalidateQueries(["produtosloja"]);
+            queryClient.invalidateQueries(["catalogoshome"]);
             toast.success("Valores dos produtos atualizados com sucesso!");
 
         }

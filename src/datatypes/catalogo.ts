@@ -213,10 +213,6 @@ export class CatalogoController {
         return catalogosSchema;
     }
 
-
-
-
-
     public static async searchCompetidor(q: string = "") {
 
         const params = new URLSearchParams();
@@ -231,12 +227,9 @@ export class CatalogoController {
 
         const response = await fetch(`${import.meta.env.VITE_APP_BACKEND}/catalogos/competidores?${params}`, options);
         const responseData: unknown = await response.json();
-
         const catalogos = z.object({
             items: z.array(schemaCatalogo).transform(items => items.filter(item => item.competidores && item.competidores.length > 0)),
         }).transform(dados => dados.items).parse(responseData);
-
-
 
         return catalogos;
     }

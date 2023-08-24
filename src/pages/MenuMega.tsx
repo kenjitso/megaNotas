@@ -1,13 +1,14 @@
 import { Icons } from "@/components/icons/icons";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Form, Nav, Navbar } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ratata from "../assets/megaPreco.svg"
 import { ModalDolar } from "./ModalDolar";
-import { FreteiroController, IFreteiro } from "@/datatypes/freteiro";
+import { FreteiroController } from "@/datatypes/freteiro";
 import { FreteiroStore } from "@/context/FreteiroStore";
 import { useQuery } from "@tanstack/react-query";
-
+import { SincronizaCatalogosStore } from "@/context/SincronizaCatalogosStore";
+import { toast } from "react-toastify";
 
 interface CotacaoMoedas {
   [key: string]: {
@@ -32,6 +33,9 @@ export function MenuMega() {
   const [filtro, setFiltro] = useState("");
   const { freteiro } = FreteiroStore.useStore();
   const dispatch = FreteiroStore.useDispatch();
+  const { sincronizaCatalogos } = SincronizaCatalogosStore.useStore();
+
+
 
 
   const { data: freteiros } = useQuery(["freteiros", filtro], async () => {
@@ -42,6 +46,28 @@ export function MenuMega() {
       };
     });
   });
+
+  useEffect(() => {
+    // Verifica se sincronizaCatalogos tem algum valor
+    if (sincronizaCatalogos && sincronizaCatalogos.length > 0) {
+        const isSuccessfulMessage = sincronizaCatalogos === "Dados ML sincronizados com sucesso!";
+        
+        // Se o toast com o ID "sincroiniza_dados_ml" NÃO estiver ativo, exiba-o.
+        if (!toast.isActive("sincroiniza_dados_ml")) {
+          toast.info(sincronizaCatalogos, { 
+            toastId: "sincroiniza_dados_ml",
+            autoClose: isSuccessfulMessage ? 5000 : false // Define autoClose para 5000ms se for a mensagem de sucesso, caso contrário, desativa o autoClose
+          });
+        } else {
+          // Se o toast já estiver ativo, atualiza o conteúdo
+          toast.update("sincroiniza_dados_ml", {
+            render: sincronizaCatalogos,
+            autoClose: isSuccessfulMessage ? 5000 : false
+          });
+        }
+    }
+  }, [sincronizaCatalogos]);
+
 
 
   useEffect(() => {
@@ -108,6 +134,7 @@ export function MenuMega() {
                 <Nav.Item>
                   <Nav.Link eventKey="/catalogos" title="Catalogos">Catalogos</Nav.Link>
                 </Nav.Item>
+
               </Nav>
             </Nav>
 

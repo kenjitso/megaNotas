@@ -1,7 +1,5 @@
 import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 
-
-
 interface Mapeamento_Item {
     regex: RegExp;
     valor: string | number;
@@ -140,9 +138,7 @@ function identifica_Valor(produtoLoja: IProdutoLoja, mapeamento: Mapeamento_Item
 export const formataSmartWatch = (produtoLoja: IProdutoLoja): IProdutoLoja | null => {
 
 
-
     if (produtoLoja.nome.includes("A2783 RED")) produtoLoja.nome = produtoLoja.nome.replace("A2783 RED", "VERMELHO");
-
 
     const marca = identifica_Valor(produtoLoja, MARCAS_MAPEAMENTO);
     if (marca) produtoLoja.marca = marca as string;
@@ -152,7 +148,6 @@ export const formataSmartWatch = (produtoLoja: IProdutoLoja): IProdutoLoja | nul
 
     const tipoPulseira = identifica_Valor(produtoLoja, TIPO_PULSEIRA_MAPEAMENTO);
     if (tipoPulseira) produtoLoja.tipoPulseira = tipoPulseira as string;
-
 
     const ram = identifica_Valor(produtoLoja, RAM_MAPEAMENTO);
     if (ram) produtoLoja.ram = ram as number;

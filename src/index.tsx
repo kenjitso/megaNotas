@@ -10,6 +10,7 @@ import "@/assets/config.scss";
 import "@/assets/global.css";
 import "@/assets/darkmode.css";
 import { FreteiroStore } from "./context/FreteiroStore";
+import { SincronizaCatalogosStore } from "./context/SincronizaCatalogosStore";
 
 
 const queryClient = new QueryClient({
@@ -27,7 +28,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <QueryClientProvider client={queryClient}>
             <ThemeStore.Provider>
                 <FreteiroStore.Provider>
+                <SincronizaCatalogosStore.Provider>
                     <App />
+                    </SincronizaCatalogosStore.Provider>
                 </FreteiroStore.Provider>
             </ThemeStore.Provider>
         </QueryClientProvider>

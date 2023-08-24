@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
-import { Button, Col, Dropdown, FloatingLabel, Row, Table } from "react-bootstrap";
+import { Button, Col, FloatingLabel, Row, Table } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
-import { PaginationComponent } from "@/components/pagination/PaginationComponent";
 import { FreteiroController, IFreteiro } from "@/datatypes/freteiro";
 import { ModalCadastroFreteiro } from "./ModalCadastroFreteiro";
 import React from "react";
@@ -16,7 +15,7 @@ import { compareValues, useSort } from "@/components/utils/FilterArrows";
 import { PaginationUp } from "@/components/pagination/PaginationUp";
 import { PaginationDown } from "@/components/pagination/PaginationDown";
 
-export function PageFreteiro() {
+export default function PageFreteiro() {
     const [params, setParams] = useSearchParams();
     const [freteiroIdEdit, setEdit] = useState<string | undefined>(undefined);
     const [freteiroIdDelete, setDelete] = useState<string | undefined>("");

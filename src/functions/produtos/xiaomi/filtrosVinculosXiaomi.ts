@@ -13,7 +13,7 @@ export function filtrosVinculosXiaomi(produtoParaguay: IProdutoLoja, produtoML: 
 
 
     const COR_MAPEAMENTO: { [key: string]: string[] } = {
-        "PRATA": ["PRATA", "MOONSILVER", "SILVER"],
+        "PRATA": ["PRATA", "MOONSILVER", "SILVER","MOONLIGHT SILVER"],
 
         "PRETO": [
             "PRETO", "SPACE BLACK", "GRAFITE", "BLACK", "MATTE BLACK", "GRAPHITE GRAY",
@@ -85,8 +85,10 @@ export function filtrosVinculosXiaomi(produtoParaguay: IProdutoLoja, produtoML: 
     if (produtoML.modelo) {
         if (produtoParaguay.nome.toUpperCase().trim() === "11 LITE" && produtoML.modelo.toUpperCase().trim() === "11 LITE") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "11 LITE NE" && produtoML.modelo.toUpperCase().trim() === "11 LITE 5G NE") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "11 LITE NE" && produtoML.modelo.toUpperCase().trim() === "11 LITE 5G") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "12 LITE" && produtoML.modelo.toUpperCase().trim() === "12 LITE 5G") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "12" && produtoML.modelo.toUpperCase().trim() === "12") similarity++;
+        if (produtoParaguay.nome.toUpperCase().trim() === "12 (2022)" && produtoML.modelo.toUpperCase().trim() === "12") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "12X (2022)" && produtoML.modelo.toUpperCase().trim() === "12X") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "13 LITE" && produtoML.modelo.toUpperCase().trim() === "13 LITE DUAL SIM") similarity++;
         if (produtoParaguay.nome.toUpperCase().trim() === "13" && produtoML.modelo.toUpperCase().trim() === "13") similarity++;

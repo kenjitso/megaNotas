@@ -22,13 +22,14 @@ import { ModalDeletaProdutoLoja } from "./ModalDeletaProdutoLoja";
 import { ModalTableRemoveVinculo } from "./ModalProdutoLoja/ModalTableRemoveVinculo";
 import { buildUrl } from "@/features/UrlLinkLojas";
 import { toast } from "react-toastify";
-import { ICatalogo } from "@/datatypes/catalogo";
+import { SincronizaCatalogosStore } from "@/context/SincronizaCatalogosStore";
+import { formataSemCategoria } from "@/functions/produtos/formataSemCategoria";
 
 
-type Categoria = 'CELULAR' | 'RELOGIO' | '';
+type Categoria = 'CELULAR' | 'RELOGIO' | 'SEM CATEGORIA';
 
 
-export function PageProdutoLoja() {
+export default function PageProdutoLoja() {
     const [params, setParams] = useSearchParams();
     const { lojaId } = useParams();
     const navigate = useNavigate();
@@ -61,7 +62,7 @@ export function PageProdutoLoja() {
 
             if (produtoLoja.nome.includes("CELULAR")) formataSmartPhone(produtoLojaAtualizado);
             if (produtoLoja.nome.includes("RELOGIO")) formataSmartWatch(produtoLojaAtualizado);
-            if (!produtoLoja.nome.includes("CELULAR") || !produtoLoja.nome.includes("RELOGIO")) formataSmartPhone(produtoLojaAtualizado);
+            if (!produtoLoja.nome.includes("CELULAR") || !produtoLoja.nome.includes("RELOGIO")) formataSemCategoria(produtoLojaAtualizado);
 
             return produtoLojaAtualizado;
         }) ?? [];
@@ -74,7 +75,7 @@ export function PageProdutoLoja() {
             dados = dados.filter(produto => filterByAttributes(produto, filtro));
         }
 
-       
+
 
         if (isFilteredDesvinculados) {
             dados = dados.filter(produto => !produto.vinculos || produto.vinculos.length === 0);
@@ -85,13 +86,13 @@ export function PageProdutoLoja() {
         }
 
         if (isCategoria !== undefined) {
-            if (isCategoria === '') {
+            if (isCategoria === 'SEM CATEGORIA') {
                 dados = dados.filter(produto => !produto.categoria || produto.categoria === '');
             } else {
                 dados = dados.filter(produto => produto.categoria === isCategoria);
             }
         }
-        
+
 
         const sortedData = [...dados].sort(compareValues(sortBy, sortOrder));
         const total = sortedData.length;
@@ -212,7 +213,7 @@ export function PageProdutoLoja() {
                             <Dropdown.Menu>
                                 <Dropdown.Item onClick={() => { setCategoria('CELULAR'); handleFilterCategoria(); }}>CELULAR</Dropdown.Item>
                                 <Dropdown.Item onClick={() => { setCategoria('RELOGIO'); handleFilterCategoria(); }}>RELOGIO</Dropdown.Item>
-                                <Dropdown.Item onClick={() => { setCategoria(''); handleFilterCategoria(); }}>SEM CATEGORIA</Dropdown.Item>
+                                <Dropdown.Item onClick={() => { setCategoria('SEM CATEGORIA'); handleFilterCategoria(); }}>SEM CATEGORIA</Dropdown.Item>
                             </Dropdown.Menu>
 
                         </Dropdown>
@@ -272,8 +273,12 @@ export function PageProdutoLoja() {
                             <SortableTableHeader css="th150" displayText="Codigo" sortKey="codigo" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
                             <SortableTableHeader css="th150" displayText="Marca" sortKey="marca" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
                             <SortableTableHeader css="th250" displayText="Modelo" sortKey="nome" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
-                            <SortableTableHeader css="th150" displayText="Cor" sortKey="cor" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
-                            <SortableTableHeader css="th150" displayText="Rede" sortKey="rede" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                            {isCategoria !== "SEM CATEGORIA" && (
+                                <>
+                                    <SortableTableHeader css="th150" displayText="Rede" sortKey="rede" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                                    <SortableTableHeader css="th150" displayText="Cor" sortKey="cor" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                                </>
+                            )}
                             {isCategoria === "CELULAR" && (
                                 <>
                                     <SortableTableHeader css="th150" displayText="Origem" sortKey="origem" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
@@ -289,8 +294,12 @@ export function PageProdutoLoja() {
                                 </>
                             )}
                             <SortableTableHeader css="th130" displayText="Preço U$" sortKey="preco" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
-                            <SortableTableHeader css="th170" displayText="Ult. Att." sortKey="ultima_atualizacao" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
-                            <SortableTableHeader css="th70" displayText="Vinc." sortKey="vinculos" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                            {isCategoria !== "SEM CATEGORIA" && (
+                                <>
+                                    <SortableTableHeader css="th170" displayText="Ult. Att." sortKey="ultima_atualizacao" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                                    <SortableTableHeader css="th70" displayText="Vinc." sortKey="vinculos" handleSort={handleSort} sortOrder={sortOrder} sortBy={sortBy} />
+                                </>
+                            )}
                             <th className="th70">
                                 <span></span>
                             </th>
@@ -300,7 +309,7 @@ export function PageProdutoLoja() {
                         </tr>
                     </thead>
                     <tbody>
-                        {!isFetching && produtosLoja?.items?.map((produtoLoja, index) => <ItemTable key={index} produtoLoja={produtoLoja} onVinculo={setVinculoProduto} onEditar={setEditarProduto} onDelete={setDeletaProduto} lojaData={lojaData} categoria={isCategoria} />)}
+                        {!isFetching && produtosLoja?.items?.map((produtoLoja, index) => <ItemTable key={index} produtoLoja={produtoLoja} onVinculo={setVinculoProduto} onEditar={setEditarProduto} onDelete={setDeletaProduto} lojaData={lojaData} isCategoria={isCategoria} />)}
                     </tbody>
                 </Table>
 
@@ -321,13 +330,13 @@ export function PageProdutoLoja() {
 interface IPropsItensTable {
     produtoLoja: IProdutoLoja,
     lojaData?: ILoja,
-    categoria: string;
+    isCategoria: string;
     onVinculo: (idProdutoParaguay: IProdutoLoja) => void,
     onEditar: (idProdutoParaguay: IProdutoLoja) => void,
     onDelete: (idProdutoParaguay: IProdutoLoja) => void,
 }
 
-function ItemTable({ produtoLoja, onVinculo, onEditar, onDelete, lojaData, categoria }: IPropsItensTable) {
+function ItemTable({ produtoLoja, onVinculo, onEditar, onDelete, lojaData, isCategoria }: IPropsItensTable) {
     return (
 
         <React.Fragment>
@@ -350,13 +359,15 @@ function ItemTable({ produtoLoja, onVinculo, onEditar, onDelete, lojaData, categ
                     >
                         {produtoLoja.nome}
                     </a>
-
                 </td>
-                <td>{produtoLoja.cor}</td>
-                <td>{produtoLoja.rede === 0 ? "N/A" : produtoLoja.rede + "G"}</td>
 
-
-                {categoria === "CELULAR" && (
+                {isCategoria !== "SEM CATEGORIA" && (
+                    <>
+                        <td>{produtoLoja.cor}</td>
+                        <td>{produtoLoja.rede === 0 ? "N/A" : produtoLoja.rede + "G"}</td>
+                    </>
+                )}
+                {isCategoria === "CELULAR" && (
                     <>
                         <td>{produtoLoja.origem}</td>
                         <td>{produtoLoja.ram}</td>
@@ -364,34 +375,31 @@ function ItemTable({ produtoLoja, onVinculo, onEditar, onDelete, lojaData, categ
                     </>
                 )}
 
-
-                {categoria === "RELOGIO" && (
+                {isCategoria === "RELOGIO" && (
                     <>
                         <td>{produtoLoja.caixaMedida}</td>
                         <td>{produtoLoja.tipoPulseira}</td>
                     </>
                 )}
 
-
-
-
                 <td>U$: {formatCurrency(produtoLoja.preco)}</td>
+                {isCategoria !== "SEM CATEGORIA" && (
+                    <>
+                        <td>{format(produtoLoja.ultima_atualizacao, 'dd/MM/yyyy HH:mm')}</td>
+                        <td
+                            className="centralize-icon"
+                            style={{
+                                backgroundColor: produtoLoja.vinculos && produtoLoja.vinculos.length > 0 ? "green" : "red"
+                            }}
+                            onClick={() => { onVinculo(produtoLoja); }}
+                            role="button"
+                            aria-label={`Vinculos: ${produtoLoja.vinculos.length}`}
+                        >
 
-                <td>{format(produtoLoja.ultima_atualizacao, 'dd/MM/yyyy HH:mm')}</td>
-
-
-                <td
-                    className="centralize-icon"
-                    style={{
-                        backgroundColor: produtoLoja.vinculos && produtoLoja.vinculos.length > 0 ? "green" : "red"
-                    }}
-                    onClick={() => { onVinculo(produtoLoja); }}
-                    role="button"
-                    aria-label={`Vinculos: ${produtoLoja.vinculos.length}`}
-                >
-
-                    <Icons tipo="link" />
-                </td>
+                            <Icons tipo="link" />
+                        </td>
+                    </>
+                )}
                 <td
                     className="centralize-icon"
 
@@ -415,10 +423,10 @@ function ItemTable({ produtoLoja, onVinculo, onEditar, onDelete, lojaData, categ
 }
 
 
-function filterByAttributes(produto:IProdutoLoja, filtro:string) {
+function filterByAttributes(produto: IProdutoLoja, filtro: string) {
     const loweredFiltro = filtro.toLowerCase();
     return produto.codigo.toLowerCase().includes(loweredFiltro) ||
-           produto.marca.toLowerCase().includes(loweredFiltro) ||
-           produto.nome.toLowerCase().includes(loweredFiltro) ||
-           produto.cor.toLowerCase().includes(loweredFiltro);
+        produto.marca.toLowerCase().includes(loweredFiltro) ||
+        produto.nome.toLowerCase().includes(loweredFiltro) ||
+        produto.cor.toLowerCase().includes(loweredFiltro);
 }

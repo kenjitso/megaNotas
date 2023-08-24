@@ -23,11 +23,10 @@ export function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropIt
                         className="responsive-image"
                         src={catalogo.url_thumbnail || ratata}
                         alt="Descrição da imagem"
+                        loading="lazy"
                     />
                 </td>
-
                 <td className="th200">
-
                     <a
                         style={{ color: "blue" }}
 
@@ -36,11 +35,9 @@ export function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropIt
                         rel="noopener noreferrer"
                         title={catalogo.nome}
                     >
-
                         {catalogo.nome}
                     </a>
                 </td>
-
                 <td className="th110" style={{ textAlign: "center" }}>
                     U${" "}
                     {formatCurrency(catalogo.competidores[0]?.produto.preco ?? 0)}
@@ -61,7 +58,6 @@ export function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropIt
                     R${" "}
                     {formatCurrency(catalogo.lucroC)}
                 </td>
-
                 <td className="th110" style={{ textAlign: "center", color: catalogo.lucroP < 0 ? "red" : catalogo.lucroP > 0 ? "green" : "black" }}>
                     R${" "}
                     {formatCurrency(catalogo.lucroP)}
@@ -69,7 +65,6 @@ export function ItemTable({ catalogo, eventKey, onToggle, expandedKey }: IPropIt
                 <td className="th130" style={{ textAlign: "center", color: catalogo.margemC < 0 ? "red" : catalogo.margemC > 0 ? "green" : "black" }}>
                     {catalogo.margemC.toFixed(2)}%
                 </td>
-
                 <td className="th130" style={{ textAlign: "center", color: catalogo.margemP < 0 ? "red" : catalogo.margemP > 0 ? "green" : "black" }}>
                     {catalogo.margemP.toFixed(2)}%
                 </td>

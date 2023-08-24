@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function PaginaNaoEncontrada() {
+export default function PaginaNaoEncontrada() {
   return (
     <div>
       <h1>404 - Página não encontrada</h1>

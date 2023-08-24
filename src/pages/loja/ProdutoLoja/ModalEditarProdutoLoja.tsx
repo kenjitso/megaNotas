@@ -104,7 +104,7 @@ export function ModalEditarProdutoLoja({ onHide, produtoParaguay, lojaId }: IPro
                                             <FloatingLabel controlId="formNomeOriginal" label="Descrição">
                                                 <Form.Control
                                                     title="Por favor, insira apenas caracteres não numéricos"
-                                                    value={produtoLojaMutator.state.nome_original}
+                                                    value={produtoLojaMutator.state.nome_original.replace(/\s+/g, ' ')}
 
                                                     onChange={(event) => produtoLojaMutator.update("nome_original", event.target.value)}
                                                     required

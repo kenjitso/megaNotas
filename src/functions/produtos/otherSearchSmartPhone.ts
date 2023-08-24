@@ -20,11 +20,11 @@ export interface SearchResponse {
     searchFiltro: string;
 }
 
-
 export async function otherSearchSmartPhone(produto: IProdutoLoja) {
     let searchFiltro = "";
 
     if (produto.nome.trim().toUpperCase() === "IPHONE 11 PRO MAX" && produto.cor.trim().toUpperCase() === "CINZA") searchFiltro = "11 Pro Max" + produto.capacidade + " GB  CINZA-ESPACIAL";
+  
     //IPHONE
     if (produto.nome.trim().toUpperCase() === "IPHONE 11 PRO MAX" && produto.cor.trim().toUpperCase() === "CINZA") searchFiltro = "11 Pro Max" + produto.capacidade + " GB  CINZA-ESPACIAL";
     if (produto.nome.trim().toUpperCase() === "IPHONE 11 PRO MAX") searchFiltro = "11 PRO MAX " + produto.capacidade + " GB " + produto.cor.toUpperCase();
@@ -32,8 +32,6 @@ export async function otherSearchSmartPhone(produto: IProdutoLoja) {
     if (produto.nome.trim().toUpperCase() === "IPHONE 14 PRO" && produto.capacidade === 1024) searchFiltro = "APPLE IPHONE 14 PRO (1 TB) - " + produto.cor.toUpperCase();
     if (produto.nome.trim().toUpperCase() === "IPHONE 14 PRO MAX" && produto.capacidade === 1024) searchFiltro = "APPLE IPHONE 14 PRO MAX (1 TB) - " + produto.cor.toUpperCase();
     if (produto.nome.trim().toUpperCase() === "IPHONE 14 PLUS") searchFiltro = "APPLE IPHONE 14 PLUS (" + produto.capacidade + " GB) - ESTELAR";
-
-
 
     //SAMSUNG
     if (produto.marca.trim().toUpperCase() === "SAMSUNG" && produto.nome.trim().toUpperCase() === "A03") searchFiltro = produto.marca + " " + produto.nome + "DUAL SIM " + produto.capacidade + "GB " + produto.cor + " " + produto.ram + "GB RAM";
@@ -50,7 +48,6 @@ export async function otherSearchSmartPhone(produto: IProdutoLoja) {
     if (produto.marca.trim().toUpperCase() === "SAMSUNG" && produto.nome.trim().toUpperCase() === "GALAXY S23 ULTRA" && produto.cor.trim().toUpperCase() === "BRANCO") searchFiltro = "SAMSUNG GALAXY S23 ULTRA DUAL SIM " + produto.capacidade + " GB CREME " + produto.ram + " GB RAM";
     if (produto.marca.trim().toUpperCase() === "SAMSUNG" && produto.nome.trim().toUpperCase() === "GALAXY Z FOLD 5" && produto.cor.trim().toUpperCase() === "AZUL") searchFiltro = "SMARTPHONE SAMSUNG GALAXY Z FOLD5 " + produto.rede + " , " + produto.capacidade + "TB, " + produto.ram + "GB RAM, TELA INFINITA DE 7.6 AZUL";
     if (produto.marca.trim().toUpperCase() === "SAMSUNG" && produto.nome.trim().toUpperCase() === "A34") searchFiltro = produto.marca + " " + produto.nome + " " + produto.rede + "G DUAL SIM " + produto.capacidade + "GB " + produto.cor + " " + produto.ram + "GB RAM";
-
 
     // XIAOMI
     if (produto.marca.trim().toUpperCase() === "XIAOMI" && produto.nome.trim().toUpperCase() === "12X") searchFiltro = "Xiaomi 12X Dual SIM" + produto.capacidade + " GB " + produto.cor + " " + produto.ram + " GB RAM";
@@ -90,7 +87,6 @@ export async function otherSearchSmartPhone(produto: IProdutoLoja) {
     if (produto.marca.trim().toUpperCase() === "XIAOMI" && produto.nome.trim().toUpperCase() === "REDMI NOTE 12") searchFiltro = "Xiaomi Redmi Note 12 " + produto.rede + " Dual SIM " + produto.capacidade + " GB " + produto.cor + " " + produto.ram + " GB RAM";
 
     searchFiltro = (produto.marca + " " + produto.nome.trim() + " DUAL SIM " + produto.rede + "G " + produto.cor + " " + produto.ram + "GB " + produto.capacidade + "GB");
-
 
     return searchFiltro;
 }

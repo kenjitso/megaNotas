@@ -13,7 +13,7 @@ import { Modal, Button, Row, Col, FloatingLabel, Table, Form } from "react-boots
 interface IProps {
     lojaId?: ILoja;
     produtoParaguay?: IProdutoLoja;
-    onHide?: () => void;
+    onHide: () => void;
     onOpenModalVinculoML?: () => void;
 
 }
@@ -28,7 +28,7 @@ export function ModalTableRemoveVinculo({ onHide, produtoParaguay, lojaId }: IPr
             onHide={onHide}
         >
             <Modal.Header closeButton>
-                <Modal.Title> Vincular Catálogo ao Produto do Paraguay</Modal.Title>
+                <Modal.Title> Vincular ou Desvincular Catálogo ao Produto do Paraguay</Modal.Title>
             </Modal.Header>
             <Modal.Body className="text-center">
                 <a
@@ -47,8 +47,6 @@ export function ModalTableRemoveVinculo({ onHide, produtoParaguay, lojaId }: IPr
                     {"(" + produtoParaguay?.origem + ")"}
                 </a>
 
-
-
                 <br />
                 <br /><br />
                 <TableVinculoManual produtoParaguay={produtoParaguay} onHide={onHide} />
@@ -66,9 +64,6 @@ export function TableVinculoManual({ produtoParaguay, onHide }: IProps) {
     const [lastCheckedIndex, setLastCheckedIndex] = useState<number>(0);
     const queryClient = useQueryClient();
     const { sortOrder, sortBy, handleSort } = useSort<ICatalogo>('nome');
-
-
-
     const { isFetching, data } = useQuery(["lojamanual", filtro], () => {
         const catalogoVinculos = CatalogoController.search(filtro, true);
         return catalogoVinculos
@@ -100,18 +95,18 @@ export function TableVinculoManual({ produtoParaguay, onHide }: IProps) {
         if (!produtoParaguay) throw new Error("Produto Indefinido");
         produtoParaguay.vinculos = [...selectedIds.values()];
 
-       
             // Verifica e ajusta os campos corPulseira e tipoPulseira se necessário
             if (produtoParaguay.corPulseira === "n/a") produtoParaguay.corPulseira = "";
             if (produtoParaguay.tipoPulseira === "n/a") produtoParaguay.tipoPulseira = "";
             if (produtoParaguay.cor === "n/a") produtoParaguay.cor = "";
 
+            
             // Ajusta o nome com base na categoria
             if (produtoParaguay.categoria === "CELULAR") {
-                produtoParaguay.nome = produtoParaguay.categoria + " " + produtoParaguay.marca + " " + produtoParaguay.nome + " #* " + produtoParaguay.cor + " " + produtoParaguay.rede + "G R" + produtoParaguay.ram + "GB C" + produtoParaguay.capacidade + "GB ";
+                produtoParaguay.nome = produtoParaguay.nome_original;
             }
             if (produtoParaguay.categoria === "RELOGIO") {
-                produtoParaguay.nome = produtoParaguay.categoria + " " + produtoParaguay.marca + " " + produtoParaguay.nome + " #* " + produtoParaguay.cor + " " + produtoParaguay.rede + "G " + produtoParaguay.caixaMedida + " " + produtoParaguay.corPulseira + " " + produtoParaguay.tipoPulseira;
+                produtoParaguay.nome = produtoParaguay.nome_original;
             }
 
             // Após realizar os ajustes, chama a atualização no ProdutoLojaController
@@ -119,9 +114,11 @@ export function TableVinculoManual({ produtoParaguay, onHide }: IProps) {
       
     }, {
         onSuccess: () => {
+            onHide();
             queryClient.invalidateQueries(["catalogoshome"]);
             queryClient.invalidateQueries(["produtosloja"]);
             queryClient.invalidateQueries(["catalogos"]);
+           
         }
     });
 
@@ -252,7 +249,7 @@ export function TableVinculoManual({ produtoParaguay, onHide }: IProps) {
                 variant="secondary"
                 onClick={() => mutation.mutate()}
             >
-                Confirmar Manual
+                Confirmar
             </Button>
         </>
     );

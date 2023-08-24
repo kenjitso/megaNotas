@@ -1,13 +1,11 @@
 import FragmentLoading from "@/components/fragments/FragmentLoading";
-import { IProdutoLoja, ProdutoLojaController } from "@/datatypes/ProdutoLoja";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { IProdutoLoja } from "@/datatypes/ProdutoLoja";
 import { useState } from "react";
 import { Col, FloatingLabel, Form, Row, Table } from "react-bootstrap";
 import { useQuery } from "@tanstack/react-query";
 import ratata from "../../../../assets/ratata.svg";
 import InputSearchVinculoCatalogo from "@/components/inputs/InputSearchVinculoCatalogo";
 import { ILoja } from "@/datatypes/loja";
-
 import { filtrosVinculosXiaomi } from "@/functions/produtos/xiaomi/filtrosVinculosXiaomi";
 import { filtrosVinculosSamsung } from "@/functions/produtos/samsung/filtroVinculosSamsung";
 import { filtrosVinculosSmartWatch } from "@/functions/produtos/apple/filtrosVinculosWatch";
@@ -36,8 +34,6 @@ export function ModalTableSearchCatalogo({ produtoParaguay, currentIndex, onProd
     const [initialSearchString, setInitialSearchString] = useState("");
 
 
-    let searchString = "";
-
     const [filtro, setFiltro] = useState("");
 
     const { isFetching, data } = useQuery(["catalogosML", filtro], async () => {
@@ -63,8 +59,6 @@ export function ModalTableSearchCatalogo({ produtoParaguay, currentIndex, onProd
 
         return { catalogosML, mostSimilarProduct, highestSimilarity };
     }, { enabled: !!filtro || (produtoAtualParaguay?.categoria === "CELULAR") || (produtoAtualParaguay?.categoria === "RELOGIO") });
-
-
 
 
     React.useEffect(() => {
@@ -155,53 +149,56 @@ export function ModalTableSearchCatalogo({ produtoParaguay, currentIndex, onProd
                         </tr>
                     </thead>
                     <tbody>
-                        {data?.catalogosML?.map((catalogoProduto, index) => {
+    {data?.catalogosML && data.catalogosML.length > 0 ? (
+        data.catalogosML.map((catalogoProduto, index) => {
+            const currentProductUrl = `https://www.mercadolivre.com.br/p/${catalogoProduto.codigo_catalogo}`;
 
-                            const currentProductUrl = `https://www.mercadolivre.com.br/p/${catalogoProduto.codigo_catalogo}`;
+            return (
+                <tr key={index}>
+                    <td>
+                        <img
+                            className="responsive-image"
+                            src={catalogoProduto.url_Imagem || ratata}
+                            alt="Descrição da imagem"
+                        />
+                    </td>
+                    <td className="th200">
+                        <a
+                            style={{ color: "blue" }}
+                            href={currentProductUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={catalogoProduto.nome}
+                        >
+                            {catalogoProduto.nome}
+                        </a>
+                    </td>
+                    <td className="td50">
+                        <Form.Check
+                            checked={catalogoProduto.codigo_catalogo === selectedProduct?.codigo_catalogo}
+                            onChange={() => {
+                                setSelectedProduct(catalogoProduto);
+                                if (onProdutoML) {
+                                    onProdutoML(catalogoProduto);
+                                }
 
-                            return (
-                                <tr key={index}>
-                                    <td>
-                                        <img
-                                            className="responsive-image"
-                                            src={catalogoProduto.url_Imagem || ratata}
-                                            alt="Descrição da imagem"
-                                        />
-                                    </td>
-                                    <td className="th200">
-                                        <a
-                                            style={{ color: "blue" }}
-                                            href={currentProductUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            title={catalogoProduto.nome}
-                                        >
-                                            {catalogoProduto.nome}
-                                        </a>
-                                    </td>
-                                    <td className="td50">
-                                        <Form.Check
-                                            checked={catalogoProduto.codigo_catalogo === selectedProduct?.codigo_catalogo}
-                                            onChange={() => {
-                                                setSelectedProduct(catalogoProduto);
-                                                if (onProdutoML) {
-                                                    onProdutoML(catalogoProduto);
-                                                }
+                                if (produtoAtualParaguay) {
+                                    const similarityForSelectedProduct = calculateProductSimilarity(produtoAtualParaguay, catalogoProduto);
+                                    onHighestSimilarity(similarityForSelectedProduct);
+                                }
+                            }}
+                        />
+                    </td>
+                </tr>
+            );
+        })
+    ) : (
+        <tr>
+            <td colSpan={3} className="text-center">Nenhum produto encontrado</td>
+        </tr>
+    )}
+</tbody>
 
-                                                if (produtoAtualParaguay) {
-                                                    const similarityForSelectedProduct = calculateProductSimilarity(produtoAtualParaguay, catalogoProduto);
-                                                    onHighestSimilarity(similarityForSelectedProduct);
-                                                }
-                                            }}
-                                        />
-
-
-                                    </td>
-
-                                </tr>
-                            );
-                        })}
-                    </tbody>
                 </Table>
                 {isFetching || isFetching && <FragmentLoading />}
             </div><br />
